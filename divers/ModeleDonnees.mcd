@@ -1,0 +1,29 @@
+TARIF: tarif_id,prix
+TARIF TIERS, 0N PARTNER, 0N TARIF
+PARTNER : partner_id,code,nom
+PASSE, _11 CDE_ENT, 0N [commensale] PARTNER: Clients/Fournisseurs
+CDE_ENT : cde_ent_id,num_cde,adresse
+
+TARIF ARTICLE, 1N ARTICLE, 0N TARIF
+:
+PRODUCTEUR PAR DEFAUT, 01 ARTICLE, 0N [commensale] PARTNER: Uniquement les Fournisseurs
+:
+CONTIENT, _11 CDE_ENT, 0N CDE_LIG
+
+:
+:
+ARTICLE : article_id,code,designation,di_lavage,di_prixmin,di_prix_max
+EST COMPOSE, _11 CDE_LIG, 0N ARTICLE
+CDE_LIG : cde_lig_id,quantité,prix
+
+CATEGORIE DEFAUT, 01 ARTICLE, 0N DI_CATEGORIE
+ORIGINE DEFAUT, 01 ARTICLE, 0N DI_ORIGINE
+CALIBRE DEFAUT, 01 ARTICLE, 0N DI_CALIBRE
+EMBALLAGE DEFAUT, 01 ARTICLE, 0N DI_EMBALLAGE
+ENLEVEMENT DEFAUT, 01 ARTICLE, 0N DI_ENLEVEMENT
+
+DI_CATEGORIE : di_categorie_id,libelle
+DI_ORIGINE : di_origine_id,libelle
+DI_CALIBRE : di_calibre_id,libelle
+DI_EMBALLAGE : di_emballage_id,libelle
+DI_ENLEVEMENT : di_emlevement_id,libelle

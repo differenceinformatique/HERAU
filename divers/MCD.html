@@ -1,0 +1,112 @@
+<html>
+<head>
+<meta charset='utf-8'>
+<style>
+  #mld .relation { font-variant: small-caps; font-weight: bold }
+  #mld .primary { text-decoration: underline }
+  #mld .foreign { font-style: oblique }
+  #mld .normal { }
+</style>
+</head>
+<body>
+<div id='mld'>
+<div>
+  <span class='relation'>TARIF</span> (
+    <span class='primary'>tarif_id</span>,
+    <span class='normal'>prix</span>
+  )
+</div>
+<div>
+  <span class='relation'>TARIF TIERS</span> (
+    <span class='foreign primary'>partner_id</span>,
+    <span class='foreign primary'>tarif_id</span>
+  )
+</div>
+<div>
+  <span class='relation'>PARTNER</span> (
+    <span class='primary'>partner_id</span>,
+    <span class='normal'>code</span>,
+    <span class='normal'>nom</span>
+  )
+</div>
+<div>
+  <span class='relation'>CDE_ENT</span> (
+    <span class='foreign primary'>partner_id commensale</span>,
+    <span class='primary'>cde_ent_id</span>,
+    <span class='normal'>num_cde</span>,
+    <span class='normal'>adresse</span>,
+    <span class='normal'>Clients/Fournisseurs</span>
+  )
+</div>
+<div>
+  <span class='relation'>TARIF ARTICLE</span> (
+    <span class='foreign primary'>article_id</span>,
+    <span class='foreign primary'>tarif_id</span>
+  )
+</div>
+<div>
+  <span class='relation'>CONTIENT</span> (
+    <span class='foreign primary'>partner_id</span>,
+    <span class='foreign primary'>cde_ent_id</span>,
+    <span class='foreign primary'>article_id</span>,
+    <span class='foreign primary'>cde_lig_id</span>
+  )
+</div>
+<div>
+  <span class='relation'>ARTICLE</span> (
+    <span class='primary'>article_id</span>,
+    <span class='normal'>code</span>,
+    <span class='normal'>designation</span>,
+    <span class='normal'>di_lavage</span>,
+    <span class='normal'>di_prixmin</span>,
+    <span class='normal'>di_prix_max</span>,
+    <span class='foreign'>di_origine_id</span>,
+    <span class='foreign'>di_categorie_id</span>,
+    <span class='foreign'>di_calibre_id</span>,
+    <span class='foreign'>partner_id commensale</span>,
+    <span class='normal'>Uniquement les Fournisseurs</span>,
+    <span class='foreign'>di_emballage_id</span>,
+    <span class='foreign'>di_emlevement_id</span>
+  )
+</div>
+<div>
+  <span class='relation'>CDE_LIG</span> (
+    <span class='foreign primary'>article_id</span>,
+    <span class='primary'>cde_lig_id</span>,
+    <span class='normal'>quantité</span>,
+    <span class='normal'>prix</span>
+  )
+</div>
+<div>
+  <span class='relation'>DI_CATEGORIE</span> (
+    <span class='primary'>di_categorie_id</span>,
+    <span class='normal'>libelle</span>
+  )
+</div>
+<div>
+  <span class='relation'>DI_ORIGINE</span> (
+    <span class='primary'>di_origine_id</span>,
+    <span class='normal'>libelle</span>
+  )
+</div>
+<div>
+  <span class='relation'>DI_CALIBRE</span> (
+    <span class='primary'>di_calibre_id</span>,
+    <span class='normal'>libelle</span>
+  )
+</div>
+<div>
+  <span class='relation'>DI_EMBALLAGE</span> (
+    <span class='primary'>di_emballage_id</span>,
+    <span class='normal'>libelle</span>
+  )
+</div>
+<div>
+  <span class='relation'>DI_ENLEVEMENT</span> (
+    <span class='primary'>di_emlevement_id</span>,
+    <span class='normal'>libelle</span>
+  )
+</div>
+</div>
+</body>
+</html>
