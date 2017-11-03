@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="di_product_specifs" model="ir.ui.view">
+            <field name="name">di.product.specifs</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='notes']" position="after">
+                    <page name="specifs" string="Spécifiques">
+                        <group col = "5">
+                            <group colspan="2" style="font-style: oblique;">
+                                <field name="di_lavage"/>
+                                <field name="di_prixmin"/>
+                                <field name="di_prixmax"/>
+                            </group>
+                            <group colspan="3" col="3" style="font-style: oblique;">         
+                                <group colspan="3" col ="3">                                                    
+                                    <field name="di_categorie_id" class="oe_inline" colspan="2" />
+                                    <field name="di_categorie_di_des" nolabel="1" readonly="1" class="oe_inline" colspan="1"/>                                    
+                                </group>
+                                <group colspan="3" col ="3">                
+                                    <field name="di_origine_id" class="oe_inline" colspan="2"/>
+                                    <field name="di_origine_di_des" nolabel="1" readonly="1" class="oe_inline" colspan="1"/>
+                                </group>                                          
+                                <group colspan="3" col ="3">                
+                                    <field name="di_marque_id" class="oe_inline" colspan="2"/>
+                                    <field name="di_marque_di_des" nolabel="1" readonly="1" class="oe_inline" colspan="1"/>
+                                </group>
+                                <group colspan="3" col ="3">                
+                                    <field name="di_calibre_id" class="oe_inline" colspan="2"/>
+                                    <field name="di_calibre_di_des" nolabel="1" readonly="1" class="oe_inline" colspan="1"/>
+                                </group>
+                                <group colspan="3" col ="3">                
+                                    <field name="di_emballage_id" class="oe_inline" colspan="2"/>
+                                    <field name="di_emballage_di_des" nolabel="1" readonly="1" class="oe_inline" colspan="1"/>
+                                </group>
+                                <group colspan="3" col ="3">                
+                                    <field name="di_enlevement_id" class="oe_inline" colspan="2"/>
+                                    <field name="di_enlevement_di_des" nolabel="1" readonly="1" class="oe_inline" colspan="1"/>
+                                </group>
+                                <group colspan="3" col ="3">                
+                                    <field name="di_producteur_id" class="oe_inline" colspan="2"/>
+                                    <field name="di_producteur_nom" nolabel="1" readonly="1" class="oe_inline" colspan="1"/>
+                                </group>                                                                                                                                                                   
+                            </group>                            
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
