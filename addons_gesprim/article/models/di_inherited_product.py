@@ -7,6 +7,7 @@ class DiInheritedProduct(models.Model):
     di_lavage = fields.Boolean(string="Lavage", default=False)
     di_prixmin = fields.Float(string="Prix minimum")
     di_prixmax = fields.Float(string="Prix maximum")
+    di_des = fields.Char(string="Désignation")
     
     di_categorie_id = fields.Many2one("di.categorie",string="Catégorie")    
     di_categorie_di_des = fields.Char(related='di_categorie_id.di_des')#, store='False')

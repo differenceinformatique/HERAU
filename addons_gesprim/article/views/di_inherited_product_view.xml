@@ -9,81 +9,121 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='notes']" position="after">
                     <page name="specifs" string="Spécifiques" style="font-style: oblique;">
-                        <group col = "12">                            
-                            <group colspan="8"  string="Paramétrage par défaut">  
-                            <!-- 
+                        <group col="12">
+                            <group colspan="8" string="Paramétrage par défaut">
+                                <!-- 
                             On ne peut pas se contenter de mettre <field name="di_categorie_id" /> car sinon on ne peut pas modifier le style du label pour le mettre
                             en italique ni ajouter la désignation sur la même ligne.
-                            -->       
+                            -->
                                 <label for="di_categorie_id" string="Catégorie"/>
                                 <div>
-                                    <field name="di_categorie_id" class="oe_inline" />
-                                    <field name="di_categorie_di_des" nolabel="1" class="oe_inline"  readonly="1" style="margin-left:10px;"/>
+                                    <field class="oe_inline" name="di_categorie_id"/>
+                                    <field class="oe_inline"
+                                    name="di_categorie_di_des"
+                                    nolabel="1" readonly="1" style="margin-left:10px;"/>
                                 </div>
-                                
                                 <label for="di_origine_id" string="Origine"/>
                                 <div>
-                                    <field name="di_origine_id" class="oe_inline"/>
-                                    <field name="di_origine_di_des" nolabel="1" class="oe_inline"  readonly="1" style="margin-left:10px"/>
+                                    <field class="oe_inline" name="di_origine_id"/>
+                                    <field class="oe_inline"
+                                    name="di_origine_di_des"
+                                    nolabel="1" readonly="1" style="margin-left:10px"/>
                                 </div>
-                                
                                 <label for="di_marque_id" string="Marque"/>
                                 <div>
-                                    <field name="di_marque_id" class="oe_inline"/>
-                                    <field name="di_marque_di_des" nolabel="1" class="oe_inline"  readonly="1" style="margin-left:10px"/>
+                                    <field class="oe_inline" name="di_marque_id"/>
+                                    <field class="oe_inline"
+                                    name="di_marque_di_des"
+                                    nolabel="1" readonly="1" style="margin-left:10px"/>
                                 </div>
-                                
                                 <label for="di_calibre_id" string="Calibre"/>
                                 <div>
-                                    <field name="di_calibre_id" class="oe_inline"/>
-                                    <field name="di_calibre_di_des" nolabel="1" class="oe_inline"  readonly="1" style="margin-left:10px"/>
+                                    <field class="oe_inline" name="di_calibre_id"/>
+                                    <field class="oe_inline"
+                                    name="di_calibre_di_des"
+                                    nolabel="1" readonly="1" style="margin-left:10px"/>
                                 </div>
-                                
                                 <label for="di_emballage_id" string="Emballage"/>
                                 <div>
-                                    <field name="di_emballage_id" class="oe_inline"/>
-                                    <field name="di_emballage_di_des" nolabel="1" class="oe_inline"  readonly="1" style="margin-left:10px"/>
+                                    <field class="oe_inline" name="di_emballage_id"/>
+                                    <field class="oe_inline"
+                                    name="di_emballage_di_des"
+                                    nolabel="1" readonly="1" style="margin-left:10px"/>
                                 </div>
-                                
                                 <label for="di_enlevement_id" string="Enlèvement"/>
                                 <div>
-                                    <field name="di_enlevement_id" class="oe_inline"/>
-                                    <field name="di_enlevement_di_des" nolabel="1" class="oe_inline"  readonly="1" style="margin-left:10px"/>
+                                    <field class="oe_inline" name="di_enlevement_id"/>
+                                    <field class="oe_inline"
+                                    name="di_enlevement_di_des"
+                                    nolabel="1" readonly="1" style="margin-left:10px"/>
                                 </div>
-                                
                                 <label for="di_producteur_id" string="Producteur"/>
                                 <div>
-                                    <field name="di_producteur_id" class="oe_inline"/>
-                                    <field name="di_producteur_nom" nolabel="1" class="oe_inline"  readonly="1" style="margin-left:10px"/>
-                                </div>                                                                                                                                                                                                
-                            </group>  
-                            <group colspan ="4">
-                                <field name="di_lavage"/>                                
-                            </group>                          
+                                    <field class="oe_inline"
+                                    context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}"
+                                    domain="[('supplier','=',True)]" name="di_producteur_id"/>
+                                    <field class="oe_inline"
+                                    name="di_producteur_nom"
+                                    nolabel="1" readonly="1" style="margin-left:10px"/>
+                                </div>
+                            </group>
+                            <group colspan="4">
+                                <field name="di_lavage"/>
+                            </group>
                         </group>
                     </page>
                 </xpath>
             </field>
         </record>
-        
         <record id="di_product_prix_spe" model="ir.ui.view">
             <field name="name">di.product.prix.spe</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='list_price']" position="after">        
-                <!-- 
+                <xpath expr="//field[@name='list_price']" position="after">
+                    <!-- 
                 On ne peut pas se contenter de mettre <field name="di_prixmin" /> car sinon on ne peut pas modifier le style du label pour le mettre
                 en italique 
                 -->
-                    <label for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>                                                                                                       
-                    <field name="di_prixmin" style="font-style: oblique;margin-left:5px;" nolabel = "1" class="oe_inline"/>                    
-                    <label for="di_prixmax" string="Prix maximum" style="font-style: oblique;"/>  
-                    <field name="di_prixmax" style="font-style: oblique;margin-left:5px;" nolabel = "1" class="oe_inline"/>                                                                        
+                    <label for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>
+                    <field class="oe_inline" name="di_prixmin"
+                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
+                    <label for="di_prixmax" string="Prix maximum" style="font-style: oblique;"/>
+                    <field class="oe_inline" name="di_prixmax"
+                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="di_product_form" model="ir.ui.view">
+            <field name="name">di.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='options']" position="before">
+                    <label class="oe_edit_only" for="di_des"
+                        string="Désignation" style="font-style: oblique;"/>
+                    <h1>
+                        <field name="di_des" placeholder="Désignation" style="font-style: oblique;"/>
+                    </h1>
+                </xpath>
+                <xpath expr="//label[@for='name']" position="replace">
+                    <label class="oe_edit_only" for="name"
+                        string="Code article" style="font-style: oblique;"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="di_product_kanban" model="ir.ui.view">
+            <field name="name">di.product.kanban</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_kanban_view"/>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='o_kanban_image']" position="after">
+                    <field name="di_des" style="font-style: oblique;"/>                    
                 </xpath>
             </field>
         </record>
     </data>
 </odoo>
-
