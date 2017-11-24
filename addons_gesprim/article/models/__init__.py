@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import di_inherited_product
-import di_calibre
-import di_categorie
-import di_emballage
-import di_enlevement
-import di_marque
-import di_origine
-import di_producteur
+from . import di_inherited_product
+from . import di_calibre
+from . import di_categorie
+from . import di_emballage
+from . import di_enlevement
+from . import di_marque
+from . import di_origine
+from . import di_producteur
