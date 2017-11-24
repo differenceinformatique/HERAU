@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','purchase','product','article','web_sheet_full_width'],
+    'depends': ['base','sale','purchase','product','article','web_sheet_full_width','report_intrastat'],
 
     # always loaded
     'data': [
