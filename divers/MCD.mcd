@@ -1,29 +1,84 @@
-TARIF: tarif_id,prix
-TARIF TIERS, 0N PARTNER, 0N TARIF
-PARTNER : partner_id,name,rais_soc
-PASSE, _11 CDE_ENT, 0N [commensale] PARTNER: Clients/Fournisseurs
-CDE_ENT : cde_ent_id,num_cde,adresse
-
-TARIF ARTICLE, 1N ARTICLE, 0N TARIF
 :
-PRODUCTEUR PAR DEFAUT, 01 ARTICLE, 0N [commensale] PARTNER: Uniquement les Fournisseurs
+TIERSADR DEV, 01 ADRESSE, 11  PARTNER : code_adresse
+:  
+PIECEADR DEV, 01 ADRESSE, 11 PIECE_ENT
 :
-CONTIENT, _11 CDE_ENT, 0N CDE_LIG
+TEXTE : texte_id, contenu
 
 :
+TIERSADR CDE, 01 ADRESSE, 11  PARTNER : code_adresse
+ADRESSE : adr_Id, nom, rue, complement, localite, code_postal, ville, pays
+PIECEADR CDE, 01 ADRESSE, 11 PIECE_ENT
 :
-ARTICLE : article_id,name,designation,di_lavage,di_prixmin,di_prix_max
-EST COMPOSE, _11 CDE_LIG, 0N ARTICLE
-CDE_LIG : cde_lig_id,quantité,prix
+:
 
-CATEGORIE DEFAUT, 01 ARTICLE, 0N DI_CATEGORIE
-ORIGINE DEFAUT, 01 ARTICLE, 0N DI_ORIGINE
-CALIBRE DEFAUT, 01 ARTICLE, 0N DI_CALIBRE
-EMBALLAGE DEFAUT, 01 ARTICLE, 0N DI_EMBALLAGE
-ENLEVEMENT DEFAUT, 01 ARTICLE, 0N DI_ENLEVEMENT
+LIBELLE TARIF: codetarif_id, code_tarif, libelle
+TIERSADR BL, 01 ADRESSE, 11  PARTNER : code_adresse
+LISTE ADR, 0N ADRESSE, 11  PARTNER : code_adresse
+PIECEADR BL, 01 ADRESSE, 11 PIECE_ENT
+TEXTE ENTETE, 01 TEXTE, 11 PIECE_ENT
+TEXTE PIED, 01 TEXTE, 11 PIECE_ENT
 
-DI_CATEGORIE : di_categorie_id,libelle
-DI_ORIGINE : di_origine_id,libelle
-DI_CALIBRE : di_calibre_id,libelle
-DI_EMBALLAGE : di_emballage_id,libelle
-DI_ENLEVEMENT : di_emlevement_id,libelle
+:
+TIERSADR FAC, 01 ADRESSE, 11  PARTNER : code_adresse
+TEXTE EDITION, 01 TEXTE, 0N  PARTNER : affDevis, affCde, affBL, affFac
+PIECEADR FAC, 01 ADRESSE, 11 PIECE_ENT
+:
+:
+
+:
+:
+:
+PASSE, 11 PIECE_ENT, 0N  PARTNER
+:
+:
+
+TARIF, 0N ARTICLE, 0N LIBELLE TARIF, 0N  PARTNER:  tarif_id, code_tarif, prix
+PARTNER : partner_id, name, rais_soc
+PARAM EMB/PAL, 11 ARTICLE, 11 EMBALLAGE, 01 PARTNER
+:
+:
+PIECE_ENT : PIECE_ENT_id,num_cde,adresse
+
+:
+PROD DEFAUT, 11 ARTICLE, 01  PARTNER
+EMBALLAGE DEFAUT, 11 ARTICLE, 01 EMBALLAGE
+EMBALLAGE : code_emballage_id, libelle
+:
+:
+
+:
+:
+CATEGORIE DEFAUT, 11 ARTICLE, 01 CATEGORIE
+CATEGORIE : categorie_id, libelle
+:
+:
+
+
+ARTICLE : article_id, name, designation, lavage, prixmin, prix_max
+:
+:
+:
+:
+EST COMPOSE, 1N PIECE_ENT, 0N ARTICLE, 01 CATEGORIE, 01 ORIGINE, 01 CALIBRE, 01 ENLEVEMENT, 01 EMBALLAGE : num_ligne,quantite, prix, montant
+
+:
+:
+ORIGINE DEFAUT, 11 ARTICLE, 01 ORIGINE
+ORIGINE : origine_id, libelle
+:
+:
+
+:
+:
+CALIBRE DEFAUT, 11 ARTICLE, 01 CALIBRE
+CALIBRE : calibre_id, libelle
+:
+:
+
+:
+:
+ENLEVEMENT DEFAUT, 11 ARTICLE, 01 ENLEVEMENT
+ENLEVEMENT : emlevement_id, libelle
+:
+:

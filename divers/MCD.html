@@ -11,39 +11,96 @@
 <body>
 <div id='mld'>
 <div>
-  <span class='relation'>TARIF</span> (
-    <span class='primary'>tarif_id</span>,
-    <span class='normal'>prix</span>
+  <span class='relation'>TEXTE</span> (
+    <span class='primary'>texte_id</span>,
+    <span class='normal'>contenu</span>,
+    <span class='foreign'>partner_id</span>,
+    <span class='normal'>affDevis</span>,
+    <span class='normal'>affCde</span>,
+    <span class='normal'>affBL</span>,
+    <span class='normal'>affFac</span>
   )
 </div>
 <div>
-  <span class='relation'>TARIF TIERS</span> (
+  <span class='relation'>ADRESSE</span> (
+    <span class='primary'>adr_Id</span>,
+    <span class='normal'>nom</span>,
+    <span class='normal'>rue</span>,
+    <span class='normal'>complement</span>,
+    <span class='normal'>localite</span>,
+    <span class='normal'>code_postal</span>,
+    <span class='normal'>ville</span>,
+    <span class='normal'>pays</span>
+  )
+</div>
+<div>
+  <span class='relation'>LIBELLE TARIF</span> (
+    <span class='primary'>codetarif_id</span>,
+    <span class='normal'>code_tarif</span>,
+    <span class='normal'>libelle</span>
+  )
+</div>
+<div>
+  <span class='relation'>TARIF</span> (
+    <span class='foreign primary'>article_id</span>,
+    <span class='foreign primary'>codetarif_id</span>,
     <span class='foreign primary'>partner_id</span>,
-    <span class='foreign primary'>tarif_id</span>
+    <span class='normal'>tarif_id</span>,
+    <span class='normal'>code_tarif</span>,
+    <span class='normal'>prix</span>
   )
 </div>
 <div>
   <span class='relation'>PARTNER</span> (
     <span class='primary'>partner_id</span>,
     <span class='normal'>name</span>,
-    <span class='normal'>rais_soc</span>
+    <span class='normal'>rais_soc</span>,
+    <span class='foreign'>adr_Id</span>,
+    <span class='normal'>code_adresse</span>,
+    <span class='foreign'>adr_Id.1</span>,
+    <span class='normal'>code_adresse.1</span>,
+    <span class='foreign'>adr_Id.2</span>,
+    <span class='normal'>code_adresse.2</span>,
+    <span class='foreign'>adr_Id.3</span>,
+    <span class='normal'>code_adresse.3</span>,
+    <span class='foreign'>adr_Id.4</span>,
+    <span class='normal'>code_adresse.4</span>
   )
 </div>
 <div>
-  <span class='relation'>CDE_ENT</span> (
-    <span class='foreign primary'>article_id</span>,
-    <span class='foreign primary'>cde_lig_id</span>,
-    <span class='foreign primary'>partner_id commensale</span>,
-    <span class='primary'>cde_ent_id</span>,
+  <span class='relation'>PIECE_ENT</span> (
+    <span class='primary'>PIECE_ENT_id</span>,
     <span class='normal'>num_cde</span>,
     <span class='normal'>adresse</span>,
-    <span class='normal'>Clients/Fournisseurs</span>
+    <span class='foreign'>texte_id</span>,
+    <span class='foreign'>adr_Id</span>,
+    <span class='foreign'>adr_Id.1</span>,
+    <span class='foreign'>partner_id</span>,
+    <span class='foreign'>adr_Id.2</span>,
+    <span class='foreign'>texte_id.1</span>,
+    <span class='foreign'>adr_Id.3</span>
   )
 </div>
 <div>
-  <span class='relation'>TARIF ARTICLE</span> (
-    <span class='foreign primary'>article_id</span>,
-    <span class='foreign primary'>tarif_id</span>
+  <span class='relation'>EMBALLAGE</span> (
+    <span class='primary'>code_emballage_id</span>,
+    <span class='normal'>libelle</span>
+  )
+</div>
+<div>
+  <span class='relation'>CATEGORIE</span> (
+    <span class='primary'>categorie_id</span>,
+    <span class='normal'>libelle</span>,
+    <span class='foreign'>PIECE_ENT_id</span>,
+    <span class='foreign'>article_id</span>,
+    <span class='foreign'>origine_id</span>,
+    <span class='foreign'>calibre_id</span>,
+    <span class='foreign'>emlevement_id</span>,
+    <span class='foreign'>code_emballage_id</span>,
+    <span class='normal'>num_ligne</span>,
+    <span class='normal'>quantite</span>,
+    <span class='normal'>prix</span>,
+    <span class='normal'>montant</span>
   )
 </div>
 <div>
@@ -51,53 +108,34 @@
     <span class='primary'>article_id</span>,
     <span class='normal'>name</span>,
     <span class='normal'>designation</span>,
-    <span class='normal'>di_lavage</span>,
-    <span class='normal'>di_prixmin</span>,
-    <span class='normal'>di_prix_max</span>,
-    <span class='foreign'>di_categorie_id</span>,
-    <span class='foreign'>partner_id commensale</span>,
-    <span class='normal'>Uniquement les Fournisseurs</span>,
-    <span class='foreign'>di_emballage_id</span>,
-    <span class='foreign'>di_calibre_id</span>,
-    <span class='foreign'>di_origine_id</span>,
-    <span class='foreign'>di_emlevement_id</span>
+    <span class='normal'>lavage</span>,
+    <span class='normal'>prixmin</span>,
+    <span class='normal'>prix_max</span>,
+    <span class='foreign'>code_emballage_id</span>,
+    <span class='foreign'>origine_id</span>,
+    <span class='foreign'>partner_id</span>,
+    <span class='foreign'>calibre_id</span>,
+    <span class='foreign'>categorie_id</span>,
+    <span class='foreign'>emlevement_id</span>,
+    <span class='foreign'>code_emballage_id.1</span>,
+    <span class='foreign'>partner_id.1</span>
   )
 </div>
 <div>
-  <span class='relation'>CDE_LIG</span> (
-    <span class='foreign primary'>article_id</span>,
-    <span class='primary'>cde_lig_id</span>,
-    <span class='normal'>quantité</span>,
-    <span class='normal'>prix</span>
-  )
-</div>
-<div>
-  <span class='relation'>DI_CATEGORIE</span> (
-    <span class='primary'>di_categorie_id</span>,
+  <span class='relation'>ORIGINE</span> (
+    <span class='primary'>origine_id</span>,
     <span class='normal'>libelle</span>
   )
 </div>
 <div>
-  <span class='relation'>DI_ORIGINE</span> (
-    <span class='primary'>di_origine_id</span>,
+  <span class='relation'>CALIBRE</span> (
+    <span class='primary'>calibre_id</span>,
     <span class='normal'>libelle</span>
   )
 </div>
 <div>
-  <span class='relation'>DI_CALIBRE</span> (
-    <span class='primary'>di_calibre_id</span>,
-    <span class='normal'>libelle</span>
-  )
-</div>
-<div>
-  <span class='relation'>DI_EMBALLAGE</span> (
-    <span class='primary'>di_emballage_id</span>,
-    <span class='normal'>libelle</span>
-  )
-</div>
-<div>
-  <span class='relation'>DI_ENLEVEMENT</span> (
-    <span class='primary'>di_emlevement_id</span>,
+  <span class='relation'>ENLEVEMENT</span> (
+    <span class='primary'>emlevement_id</span>,
     <span class='normal'>libelle</span>
   )
 </div>
