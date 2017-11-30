@@ -1,6 +1,6 @@
 TARIF: tarif_id,prix
 TARIF TIERS, 0N PARTNER, 0N TARIF
-PARTNER : partner_id,code,nom
+PARTNER : partner_id,name,rais_soc
 PASSE, _11 CDE_ENT, 0N [commensale] PARTNER: Clients/Fournisseurs
 CDE_ENT : cde_ent_id,num_cde,adresse
 
@@ -12,7 +12,7 @@ CONTIENT, _11 CDE_ENT, 0N CDE_LIG
 
 :
 :
-ARTICLE : article_id,code,designation,di_lavage,di_prixmin,di_prix_max
+ARTICLE : article_id,name,designation,di_lavage,di_prixmin,di_prix_max
 EST COMPOSE, _11 CDE_LIG, 0N ARTICLE
 CDE_LIG : cde_lig_id,quantité,prix
 
