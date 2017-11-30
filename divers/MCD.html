@@ -25,12 +25,14 @@
 <div>
   <span class='relation'>PARTNER</span> (
     <span class='primary'>partner_id</span>,
-    <span class='normal'>code</span>,
-    <span class='normal'>nom</span>
+    <span class='normal'>name</span>,
+    <span class='normal'>rais_soc</span>
   )
 </div>
 <div>
   <span class='relation'>CDE_ENT</span> (
+    <span class='foreign primary'>article_id</span>,
+    <span class='foreign primary'>cde_lig_id</span>,
     <span class='foreign primary'>partner_id commensale</span>,
     <span class='primary'>cde_ent_id</span>,
     <span class='normal'>num_cde</span>,
@@ -45,27 +47,19 @@
   )
 </div>
 <div>
-  <span class='relation'>CONTIENT</span> (
-    <span class='foreign primary'>partner_id</span>,
-    <span class='foreign primary'>cde_ent_id</span>,
-    <span class='foreign primary'>article_id</span>,
-    <span class='foreign primary'>cde_lig_id</span>
-  )
-</div>
-<div>
   <span class='relation'>ARTICLE</span> (
     <span class='primary'>article_id</span>,
-    <span class='normal'>code</span>,
+    <span class='normal'>name</span>,
     <span class='normal'>designation</span>,
     <span class='normal'>di_lavage</span>,
     <span class='normal'>di_prixmin</span>,
     <span class='normal'>di_prix_max</span>,
-    <span class='foreign'>di_origine_id</span>,
     <span class='foreign'>di_categorie_id</span>,
-    <span class='foreign'>di_calibre_id</span>,
     <span class='foreign'>partner_id commensale</span>,
     <span class='normal'>Uniquement les Fournisseurs</span>,
     <span class='foreign'>di_emballage_id</span>,
+    <span class='foreign'>di_calibre_id</span>,
+    <span class='foreign'>di_origine_id</span>,
     <span class='foreign'>di_emlevement_id</span>
   )
 </div>

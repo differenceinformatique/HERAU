@@ -1,0 +1,1 @@
+mocodo --input C:\ODOO\odoo11\difodoo\divers\MCD.mcd --output_dir C:\ODOO\odoo11\difodoo\divers\ --colors brewer-5.json

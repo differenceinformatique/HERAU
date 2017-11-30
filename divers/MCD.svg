@@ -2,326 +2,327 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
 "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg width="816" height="506" view_box="0 0 816 506"
+<svg width="830" height="522" view_box="0 0 830 522"
 xmlns="http://www.w3.org/2000/svg"
-xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.5 le Fri, 03 Nov 2017 08:52:52</desc>
+xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Thu, 30 Nov 2017 12:26:50</desc>
 
-<rect id="frame" x="0" y="0" width="816" height="506" fill="#ffffbf" stroke="none" stroke-width="0"/>
+<rect id="frame" x="0" y="0" width="830" height="522" fill="#f7f7f7" stroke="none" stroke-width="0"/>
 
-<!-- Association TARIF TIERS -->
-<line x1="395" y1="51" x2="242" y2="51" stroke="#74add1" stroke-width="2"/>
-<text x="331" y="68.0" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<line x1="79" y1="51" x2="242" y2="51" stroke="#74add1" stroke-width="2"/>
-<text x="111" y="68.0" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-TARIF TIERS">
-	<path d="M 274 26 a 14 14 90 0 1 14 14 V 51 h -92 V 40 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 288 51.0 v 11 a 14 14 90 0 1 -14 14 H 210 a 14 14 90 0 1 -14 -14 V 51.0 H 92" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="196" y="26" width="92" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="196" y1="51" x2="288" y2="51" stroke="#74add1" stroke-width="1"/>
-	<text x="203" y="43.7" fill="#000000" font-family="Verdana" font-size="12">TARIF TIERS</text>
-</g>
-
-<!-- Association CONTIENT -->
-<line x1="733" y1="51" x2="733" y2="143" stroke="#74add1" stroke-width="2"/>
-<text x="738.0" y="110" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<line x1="733" y1="261" x2="733" y2="143" stroke="#74add1" stroke-width="2"/>
-<text x="738.0" y="211" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-CONTIENT">
-	<path d="M 758 118 a 14 14 90 0 1 14 14 V 143 h -78 V 132 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 772 143.0 v 11 a 14 14 90 0 1 -14 14 H 708 a 14 14 90 0 1 -14 -14 V 143.0 H 78" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="694" y="118" width="78" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="694" y1="143" x2="772" y2="143" stroke="#74add1" stroke-width="1"/>
-	<text x="701" y="135.7" fill="#000000" font-family="Verdana" font-size="12">CONTIENT</text>
-</g>
-
-<!-- Association ORIGINE DEFAUT -->
-<line x1="395" y1="261" x2="242" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="326" y="291.953536413" fill="#d73027" font-family="Verdana" font-size="12">0,1</text>
-<line x1="242" y1="463" x2="242" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="247.0" y="421" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-ORIGINE DEFAUT">
-	<path d="M 289 354 a 14 14 90 0 1 14 14 V 379 h -122 V 368 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 303 379.0 v 11 a 14 14 90 0 1 -14 14 H 195 a 14 14 90 0 1 -14 -14 V 379.0 H 122" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="181" y="354" width="122" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="181" y1="379" x2="303" y2="379" stroke="#74add1" stroke-width="1"/>
-	<text x="188" y="371.7" fill="#000000" font-family="Verdana" font-size="12">ORIGINE DEFAUT</text>
+<!-- Association CATEGORIE DEFAUT -->
+<line x1="398" y1="270" x2="80" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="327" y="282.26610176427306" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="80" y1="478" x2="80" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="85.0" y="435" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-CATEGORIE DEFAUT">
+	<path d="M 137 366 a 14 14 90 0 1 14 14 V 392 h -142 V 380 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 151 392.0 v 12 a 14 14 90 0 1 -14 14 H 23 a 14 14 90 0 1 -14 -14 V 392.0 H 142" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="9" y="366" width="142" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="9" y1="392" x2="151" y2="392" stroke="#4393c3" stroke-width="1"/>
+	<text x="16" y="384.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CATEGORIE DEFAUT</text>
 </g>
 
 <!-- Association EST COMPOSE -->
-<line x1="733" y1="261" x2="557" y2="261" stroke="#74add1" stroke-width="2"/>
-<text x="671" y="278.0" fill="#d73027" font-family="Verdana" font-size="12">1,1</text>
-<line x1="671" y1="280.0" x2="692" y2="280.0" stroke="#d73027" stroke-width="1"/>
-<line x1="395" y1="261" x2="557" y2="261" stroke="#74add1" stroke-width="2"/>
-<text x="443" y="253.0" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
+<line x1="744" y1="270" x2="563" y2="270" stroke="#4393c3" stroke-width="1"/>
+<text x="679" y="287.0" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="679" y1="289.0" x2="700" y2="289.0" stroke="#b2182b" stroke-width="1"/>
+<line x1="398" y1="270" x2="563" y2="270" stroke="#4393c3" stroke-width="1"/>
+<text x="448" y="262.0" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
 <g id="association-EST COMPOSE">
-	<path d="M 595 236 a 14 14 90 0 1 14 14 V 261 h -104 V 250 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 609 261.0 v 11 a 14 14 90 0 1 -14 14 H 519 a 14 14 90 0 1 -14 -14 V 261.0 H 104" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="505" y="236" width="104" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="505" y1="261" x2="609" y2="261" stroke="#74add1" stroke-width="1"/>
-	<text x="512" y="253.7" fill="#000000" font-family="Verdana" font-size="12">EST COMPOSE</text>
-</g>
-
-<!-- Association CATEGORIE DEFAUT -->
-<line x1="395" y1="261" x2="79" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="326" y="271.977341181" fill="#d73027" font-family="Verdana" font-size="12">0,1</text>
-<line x1="79" y1="463" x2="79" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="84.0" y="421" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-CATEGORIE DEFAUT">
-	<path d="M 135 354 a 14 14 90 0 1 14 14 V 379 h -140 V 368 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 149 379.0 v 11 a 14 14 90 0 1 -14 14 H 23 a 14 14 90 0 1 -14 -14 V 379.0 H 140" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="9" y="354" width="140" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="9" y1="379" x2="149" y2="379" stroke="#74add1" stroke-width="1"/>
-	<text x="16" y="371.7" fill="#000000" font-family="Verdana" font-size="12">CATEGORIE DEFAUT</text>
-</g>
-
-<!-- Association CALIBRE DEFAUT -->
-<line x1="395" y1="261" x2="395" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="400.0" y="346" fill="#d73027" font-family="Verdana" font-size="12">0,1</text>
-<line x1="395" y1="463" x2="395" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="400.0" y="421" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-CALIBRE DEFAUT">
-	<path d="M 441 354 a 14 14 90 0 1 14 14 V 379 h -120 V 368 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 455 379.0 v 11 a 14 14 90 0 1 -14 14 H 349 a 14 14 90 0 1 -14 -14 V 379.0 H 120" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="335" y="354" width="120" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="335" y1="379" x2="455" y2="379" stroke="#74add1" stroke-width="1"/>
-	<text x="342" y="371.7" fill="#000000" font-family="Verdana" font-size="12">CALIBRE DEFAUT</text>
+	<path d="M 601 244 a 14 14 90 0 1 14 14 V 270 h -104 V 258 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 615 270.0 v 12 a 14 14 90 0 1 -14 14 H 525 a 14 14 90 0 1 -14 -14 V 270.0 H 104" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="511" y="244" width="104" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="511" y1="270" x2="615" y2="270" stroke="#4393c3" stroke-width="1"/>
+	<text x="518" y="262.6" fill="#000000" font-family="Trebuchet MS" font-size="14">EST COMPOSE</text>
 </g>
 
 <!-- Association PRODUCTEUR PAR DEFAUT -->
-<line x1="395" y1="261" x2="395" y2="143" stroke="#74add1" stroke-width="2"/>
-<text x="400.0" y="185" fill="#d73027" font-family="Verdana" font-size="12">0,1</text>
-<line x1="395" y1="51" x2="395" y2="143" stroke="#74add1" stroke-width="2"/>
-<text x="400.0" y="110" fill="#d73027" font-family="Verdana" font-size="12" onmouseover="show(evt,'commensale')" onmouseout="hide(evt)" style="cursor: pointer;">0,N</text>
+<line x1="398" y1="270" x2="398" y2="148" stroke="#4393c3" stroke-width="1"/>
+<text x="403.0" y="191" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="398" y1="53" x2="398" y2="148" stroke="#4393c3" stroke-width="1"/>
+<text x="403.0" y="114" fill="#b2182b" font-family="Verdana" font-size="12" onmouseover="show(evt,'commensale')" onmouseout="hide(evt)" style="cursor: pointer;">0,N</text>
 <g id="association-PRODUCTEUR PAR DEFAUT">
-	<path d="M 476 118 a 14 14 90 0 1 14 14 V 143 h -190 V 132 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 490 143.0 v 11 a 14 14 90 0 1 -14 14 H 314 a 14 14 90 0 1 -14 -14 V 143.0 H 190" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="300" y="118" width="190" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="300" y1="143" x2="490" y2="143" stroke="#74add1" stroke-width="1"/>
-	<text x="312" y="135.7" fill="#000000" font-family="Verdana" font-size="12">PRODUCTEUR PAR DEFAUT</text>
-	<text x="307" y="160.8" fill="#000000" font-family="Verdana" font-size="12">Uniquement les Fournisseurs</text>
+	<path d="M 484 122 a 14 14 90 0 1 14 14 V 148 h -200 V 136 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 498 148.0 v 12 a 14 14 90 0 1 -14 14 H 312 a 14 14 90 0 1 -14 -14 V 148.0 H 200" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="298" y="122" width="200" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="298" y1="148" x2="498" y2="148" stroke="#4393c3" stroke-width="1"/>
+	<text x="312" y="140.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PRODUCTEUR PAR DEFAUT</text>
+	<text x="305" y="166.6" fill="#000000" font-family="Trebuchet MS" font-size="14">Uniquement les Fournisseurs</text>
 </g>
 
-<!-- Association TARIF ARTICLE -->
-<line x1="395" y1="261" x2="79" y2="143" stroke="#74add1" stroke-width="2"/>
-<text x="325" y="259.022658819" fill="#d73027" font-family="Verdana" font-size="12">1,N</text>
-<line x1="79" y1="51" x2="79" y2="143" stroke="#74add1" stroke-width="2"/>
-<text x="84.0" y="102" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-TARIF ARTICLE">
-	<path d="M 119 118 a 14 14 90 0 1 14 14 V 143 h -108 V 132 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 133 143.0 v 11 a 14 14 90 0 1 -14 14 H 39 a 14 14 90 0 1 -14 -14 V 143.0 H 108" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="25" y="118" width="108" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="25" y1="143" x2="133" y2="143" stroke="#74add1" stroke-width="1"/>
-	<text x="32" y="135.7" fill="#000000" font-family="Verdana" font-size="12">TARIF ARTICLE</text>
-</g>
-
-<!-- Association PASSE -->
-<line x1="733" y1="51" x2="557" y2="51" stroke="#74add1" stroke-width="2"/>
-<text x="668" y="68.0" fill="#d73027" font-family="Verdana" font-size="12">1,1</text>
-<line x1="668" y1="70.0" x2="689" y2="70.0" stroke="#d73027" stroke-width="1"/>
-<line x1="395" y1="51" x2="557" y2="51" stroke="#74add1" stroke-width="2"/>
-<text x="437" y="68.0" fill="#d73027" font-family="Verdana" font-size="12" onmouseover="show(evt,'commensale')" onmouseout="hide(evt)" style="cursor: pointer;">0,N</text>
-<g id="association-PASSE">
-	<path d="M 612 26 a 14 14 90 0 1 14 14 V 51 h -138 V 40 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 626 51.0 v 11 a 14 14 90 0 1 -14 14 H 502 a 14 14 90 0 1 -14 -14 V 51.0 H 138" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="488" y="26" width="138" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="488" y1="51" x2="626" y2="51" stroke="#74add1" stroke-width="1"/>
-	<text x="537" y="43.7" fill="#000000" font-family="Verdana" font-size="12">PASSE</text>
-	<text x="495" y="68.8" fill="#000000" font-family="Verdana" font-size="12">Clients/Fournisseurs</text>
+<!-- Association TARIF TIERS -->
+<line x1="398" y1="53" x2="244" y2="53" stroke="#4393c3" stroke-width="1"/>
+<text x="331" y="70.0" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<line x1="80" y1="53" x2="244" y2="53" stroke="#4393c3" stroke-width="1"/>
+<text x="115" y="70.0" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-TARIF TIERS">
+	<path d="M 276 27 a 14 14 90 0 1 14 14 V 53 h -92 V 41 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 290 53.0 v 12 a 14 14 90 0 1 -14 14 H 212 a 14 14 90 0 1 -14 -14 V 53.0 H 92" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="198" y="27" width="92" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="198" y1="53" x2="290" y2="53" stroke="#4393c3" stroke-width="1"/>
+	<text x="205" y="45.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TARIF TIERS</text>
 </g>
 
 <!-- Association EMBALLAGE DEFAUT -->
-<line x1="395" y1="261" x2="557" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="443" y="289.839624202" fill="#d73027" font-family="Verdana" font-size="12">0,1</text>
-<line x1="557" y1="463" x2="557" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="562.0" y="421" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
+<line x1="398" y1="270" x2="563" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="448" y="300.86202199147925" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="563" y1="478" x2="563" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="568.0" y="435" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
 <g id="association-EMBALLAGE DEFAUT">
-	<path d="M 613 354 a 14 14 90 0 1 14 14 V 379 h -140 V 368 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 627 379.0 v 11 a 14 14 90 0 1 -14 14 H 501 a 14 14 90 0 1 -14 -14 V 379.0 H 140" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="487" y="354" width="140" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="487" y1="379" x2="627" y2="379" stroke="#74add1" stroke-width="1"/>
-	<text x="494" y="371.7" fill="#000000" font-family="Verdana" font-size="12">EMBALLAGE DEFAUT</text>
+	<path d="M 621 366 a 14 14 90 0 1 14 14 V 392 h -144 V 380 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 635 392.0 v 12 a 14 14 90 0 1 -14 14 H 505 a 14 14 90 0 1 -14 -14 V 392.0 H 144" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="491" y="366" width="144" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="491" y1="392" x2="635" y2="392" stroke="#4393c3" stroke-width="1"/>
+	<text x="498" y="384.6" fill="#000000" font-family="Trebuchet MS" font-size="14">EMBALLAGE DEFAUT</text>
+</g>
+
+<!-- Association CALIBRE DEFAUT -->
+<line x1="398" y1="270" x2="398" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="403.0" y="358" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="398" y1="478" x2="398" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="403.0" y="435" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-CALIBRE DEFAUT">
+	<path d="M 445 366 a 14 14 90 0 1 14 14 V 392 h -122 V 380 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 459 392.0 v 12 a 14 14 90 0 1 -14 14 H 351 a 14 14 90 0 1 -14 -14 V 392.0 H 122" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="337" y="366" width="122" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="337" y1="392" x2="459" y2="392" stroke="#4393c3" stroke-width="1"/>
+	<text x="344" y="384.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CALIBRE DEFAUT</text>
+</g>
+
+<!-- Association PASSE -->
+<line x1="744" y1="53" x2="563" y2="53" stroke="#4393c3" stroke-width="1"/>
+<text x="676" y="70.0" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="676" y1="72.0" x2="697" y2="72.0" stroke="#b2182b" stroke-width="1"/>
+<line x1="398" y1="53" x2="563" y2="53" stroke="#4393c3" stroke-width="1"/>
+<text x="443" y="70.0" fill="#b2182b" font-family="Verdana" font-size="12" onmouseover="show(evt,'commensale')" onmouseout="hide(evt)" style="cursor: pointer;">0,N</text>
+<g id="association-PASSE">
+	<path d="M 622 27 a 14 14 90 0 1 14 14 V 53 h -146 V 41 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 636 53.0 v 12 a 14 14 90 0 1 -14 14 H 504 a 14 14 90 0 1 -14 -14 V 53.0 H 146" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="490" y="27" width="146" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="490" y1="53" x2="636" y2="53" stroke="#4393c3" stroke-width="1"/>
+	<text x="543" y="45.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PASSE</text>
+	<text x="497" y="71.6" fill="#000000" font-family="Trebuchet MS" font-size="14">Clients/Fournisseurs</text>
+</g>
+
+<!-- Association ORIGINE DEFAUT -->
+<line x1="398" y1="270" x2="244" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="327" y="303.5686564930586" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="244" y1="478" x2="244" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="249.0" y="435" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-ORIGINE DEFAUT">
+	<path d="M 291 366 a 14 14 90 0 1 14 14 V 392 h -122 V 380 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 305 392.0 v 12 a 14 14 90 0 1 -14 14 H 197 a 14 14 90 0 1 -14 -14 V 392.0 H 122" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="183" y="366" width="122" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="183" y1="392" x2="305" y2="392" stroke="#4393c3" stroke-width="1"/>
+	<text x="190" y="384.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ORIGINE DEFAUT</text>
+</g>
+
+<!-- Association CONTIENT -->
+<line x1="744" y1="53" x2="744" y2="148" stroke="#4393c3" stroke-width="1"/>
+<text x="749.0" y="114" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="749.0" y1="116" x2="770.0" y2="116" stroke="#b2182b" stroke-width="1"/>
+<line x1="744" y1="270" x2="744" y2="148" stroke="#4393c3" stroke-width="1"/>
+<text x="749.0" y="218" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-CONTIENT">
+	<path d="M 770 122 a 14 14 90 0 1 14 14 V 148 h -80 V 136 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 784 148.0 v 12 a 14 14 90 0 1 -14 14 H 718 a 14 14 90 0 1 -14 -14 V 148.0 H 80" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="704" y="122" width="80" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="704" y1="148" x2="784" y2="148" stroke="#4393c3" stroke-width="1"/>
+	<text x="711" y="140.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CONTIENT</text>
 </g>
 
 <!-- Association ENLEVEMENT DEFAUT -->
-<line x1="395" y1="261" x2="733" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="443" y="270.737594864" fill="#d73027" font-family="Verdana" font-size="12">0,1</text>
-<line x1="733" y1="463" x2="733" y2="379" stroke="#74add1" stroke-width="2"/>
-<text x="738.0" y="421" fill="#d73027" font-family="Verdana" font-size="12">0,N</text>
+<line x1="398" y1="270" x2="744" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="448" y="280.62081069690777" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="744" y1="478" x2="744" y2="392" stroke="#4393c3" stroke-width="1"/>
+<text x="749.0" y="435" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
 <g id="association-ENLEVEMENT DEFAUT">
-	<path d="M 793 354 a 14 14 90 0 1 14 14 V 379 h -148 V 368 a 14 14 90 0 1 14 -14" fill="#abd9e9" stroke="#abd9e9" stroke-width="0"/>
-	<path d="M 807 379.0 v 11 a 14 14 90 0 1 -14 14 H 673 a 14 14 90 0 1 -14 -14 V 379.0 H 148" fill="#e0f3f8" stroke="#e0f3f8" stroke-width="0"/>
-	<rect x="659" y="354" width="148" height="50" fill="none" rx="14" stroke="#74add1" stroke-width="2"/>
-	<line x1="659" y1="379" x2="807" y2="379" stroke="#74add1" stroke-width="1"/>
-	<text x="666" y="371.7" fill="#000000" font-family="Verdana" font-size="12">ENLEVEMENT DEFAUT</text>
+	<path d="M 807 366 a 14 14 90 0 1 14 14 V 392 h -154 V 380 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 821 392.0 v 12 a 14 14 90 0 1 -14 14 H 681 a 14 14 90 0 1 -14 -14 V 392.0 H 154" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="667" y="366" width="154" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="667" y1="392" x2="821" y2="392" stroke="#4393c3" stroke-width="1"/>
+	<text x="674" y="384.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ENLEVEMENT DEFAUT</text>
 </g>
 
-<!-- Entity DI_EMBALLAGE -->
-<g id="entity-DI_EMBALLAGE">
-	<g id="frame-DI_EMBALLAGE">
-		<rect x="502" y="429" width="110" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="502" y="454.0" width="110" height="43" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="502" y="429" width="110" height="68" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="502" y1="454" x2="612" y2="454" stroke="#f46d43" stroke-width="1"/>
-	</g>
-	<text x="509" y="446.7" fill="#000000" font-family="Verdana" font-size="12">DI_EMBALLAGE</text>
-	<text x="507" y="471.8" fill="#000000" font-family="Verdana" font-size="12">di_emballage_id</text>
-	<line x1="507" y1="474" x2="607" y2="474" stroke="#000000" stroke-width="1"/>
-	<text x="507" y="488.8" fill="#000000" font-family="Verdana" font-size="12">libelle</text>
-</g>
-
-<!-- Entity DI_CATEGORIE -->
-<g id="entity-DI_CATEGORIE">
-	<g id="frame-DI_CATEGORIE">
-		<rect x="27" y="429" width="104" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="27" y="454.0" width="104" height="43" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="27" y="429" width="104" height="68" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="27" y1="454" x2="131" y2="454" stroke="#f46d43" stroke-width="1"/>
-	</g>
-	<text x="32" y="446.7" fill="#000000" font-family="Verdana" font-size="12">DI_CATEGORIE</text>
-	<text x="32" y="471.8" fill="#000000" font-family="Verdana" font-size="12">di_categorie_id</text>
-	<line x1="32" y1="474" x2="126" y2="474" stroke="#000000" stroke-width="1"/>
-	<text x="32" y="488.8" fill="#000000" font-family="Verdana" font-size="12">libelle</text>
-</g>
-
-<!-- Entity DI_ENLEVEMENT -->
-<g id="entity-DI_ENLEVEMENT">
-	<g id="frame-DI_ENLEVEMENT">
-		<rect x="671" y="429" width="124" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="671" y="454.0" width="124" height="43" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="671" y="429" width="124" height="68" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="671" y1="454" x2="795" y2="454" stroke="#f46d43" stroke-width="1"/>
-	</g>
-	<text x="681" y="446.7" fill="#000000" font-family="Verdana" font-size="12">DI_ENLEVEMENT</text>
-	<text x="676" y="471.8" fill="#000000" font-family="Verdana" font-size="12">di_emlevement_id</text>
-	<line x1="676" y1="474" x2="789" y2="474" stroke="#000000" stroke-width="1"/>
-	<text x="676" y="488.8" fill="#000000" font-family="Verdana" font-size="12">libelle</text>
-</g>
-
-<!-- Entity DI_ORIGINE -->
-<g id="entity-DI_ORIGINE">
-	<g id="frame-DI_ORIGINE">
-		<rect x="197" y="429" width="90" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="197" y="454.0" width="90" height="43" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="197" y="429" width="90" height="68" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="197" y1="454" x2="287" y2="454" stroke="#f46d43" stroke-width="1"/>
-	</g>
-	<text x="203" y="446.7" fill="#000000" font-family="Verdana" font-size="12">DI_ORIGINE</text>
-	<text x="202" y="471.8" fill="#000000" font-family="Verdana" font-size="12">di_origine_id</text>
-	<line x1="202" y1="474" x2="281" y2="474" stroke="#000000" stroke-width="1"/>
-	<text x="202" y="488.8" fill="#000000" font-family="Verdana" font-size="12">libelle</text>
-</g>
-
-<!-- Entity DI_CALIBRE -->
-<g id="entity-DI_CALIBRE">
-	<g id="frame-DI_CALIBRE">
-		<rect x="351" y="429" width="88" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="351" y="454.0" width="88" height="43" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="351" y="429" width="88" height="68" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="351" y1="454" x2="439" y2="454" stroke="#f46d43" stroke-width="1"/>
-	</g>
-	<text x="357" y="446.7" fill="#000000" font-family="Verdana" font-size="12">DI_CALIBRE</text>
-	<text x="356" y="471.8" fill="#000000" font-family="Verdana" font-size="12">di_calibre_id</text>
-	<line x1="356" y1="474" x2="434" y2="474" stroke="#000000" stroke-width="1"/>
-	<text x="356" y="488.8" fill="#000000" font-family="Verdana" font-size="12">libelle</text>
+<!-- Association TARIF ARTICLE -->
+<line x1="398" y1="270" x2="80" y2="148" stroke="#4393c3" stroke-width="1"/>
+<text x="326" y="266.73389823572694" fill="#b2182b" font-family="Verdana" font-size="12">1,N</text>
+<line x1="80" y1="53" x2="80" y2="148" stroke="#4393c3" stroke-width="1"/>
+<text x="85.0" y="105" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-TARIF ARTICLE">
+	<path d="M 121 122 a 14 14 90 0 1 14 14 V 148 h -110 V 136 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 135 148.0 v 12 a 14 14 90 0 1 -14 14 H 39 a 14 14 90 0 1 -14 -14 V 148.0 H 110" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="25" y="122" width="110" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="25" y1="148" x2="135" y2="148" stroke="#4393c3" stroke-width="1"/>
+	<text x="32" y="140.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TARIF ARTICLE</text>
 </g>
 
 <!-- Entity TARIF -->
 <g id="entity-TARIF">
 	<g id="frame-TARIF">
-		<rect x="52" y="17" width="54" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="52" y="42.0" width="54" height="43" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="52" y="17" width="54" height="68" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="52" y1="42" x2="106" y2="42" stroke="#f46d43" stroke-width="1"/>
+		<rect x="50" y="18" width="60" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="50" y="44.0" width="60" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="50" y="18" width="60" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="50" y1="44" x2="110" y2="44" stroke="#d6604d" stroke-width="1"/>
 	</g>
-	<text x="60" y="34.7" fill="#000000" font-family="Verdana" font-size="12">TARIF</text>
-	<text x="57" y="59.8" fill="#000000" font-family="Verdana" font-size="12">tarif_id</text>
-	<line x1="57" y1="62" x2="101" y2="62" stroke="#000000" stroke-width="1"/>
-	<text x="57" y="76.8" fill="#000000" font-family="Verdana" font-size="12">prix</text>
-</g>
-
-<!-- Entity CDE_LIG -->
-<g id="entity-CDE_LIG">
-	<g id="frame-CDE_LIG">
-		<rect x="697" y="219" width="72" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="697" y="244.0" width="72" height="59" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="697" y="219" width="72" height="84" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="697" y1="244" x2="769" y2="244" stroke="#f46d43" stroke-width="1"/>
-	</g>
-	<text x="705" y="236.7" fill="#000000" font-family="Verdana" font-size="12">CDE_LIG</text>
-	<text x="702" y="261.8" fill="#000000" font-family="Verdana" font-size="12">cde_lig_id</text>
-	<line x1="702" y1="264" x2="764" y2="264" style="fill:none;stroke:#000000;stroke-width:1;stroke-dasharray:4;"/>
-	<text x="702" y="278.8" fill="#000000" font-family="Verdana" font-size="12">quantité</text>
-	<text x="702" y="295.8" fill="#000000" font-family="Verdana" font-size="12">prix</text>
+	<text x="61" y="36.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TARIF</text>
+	<text x="55" y="62.6" fill="#000000" font-family="Trebuchet MS" font-size="14">tarif_id</text>
+	<line x1="55" y1="65.0" x2="104" y2="65.0" stroke="#000000" stroke-width="1"/>
+	<text x="55" y="80.6" fill="#000000" font-family="Trebuchet MS" font-size="14">prix</text>
 </g>
 
 <!-- Entity PARTNER -->
 <g id="entity-PARTNER">
 	<g id="frame-PARTNER">
-		<rect x="358" y="9" width="74" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="358" y="34.0" width="74" height="59" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="358" y="9" width="74" height="84" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="358" y1="34" x2="432" y2="34" stroke="#f46d43" stroke-width="1"/>
+		<rect x="358" y="9" width="80" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="358" y="35.0" width="80" height="62" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="358" y="9" width="80" height="88" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="358" y1="35" x2="438" y2="35" stroke="#d6604d" stroke-width="1"/>
 	</g>
-	<text x="366" y="26.7" fill="#000000" font-family="Verdana" font-size="12">PARTNER</text>
-	<text x="363" y="51.8" fill="#000000" font-family="Verdana" font-size="12">partner_id</text>
-	<line x1="363" y1="54" x2="427" y2="54" stroke="#000000" stroke-width="1"/>
-	<text x="363" y="68.8" fill="#000000" font-family="Verdana" font-size="12">code</text>
-	<text x="363" y="85.8" fill="#000000" font-family="Verdana" font-size="12">nom</text>
+	<text x="368" y="27.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PARTNER</text>
+	<text x="363" y="53.6" fill="#000000" font-family="Trebuchet MS" font-size="14">partner_id</text>
+	<line x1="363" y1="56.0" x2="432" y2="56.0" stroke="#000000" stroke-width="1"/>
+	<text x="363" y="71.6" fill="#000000" font-family="Trebuchet MS" font-size="14">name</text>
+	<text x="363" y="89.6" fill="#000000" font-family="Trebuchet MS" font-size="14">rais_soc</text>
+</g>
+
+<!-- Entity DI_ENLEVEMENT -->
+<g id="entity-DI_ENLEVEMENT">
+	<g id="frame-DI_ENLEVEMENT">
+		<rect x="679" y="443" width="130" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="679" y="469.0" width="130" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="679" y="443" width="130" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="679" y1="469" x2="809" y2="469" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="691" y="461.6" fill="#000000" font-family="Trebuchet MS" font-size="14">DI_ENLEVEMENT</text>
+	<text x="684" y="487.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_emlevement_id</text>
+	<line x1="684" y1="490.0" x2="804" y2="490.0" stroke="#000000" stroke-width="1"/>
+	<text x="684" y="505.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
+</g>
+
+<!-- Entity DI_EMBALLAGE -->
+<g id="entity-DI_EMBALLAGE">
+	<g id="frame-DI_EMBALLAGE">
+		<rect x="504" y="443" width="118" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="504" y="469.0" width="118" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="504" y="443" width="118" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="504" y1="469" x2="622" y2="469" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="515" y="461.6" fill="#000000" font-family="Trebuchet MS" font-size="14">DI_EMBALLAGE</text>
+	<text x="509" y="487.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_emballage_id</text>
+	<line x1="509" y1="490.0" x2="616" y2="490.0" stroke="#000000" stroke-width="1"/>
+	<text x="509" y="505.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
+</g>
+
+<!-- Entity CDE_LIG -->
+<g id="entity-CDE_LIG">
+	<g id="frame-CDE_LIG">
+		<rect x="705" y="226" width="78" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="705" y="252.0" width="78" height="62" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="705" y="226" width="78" height="88" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="705" y1="252" x2="783" y2="252" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="716" y="244.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CDE_LIG</text>
+	<text x="710" y="270.6" fill="#000000" font-family="Trebuchet MS" font-size="14">cde_lig_id</text>
+	<line x1="710" y1="273.0" x2="777" y2="273.0" style="fill:none;stroke:#000000;stroke-width:1;stroke-dasharray:4;"/>
+	<text x="710" y="288.6" fill="#000000" font-family="Trebuchet MS" font-size="14">quantité</text>
+	<text x="710" y="306.6" fill="#000000" font-family="Trebuchet MS" font-size="14">prix</text>
+</g>
+
+<!-- Entity DI_CALIBRE -->
+<g id="entity-DI_CALIBRE">
+	<g id="frame-DI_CALIBRE">
+		<rect x="350" y="443" width="96" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="350" y="469.0" width="96" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="350" y="443" width="96" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="350" y1="469" x2="446" y2="469" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="361" y="461.6" fill="#000000" font-family="Trebuchet MS" font-size="14">DI_CALIBRE</text>
+	<text x="355" y="487.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_calibre_id</text>
+	<line x1="355" y1="490.0" x2="440" y2="490.0" stroke="#000000" stroke-width="1"/>
+	<text x="355" y="505.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
+</g>
+
+<!-- Entity DI_CATEGORIE -->
+<g id="entity-DI_CATEGORIE">
+	<g id="frame-DI_CATEGORIE">
+		<rect x="24" y="443" width="112" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="24" y="469.0" width="112" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="24" y="443" width="112" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="24" y1="469" x2="136" y2="469" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="33" y="461.6" fill="#000000" font-family="Trebuchet MS" font-size="14">DI_CATEGORIE</text>
+	<text x="29" y="487.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_categorie_id</text>
+	<line x1="29" y1="490.0" x2="130" y2="490.0" stroke="#000000" stroke-width="1"/>
+	<text x="29" y="505.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
+</g>
+
+<!-- Entity DI_ORIGINE -->
+<g id="entity-DI_ORIGINE">
+	<g id="frame-DI_ORIGINE">
+		<rect x="196" y="443" width="96" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="196" y="469.0" width="96" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="196" y="443" width="96" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="196" y1="469" x2="292" y2="469" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="207" y="461.6" fill="#000000" font-family="Trebuchet MS" font-size="14">DI_ORIGINE</text>
+	<text x="201" y="487.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_origine_id</text>
+	<line x1="201" y1="490.0" x2="286" y2="490.0" stroke="#000000" stroke-width="1"/>
+	<text x="201" y="505.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
 </g>
 
 <!-- Entity ARTICLE -->
 <g id="entity-ARTICLE">
 	<g id="frame-ARTICLE">
-		<rect x="352" y="193" width="86" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="352" y="218.0" width="86" height="111" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="352" y="193" width="86" height="136" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="352" y1="218" x2="438" y2="218" stroke="#f46d43" stroke-width="1"/>
+		<rect x="353" y="199" width="90" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="353" y="225.0" width="90" height="116" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="353" y="199" width="90" height="142" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="353" y1="225" x2="443" y2="225" stroke="#d6604d" stroke-width="1"/>
 	</g>
-	<text x="368" y="210.7" fill="#000000" font-family="Verdana" font-size="12">ARTICLE</text>
-	<text x="357" y="235.7" fill="#000000" font-family="Verdana" font-size="12">article_id</text>
-	<line x1="357" y1="238" x2="413" y2="238" stroke="#000000" stroke-width="1"/>
-	<text x="357" y="252.7" fill="#000000" font-family="Verdana" font-size="12">code</text>
-	<text x="357" y="269.8" fill="#000000" font-family="Verdana" font-size="12">designation</text>
-	<text x="357" y="286.8" fill="#000000" font-family="Verdana" font-size="12">di_lavage</text>
-	<text x="357" y="303.8" fill="#000000" font-family="Verdana" font-size="12">di_prixmin</text>
-	<text x="357" y="320.8" fill="#000000" font-family="Verdana" font-size="12">di_prix_max</text>
+	<text x="371" y="217.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ARTICLE</text>
+	<text x="358" y="243.6" fill="#000000" font-family="Trebuchet MS" font-size="14">article_id</text>
+	<line x1="358" y1="246.0" x2="421" y2="246.0" stroke="#000000" stroke-width="1"/>
+	<text x="358" y="261.6" fill="#000000" font-family="Trebuchet MS" font-size="14">name</text>
+	<text x="358" y="279.6" fill="#000000" font-family="Trebuchet MS" font-size="14">designation</text>
+	<text x="358" y="297.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_lavage</text>
+	<text x="358" y="315.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_prixmin</text>
+	<text x="358" y="333.6" fill="#000000" font-family="Trebuchet MS" font-size="14">di_prix_max</text>
 </g>
 
 <!-- Entity CDE_ENT -->
 <g id="entity-CDE_ENT">
 	<g id="frame-CDE_ENT">
-		<rect x="694" y="9" width="78" height="25" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
-		<rect x="694" y="34.0" width="78" height="59" fill="#fee090" stroke="#fee090" stroke-width="0"/>
-		<rect x="694" y="9" width="78" height="84" fill="none" stroke="#f46d43" stroke-width="2"/>
-		<line x1="694" y1="34" x2="772" y2="34" stroke="#f46d43" stroke-width="1"/>
+		<rect x="702" y="9" width="84" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="702" y="35.0" width="84" height="62" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="702" y="9" width="84" height="88" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="702" y1="35" x2="786" y2="35" stroke="#d6604d" stroke-width="1"/>
 	</g>
-	<text x="704" y="26.7" fill="#000000" font-family="Verdana" font-size="12">CDE_ENT</text>
-	<text x="699" y="51.8" fill="#000000" font-family="Verdana" font-size="12">cde_ent_id</text>
-	<line x1="699" y1="54" x2="766" y2="54" style="fill:none;stroke:#000000;stroke-width:1;stroke-dasharray:4;"/>
-	<text x="699" y="68.8" fill="#000000" font-family="Verdana" font-size="12">num_cde</text>
-	<text x="699" y="85.8" fill="#000000" font-family="Verdana" font-size="12">adresse</text>
+	<text x="714" y="27.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CDE_ENT</text>
+	<text x="707" y="53.6" fill="#000000" font-family="Trebuchet MS" font-size="14">cde_ent_id</text>
+	<line x1="707" y1="56.0" x2="780" y2="56.0" style="fill:none;stroke:#000000;stroke-width:1;stroke-dasharray:4;"/>
+	<text x="707" y="71.6" fill="#000000" font-family="Trebuchet MS" font-size="14">num_cde</text>
+	<text x="707" y="89.6" fill="#000000" font-family="Trebuchet MS" font-size="14">adresse</text>
 </g>
 
 <!-- Annotations -->
 <script type="text/ecmascript">
 <![CDATA[
 	function show(evt, text) {
-		var pos = (evt.target.getAttribute("y") < 461) ? "bottom" : "top"
-		var annotation = document.getElementById(pos + "_annotation_yELmLn0v")
+		var pos = (evt.target.getAttribute("y") < 477) ? "bottom" : "top"
+		var annotation = document.getElementById(pos + "_annotation_3m8vkbIv")
 		annotation.textContent = text
 		annotation.setAttributeNS(null, "visibility", "visible");
-		document.getElementById(pos + "_overlay_yELmLn0v").setAttributeNS(null, "visibility", "visible");
+		document.getElementById(pos + "_overlay_3m8vkbIv").setAttributeNS(null, "visibility", "visible");
 	}
 	function hide(evt) {
-		document.getElementById("top_annotation_yELmLn0v").setAttributeNS(null, "visibility", "hidden");
-		document.getElementById("top_overlay_yELmLn0v").setAttributeNS(null, "visibility", "hidden");
-		document.getElementById("bottom_annotation_yELmLn0v").setAttributeNS(null, "visibility", "hidden");
-		document.getElementById("bottom_overlay_yELmLn0v").setAttributeNS(null, "visibility", "hidden");
+		document.getElementById("top_annotation_3m8vkbIv").setAttributeNS(null, "visibility", "hidden");
+		document.getElementById("top_overlay_3m8vkbIv").setAttributeNS(null, "visibility", "hidden");
+		document.getElementById("bottom_annotation_3m8vkbIv").setAttributeNS(null, "visibility", "hidden");
+		document.getElementById("bottom_overlay_3m8vkbIv").setAttributeNS(null, "visibility", "hidden");
 	}
 ]]>
 </script>
-<rect id="top_overlay_yELmLn0v" x="0" y="0" width="816" height="40" fill="#4575b4" stroke-width="0" opacity="0.9" visibility="hidden"/>
-<text id="top_annotation_yELmLn0v" text-anchor="middle" x="408.0" y="24" fill="#ffffbf" font-family="Verdana" font-size="14" visibility="hidden"></text>
-<rect id="bottom_overlay_yELmLn0v" x="0" y="466" width="816" height="40" fill="#4575b4" stroke-width="0" opacity="0.9" visibility="hidden"/>
-<text id="bottom_annotation_yELmLn0v" text-anchor="middle" x="408.0" y="490" fill="#ffffbf" font-family="Verdana" font-size="14" visibility="hidden"></text>
+<rect id="top_overlay_3m8vkbIv" x="0" y="0" width="830" height="40" fill="#2166ac" stroke-width="0" opacity="0.9" visibility="hidden"/>
+<text id="top_annotation_3m8vkbIv" text-anchor="middle" x="415.0" y="24" fill="#f7f7f7" font-family="Trebuchet MS" font-size="14" visibility="hidden"></text>
+<rect id="bottom_overlay_3m8vkbIv" x="0" y="482" width="830" height="40" fill="#2166ac" stroke-width="0" opacity="0.9" visibility="hidden"/>
+<text id="bottom_annotation_3m8vkbIv" text-anchor="middle" x="415.0" y="506" fill="#f7f7f7" font-family="Trebuchet MS" font-size="14" visibility="hidden"></text>
 </svg>
