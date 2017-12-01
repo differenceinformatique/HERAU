@@ -6,7 +6,7 @@ class DiInheritedProduct(models.Model):
     
     default_code = fields.Char(
         'Internal Reference', compute='_compute_default_code',
-        inverse='_set_default_code', store=True , required=True)
+        inverse='_set_default_code', store=True, required=True)
     
     di_lavage = fields.Boolean(string="Lavage", default=False)
     di_prixmin = fields.Float(string="Prix minimum")
@@ -33,3 +33,4 @@ class DiInheritedProduct(models.Model):
     
     di_producteur_id = fields.Many2one("res.partner",string="Producteur")
     di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')    
+    
