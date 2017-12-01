@@ -121,9 +121,25 @@
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@class='o_kanban_image']" position="after">
-                    <field name="di_des" style="font-style: oblique;"/>                    
+                    <field name="di_des" style="font-style: oblique;"/>
                 </xpath>
             </field>
         </record>
+        <record id="di_product_list" model="ir.ui.view">
+            <field name="name">di.product.list</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="replace">
+                    <field name="name" string="Code"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="di_des"/>
+                </xpath>
+            </field>
+        </record>
+       
+        
     </data>
 </odoo>
