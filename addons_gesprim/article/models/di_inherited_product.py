@@ -4,6 +4,10 @@ from odoo import models, fields, api
 class DiInheritedProduct(models.Model):
     _inherit = "product.template"
     
+    default_code = fields.Char(
+        'Internal Reference', compute='_compute_default_code',
+        inverse='_set_default_code', store=True , required=True)
+    
     di_lavage = fields.Boolean(string="Lavage", default=False)
     di_prixmin = fields.Float(string="Prix minimum")
     di_prixmax = fields.Float(string="Prix maximum")

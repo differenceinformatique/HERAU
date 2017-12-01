@@ -78,6 +78,9 @@
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
+                 <xpath expr="/form/sheet/notebook/page/group/group/field[@name='default_code']" position="replace">
+                    
+                </xpath>
                 <xpath expr="//field[@name='list_price']"
                         position="after">
                     
@@ -101,20 +104,28 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-                <xpath expr="//div[@name='options']" position="before">
+                <!-- <xpath expr="//div[@name='options']" position="before">
                     <label class="oe_edit_only" for="di_des"
                         string="Désignation" style="font-style: oblique;"/>
                     <h1>
                         <field name="di_des" placeholder="Désignation" style="font-style: oblique;"/>
                     </h1>
+                </xpath> -->
+                
+                 <xpath expr="//label[@for='name']" position="before">
+                    <label class="oe_edit_only" for="default_code" string="Code article"/>
+                    <h1>                        
+                        <field name="default_code" placeholder="Code article" />                        
+                    </h1>                 
                 </xpath>
                 <xpath expr="//label[@for='name']" position="replace">
-                    <label class="oe_edit_only" for="name"
-                        string="Code article" style="font-style: oblique;"/>
+                    <label class="oe_edit_only" for="name" string="Désignation" style="font-style: oblique;"/>
                 </xpath>
+               
+                
             </field>
         </record>
-        <record id="di_product_kanban" model="ir.ui.view">
+        <!-- <record id="di_product_kanban" model="ir.ui.view">
             <field name="name">di.product.kanban</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_kanban_view"/>
@@ -124,7 +135,7 @@
                     <field name="di_des" style="font-style: oblique;"/>
                 </xpath>
             </field>
-        </record>
+        </record> -->
         <record id="di_product_list" model="ir.ui.view">
             <field name="name">di.product.list</field>
             <field name="model">product.template</field>
@@ -132,11 +143,14 @@
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="replace">
-                    <field name="name" string="Code"/>
+                    <field name="name" string="Désignation"/>
                 </xpath>
-                <xpath expr="//field[@name='name']" position="after">
+                <xpath expr="//field[@name='default_code']" position="replace">
+                    <field name="default_code" string="Code"/>
+                </xpath> 
+                <!-- <xpath expr="//field[@name='name']" position="after">
                     <field name="di_des"/>
-                </xpath>
+                </xpath> -->
             </field>
         </record>
     </data>
