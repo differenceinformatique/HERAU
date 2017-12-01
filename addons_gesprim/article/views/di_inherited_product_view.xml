@@ -11,23 +11,20 @@
                     <page name="specifs" string="Spécifiques" style="font-style: oblique;">
                         <group col="12">
                             <group colspan="8" string="Paramétrage par défaut">
-                                <!-- 
-                            On ne peut pas se contenter de mettre <field name="di_categorie_id" /> car sinon on ne peut pas modifier le style du label pour le mettre
-                            en italique ni ajouter la désignation sur la même ligne.
-                            -->
+                                
+                            <!-- On ne peut pas se contenter de mettre <field
+                                    name="di_categorie_id"/> car sinon on ne peut pas modifier le style du label pour le mettre
+                            en italique ni ajouter la désignation sur la même ligne. -->
+                           
                                 <label for="di_categorie_id" string="Catégorie"/>
                                 <div>
                                     <field class="oe_inline" name="di_categorie_id"/>
-                                    <field class="oe_inline"
-                                    name="di_categorie_di_des"
-                                    nolabel="1" readonly="1" style="margin-left:10px;"/>
+                                    <field class="oe_inline" name="di_categorie_di_des" nolabel="1" readonly="1" style="margin-left:10px;"/>
                                 </div>
                                 <label for="di_origine_id" string="Origine"/>
                                 <div>
                                     <field class="oe_inline" name="di_origine_id"/>
-                                    <field class="oe_inline"
-                                    name="di_origine_di_des"
-                                    nolabel="1" readonly="1" style="margin-left:10px"/>
+                                    <field class="oe_inline" name="di_origine_di_des" nolabel="1" readonly="1" style="margin-left:10px"/>
                                 </div>
                                 <label for="di_marque_id" string="Marque"/>
                                 <div>
@@ -81,12 +78,15 @@
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='list_price']" position="after">
-                    <!-- 
-                On ne peut pas se contenter de mettre <field name="di_prixmin" /> car sinon on ne peut pas modifier le style du label pour le mettre
-                en italique 
-                -->
-                    <label for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>
+                <xpath expr="//field[@name='list_price']"
+                        position="after">
+                    
+                <!-- On ne peut pas se contenter de mettre <field
+                        name="di_prixmin"/> car sinon on ne peut pas modifier le style du label pour le mettre
+                en italique  -->
+               
+                    <label
+                        for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>
                     <field class="oe_inline" name="di_prixmin"
                         nolabel="1" style="font-style: oblique;margin-left:5px;"/>
                     <label for="di_prixmax" string="Prix maximum" style="font-style: oblique;"/>
@@ -139,7 +139,5 @@
                 </xpath>
             </field>
         </record>
-       
-        
     </data>
 </odoo>
