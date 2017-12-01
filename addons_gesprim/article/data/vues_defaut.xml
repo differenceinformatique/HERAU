@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>   
-<data noupdate="1">     
-     <record forcecreate="1" id="di_action_product_tree_view" model="ir.actions.act_window.view">
+    <data noupdate="1">     
+        <record forcecreate="1"  id="di_action_product_tree_view" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
             <field name="view_mode">tree</field>
-            <field name="view_id" >342</field>
-            <field name="act_window_id">118</field>
+            <field name="view_id" ref="product.product_template_tree_view"/>
+            <field name="act_window_id" ref="product.product_template_action" />
         </record>
-         <record forcecreate="1" id="di_action_product_kanban_view" model="ir.actions.act_window.view">
+        <record forcecreate="1"  id="di_action_product_kanban_view" model="ir.actions.act_window.view">
             <field eval="2" name="sequence"/>
             <field name="view_mode">kanban</field>
-            <field name="view_id" >344</field>
-            <field name="act_window_id">118</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="act_window_id" ref="product.product_template_action"/>
         </record>
-         <record forcecreate="1" id="di_action_product_form_view" model="ir.actions.act_window.view">
+        <record forcecreate="1"  id="di_action_product_form_view" model="ir.actions.act_window.view">
             <field eval="3" name="sequence"/>
             <field name="view_mode">form</field>
-            <field name="view_id" >343</field>
-            <field name="act_window_id">118</field>
+            <field name="view_id" ref="product.product_template_only_form_view"/>
+            <field name="act_window_id" ref="product.product_template_action"/>
         </record>
-        </data>
+    </data>
 </odoo>

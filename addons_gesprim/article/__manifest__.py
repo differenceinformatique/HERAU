@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        #"data/vues_defaut.xml",
+        "data/vues_defaut.xml",
         "views/di_inherited_product_view.xml",
         # 'security/ir.model.access.csv',
       
