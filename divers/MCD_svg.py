@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# Généré par Mocodo 2.3.7 le Thu, 30 Nov 2017 17:16:46
+# Généré par Mocodo 2.3.7 le Thu, 30 Nov 2017 17:31:17
 
 from __future__ import division
 from math import hypot
@@ -24,7 +24,7 @@ cx = {
     u"TIERSADR FAC"     :  194,
     u"TEXTE EDITION"    :  350,
     u"PIECEADR FAC"     :  522,
-    u"PASSE"            :  522,
+    u"LIEN_PIECES"      :  522,
     u"TARIF"            :   60,
     u"PARTNER"          :  194,
     u"PARAM EMB/PAL"    :  350,
@@ -59,7 +59,7 @@ cy = {
     u"TIERSADR FAC"     :  402,
     u"TEXTE EDITION"    :  402,
     u"PIECEADR FAC"     :  402,
-    u"PASSE"            :  480,
+    u"LIEN_PIECES"      :  480,
     u"TARIF"            :  549,
     u"PARTNER"          :  549,
     u"PARAM EMB/PAL"    :  549,
@@ -103,8 +103,8 @@ shift = {
     u"TEXTE EDITION,PARTNER"       :    0,
     u"PIECEADR FAC,ADRESSE"        :    0,
     u"PIECEADR FAC,PIECE_ENT"      :    0,
-    u"PASSE,PIECE_ENT"             :    0,
-    u"PASSE,PARTNER"               :    0,
+    u"LIEN_PIECES,PIECE_ENT"       :    0,
+    u"LIEN_PIECES,PARTNER"         :    0,
     u"TARIF,ARTICLE"               :    0,
     u"TARIF,LIBELLE TARIF"         :    0,
     u"TARIF,PARTNER"               :    0,
@@ -307,28 +307,6 @@ lines += '\n\n<svg width="%s" height="%s" view_box="0 0 %s %s"\nxmlns="http://ww
 lines += u'\\n\\n<desc>Généré par Mocodo 2.3.7 le %s</desc>' % time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 lines += '\n\n<rect id="frame" x="0" y="0" width="%s" height="%s" fill="%s" stroke="none" stroke-width="0"/>' % (width,height,colors['background_color'] if colors['background_color'] else "none")
 
-lines += u"""\n\n<!-- Association EMBALLAGE DEFAUT -->"""
-(x,y) = (cx[u"EMBALLAGE DEFAUT"],cy[u"EMBALLAGE DEFAUT"])
-(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
-leg=straight_leg_factory(ex,ey,43,71,x,y,72,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"EMBALLAGE DEFAUT,ARTICLE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"EMBALLAGE"],cy[u"EMBALLAGE"])
-leg=straight_leg_factory(ex,ey,68,35,x,y,72,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"EMBALLAGE DEFAUT,EMBALLAGE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-EMBALLAGE DEFAUT">""" % {}
-path = upper_round_rect(-72+x,-26+y,144,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-72+x,0.0+y,144,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="144" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -72+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -72+x, 'y0': 0+y, 'x1': 72+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">EMBALLAGE DEFAUT</text>""" % {'x': -65+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
 lines += u"""\n\n<!-- Association TIERSADR BL -->"""
 (x,y) = (cx[u"TIERSADR BL"],cy[u"TIERSADR BL"])
 (ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
@@ -350,284 +328,6 @@ lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="102" height="52" fill="%(color)
 lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -51+x, 'y0': 0+y, 'x1': 51+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TIERSADR BL</text>""" % {'x': -41+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -44+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association TEXTE ENTETE -->"""
-(x,y) = (cx[u"TEXTE ENTETE"],cy[u"TEXTE ENTETE"])
-(ex,ey) = (cx[u"TEXTE"],cy[u"TEXTE"])
-leg=straight_leg_factory(ex,ey,33,35,x,y,54,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE ENTETE,TEXTE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
-leg=straight_leg_factory(ex,ey,50,44,x,y,54,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE ENTETE,PIECE_ENT"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-TEXTE ENTETE">""" % {}
-path = upper_round_rect(-54+x,-26+y,108,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-54+x,0.0+y,108,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="108" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -54+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -54+x, 'y0': 0+y, 'x1': 54+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TEXTE ENTETE</text>""" % {'x': -47+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association ORIGINE DEFAUT -->"""
-(x,y) = (cx[u"ORIGINE DEFAUT"],cy[u"ORIGINE DEFAUT"])
-(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
-leg=straight_leg_factory(ex,ey,43,71,x,y,61,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"ORIGINE DEFAUT,ARTICLE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"ORIGINE"],cy[u"ORIGINE"])
-leg=straight_leg_factory(ex,ey,38,35,x,y,61,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"ORIGINE DEFAUT,ORIGINE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-ORIGINE DEFAUT">""" % {}
-path = upper_round_rect(-61+x,-26+y,122,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-61+x,0.0+y,122,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="122" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -61+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -61+x, 'y0': 0+y, 'x1': 61+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ORIGINE DEFAUT</text>""" % {'x': -54+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association PROD DEFAUT -->"""
-(x,y) = (cx[u"PROD DEFAUT"],cy[u"PROD DEFAUT"])
-(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
-leg=straight_leg_factory(ex,ey,43,71,x,y,52,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PROD DEFAUT,ARTICLE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
-leg=straight_leg_factory(ex,ey,40,44,x,y,52,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PROD DEFAUT,PARTNER"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-PROD DEFAUT">""" % {}
-path = upper_round_rect(-52+x,-26+y,104,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-52+x,0.0+y,104,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="104" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -52+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -52+x, 'y0': 0+y, 'x1': 52+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PROD DEFAUT</text>""" % {'x': -45+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association PIECEADR DEV -->"""
-(x,y) = (cx[u"PIECEADR DEV"],cy[u"PIECEADR DEV"])
-(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
-leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR DEV,ADRESSE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
-leg=straight_leg_factory(ex,ey,50,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR DEV,PIECE_ENT"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-PIECEADR DEV">""" % {}
-path = upper_round_rect(-53+x,-26+y,106,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-53+x,0.0+y,106,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR DEV</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association TIERSADR FAC -->"""
-(x,y) = (cx[u"TIERSADR FAC"],cy[u"TIERSADR FAC"])
-(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
-leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR FAC,ADRESSE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
-leg=straight_leg_factory(ex,ey,40,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR FAC,PARTNER"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-TIERSADR FAC">""" % {}
-path = upper_round_rect(-53+x,-26+y,106,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-53+x,0.0+y,106,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TIERSADR FAC</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -46+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association LISTE ADR -->"""
-(x,y) = (cx[u"LISTE ADR"],cy[u"LISTE ADR"])
-(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
-leg=straight_leg_factory(ex,ey,46,89,x,y,51,26,22+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"LISTE ADR,ADRESSE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
-leg=straight_leg_factory(ex,ey,40,44,x,y,51,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"LISTE ADR,PARTNER"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-LISTE ADR">""" % {}
-path = upper_round_rect(-51+x,-26+y,102,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-51+x,0.0+y,102,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="102" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -51+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -51+x, 'y0': 0+y, 'x1': 51+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">LISTE ADR</text>""" % {'x': -33+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -44+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association CALIBRE DEFAUT -->"""
-(x,y) = (cx[u"CALIBRE DEFAUT"],cy[u"CALIBRE DEFAUT"])
-(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
-leg=straight_leg_factory(ex,ey,43,71,x,y,61,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"CALIBRE DEFAUT,ARTICLE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"CALIBRE"],cy[u"CALIBRE"])
-leg=straight_leg_factory(ex,ey,38,35,x,y,61,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"CALIBRE DEFAUT,CALIBRE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-CALIBRE DEFAUT">""" % {}
-path = upper_round_rect(-61+x,-26+y,122,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-61+x,0.0+y,122,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="122" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -61+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -61+x, 'y0': 0+y, 'x1': 61+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">CALIBRE DEFAUT</text>""" % {'x': -54+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association PIECEADR BL -->"""
-(x,y) = (cx[u"PIECEADR BL"],cy[u"PIECEADR BL"])
-(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
-leg=straight_leg_factory(ex,ey,46,89,x,y,48,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR BL,ADRESSE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
-leg=straight_leg_factory(ex,ey,50,44,x,y,48,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR BL,PIECE_ENT"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-PIECEADR BL">""" % {}
-path = upper_round_rect(-48+x,-26+y,96,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-48+x,0.0+y,96,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="96" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -48+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -48+x, 'y0': 0+y, 'x1': 48+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR BL</text>""" % {'x': -41+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association TARIF -->"""
-(x,y) = (cx[u"TARIF"],cy[u"TARIF"])
-(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
-leg=straight_leg_factory(ex,ey,43,71,x,y,41,44,22+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(True,shift[u"TARIF,ARTICLE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"LIBELLE TARIF"],cy[u"LIBELLE TARIF"])
-leg=straight_leg_factory(ex,ey,51,44,x,y,41,44,22+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TARIF,LIBELLE TARIF"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
-leg=straight_leg_factory(ex,ey,40,44,x,y,41,44,22+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TARIF,PARTNER"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-TARIF">""" % {}
-path = upper_round_rect(-41+x,-44+y,82,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-41+x,-18.0+y,82,62,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="82" height="88" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -41+x, 'y': -44+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -41+x, 'y0': -18+y, 'x1': 41+x, 'y1': -18+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TARIF</text>""" % {'x': -19+x, 'y': -25.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">tarif_id</text>""" % {'x': -34+x, 'y': 0.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_tarif</text>""" % {'x': -34+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">prix</text>""" % {'x': -34+x, 'y': 36.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association CATEGORIE DEFAUT -->"""
-(x,y) = (cx[u"CATEGORIE DEFAUT"],cy[u"CATEGORIE DEFAUT"])
-(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
-leg=straight_leg_factory(ex,ey,43,71,x,y,71,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"CATEGORIE DEFAUT,ARTICLE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"CATEGORIE"],cy[u"CATEGORIE"])
-leg=straight_leg_factory(ex,ey,46,35,x,y,71,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"CATEGORIE DEFAUT,CATEGORIE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-CATEGORIE DEFAUT">""" % {}
-path = upper_round_rect(-71+x,-26+y,142,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-71+x,0.0+y,142,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="142" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -71+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -71+x, 'y0': 0+y, 'x1': 71+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">CATEGORIE DEFAUT</text>""" % {'x': -64+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association TEXTE EDITION -->"""
-(x,y) = (cx[u"TEXTE EDITION"],cy[u"TEXTE EDITION"])
-(ex,ey) = (cx[u"TEXTE"],cy[u"TEXTE"])
-leg=straight_leg_factory(ex,ey,33,35,x,y,56,53,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE EDITION,TEXTE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
-leg=straight_leg_factory(ex,ey,40,44,x,y,56,53,22+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE EDITION,PARTNER"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-TEXTE EDITION">""" % {}
-path = upper_round_rect(-56+x,-53+y,112,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-56+x,-27.0+y,112,80,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="112" height="106" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -56+x, 'y': -53+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -56+x, 'y0': -27+y, 'x1': 56+x, 'y1': -27+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TEXTE EDITION</text>""" % {'x': -49+x, 'y': -34.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affDevis</text>""" % {'x': -49+x, 'y': -8.4+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affCde</text>""" % {'x': -49+x, 'y': 9.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affBL</text>""" % {'x': -49+x, 'y': 27.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affFac</text>""" % {'x': -49+x, 'y': 45.6+y, 'text_color': colors['association_attribute_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Association PASSE -->"""
-(x,y) = (cx[u"PASSE"],cy[u"PASSE"])
-(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
-leg=straight_leg_factory(ex,ey,50,44,x,y,27,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PASSE,PIECE_ENT"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
-leg=straight_leg_factory(ex,ey,40,44,x,y,27,26,22+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PASSE,PARTNER"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-PASSE">""" % {}
-path = upper_round_rect(-27+x,-26+y,54,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-27+x,0.0+y,54,26,14)
-lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="54" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -27+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -27+x, 'y0': 0+y, 'x1': 27+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PASSE</text>""" % {'x': -20+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Association EST COMPOSE -->"""
@@ -681,71 +381,70 @@ lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Tre
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">montant</text>""" % {'x': -45+x, 'y': 45.6+y, 'text_color': colors['association_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Association ENLEVEMENT DEFAUT -->"""
-(x,y) = (cx[u"ENLEVEMENT DEFAUT"],cy[u"ENLEVEMENT DEFAUT"])
+lines += u"""\n\n<!-- Association CATEGORIE DEFAUT -->"""
+(x,y) = (cx[u"CATEGORIE DEFAUT"],cy[u"CATEGORIE DEFAUT"])
 (ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
-leg=straight_leg_factory(ex,ey,43,71,x,y,77,26,21+2*card_margin,15+2*card_margin)
+leg=straight_leg_factory(ex,ey,43,71,x,y,71,26,21+2*card_margin,15+2*card_margin)
 lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"ENLEVEMENT DEFAUT,ARTICLE"]))
+(tx,ty)=offset(*leg.card_pos(False,shift[u"CATEGORIE DEFAUT,ARTICLE"]))
 lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"ENLEVEMENT"],cy[u"ENLEVEMENT"])
-leg=straight_leg_factory(ex,ey,56,35,x,y,77,26,21+2*card_margin,15+2*card_margin)
+(ex,ey) = (cx[u"CATEGORIE"],cy[u"CATEGORIE"])
+leg=straight_leg_factory(ex,ey,46,35,x,y,71,26,21+2*card_margin,15+2*card_margin)
 lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"ENLEVEMENT DEFAUT,ENLEVEMENT"]))
+(tx,ty)=offset(*leg.card_pos(False,shift[u"CATEGORIE DEFAUT,CATEGORIE"]))
 lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-ENLEVEMENT DEFAUT">""" % {}
-path = upper_round_rect(-77+x,-26+y,154,26,14)
+lines += u"""\n<g id="association-CATEGORIE DEFAUT">""" % {}
+path = upper_round_rect(-71+x,-26+y,142,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-77+x,0.0+y,154,26,14)
+path = lower_round_rect(-71+x,0.0+y,142,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="154" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -77+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -77+x, 'y0': 0+y, 'x1': 77+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ENLEVEMENT DEFAUT</text>""" % {'x': -70+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="142" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -71+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -71+x, 'y0': 0+y, 'x1': 71+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">CATEGORIE DEFAUT</text>""" % {'x': -64+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Association TIERSADR DEV -->"""
-(x,y) = (cx[u"TIERSADR DEV"],cy[u"TIERSADR DEV"])
-(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
-leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n\n<!-- Association EMBALLAGE DEFAUT -->"""
+(x,y) = (cx[u"EMBALLAGE DEFAUT"],cy[u"EMBALLAGE DEFAUT"])
+(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
+leg=straight_leg_factory(ex,ey,43,71,x,y,72,26,21+2*card_margin,15+2*card_margin)
 lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR DEV,ADRESSE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
-leg=straight_leg_factory(ex,ey,40,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR DEV,PARTNER"]))
+(tx,ty)=offset(*leg.card_pos(False,shift[u"EMBALLAGE DEFAUT,ARTICLE"]))
 lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-TIERSADR DEV">""" % {}
-path = upper_round_rect(-53+x,-26+y,106,26,14)
+(ex,ey) = (cx[u"EMBALLAGE"],cy[u"EMBALLAGE"])
+leg=straight_leg_factory(ex,ey,68,35,x,y,72,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"EMBALLAGE DEFAUT,EMBALLAGE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-EMBALLAGE DEFAUT">""" % {}
+path = upper_round_rect(-72+x,-26+y,144,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-53+x,0.0+y,106,26,14)
+path = lower_round_rect(-72+x,0.0+y,144,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TIERSADR DEV</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -46+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="144" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -72+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -72+x, 'y0': 0+y, 'x1': 72+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">EMBALLAGE DEFAUT</text>""" % {'x': -65+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Association PIECEADR CDE -->"""
-(x,y) = (cx[u"PIECEADR CDE"],cy[u"PIECEADR CDE"])
-(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
-leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
-lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR CDE,ADRESSE"]))
-lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n\n<!-- Association LIEN_PIECES -->"""
+(x,y) = (cx[u"LIEN_PIECES"],cy[u"LIEN_PIECES"])
 (ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
-leg=straight_leg_factory(ex,ey,50,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
+leg=straight_leg_factory(ex,ey,50,44,x,y,47,26,21+2*card_margin,15+2*card_margin)
 lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR CDE,PIECE_ENT"]))
+(tx,ty)=offset(*leg.card_pos(False,shift[u"LIEN_PIECES,PIECE_ENT"]))
 lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-PIECEADR CDE">""" % {}
-path = upper_round_rect(-53+x,-26+y,106,26,14)
+(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
+leg=straight_leg_factory(ex,ey,40,44,x,y,47,26,22+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"LIEN_PIECES,PARTNER"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-LIEN_PIECES">""" % {}
+path = upper_round_rect(-47+x,-26+y,94,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
-path = lower_round_rect(-53+x,0.0+y,106,26,14)
+path = lower_round_rect(-47+x,0.0+y,94,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
-lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR CDE</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="94" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -47+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -47+x, 'y0': 0+y, 'x1': 47+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">LIEN_PIECES</text>""" % {'x': -40+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Association PARAM EMB/PAL -->"""
@@ -775,6 +474,28 @@ lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PARAM EMB/PAL</text>""" % {'x': -53+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
 lines += u"""\n</g>""" % {}
 
+lines += u"""\n\n<!-- Association CALIBRE DEFAUT -->"""
+(x,y) = (cx[u"CALIBRE DEFAUT"],cy[u"CALIBRE DEFAUT"])
+(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
+leg=straight_leg_factory(ex,ey,43,71,x,y,61,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"CALIBRE DEFAUT,ARTICLE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"CALIBRE"],cy[u"CALIBRE"])
+leg=straight_leg_factory(ex,ey,38,35,x,y,61,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"CALIBRE DEFAUT,CALIBRE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-CALIBRE DEFAUT">""" % {}
+path = upper_round_rect(-61+x,-26+y,122,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-61+x,0.0+y,122,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="122" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -61+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -61+x, 'y0': 0+y, 'x1': 61+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">CALIBRE DEFAUT</text>""" % {'x': -54+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
 lines += u"""\n\n<!-- Association TEXTE PIED -->"""
 (x,y) = (cx[u"TEXTE PIED"],cy[u"TEXTE PIED"])
 (ex,ey) = (cx[u"TEXTE"],cy[u"TEXTE"])
@@ -795,6 +516,241 @@ lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" st
 lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="88" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -44+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
 lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -44+x, 'y0': 0+y, 'x1': 44+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TEXTE PIED</text>""" % {'x': -37+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association TARIF -->"""
+(x,y) = (cx[u"TARIF"],cy[u"TARIF"])
+(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
+leg=straight_leg_factory(ex,ey,43,71,x,y,41,44,22+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(True,shift[u"TARIF,ARTICLE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"LIBELLE TARIF"],cy[u"LIBELLE TARIF"])
+leg=straight_leg_factory(ex,ey,51,44,x,y,41,44,22+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TARIF,LIBELLE TARIF"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
+leg=straight_leg_factory(ex,ey,40,44,x,y,41,44,22+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TARIF,PARTNER"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-TARIF">""" % {}
+path = upper_round_rect(-41+x,-44+y,82,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-41+x,-18.0+y,82,62,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="82" height="88" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -41+x, 'y': -44+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -41+x, 'y0': -18+y, 'x1': 41+x, 'y1': -18+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TARIF</text>""" % {'x': -19+x, 'y': -25.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">tarif_id</text>""" % {'x': -34+x, 'y': 0.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_tarif</text>""" % {'x': -34+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">prix</text>""" % {'x': -34+x, 'y': 36.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association PIECEADR CDE -->"""
+(x,y) = (cx[u"PIECEADR CDE"],cy[u"PIECEADR CDE"])
+(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
+leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR CDE,ADRESSE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
+leg=straight_leg_factory(ex,ey,50,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR CDE,PIECE_ENT"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-PIECEADR CDE">""" % {}
+path = upper_round_rect(-53+x,-26+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-53+x,0.0+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR CDE</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association PROD DEFAUT -->"""
+(x,y) = (cx[u"PROD DEFAUT"],cy[u"PROD DEFAUT"])
+(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
+leg=straight_leg_factory(ex,ey,43,71,x,y,52,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PROD DEFAUT,ARTICLE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
+leg=straight_leg_factory(ex,ey,40,44,x,y,52,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PROD DEFAUT,PARTNER"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-PROD DEFAUT">""" % {}
+path = upper_round_rect(-52+x,-26+y,104,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-52+x,0.0+y,104,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="104" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -52+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -52+x, 'y0': 0+y, 'x1': 52+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PROD DEFAUT</text>""" % {'x': -45+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association PIECEADR BL -->"""
+(x,y) = (cx[u"PIECEADR BL"],cy[u"PIECEADR BL"])
+(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
+leg=straight_leg_factory(ex,ey,46,89,x,y,48,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR BL,ADRESSE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
+leg=straight_leg_factory(ex,ey,50,44,x,y,48,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR BL,PIECE_ENT"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-PIECEADR BL">""" % {}
+path = upper_round_rect(-48+x,-26+y,96,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-48+x,0.0+y,96,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="96" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -48+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -48+x, 'y0': 0+y, 'x1': 48+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR BL</text>""" % {'x': -41+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association TEXTE EDITION -->"""
+(x,y) = (cx[u"TEXTE EDITION"],cy[u"TEXTE EDITION"])
+(ex,ey) = (cx[u"TEXTE"],cy[u"TEXTE"])
+leg=straight_leg_factory(ex,ey,33,35,x,y,56,53,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE EDITION,TEXTE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
+leg=straight_leg_factory(ex,ey,40,44,x,y,56,53,22+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE EDITION,PARTNER"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-TEXTE EDITION">""" % {}
+path = upper_round_rect(-56+x,-53+y,112,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-56+x,-27.0+y,112,80,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="112" height="106" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -56+x, 'y': -53+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -56+x, 'y0': -27+y, 'x1': 56+x, 'y1': -27+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TEXTE EDITION</text>""" % {'x': -49+x, 'y': -34.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affDevis</text>""" % {'x': -49+x, 'y': -8.4+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affCde</text>""" % {'x': -49+x, 'y': 9.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affBL</text>""" % {'x': -49+x, 'y': 27.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">affFac</text>""" % {'x': -49+x, 'y': 45.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association TIERSADR FAC -->"""
+(x,y) = (cx[u"TIERSADR FAC"],cy[u"TIERSADR FAC"])
+(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
+leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR FAC,ADRESSE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
+leg=straight_leg_factory(ex,ey,40,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR FAC,PARTNER"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-TIERSADR FAC">""" % {}
+path = upper_round_rect(-53+x,-26+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-53+x,0.0+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TIERSADR FAC</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -46+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association ORIGINE DEFAUT -->"""
+(x,y) = (cx[u"ORIGINE DEFAUT"],cy[u"ORIGINE DEFAUT"])
+(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
+leg=straight_leg_factory(ex,ey,43,71,x,y,61,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"ORIGINE DEFAUT,ARTICLE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"ORIGINE"],cy[u"ORIGINE"])
+leg=straight_leg_factory(ex,ey,38,35,x,y,61,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"ORIGINE DEFAUT,ORIGINE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-ORIGINE DEFAUT">""" % {}
+path = upper_round_rect(-61+x,-26+y,122,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-61+x,0.0+y,122,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="122" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -61+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -61+x, 'y0': 0+y, 'x1': 61+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ORIGINE DEFAUT</text>""" % {'x': -54+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association PIECEADR FAC -->"""
+(x,y) = (cx[u"PIECEADR FAC"],cy[u"PIECEADR FAC"])
+(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
+leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR FAC,ADRESSE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
+leg=straight_leg_factory(ex,ey,50,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR FAC,PIECE_ENT"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-PIECEADR FAC">""" % {}
+path = upper_round_rect(-53+x,-26+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-53+x,0.0+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR FAC</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association TIERSADR DEV -->"""
+(x,y) = (cx[u"TIERSADR DEV"],cy[u"TIERSADR DEV"])
+(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
+leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR DEV,ADRESSE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
+leg=straight_leg_factory(ex,ey,40,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TIERSADR DEV,PARTNER"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-TIERSADR DEV">""" % {}
+path = upper_round_rect(-53+x,-26+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-53+x,0.0+y,106,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TIERSADR DEV</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -46+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association LISTE ADR -->"""
+(x,y) = (cx[u"LISTE ADR"],cy[u"LISTE ADR"])
+(ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
+leg=straight_leg_factory(ex,ey,46,89,x,y,51,26,22+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"LISTE ADR,ADRESSE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,N</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PARTNER"],cy[u"PARTNER"])
+leg=straight_leg_factory(ex,ey,40,44,x,y,51,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"LISTE ADR,PARTNER"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-LISTE ADR">""" % {}
+path = upper_round_rect(-51+x,-26+y,102,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-51+x,0.0+y,102,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="102" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -51+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -51+x, 'y0': 0+y, 'x1': 51+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">LISTE ADR</text>""" % {'x': -33+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -44+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Association TIERSADR CDE -->"""
@@ -820,26 +776,85 @@ lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Tre
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_adresse</text>""" % {'x': -46+x, 'y': 18.6+y, 'text_color': colors['association_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Association PIECEADR FAC -->"""
-(x,y) = (cx[u"PIECEADR FAC"],cy[u"PIECEADR FAC"])
+lines += u"""\n\n<!-- Association PIECEADR DEV -->"""
+(x,y) = (cx[u"PIECEADR DEV"],cy[u"PIECEADR DEV"])
 (ex,ey) = (cx[u"ADRESSE"],cy[u"ADRESSE"])
 leg=straight_leg_factory(ex,ey,46,89,x,y,53,26,21+2*card_margin,15+2*card_margin)
 lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR FAC,ADRESSE"]))
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR DEV,ADRESSE"]))
 lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
 (ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
 leg=straight_leg_factory(ex,ey,50,44,x,y,53,26,21+2*card_margin,15+2*card_margin)
 lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
-(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR FAC,PIECE_ENT"]))
+(tx,ty)=offset(*leg.card_pos(False,shift[u"PIECEADR DEV,PIECE_ENT"]))
 lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
-lines += u"""\n<g id="association-PIECEADR FAC">""" % {}
+lines += u"""\n<g id="association-PIECEADR DEV">""" % {}
 path = upper_round_rect(-53+x,-26+y,106,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
 path = lower_round_rect(-53+x,0.0+y,106,26,14)
 lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
 lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="106" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -53+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
 lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -53+x, 'y0': 0+y, 'x1': 53+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR FAC</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECEADR DEV</text>""" % {'x': -46+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association ENLEVEMENT DEFAUT -->"""
+(x,y) = (cx[u"ENLEVEMENT DEFAUT"],cy[u"ENLEVEMENT DEFAUT"])
+(ex,ey) = (cx[u"ARTICLE"],cy[u"ARTICLE"])
+leg=straight_leg_factory(ex,ey,43,71,x,y,77,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"ENLEVEMENT DEFAUT,ARTICLE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"ENLEVEMENT"],cy[u"ENLEVEMENT"])
+leg=straight_leg_factory(ex,ey,56,35,x,y,77,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"ENLEVEMENT DEFAUT,ENLEVEMENT"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-ENLEVEMENT DEFAUT">""" % {}
+path = upper_round_rect(-77+x,-26+y,154,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-77+x,0.0+y,154,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="154" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -77+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -77+x, 'y0': 0+y, 'x1': 77+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ENLEVEMENT DEFAUT</text>""" % {'x': -70+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Association TEXTE ENTETE -->"""
+(x,y) = (cx[u"TEXTE ENTETE"],cy[u"TEXTE ENTETE"])
+(ex,ey) = (cx[u"TEXTE"],cy[u"TEXTE"])
+leg=straight_leg_factory(ex,ey,33,35,x,y,54,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE ENTETE,TEXTE"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">0,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+(ex,ey) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
+leg=straight_leg_factory(ex,ey,50,44,x,y,54,26,21+2*card_margin,15+2*card_margin)
+lines += u"""\n<line x1="%(ex)s" y1="%(ey)s" x2="%(ax)s" y2="%(ay)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'ex': ex, 'ey': ey, 'ax': x, 'ay': y, 'stroke_color': colors['leg_stroke_color']}
+(tx,ty)=offset(*leg.card_pos(False,shift[u"TEXTE ENTETE,PIECE_ENT"]))
+lines += u"""\n<text x="%(tx)s" y="%(ty)s" fill="%(text_color)s" font-family="Verdana" font-size="12">1,1</text>""" % {'tx': tx, 'ty': ty, 'text_color': colors['card_text_color']}
+lines += u"""\n<g id="association-TEXTE ENTETE">""" % {}
+path = upper_round_rect(-54+x,-26+y,108,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_cartouche_color'], 'stroke_color': colors['association_cartouche_color']}
+path = lower_round_rect(-54+x,0.0+y,108,26,14)
+lines += u"""\n	<path d="%(path)s" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'color': colors['association_color'], 'stroke_color': colors['association_color']}
+lines += u"""\n	<rect x="%(x)s" y="%(y)s" width="108" height="52" fill="%(color)s" rx="14" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -54+x, 'y': -26+y, 'color': colors['transparent_color'], 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -54+x, 'y0': 0+y, 'x1': 54+x, 'y1': 0+y, 'stroke_color': colors['association_stroke_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">TEXTE ENTETE</text>""" % {'x': -47+x, 'y': -7.4+y, 'text_color': colors['association_cartouche_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Entity ORIGINE -->"""
+(x,y) = (cx[u"ORIGINE"],cy[u"ORIGINE"])
+lines += u"""\n<g id="entity-ORIGINE">""" % {}
+lines += u"""\n	<g id="frame-ORIGINE">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -38+x, 'y0': -9+y, 'x1': 38+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n	</g>""" % {}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ORIGINE</text>""" % {'x': -27+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">origine_id</text>""" % {'x': -33+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -33+x, 'y0': 12.0+y, 'x1': 32+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -33+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Entity ADRESSE -->"""
@@ -863,34 +878,35 @@ lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Tre
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">pays</text>""" % {'x': -41+x, 'y': 81.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Entity EMBALLAGE -->"""
-(x,y) = (cx[u"EMBALLAGE"],cy[u"EMBALLAGE"])
-lines += u"""\n<g id="entity-EMBALLAGE">""" % {}
-lines += u"""\n	<g id="frame-EMBALLAGE">""" % {}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="136" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -68+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="136" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -68+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="136" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -68+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -68+x, 'y0': -9+y, 'x1': 68+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n\n<!-- Entity PIECE_ENT -->"""
+(x,y) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
+lines += u"""\n<g id="entity-PIECE_ENT">""" % {}
+lines += u"""\n	<g id="frame-PIECE_ENT">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="100" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -50+x, 'y': -44+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="100" height="62" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -50+x, 'y': -18.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="100" height="88" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -50+x, 'y': -44+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -50+x, 'y0': -18+y, 'x1': 50+x, 'y1': -18+y, 'stroke_color': colors['entity_stroke_color']}
 lines += u"""\n	</g>""" % {}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">EMBALLAGE</text>""" % {'x': -38+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_emballage_id</text>""" % {'x': -63+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -63+x, 'y0': 12.0+y, 'x1': 62+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -63+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECE_ENT</text>""" % {'x': -35+x, 'y': -25.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECE_ENT_id</text>""" % {'x': -45+x, 'y': 0.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -45+x, 'y0': 3.0+y, 'x1': 44+x, 'y1': 3.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">num_cde</text>""" % {'x': -45+x, 'y': 18.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">adresse</text>""" % {'x': -45+x, 'y': 36.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Entity ENLEVEMENT -->"""
-(x,y) = (cx[u"ENLEVEMENT"],cy[u"ENLEVEMENT"])
-lines += u"""\n<g id="entity-ENLEVEMENT">""" % {}
-lines += u"""\n	<g id="frame-ENLEVEMENT">""" % {}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -56+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -56+x, 'y0': -9+y, 'x1': 56+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n\n<!-- Entity CALIBRE -->"""
+(x,y) = (cx[u"CALIBRE"],cy[u"CALIBRE"])
+lines += u"""\n<g id="entity-CALIBRE">""" % {}
+lines += u"""\n	<g id="frame-CALIBRE">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -38+x, 'y0': -9+y, 'x1': 38+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
 lines += u"""\n	</g>""" % {}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ENLEVEMENT</text>""" % {'x': -42+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">emlevement_id</text>""" % {'x': -51+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -51+x, 'y0': 12.0+y, 'x1': 50+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -51+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">CALIBRE</text>""" % {'x': -27+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">calibre_id</text>""" % {'x': -33+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -33+x, 'y0': 12.0+y, 'x1': 32+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -33+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Entity TEXTE -->"""
@@ -908,20 +924,19 @@ lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">contenu</text>""" % {'x': -28+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Entity PIECE_ENT -->"""
-(x,y) = (cx[u"PIECE_ENT"],cy[u"PIECE_ENT"])
-lines += u"""\n<g id="entity-PIECE_ENT">""" % {}
-lines += u"""\n	<g id="frame-PIECE_ENT">""" % {}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="100" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -50+x, 'y': -44+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="100" height="62" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -50+x, 'y': -18.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="100" height="88" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -50+x, 'y': -44+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -50+x, 'y0': -18+y, 'x1': 50+x, 'y1': -18+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n\n<!-- Entity ENLEVEMENT -->"""
+(x,y) = (cx[u"ENLEVEMENT"],cy[u"ENLEVEMENT"])
+lines += u"""\n<g id="entity-ENLEVEMENT">""" % {}
+lines += u"""\n	<g id="frame-ENLEVEMENT">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -56+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -56+x, 'y0': -9+y, 'x1': 56+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
 lines += u"""\n	</g>""" % {}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECE_ENT</text>""" % {'x': -35+x, 'y': -25.4+y, 'text_color': colors['entity_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PIECE_ENT_id</text>""" % {'x': -45+x, 'y': 0.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -45+x, 'y0': 3.0+y, 'x1': 44+x, 'y1': 3.0+y, 'stroke_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">num_cde</text>""" % {'x': -45+x, 'y': 18.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">adresse</text>""" % {'x': -45+x, 'y': 36.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ENLEVEMENT</text>""" % {'x': -42+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">emlevement_id</text>""" % {'x': -51+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -51+x, 'y0': 12.0+y, 'x1': 50+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -51+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Entity ARTICLE -->"""
@@ -943,36 +958,6 @@ lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Tre
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">prix_max</text>""" % {'x': -38+x, 'y': 63.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Entity ORIGINE -->"""
-(x,y) = (cx[u"ORIGINE"],cy[u"ORIGINE"])
-lines += u"""\n<g id="entity-ORIGINE">""" % {}
-lines += u"""\n	<g id="frame-ORIGINE">""" % {}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -38+x, 'y0': -9+y, 'x1': 38+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n	</g>""" % {}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">ORIGINE</text>""" % {'x': -27+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">origine_id</text>""" % {'x': -33+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -33+x, 'y0': 12.0+y, 'x1': 32+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -33+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n</g>""" % {}
-
-lines += u"""\n\n<!-- Entity CALIBRE -->"""
-(x,y) = (cx[u"CALIBRE"],cy[u"CALIBRE"])
-lines += u"""\n<g id="entity-CALIBRE">""" % {}
-lines += u"""\n	<g id="frame-CALIBRE">""" % {}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -38+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="76" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -38+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -38+x, 'y0': -9+y, 'x1': 38+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n	</g>""" % {}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">CALIBRE</text>""" % {'x': -27+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">calibre_id</text>""" % {'x': -33+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -33+x, 'y0': 12.0+y, 'x1': 32+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -33+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n</g>""" % {}
-
 lines += u"""\n\n<!-- Entity CATEGORIE -->"""
 (x,y) = (cx[u"CATEGORIE"],cy[u"CATEGORIE"])
 lines += u"""\n<g id="entity-CATEGORIE">""" % {}
@@ -988,20 +973,19 @@ lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -41+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
-lines += u"""\n\n<!-- Entity PARTNER -->"""
-(x,y) = (cx[u"PARTNER"],cy[u"PARTNER"])
-lines += u"""\n<g id="entity-PARTNER">""" % {}
-lines += u"""\n	<g id="frame-PARTNER">""" % {}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="80" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -40+x, 'y': -44+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="80" height="62" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -40+x, 'y': -18.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="80" height="88" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -40+x, 'y': -44+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -40+x, 'y0': -18+y, 'x1': 40+x, 'y1': -18+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n\n<!-- Entity EMBALLAGE -->"""
+(x,y) = (cx[u"EMBALLAGE"],cy[u"EMBALLAGE"])
+lines += u"""\n<g id="entity-EMBALLAGE">""" % {}
+lines += u"""\n	<g id="frame-EMBALLAGE">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="136" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -68+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="136" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -68+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="136" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -68+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -68+x, 'y0': -9+y, 'x1': 68+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
 lines += u"""\n	</g>""" % {}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PARTNER</text>""" % {'x': -30+x, 'y': -25.4+y, 'text_color': colors['entity_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">partner_id</text>""" % {'x': -35+x, 'y': 0.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -35+x, 'y0': 3.0+y, 'x1': 34+x, 'y1': 3.0+y, 'stroke_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">name</text>""" % {'x': -35+x, 'y': 18.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">rais_soc</text>""" % {'x': -35+x, 'y': 36.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">EMBALLAGE</text>""" % {'x': -38+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_emballage_id</text>""" % {'x': -63+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -63+x, 'y0': 12.0+y, 'x1': 62+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -63+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Entity LIBELLE TARIF -->"""
@@ -1018,6 +1002,22 @@ lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Tre
 lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -46+x, 'y0': 3.0+y, 'x1': 34+x, 'y1': 3.0+y, 'stroke_color': colors['entity_attribute_text_color']}
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">code_tarif</text>""" % {'x': -46+x, 'y': 18.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">libelle</text>""" % {'x': -46+x, 'y': 36.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Entity PARTNER -->"""
+(x,y) = (cx[u"PARTNER"],cy[u"PARTNER"])
+lines += u"""\n<g id="entity-PARTNER">""" % {}
+lines += u"""\n	<g id="frame-PARTNER">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="80" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -40+x, 'y': -44+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="80" height="62" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -40+x, 'y': -18.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="80" height="88" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -40+x, 'y': -44+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -40+x, 'y0': -18+y, 'x1': 40+x, 'y1': -18+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n	</g>""" % {}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">PARTNER</text>""" % {'x': -30+x, 'y': -25.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">partner_id</text>""" % {'x': -35+x, 'y': 0.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -35+x, 'y0': 3.0+y, 'x1': 34+x, 'y1': 3.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">name</text>""" % {'x': -35+x, 'y': 18.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Trebuchet MS" font-size="14">rais_soc</text>""" % {'x': -35+x, 'y': 36.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 lines += u'\n</svg>'
 
