@@ -4,10 +4,9 @@ from odoo import models, fields, api
 class DiInheritedProduct(models.Model):
     _inherit = "product.template"
     
-    default_code = fields.Char(
-        'Internal Reference', compute='_compute_default_code',
-        inverse='_set_default_code', store=True, required=True)
     
+    #di_default_code_req = fields.Char('Code article', store=False)
+#     
     di_lavage = fields.Boolean(string="Lavage", default=False)
     di_prixmin = fields.Float(string="Prix minimum")
     di_prixmax = fields.Float(string="Prix maximum")
@@ -33,4 +32,17 @@ class DiInheritedProduct(models.Model):
     
     di_producteur_id = fields.Many2one("res.partner",string="Producteur")
     di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')    
-    
+     
+
+#     @api.model
+#     def _auto_init(self):
+#         #self.di_default_code_req.required=False        
+#         super(DiInheritedProduct, self)._auto_init()
+#         # Now safely perform your own stuff
+#         self.env.cr.execute("update product_template set di_default_code_req = '3' where di_default_code_req is null;")
+#         self.di_default_code_req.required=True
+#        # super(DiInheritedProduct, self)._auto_init()
+#         
+#     @api.depends('di_default_code_req')
+#     def _compute_default_code(self):
+#       self.default_code = self.di_default_code_req

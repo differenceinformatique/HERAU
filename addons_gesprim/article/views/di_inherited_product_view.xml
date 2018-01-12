@@ -115,7 +115,7 @@
                  <xpath expr="//label[@for='name']" position="before">
                     <label class="oe_edit_only" for="default_code" string="Code article"/>
                     <h1>                        
-                        <field name="default_code" placeholder="Code article" />                        
+                        <field name="default_code" placeholder="Code article" required="True" />                        
                     </h1>                 
                 </xpath>
                 <xpath expr="//label[@for='name']" position="replace">
