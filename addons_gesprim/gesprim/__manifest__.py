@@ -19,7 +19,19 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','purchase','product','article','web_sheet_full_width','report_intrastat'],
+        # any module necessary for this one to work correctly
+    'depends': [
+        'base',
+        'sale',
+        'purchase',
+        'product',
+        'article',
+        'web_sheet_full_width'
+        ,'report_intrastat'
+        ,'l10n_fr_sale_closing',
+        'base_optional_quick_create',
+        'eradicate_quick_create',
+        ],
 
     # always loaded
     'data': [
