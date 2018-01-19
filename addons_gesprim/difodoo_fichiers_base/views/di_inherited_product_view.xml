@@ -80,8 +80,8 @@
                             <group colspan="4">                                
                                 
                                 <field name="di_un_saisie"/>
-                                <field name="di_type_palette"/><!-- TODO : faire filtre sur contexte type= palette et article-->
-                                <field name="di_type_colis"/> <!-- TODO : faire filtre sur contexte type= colis et article-->                                    
+                                <field name="di_type_palette" context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id)]" groups="product.group_stock_packaging"/><!-- TODO : faire filtre sur contexte type= palette -->
+                                <field name="di_type_colis"  context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id)]" groups="product.group_stock_packaging"/> <!-- TODO : faire filtre sur contexte type= colis -->                                    
                                           
                             </group>
                         </group>
@@ -178,12 +178,15 @@
             <field name="inherit_id" ref="product.product_packaging_form_view"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
+            <!-- TODO : Changer libellé "Type de colis" en "Libellé conditionnement" -->
                 <xpath expr="//group[@name='qty']" position="after">
+                
                     <group name="specif">
                         <!--<label for="di_type_cond" string="Type de conditionnement" style="font-style: oblique;"/>-->
-                        <field name="di_type_cond" />
+                        <field name="di_type_cond" />  
                         <!--<label for="di_qte_cond_inf" string="Quantité conditionnement inférieur" style="font-style: oblique;"/> -->   
                         <field name="di_qte_cond_inf" /> <!-- TODO : Masquer si on est sur un type de conditionnement pièce -->
+                        <field name="di_type_colis"  context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id)]" groups="product.group_stock_packaging"/> <!-- TODO : faire filtre sur contexte type= colis et masquer si di_type_cond <> "PALETTE" -->
                     </group>
                 </xpath>               
             </field>

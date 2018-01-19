@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "gesprim",
+    'name': "difodoo_gesprim",
 
     'summary': """
-        Gesprim""",
+        difodoo_gesprim""",
 
     'description': """
         Gesprim description

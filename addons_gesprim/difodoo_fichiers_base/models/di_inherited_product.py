@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from xlrd.formula import FMLA_TYPE_COND_FMT
 
 class DiInheritedProduct(models.Model):
     _inherit = "product.template"
@@ -35,8 +36,22 @@ class DiInheritedProduct(models.Model):
     
     di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie")
     di_type_palette     = fields.Many2one('product.packaging', string='Palette')   
-    di_type_colis       = fields.Many2one('product.packaging', string='Colis') 
+    di_type_colis       = fields.Many2one('product.packaging', string='Colis')
      
+    @api.one
+#     @api.model
+    def di_get_type_piece(self):
+#         if not self.id:
+#             return False
+#         ProductPackObj = self.env['product.packaging']
+#         
+#         return ProductPackObj.di_get_product_packaging(self.id,"PIECE")
+        ProductPack = self.env['product.packaging'].search([
+            '|',
+            ('product_id', '=', self.id),
+            ('di_type_cond', '=', 'PIECE')]).id
+        return ProductPack
+        
 
 #     @api.model
 #     def _auto_init(self):
@@ -51,9 +66,48 @@ class DiInheritedProduct(models.Model):
 #     def _compute_default_code(self):
 #       self.default_code = self.di_default_code_req
 
+class DiInheritedProductProduct(models.Model):
+    _inherit = "product.product"
+    
+    
+    @api.multi
+#     @api.model
+    def di_get_type_piece(self):
+#         if not self.id:
+#             return False
+#         ProductPackObj = self.env['product.packaging']
+#         
+#         return ProductPackObj.di_get_product_packaging(self.id,"PIECE")
+        ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
+        return ProductPack
+        
+
 
 class DiInheritedProductPackaging(models.Model):
     _inherit = "product.packaging"
     
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")
+    # TODO : n'autoriser qu'un seul type pièce
+    di_type_colis       = fields.Many2one('product.packaging', string='Colis') 
+           
+    @api.model
+    def create(self, vals):
+        if vals["di_type_cond"]=="PIECE":
+            ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', vals["product_id"]),('di_type_cond', '=', vals["di_type_cond"])])
+            if ProductPack.id == False: 
+                rec = super(ProductPackaging, self).create(vals)            
+            else:
+                rec = False
+        else:
+            rec = super(ProductPackaging, self).create(vals)
+        return rec
+    
+#     @api.onchange('di_type_cond')
+#     def di_controle_type_piece_unique(self):
+#         if self.di_type_cond =='PIECE':
+#             ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id),('di_type_cond', '=', self.di_type_cond)])
+#             if ProductPack.id != False:             
+#                 raise osv.except_osv(('Erreur'), ('Vous ne pouvez pas avoir plusieurs conditionement de type pièce.'))
+#                 self.di_type_cond = 'COLIS'
+    
