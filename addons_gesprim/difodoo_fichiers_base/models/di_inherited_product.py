@@ -91,17 +91,18 @@ class DiInheritedProductPackaging(models.Model):
     # TODO : n'autoriser qu'un seul type pièce
     di_type_colis       = fields.Many2one('product.packaging', string='Colis') 
            
-    @api.model
-    def create(self, vals):
-        if vals["di_type_cond"]=="PIECE":
-            ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', vals["product_id"]),('di_type_cond', '=', vals["di_type_cond"])])
-            if ProductPack.id == False: 
-                rec = super(ProductPackaging, self).create(vals)            
-            else:
-                rec = False
-        else:
-            rec = super(ProductPackaging, self).create(vals)
-        return rec
+#     @api.model
+#     def create(self, vals):
+#         if vals["di_type_cond"]=="PIECE":
+#             ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', vals["product_id"]),('di_type_cond', '=', vals["di_type_cond"])])
+#             if ProductPack.id == False: 
+#                 rec = super(ProductPackaging, self).create(vals)            
+#             else:
+#                 rec = False
+#         else:
+#             rec = super(ProductPackaging, self).create(vals)
+#         return rec
+    #TODO : empecher la créationde plusieurs conditionnements de type pièce
     
 #     @api.onchange('di_type_cond')
 #     def di_controle_type_piece_unique(self):
