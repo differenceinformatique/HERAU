@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <record id="di_product_specifs" model="ir.ui.view">
-            <field name="name">di.product.specifs</field>
+        <record id="di_product_template_only_form_view" model="ir.ui.view">
+            <field name="name">di.product.template.only.form.view</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='default_code']" position="replace">
+                    
+                </xpath>
+                <xpath expr="//field[@name='list_price']"
+                        position="after">
+                    
+                <!-- On ne peut pas se contenter de mettre <field
+                        name="di_prixmin"/> car sinon on ne peut pas modifier le style du label pour le mettre
+                en italique  -->
+               
+                    <label
+                        for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>
+                    <field class="oe_inline" name="di_prixmin"
+                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
+                    <label for="di_prixmax" string="Prix maximum" style="font-style: oblique;"/>
+                    <field class="oe_inline" name="di_prixmax"
+                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
+                </xpath>
                 <xpath expr="//page[@name='notes']" position="after">
                     <page name="specifs" string="Spécifiques" style="font-style: oblique;">
                         <group col="12">
@@ -39,14 +57,7 @@
                                     <field class="oe_inline"
                                     name="di_calibre_di_des"
                                     nolabel="1" readonly="1" style="margin-left:10px"/>
-                                </div>
-                                <label for="di_emballage_id" string="Emballage"/>
-                                <div>
-                                    <field class="oe_inline" name="di_emballage_id"/>
-                                    <field class="oe_inline"
-                                    name="di_emballage_di_des"
-                                    nolabel="1" readonly="1" style="margin-left:10px"/>
-                                </div>
+                                </div>                                
                                 <label for="di_enlevement_id" string="Enlèvement"/>
                                 <div>
                                     <field class="oe_inline" name="di_enlevement_id"/>
@@ -63,17 +74,24 @@
                                     name="di_producteur_nom"
                                     nolabel="1" readonly="1" style="margin-left:10px"/>
                                 </div>
+                                
+                                                                
                             </group>
-                            <group colspan="4">
-                                <field name="di_lavage"/>
+                            <group colspan="4">                                
+                                
+                                <field name="di_un_saisie"/>
+                                <field name="di_type_palette"/><!-- TODO : faire filtre sur contexte type= palette et article-->
+                                <field name="di_type_colis"/> <!-- TODO : faire filtre sur contexte type= colis et article-->                                    
+                                          
                             </group>
                         </group>
                     </page>
                 </xpath>
             </field>
         </record>
-        <record id="di_product_prix_spe" model="ir.ui.view">
-            <field name="name">di.product.prix.spe</field>
+        
+        <!-- <record id="di_product_template_only_form_view_prix_spe" model="ir.ui.view">
+            <field name="name">di.product.template.only.form.view.prix.spe</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field eval="99" name="priority"/>
@@ -84,9 +102,9 @@
                 <xpath expr="//field[@name='list_price']"
                         position="after">
                     
-                <!-- On ne peut pas se contenter de mettre <field
+                On ne peut pas se contenter de mettre <field
                         name="di_prixmin"/> car sinon on ne peut pas modifier le style du label pour le mettre
-                en italique  -->
+                en italique 
                
                     <label
                         for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>
@@ -97,9 +115,9 @@
                         nolabel="1" style="font-style: oblique;margin-left:5px;"/>
                 </xpath>
             </field>
-        </record>
-        <record id="di_product_form" model="ir.ui.view">
-            <field name="name">di.product.form</field>
+        </record> -->
+        <record id="di_product_template_form_view" model="ir.ui.view">
+            <field name="name">di.product.template.form.view</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field eval="99" name="priority"/>
@@ -136,8 +154,8 @@
                 </xpath>
             </field>
         </record> -->
-        <record id="di_product_list" model="ir.ui.view">
-            <field name="name">di.product.list</field>
+        <record id="di_product_template_tree_view" model="ir.ui.view">
+            <field name="name">di.product.template.tree.view</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_tree_view"/>
             <field eval="99" name="priority"/>
@@ -152,6 +170,26 @@
                     <field name="di_des"/>
                 </xpath> -->
             </field>
+            
         </record>
+        <record id="di_product_packaging_form_view" model="ir.ui.view">
+            <field name="name">di.product.packaging.form.view</field>
+            <field name="model">product.packaging</field>
+            <field name="inherit_id" ref="product.product_packaging_form_view"/>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='qty']" position="after">
+                    <group name="specif">
+                        <!--<label for="di_type_cond" string="Type de conditionnement" style="font-style: oblique;"/>-->
+                        <field name="di_type_cond" />
+                        <!--<label for="di_qte_cond_inf" string="Quantité conditionnement inférieur" style="font-style: oblique;"/> -->   
+                        <field name="di_qte_cond_inf" /> <!-- TODO : Masquer si on est sur un type de conditionnement pièce -->
+                    </group>
+                </xpath>               
+            </field>
+        </record>
+        
+          
+        
     </data>
 </odoo>

@@ -24,14 +24,18 @@ class DiInheritedProduct(models.Model):
     di_calibre_id = fields.Many2one("di.calibre",string="Calibre")
     di_calibre_di_des = fields.Char(related='di_calibre_id.di_des')#, store='False')
     
-    di_emballage_id = fields.Many2one("di.emballage",string="Emballage")
-    di_emballage_di_des = fields.Char(related='di_emballage_id.di_des')#, store='False')
+#     di_emballage_id = fields.Many2one("di.emballage",string="Emballage")
+#     di_emballage_di_des = fields.Char(related='di_emballage_id.di_des')#, store='False')
     
     di_enlevement_id = fields.Many2one("di.enlevement",string="Enlèvement")
     di_enlevement_di_des = fields.Char(related='di_enlevement_id.di_des')#, store='False')
     
     di_producteur_id = fields.Many2one("res.partner",string="Producteur")
-    di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')    
+    di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')  
+    
+    di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie")
+    di_type_palette     = fields.Many2one('product.packaging', string='Palette')   
+    di_type_colis       = fields.Many2one('product.packaging', string='Colis') 
      
 
 #     @api.model
@@ -46,3 +50,10 @@ class DiInheritedProduct(models.Model):
 #     @api.depends('di_default_code_req')
 #     def _compute_default_code(self):
 #       self.default_code = self.di_default_code_req
+
+
+class DiInheritedProductPackaging(models.Model):
+    _inherit = "product.packaging"
+    
+    di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
+    di_type_cond    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Article_gesprim",
+    'name': "difodoo_fichiers_base",
 
     'summary': """
-        Article""",
+        difodoo_fichiers_base""",
 
     'description': """
-        Article
+        Surcharge des fichiers de base
     """,
 
     'author': "Difference informatique",
@@ -15,7 +15,7 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
-    'category': 'Article',
+    'category': 'difodoo',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        "data/vues_defaut.xml",
+        "data/di_vues_defaut_article.xml",
         "views/di_inherited_product_view.xml",
         # 'security/ir.model.access.csv',
       

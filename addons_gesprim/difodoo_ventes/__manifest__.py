@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "gesprim",
+    'name': "difodoo_ventes",
 
     'summary': """
-        Gesprim""",
+        difodoo_ventes""",
 
     'description': """
-        Gesprim description
+        Surcharge de Sale, Sale order, sale order line
     """,
 
     'author': "Difference informatique",
@@ -19,24 +19,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-        # any module necessary for this one to work correctly
-    'depends': [
-        'base',
-        'sale',
-        'purchase',
-        'product',
-        'difodoo_fichiers_base',
-        'difodoo_ventes',
-        'web_sheet_full_width'
-        ,'report_intrastat'
-        ,'l10n_fr_sale_closing',
-        'base_optional_quick_create',
-        'eradicate_quick_create',
-        ],
+    'depends': ['base','sale','product'],
 
     # always loaded
-    'data': [
-       
+    'data': [        
+        "views/di_inherited_sale_view.xml",
         # 'security/ir.model.access.csv',
       
     ],
@@ -44,7 +31,4 @@
     'demo': [
        
     ],
-    'installable': True,
-    'application': True,
-    'auto_install': False,
 }
