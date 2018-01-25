@@ -23,6 +23,7 @@
     'depends': [
         'base',
         'sale',
+        'sale_stock',
         'purchase',
         'product',
         'difodoo_fichiers_base',
