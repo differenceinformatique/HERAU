@@ -44,11 +44,25 @@ class DiInheritedProduct(models.Model):
         
 class DiInheritedProductProduct(models.Model):
     _inherit = "product.product"
+    default_code = fields.Char('Internal Reference', index=True, copy=False)
+    
     
     @api.multi
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
         return ProductPack
+    
+    @api.one
+    @api.constrains('default_code')
+    def _check_default_code(self):
+        if self.default_code:
+            default_code = self.search([
+                ('id', '!=', self.id),
+                ('default_code', '=', self.default_code)], limit=1)
+
+            if default_code:
+                raise Warning("Le code existe déjà.")
+                
         
 class DiInheritedProductPackaging(models.Model):
     _inherit = "product.packaging"
@@ -62,7 +76,7 @@ class DiInheritedProductPackaging(models.Model):
         #surcharge de la fonction create
         if vals["di_type_cond"]=="PIECE": # si le type de conditionnement est PIECE
             #recherche de l'enregistrement product.packaging avec un type de conditionnement = PIECE
-            ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', vals["product_id"]),('di_type_cond', '=', vals["di_type_cond"])])
+            ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', vals["product_id"]),('di_type_cond', '=', vals["di_type_cond"])], limit=1)
             #Si on ne le trouve pas: OK , on créé le packaging
             if ProductPack.id == False: 
                 rec = super(DiInheritedProductPackaging, self).create(vals)            
@@ -87,7 +101,7 @@ class DiInheritedProductPackaging(models.Model):
         if modif_type_cond==True:
             if vals["di_type_cond"]=="PIECE": # si on a bien un type PIECE
                 #recherche de l'enregistrement product.packaging avec un type de conditionnement = PIECE
-                ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', vals["di_type_cond"])])            
+                ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', vals["di_type_cond"])], limit=1)            
                 if ProductPack.id == False: 
                     #Si on ne le trouve pas: OK , on créé le packaging
                     rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)            
