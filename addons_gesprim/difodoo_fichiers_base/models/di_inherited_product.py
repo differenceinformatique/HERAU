@@ -51,7 +51,7 @@ class DiInheritedProductProduct(models.Model):
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
         return ProductPack
-    
+    #unicité du code article
     @api.one
     @api.constrains('default_code')
     def _check_default_code(self):
