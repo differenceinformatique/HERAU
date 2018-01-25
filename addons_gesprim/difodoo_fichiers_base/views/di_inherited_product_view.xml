@@ -89,46 +89,13 @@
                 </xpath>
             </field>
         </record>
-        
-        <!-- <record id="di_product_template_only_form_view_prix_spe" model="ir.ui.view">
-            <field name="name">di.product.template.only.form.view.prix.spe</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_only_form_view"/>
-            <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-                 <xpath expr="/form/sheet/notebook/page/group/group/field[@name='default_code']" position="replace">
-                    
-                </xpath>
-                <xpath expr="//field[@name='list_price']"
-                        position="after">
-                    
-                On ne peut pas se contenter de mettre <field
-                        name="di_prixmin"/> car sinon on ne peut pas modifier le style du label pour le mettre
-                en italique 
-               
-                    <label
-                        for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>
-                    <field class="oe_inline" name="di_prixmin"
-                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
-                    <label for="di_prixmax" string="Prix maximum" style="font-style: oblique;"/>
-                    <field class="oe_inline" name="di_prixmax"
-                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
-                </xpath>
-            </field>
-        </record> -->
+            
         <record id="di_product_template_form_view" model="ir.ui.view">
             <field name="name">di.product.template.form.view</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-                <!-- <xpath expr="//div[@name='options']" position="before">
-                    <label class="oe_edit_only" for="di_des"
-                        string="Désignation" style="font-style: oblique;"/>
-                    <h1>
-                        <field name="di_des" placeholder="Désignation" style="font-style: oblique;"/>
-                    </h1>
-                </xpath> -->
+            <field name="arch" type="xml">               
                 
                  <xpath expr="//label[@for='name']" position="before">
                     <label class="oe_edit_only" for="default_code" string="Code article"/>
@@ -143,17 +110,7 @@
                 
             </field>
         </record>
-        <!-- <record id="di_product_kanban" model="ir.ui.view">
-            <field name="name">di.product.kanban</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_kanban_view"/>
-            <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-                <xpath expr="//div[@class='o_kanban_image']" position="after">
-                    <field name="di_des" style="font-style: oblique;"/>
-                </xpath>
-            </field>
-        </record> -->
+       
         <record id="di_product_template_tree_view" model="ir.ui.view">
             <field name="name">di.product.template.tree.view</field>
             <field name="model">product.template</field>
@@ -165,10 +122,7 @@
                 </xpath>
                 <xpath expr="//field[@name='default_code']" position="replace">
                     <field name="default_code" string="Code"/>
-                </xpath> 
-                <!-- <xpath expr="//field[@name='name']" position="after">
-                    <field name="di_des"/>
-                </xpath> -->
+                </xpath>                 
             </field>
             
         </record>
@@ -178,21 +132,26 @@
             <field name="inherit_id" ref="product.product_packaging_form_view"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-            <!-- TODO : Changer libellé "Type de colis" en "Libellé conditionnement" -->
+                <xpath expr="/form/sheet/label[@for='name']" position="replace">
+                    <label string="Libellé conditionnement"/>                   
+                </xpath>
+                         
                 <xpath expr="//group[@name='qty']" position="after">
                 
-                    <group name="specif">
-                        <!--<label for="di_type_cond" string="Type de conditionnement" style="font-style: oblique;"/>-->
-                        <field name="di_type_cond" />  
-                        <!--<label for="di_qte_cond_inf" string="Quantité conditionnement inférieur" style="font-style: oblique;"/> -->   
-                        <field name="di_qte_cond_inf" /> <!-- TODO : Masquer si on est sur un type de conditionnement pièce -->
-                        <field name="di_type_colis"  context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id)]" groups="product.group_stock_packaging"/> <!-- TODO : faire filtre sur contexte type= colis et masquer si di_type_cond <> "PALETTE" -->
+                    <group name="specif">       
+                                     
+                        <field name="di_type_cond" />    
+                
+                
+                        <field name="di_qte_cond_inf" attrs="{'invisible':[('di_type_cond','=','PIECE')]}"  />    
+                
+                                                                      
+                        <field name="di_type_colis" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}"  context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id)]" groups="product.group_stock_packaging"/> <!-- TODO : faire filtre sur contexte type= colis  -->
+                        
                     </group>
                 </xpath>               
             </field>
         </record>
-        
-          
-        
+                        
     </data>
 </odoo>
