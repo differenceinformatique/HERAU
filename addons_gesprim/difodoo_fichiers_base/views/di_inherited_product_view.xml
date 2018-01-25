@@ -80,8 +80,8 @@
                             <group colspan="4">                                
                                 
                                 <field name="di_un_saisie"/>
-                                <field name="di_type_palette" context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id)]" groups="product.group_stock_packaging"/><!-- TODO : faire filtre sur contexte type= palette -->
-                                <field name="di_type_colis"  context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id)]" groups="product.group_stock_packaging"/> <!-- TODO : faire filtre sur contexte type= colis -->                                    
+                                <field name="di_type_palette" context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging" />
+                                <field name="di_type_colis"  context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>                                     
                                           
                             </group>
                         </group>
@@ -146,11 +146,24 @@
                         <field name="di_qte_cond_inf" attrs="{'invisible':[('di_type_cond','=','PIECE')]}"  />    
                 
                                                                       
-                        <field name="di_type_colis" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}"  context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id)]" groups="product.group_stock_packaging"/> <!-- TODO : faire filtre sur contexte type= colis  -->
+                        <field name="di_type_colis" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}"  context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/> 
                         
                     </group>
                 </xpath>               
             </field>
+        </record>
+        <record id="product_packaging_search_view" model="ir.ui.view">
+            <field name="name">product.packaging.search.view</field>
+            <field name="model">product.packaging</field>
+            <field eval="15" name="priority"/>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Palettes" name="palettes" domain="[('di_type_cond', '=', 'PALETTE')]"/>
+                    <filter string="Colis" name="colis" domain="[('di_type_cond', '=', 'COLIS')]"/>
+                    <filter string="Pièces" name="pieces" domain="[('di_type_cond', '=', 'PIECE')]"/>    
+                </search>    
+            </field>
+            
         </record>
                         
     </data>
