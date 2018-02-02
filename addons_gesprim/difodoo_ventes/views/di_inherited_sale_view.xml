@@ -8,21 +8,21 @@
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty'] " position="before">
-                    <field name="di_un_saisie"/>
-                    <field name="di_qte_un_saisie" />
+                    <field name="di_un_saisie" required="True"/>
+                    <field name="di_qte_un_saisie" required="True"/>
                     <field name="di_tare" />
                     <field name="di_poib" />                                                    
                 </xpath>
                 <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='tax_id'] " position="before">
-                    <field name="di_type_palette" attrs="{'invisible': [('product_id', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>                    
+                    <field name="di_type_palette" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>                                    
                     <field name="di_nb_pieces" readonly="1"/>
                     <field name="di_nb_colis" readonly="1"/>
                     <field name="di_nb_palette" readonly="1"/>
-                    <field name="di_poin" readonly="1"/>                                         
-                </xpath>               
+                    <field name="di_poin" readonly="1"/>                                                            
+                </xpath>      
+                         
             </field>                                    
-        </record>
-        
+        </record>        
         <record id="di_view_order_form_inherit_sale_stock" model="ir.ui.view">
             <field name="name">di.sale.order.form.sale.stock</field>
             <field name="model">sale.order</field>
@@ -30,7 +30,7 @@
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='product_packaging']" position="replace">
-                    <field name="product_packaging" string="Colis"  attrs="{'invisible': [('product_id', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>                                                    
+                    <field name="product_packaging" string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>                                                    
                 </xpath>
             </field>                                 
         </record>
