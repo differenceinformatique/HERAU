@@ -19,7 +19,24 @@
                     <field name="di_nb_colis" readonly="1"/>
                     <field name="di_nb_palette" readonly="1"/>
                     <field name="di_poin" readonly="1"/>                                                            
-                </xpath>      
+                </xpath> 
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='name'] " position="replace">
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='tax_id'] " position="replace">
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_uom_qty'] " position="before">
+                    <field name="di_un_saisie" required="True"/>
+                    <field name="di_qte_un_saisie" required="True"/>
+                    <field name="di_tare" />
+                    <field name="di_poib" />                                                    
+                </xpath>   
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_uom_qty'] " position="after">
+                    <field name="di_type_palette" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>                                    
+                    <field name="di_nb_pieces" readonly="1"/>
+                    <field name="di_nb_colis" readonly="1"/>
+                    <field name="di_nb_palette" readonly="1"/>
+                    <field name="di_poin" readonly="1"/>                                                            
+                </xpath>   
                          
             </field>                                    
         </record>        
