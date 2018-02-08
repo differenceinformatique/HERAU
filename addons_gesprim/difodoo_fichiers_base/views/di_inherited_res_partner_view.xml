@@ -28,7 +28,7 @@
                     	<label string="TOTO"/>
                     </page>
                 </xpath>
-				<!-- masquage champ état -->
+				<!-- masquage champ état + modif place ville/code postal sur la 1ère page du formulaire-->
 				<xpath expr="//field[@name='city']" position="replace">
 				</xpath>
 				<xpath expr="//field[@name='state_id']" position="replace">
@@ -39,7 +39,17 @@
                     attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
 					<field name="city" placeholder="City"
 				 	attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
-				</xpath>               
+				</xpath>
+				<!-- masquage champ état + modif place ville/code postal dans le formulaire contact/adresse -->
+				<xpath expr="//notebook/page/field/form/sheet/group/group/div/div/field[@name='city']" position="replace">
+				</xpath>
+				<xpath expr="//notebook/page/field/form/sheet/group/group/div/div/field[@name='state_id']" position="replace">
+					<field name="state_id" invisible="1"/>
+				</xpath>
+				<xpath expr="//notebook/page/field/form/sheet/group/group/div/div/field[@name='zip']" position="replace">
+					<field name="zip" placeholder="ZIP"/>
+					<field name="city" placeholder="City"/>
+				</xpath>			               
             </field>
         </record>
         
@@ -70,44 +80,7 @@
                     <field name="country_id"/>
 				</xpath>
 			</field>
-		</record>
-		
-		<!-- modification formulaire adresse Adresse Parent-->
-		<record id="di_view_partner_address_form" model="ir.ui.view">
-			<field name="name">di.res.partner.form.address</field>
-			<field name="model">res.partner</field>
-			<field name="inherit_id" ref="base.view_partner_address_form" />
-			<field eval="99" name="priority" />
-			<field name="arch" type="xml">
-				<!-- masquage champ état -->
-				<xpath expr="//field[@name='state_id']" position="replace">
-					<field name="state_id" invisible="1"/>
-				</xpath>
-				<xpath expr="//field[@name='image']" position="before">
-					<label string="TOTO"/>
-				</xpath>
-            </field>
-        </record>
-        
-		<!-- modification formulaire adresse ????-->
-		<record id="di_view_partner_short_form" model="ir.ui.view">
-			<field name="name">di.res.partner.form</field>
-			<field name="model">res.partner</field>
-			<field name="inherit_id" ref="base.view_partner_short_form" />
-			<field eval="99" name="priority" />
-			<field name="arch" type="xml">
-				<!-- masquage champ état -->
-				<xpath expr="//field[@name='state_id']" position="replace">
-					<field name="state_id" invisible="1"/>
-				</xpath>
-				<xpath expr="//field[@name='image']" position="before">
-					<label string="TOTO"/>
-				</xpath>
-            </field>
-        </record>
-		
-
-		
+		</record>		
     </data>
 </odoo>
  
