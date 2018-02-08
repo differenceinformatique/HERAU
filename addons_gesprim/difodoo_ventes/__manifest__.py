@@ -24,6 +24,7 @@
     # always loaded
     'data': [        
         "views/di_inherited_sale_view.xml",
+        "views/di_inherited_picking_view.xml",
         # 'security/ir.model.access.csv',
       
     ],

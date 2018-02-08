@@ -4,16 +4,28 @@ from odoo import models, fields, api
 class DiInheritedStockMove(models.Model):
     _inherit = "stock.move"
     
-    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie')
-    di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("POIDS", "Poids")], string="Unité de saisie")
-    di_type_palette = fields.Many2one('product.packaging', string='Palette') 
+    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True)
+    di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("POIDS", "Poids")], string="Unité de saisie", store=True)
+    di_type_palette = fields.Many2one('product.packaging', string='Palette', store=True) 
     di_nb_pieces = fields.Integer(string='Nb pièces', compute="_compute_qte_aff", store=True)
     di_nb_colis = fields.Integer(string='Nb colis', compute="_compute_qte_aff", store=True)
     di_nb_palette = fields.Float(string='Nb palettes', compute="_compute_qte_aff", store=True)
     di_poin = fields.Float(string='Poids net', compute="_compute_qte_aff", store=True)
-    di_poib = fields.Float(string='Poids brut')
-    di_tare = fields.Float(string='Tare')
-    product_packaging = fields.Many2one('product.packaging', string='Package', default=False)
+    di_poib = fields.Float(string='Poids brut', store=True)
+    di_tare = fields.Float(string='Tare', store=True)
+    product_packaging = fields.Many2one('product.packaging', string='Package', default=False, store=True)
+    
+    
+    di_qte_un_saisie_init = fields.Float(related="sale_line_id.di_qte_un_saisie")
+    di_un_saisie_init = fields.Selection(related="sale_line_id.di_un_saisie")
+    di_type_palette_init = fields.Many2one(related="sale_line_id.di_type_palette") 
+    di_nb_pieces_init = fields.Integer(related="sale_line_id.di_nb_pieces")
+    di_nb_colis_init = fields.Integer(related="sale_line_id.di_nb_colis")
+    di_nb_palette_init = fields.Float(related="sale_line_id.di_nb_palette")
+    di_poin_init = fields.Float(related="sale_line_id.di_poin")
+    di_poib_init = fields.Float(related="sale_line_id.di_poib")
+    di_tare_init = fields.Float(related="sale_line_id.di_tare")
+    product_packaging_init = fields.Many2one(related="sale_line_id.product_packaging")    
    
     @api.one
     @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette', 'di_poib', 'di_tare', 'product_packaging')
@@ -161,16 +173,17 @@ class DiInheritedStockMove(models.Model):
                 # recherche de l'enregistrement sale order line avec un sale_line_id = sale_line_id
                 Disaleorderline = self.env['sale.order.line'].search([('id', '=', vals["sale_line_id"])], limit=1)            
                 if Disaleorderline.id != False:                    
-                    vals["di_qte_un_saisie"] = Disaleorderline.di_qte_un_saisie
+#                     vals["di_qte_un_saisie"] = Disaleorderline.di_qte_un_saisie
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette"] = Disaleorderline.di_type_palette.id
-                    vals["di_nb_colis"] = Disaleorderline.di_nb_colis
-                    vals["di_nb_pieces"] = Disaleorderline.di_nb_pieces
-                    vals["di_nb_palette"] = Disaleorderline.di_nb_palette
-                    vals["di_poin"] = Disaleorderline.di_poin
-                    vals["di_poib"] = Disaleorderline.di_poib
-                    vals["di_tare"] = Disaleorderline.di_tare
+#                     vals["di_nb_colis"] = Disaleorderline.di_nb_colis
+#                     vals["di_nb_pieces"] = Disaleorderline.di_nb_pieces
+#                     vals["di_nb_palette"] = Disaleorderline.di_nb_palette
+#                     vals["di_poin"] = Disaleorderline.di_poin
+#                     vals["di_poib"] = Disaleorderline.di_poib
+#                     vals["di_tare"] = Disaleorderline.di_tare
                     vals["product_packaging"] = Disaleorderline.product_packaging.id     
+#                     vals["quantity_done"] = Disaleorderline.product_uom_qty
 #         else:
 #             vals["di_nb_colis"] = Disaleorderline.di_nb_colis
 #             vals["di_nb_pieces"] = Disaleorderline.di_nb_pieces
@@ -189,3 +202,29 @@ class DiInheritedStockMove(models.Model):
 # sale_line_ids = [ move.procurement_id.sale_line_id.id for move in stock_move_obj.browse(cr, uid, move_ids) if move.procurement_id and move.procurement_id.sale_line_id]  
 # 
 # print " Sale Line IDs:::::",sale_line_ids
+
+class DiInheritedStockMoveLine(models.Model):
+    _inherit = "stock.move.line"
+     
+    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True)  
+                     
+    @api.multi
+    @api.onchange('di_qte_un_saisie')
+    def _di_recalcule_quantites(self):
+        if self.move_id.di_un_saisie == "PIECE":            
+            self.qty_done = self.product_id.di_get_type_piece().qty * self.di_qte_un_saisie                               
+        elif self.move_id.di_un_saisie == "COLIS":            
+            self.qty_done = self.move_id.product_packaging.qty * self.di_qte_un_saisie                                            
+        elif self.move_id.di_un_saisie == "PALETTE":    
+            nbColis = 0.0                    
+            if self.move_id.di_type_palette.di_qte_cond_inf != 0.0:
+                nbColis = self.di_qte_un_saisie / self.move_id.di_type_palette.di_qte_cond_inf
+            else:
+                nbColis = self.di_qte_un_saisie            
+            self.qty_done = self.move_id.product_packaging.qty * nbColis                         
+        elif self.move_id.di_un_saisie == "POIDS":            
+            self.qty_done = self.di_qte_un_saisie                    
+        else:
+            self.qty_done = self.di_qte_un_saisie
+               
+   
