@@ -51,6 +51,7 @@ class DiInheritedProductProduct(models.Model):
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
         return ProductPack
+    
     #unicité du code article
     @api.one
     @api.constrains('default_code')
@@ -71,47 +72,64 @@ class DiInheritedProductPackaging(models.Model):
     di_type_cond    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
     di_type_colis       = fields.Many2one('product.packaging', string='Colis') 
            
-    @api.model
-    def create(self,vals):
-        #surcharge de la fonction create
-        if vals["di_type_cond"]=="PIECE": # si le type de conditionnement est PIECE
-            #recherche de l'enregistrement product.packaging avec un type de conditionnement = PIECE
-            ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', vals["product_id"]),('di_type_cond', '=', vals["di_type_cond"])], limit=1)
-            #Si on ne le trouve pas: OK , on créé le packaging
-            if ProductPack.id == False: 
-                rec = super(DiInheritedProductPackaging, self).create(vals)            
-            else:
-                #sinon on retourne false -> pas de création avec un message d'erreur
-                rec = False
-                raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements de type Pièce pour un même article.")   
-        else:
-             rec = super(DiInheritedProductPackaging, self).create(vals)
-        return rec
+#     @api.model
+#     def create(self,vals):
+#         #surcharge de la fonction create
+#         if vals["di_type_cond"]=="PIECE": # si le type de conditionnement est PIECE
+#             #recherche de l'enregistrement product.packaging avec un type de conditionnement = PIECE
+#             ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', vals["product_id"]),('di_type_cond', '=', vals["di_type_cond"])], limit=1)
+#             #Si on ne le trouve pas: OK , on créé le packaging
+#             if ProductPack.id == False: 
+#                 rec = super(DiInheritedProductPackaging, self).create(vals)            
+#             else:
+#                 #sinon on retourne false -> pas de création avec un message d'erreur
+#                 rec = False
+#                 raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements de type Pièce pour un même article.")   
+#         else:
+#              rec = super(DiInheritedProductPackaging, self).create(vals)
+#         return rec
+#     
+#     @api.multi
+#     def write(self,vals):   
+#         #surcharge de write
+#         modif_type_cond = False     # initialisation d'une variable       
+#         di_ctx=dict(self._context or {}) # chargement du contexte
+#         for key in vals.items(): # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements
+#             #on est obligé de faire cette boucle car quand on valide la fiche article, pour les conditionnements non modifiés on passe quand même ici avec
+#             # seulement la key product_id donc on au une erreur sur la suite car il ne trouve pas de vals["di_type_cond"]
+#             if key[0] == "di_type_cond": # si on a modifié di_type_cond
+#                 modif_type_cond = True
+#         if modif_type_cond==True:
+#             if vals["di_type_cond"]=="PIECE": # si on a bien un type PIECE
+#                 #recherche de l'enregistrement product.packaging avec un type de conditionnement = PIECE
+#                 ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', vals["di_type_cond"])], limit=1)            
+#                 if ProductPack.id == False: 
+#                     #Si on ne le trouve pas: OK , on créé le packaging
+#                     rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)            
+#                 else:
+#                     rec = False
+#                     #sinon on retourne false -> pas de création avec un message d'erreur
+#                     raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements de type Pièce pour un même article.")   
+#             else:
+#                  rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)            
+#         else:
+#             rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)
+#         return rec   
     
-    @api.multi
-    def write(self,vals):   
-        #surcharge de write
-        modif_type_cond = False     # initialisation d'une variable       
-        di_ctx=dict(self._context or {}) # chargement du contexte
-        for key in vals.items(): # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements
-            #on est obligé de faire cette boucle car quand on valide la fiche article, pour les conditionnements non modifiés on passe quand même ici avec
-            # seulement la key product_id donc on au une erreur sur la suite car il ne trouve pas de vals["di_type_cond"]
-            if key[0] == "di_type_cond": # si on a modifié di_type_cond
-                modif_type_cond = True
-        if modif_type_cond==True:
-            if vals["di_type_cond"]=="PIECE": # si on a bien un type PIECE
-                #recherche de l'enregistrement product.packaging avec un type de conditionnement = PIECE
-                ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', vals["di_type_cond"])], limit=1)            
-                if ProductPack.id == False: 
-                    #Si on ne le trouve pas: OK , on créé le packaging
-                    rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)            
-                else:
-                    rec = False
-                    #sinon on retourne false -> pas de création avec un message d'erreur
-                    raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements de type Pièce pour un même article.")   
-            else:
-                 rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)            
-        else:
-            rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)
-        return rec    
-    
+     #vérifie qu'on a un seul conditionnement pièce par article
+    @api.one
+    @api.constrains('product_id','di_type_cond')
+    def _check_cond_piece_article(self):
+        if self.di_type_cond=="PIECE":
+            ProductPack = self.search([('name','!=',self.name),('product_id', '=', self.product_id.id),('di_type_cond', '=', "PIECE")], limit=1)        
+            if ProductPack:
+                raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements de type Pièce pour un même article.") 
+
+    #vérifie l'unicité du nom du conditionnement pour un article
+    @api.one
+    @api.constrains('name')
+    def _check_nom_unique_article(self):
+        ProductPack = self.search([('name','=',self.name),('product_id', '=', self.product_id.id),('id','!=',self.id)], limit=1)        
+        if ProductPack:
+            raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements avec le même nom pour un même article.") 
+        
