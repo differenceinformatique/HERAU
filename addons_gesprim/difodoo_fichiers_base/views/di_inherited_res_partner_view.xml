@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field eval="99" name="priority"/>
  			<field name="arch" type="xml">
- 				<!-- suppression du code interne à l'emplacement original-->
+ 				<!-- suppression du code interne à l'emplacement initial-->
             	<xpath expr="/form/sheet/notebook/page/group/group/field[@name='ref']" position="replace">                
                 </xpath>
                 <!-- ajout du code interne juste avant le nom -->

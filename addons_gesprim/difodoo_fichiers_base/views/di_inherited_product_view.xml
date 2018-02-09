@@ -1,170 +1,180 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
-        <record id="di_product_template_only_form_view" model="ir.ui.view">
-            <field name="name">di.product.template.only.form.view</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_only_form_view"/>
-            <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='default_code']" position="replace">
-                    
-                </xpath>
-                <xpath expr="//field[@name='list_price']"
-                        position="after">
-                    
-                <!-- On ne peut pas se contenter de mettre <field
-                        name="di_prixmin"/> car sinon on ne peut pas modifier le style du label pour le mettre
-                en italique  -->
-               
-                    <label
-                        for="di_prixmin" string="Prix minimum" style="font-style: oblique;"/>
-                    <field class="oe_inline" name="di_prixmin"
-                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
-                    <label for="di_prixmax" string="Prix maximum" style="font-style: oblique;"/>
-                    <field class="oe_inline" name="di_prixmax"
-                        nolabel="1" style="font-style: oblique;margin-left:5px;"/>
-                </xpath>
-                <xpath expr="//page[@name='notes']" position="after">
-                    <page name="specifs" string="Spécifiques" style="font-style: oblique;">
-                        <group col="12">
-                            <group colspan="8" string="Paramétrage par défaut">
-                                
-                            <!-- On ne peut pas se contenter de mettre <field
-                                    name="di_categorie_id"/> car sinon on ne peut pas modifier le style du label pour le mettre
-                            en italique ni ajouter la désignation sur la même ligne. -->
-                           
-                                <label for="di_categorie_id" string="Catégorie"/>
-                                <div>
-                                    <field class="oe_inline" name="di_categorie_id"/>
-                                    <field class="oe_inline" name="di_categorie_di_des" nolabel="1" readonly="1" style="margin-left:10px;"/>
-                                </div>
-                                <label for="di_origine_id" string="Origine"/>
-                                <div>
-                                    <field class="oe_inline" name="di_origine_id"/>
-                                    <field class="oe_inline" name="di_origine_di_des" nolabel="1" readonly="1" style="margin-left:10px"/>
-                                </div>
-                                <label for="di_marque_id" string="Marque"/>
-                                <div>
-                                    <field class="oe_inline" name="di_marque_id"/>
-                                    <field class="oe_inline"
-                                    name="di_marque_di_des"
-                                    nolabel="1" readonly="1" style="margin-left:10px"/>
-                                </div>
-                                <label for="di_calibre_id" string="Calibre"/>
-                                <div>
-                                    <field class="oe_inline" name="di_calibre_id"/>
-                                    <field class="oe_inline"
-                                    name="di_calibre_di_des"
-                                    nolabel="1" readonly="1" style="margin-left:10px"/>
-                                </div>                                
-                                <label for="di_enlevement_id" string="Enlèvement"/>
-                                <div>
-                                    <field class="oe_inline" name="di_enlevement_id"/>
-                                    <field class="oe_inline"
-                                    name="di_enlevement_di_des"
-                                    nolabel="1" readonly="1" style="margin-left:10px"/>
-                                </div>
-                                <label for="di_producteur_id" string="Producteur"/>
-                                <div>
-                                    <field class="oe_inline"
-                                    context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}"
-                                    domain="[('supplier','=',True)]" name="di_producteur_id"/>
-                                    <field class="oe_inline"
-                                    name="di_producteur_nom"
-                                    nolabel="1" readonly="1" style="margin-left:10px"/>
-                                </div>
-                                
-                                                                
-                            </group>
-                            <group colspan="4">                                
-                                
-                                <field name="di_un_saisie"/>
-                                <field name="di_type_palette" context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging" />
-                                <field name="di_type_colis"  context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>                                     
-                                          
-                            </group>
-                        </group>
-                    </page>
-                </xpath>
-            </field>
-        </record>
-            
-        <record id="di_product_template_form_view" model="ir.ui.view">
-            <field name="name">di.product.template.form.view</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field eval="99" name="priority"/>
-            <field name="arch" type="xml">               
-                
-                 <xpath expr="//label[@for='name']" position="before">
-                    <label class="oe_edit_only" for="default_code" string="Code article"/>
-                    <h1>                        
-                        <field name="default_code" placeholder="Code article" required="True" />                        
-                    </h1>                 
-                </xpath>
-                <xpath expr="//label[@for='name']" position="replace">
-                    <label class="oe_edit_only" for="name" string="Désignation" style="font-style: oblique;"/>
-                </xpath>
-               
-                
-            </field>
-        </record>
-       
-        <record id="di_product_template_tree_view" model="ir.ui.view">
-            <field name="name">di.product.template.tree.view</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_tree_view"/>
-            <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='name']" position="replace">
-                    <field name="name" string="Désignation"/>
-                </xpath>
-                <xpath expr="//field[@name='default_code']" position="replace">
-                    <field name="default_code" string="Code"/>
-                </xpath>                 
-            </field>
-            
-        </record>
-        <record id="di_product_packaging_form_view" model="ir.ui.view">
-            <field name="name">di.product.packaging.form.view</field>
-            <field name="model">product.packaging</field>
-            <field name="inherit_id" ref="product.product_packaging_form_view"/>
-            <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-                <xpath expr="/form/sheet/label[@for='name']" position="replace">
-                    <label string="Libellé conditionnement"/>                   
-                </xpath>
-                         
-                <xpath expr="//group[@name='qty']" position="after">
-                
-                    <group name="specif">       
-                                     
-                        <field name="di_type_cond" />    
-                
-                
-                        <field name="di_qte_cond_inf" attrs="{'invisible':[('di_type_cond','=','PIECE')]}"  />    
-                
-                                                                      
-                        <field name="di_type_colis" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}"  context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/> 
-                        
-                    </group>
-                </xpath>               
-            </field>
-        </record>
-        <record id="product_packaging_search_view" model="ir.ui.view">
-            <field name="name">product.packaging.search.view</field>
-            <field name="model">product.packaging</field>
-            <field eval="15" name="priority"/>
-            <field name="arch" type="xml">
-                <search>
-                    <filter string="Palettes" name="palettes" domain="[('di_type_cond', '=', 'PALETTE')]"/>
-                    <filter string="Colis" name="colis" domain="[('di_type_cond', '=', 'COLIS')]"/>
-                    <filter string="Pièces" name="pieces" domain="[('di_type_cond', '=', 'PIECE')]"/>    
-                </search>    
-            </field>
-            
-        </record>
-                        
-    </data>
+	<data>
+		<record id="di_product_template_only_form_view" model="ir.ui.view">
+			<field name="name">di.product.template.only.form.view</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_only_form_view" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<!-- on masque default_code à son emplacement initial -->
+				<xpath
+					expr="/form/sheet/notebook/page/group/group/field[@name='default_code']"
+					position="replace">
+				</xpath>
+				<!-- on le replace à un autre endroit -->
+				<xpath expr="//label[@for='name']" position="before">
+					<label class="oe_edit_only" for="default_code" string="Code article" />
+					<h1>
+						<field name="default_code" placeholder="Code article"
+							required="True" />
+					</h1>
+				</xpath>
+				<!-- on change le libellé du champ name -->
+				<xpath expr="//label[@for='name']" position="replace">
+					<label class="oe_edit_only" for="name" string="Désignation"
+						style="font-style: oblique;" />
+				</xpath>
+				<!-- ajout ajoute un group pour mettre nos champ sur l'onglet Informations 
+					Générales -->
+				<xpath expr="//group[@name='group_standard_price']" position="after">
+					<group>
+						<field name="di_un_saisie" />
+						<field name="di_type_palette"
+							context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+							domain="[('product_id','=',id),('di_type_cond','=','PALETTE')]"
+							groups="product.group_stock_packaging" />
+						<field name="di_type_colis"
+							context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+							domain="[('product_id','=',id),('di_type_cond','=','COLIS')]"
+							groups="product.group_stock_packaging" />
+					</group>
+				</xpath>
+				<!-- ajout des champs prix max/prix min dans l'onglet Ventes -->
+				<xpath expr="//page[@name='sales']" position="inside">
+					<xpath expr="//field[@name='list_price']" position="after">
+						<group>
+							<group>
+								<!-- On ne peut pas se contenter de mettre <field name="di_prixmin"/> 
+									car sinon on ne peut pas modifier le style du label pour le mettre en italique -->
+
+								<label for="di_prixmin" string="Prix minimum" style="font-style: oblique;" />
+								<field name="di_prixmin" nolabel="1" style="font-style: oblique" />
+
+								<label for="di_prixmax" string="Prix maximum" style="font-style: oblique;" />
+								<field name="di_prixmax" nolabel="1" style="font-style: oblique;" />
+							</group>
+							<group>
+
+							</group>
+						</group>
+					</xpath>
+				</xpath>
+				<!-- ajout onglet Caractéristiques -->
+				<xpath expr="//page[@name='notes']" position="after">
+					<page name="specifs" string="Caractéristiques" style="font-style: oblique;">
+						<group col="12">
+							<group colspan="8" string="Paramétrage par défaut">
+								<!-- On ne peut pas se contenter de mettre <field name="di_categorie_id"/> 
+									car sinon on ne peut pas modifier le style du label pour le mettre en italique 
+									ni ajouter la désignation sur la même ligne. -->
+								<label for="di_categorie_id" string="Catégorie" />
+								<div>
+									<field class="oe_inline" name="di_categorie_id" />
+									<field class="oe_inline" name="di_categorie_di_des"
+										nolabel="1" readonly="1" style="margin-left:40px;" />
+								</div>
+								<label for="di_origine_id" string="Origine" />
+								<div>
+									<field class="oe_inline" name="di_origine_id" />
+									<field class="oe_inline" name="di_origine_di_des"
+										nolabel="1" readonly="1" style="margin-left:40px" />
+								</div>
+								<label for="di_marque_id" string="Marque" />
+								<div>
+									<field class="oe_inline" name="di_marque_id" />
+									<field class="oe_inline" name="di_marque_di_des" nolabel="1"
+										readonly="1" style="margin-left:40px" />
+								</div>
+								<label for="di_calibre_id" string="Calibre" />
+								<div>
+									<field class="oe_inline" name="di_calibre_id" />
+									<field class="oe_inline" name="di_calibre_di_des"
+										nolabel="1" readonly="1" style="margin-left:40px" />
+								</div>
+								<label for="di_enlevement_id" string="Enlèvement" />
+								<div>
+									<field class="oe_inline" name="di_enlevement_id" />
+									<field class="oe_inline" name="di_enlevement_di_des"
+										nolabel="1" readonly="1" style="margin-left:40px" />
+								</div>
+								<label for="di_producteur_id" string="Producteur" />
+								<div>
+									<field class="oe_inline"
+										context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}"
+										domain="[('supplier','=',True)]" name="di_producteur_id" />
+									<field class="oe_inline" name="di_producteur_nom"
+										nolabel="1" readonly="1" style="margin-left:40px" />
+								</div>
+							</group>
+							<group colspan="4">
+
+							</group>
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="di_product_template_tree_view" model="ir.ui.view">
+			<field name="name">di.product.template.tree.view</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_tree_view" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<!-- modification ordre de tri -->
+				<xpath expr="//tree" position="attributes">
+					<attribute name="default_order">default_code</attribute>
+				</xpath>
+				<!-- suppression de la colonne sequence (tri manuel) -->
+				<xpath expr="//field[@name='sequence']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='name']" position="replace">
+					<field name="name" string="Désignation" />
+				</xpath>
+				<xpath expr="//field[@name='default_code']" position="replace">
+					<field name="default_code" string="Code" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="di_product_packaging_form_view" model="ir.ui.view">
+			<field name="name">di.product.packaging.form.view</field>
+			<field name="model">product.packaging</field>
+			<field name="inherit_id" ref="product.product_packaging_form_view" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<xpath expr="/form/sheet/label[@for='name']" position="replace">
+					<label string="Libellé conditionnement" />
+				</xpath>
+				<xpath expr="//group[@name='qty']" position="after">
+					<group name="specif">
+						<field name="di_type_cond" />
+						<field name="di_qte_cond_inf" attrs="{'invisible':[('di_type_cond','=','PIECE')]}" />
+						<field name="di_type_colis"
+							attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}"
+							context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+							domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]"
+							groups="product.group_stock_packaging" />
+					</group>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="product_packaging_search_view" model="ir.ui.view">
+			<field name="name">product.packaging.search.view</field>
+			<field name="model">product.packaging</field>
+			<field eval="15" name="priority" />
+			<field name="arch" type="xml">
+				<search>
+					<filter string="Palettes" name="palettes"
+						domain="[('di_type_cond', '=', 'PALETTE')]" />
+					<filter string="Colis" name="colis"
+						domain="[('di_type_cond', '=', 'COLIS')]" />
+					<filter string="Pièces" name="pieces"
+						domain="[('di_type_cond', '=', 'PIECE')]" />
+				</search>
+			</field>
+		</record>
+	</data>
 </odoo>
