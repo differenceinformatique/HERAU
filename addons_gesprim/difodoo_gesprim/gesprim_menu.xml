@@ -4,9 +4,12 @@
 	<menuitem id="menu_gesprim" name="Gesprim" sequence="309"/> <!-- groups="group_parc_user"/> -->
 	<menuitem id="menu_gesprim_fichiers" name="Fichiers" sequence="10" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_article" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
-	<menuitem id="menu_gesprim_categorie" sequence="100" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_categorie" />
-	<menuitem id="menu_gesprim_origine" sequence="110" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_origine" />
-	<menuitem id="menu_gesprim_marque" sequence="120" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_marque" />
-	<menuitem id="menu_gesprim_calibre" sequence="130" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_calibre" />
-	<menuitem id="menu_gesprim_station" sequence="140" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_station" />             
+	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />
+	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="30" parent="menu_gesprim_fichiers" action="base.action_partner_supplier_form" />
+	<menuitem id="menu_gesprim_tables" name="Tables" sequence="100" parent="menu_gesprim_fichiers" />
+	<menuitem id="menu_gesprim_categorie" sequence="10" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_categorie" />
+	<menuitem id="menu_gesprim_origine" sequence="20" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_origine" />
+	<menuitem id="menu_gesprim_marque" sequence="30" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_marque" />
+	<menuitem id="menu_gesprim_calibre" sequence="40" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_calibre" />
+	<menuitem id="menu_gesprim_station" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" />             
 </odoo>

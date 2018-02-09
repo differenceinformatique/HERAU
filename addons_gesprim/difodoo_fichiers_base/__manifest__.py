@@ -23,7 +23,6 @@
 
     # always loaded
     'data': [
-        "data/di_vues_defaut_article.xml",
         "views/di_inherited_product_view.xml",
         "views/di_inherited_res_partner_view.xml",
         "views/di_tables_view.xml",
