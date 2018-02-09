@@ -59,6 +59,17 @@
 						</group>
 					</xpath>
 				</xpath>
+				<!-- déplacement colisage -->
+				<xpath expr="//group[@name='packaging']" position="replace">
+				</xpath>
+				<xpath expr="//page[@name='general_information']" position="inside">
+					<group name="Colisage" string="Packaging" colspan="4"
+						attrs="{'invisible':['|', ('type', 'not in', ['product', 'consu']), ('product_variant_count', '>', 1)]}"
+						groups="product.group_stock_packaging">
+						<field name="packaging_ids" nolabel="1"
+							context="{'default_product_id': product_variant_id,'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" />
+					</group>
+				</xpath>
 				<!-- ajout onglet Caractéristiques -->
 				<xpath expr="//page[@name='notes']" position="after">
 					<page name="specifs" string="Caractéristiques" style="font-style: oblique;">
@@ -177,7 +188,7 @@
 		</record>
 	</data>
 
-	<!-- mode liste en priorité - tous les articles-->
+	<!-- mode liste en priorité - tous les articles -->
 	<record id="product.product_template_action_all" model="ir.actions.act_window">
 		<field name="name">Products</field>
 		<field name="type">ir.actions.act_window</field>
@@ -191,7 +202,7 @@
 		<field name="type">ir.actions.act_window</field>
 		<field name="res_model">product.template</field>
 		<field name="view_mode">tree,kanban,form</field>
-		<field name="view_id" ref="product.product_template_tree_view"/>
+		<field name="view_id" ref="product.product_template_tree_view" />
 		<field eval="99" name="priority" />
 	</record>
 	<!-- mode liste en priorité - module achat -->
