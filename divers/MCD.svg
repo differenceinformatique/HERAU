@@ -4,9 +4,26 @@
 
 <svg width="847" height="1165" view_box="0 0 847 1165"
 xmlns="http://www.w3.org/2000/svg"
-xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Fri, 12 Jan 2018 15:27:16</desc>
+xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Fri, 09 Feb 2018 14:05:03</desc>
 
 <rect id="frame" x="0" y="0" width="847" height="1165" fill="#f7f7f7" stroke="none" stroke-width="0"/>
+
+<!-- Association TEXTE EDITION -->
+<line x1="786" y1="44" x2="350" y2="402" stroke="#4393c3" stroke-width="1"/>
+<text x="727" y="69.18967801036418" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="194" y1="549" x2="350" y2="402" stroke="#4393c3" stroke-width="1"/>
+<text x="239" y="521.5335882203585" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-TEXTE EDITION">
+	<path d="M 392 349 a 14 14 90 0 1 14 14 V 375 h -112 V 363 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 406 375.0 v 66 a 14 14 90 0 1 -14 14 H 308 a 14 14 90 0 1 -14 -14 V 375.0 H 112" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="294" y="349" width="112" height="106" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="294" y1="375" x2="406" y2="375" stroke="#4393c3" stroke-width="1"/>
+	<text x="301" y="367.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TEXTE EDITION</text>
+	<text x="301" y="393.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affDevis</text>
+	<text x="301" y="411.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affCde</text>
+	<text x="301" y="429.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affBL</text>
+	<text x="301" y="447.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affFac</text>
+</g>
 
 <!-- Association ENLEVEMENT DEFAUT -->
 <line x1="60" y1="835" x2="350" y2="1121" stroke="#4393c3" stroke-width="1"/>
@@ -21,31 +38,98 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<text x="280" y="1113.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ENLEVEMENT DEFAUT</text>
 </g>
 
-<!-- Association TIERSADR CDE -->
-<line x1="350" y1="158" x2="194" y2="158" stroke="#4393c3" stroke-width="1"/>
-<text x="278" y="175.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="194" y1="549" x2="194" y2="158" stroke="#4393c3" stroke-width="1"/>
+<!-- Association TIERSADR FAC -->
+<line x1="350" y1="158" x2="194" y2="402" stroke="#4393c3" stroke-width="1"/>
+<text x="278" y="226.8711207273105" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="194" y1="549" x2="194" y2="402" stroke="#4393c3" stroke-width="1"/>
 <text x="199.0" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-TIERSADR CDE">
-	<path d="M 233 132 a 14 14 90 0 1 14 14 V 158 h -106 V 146 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 247 158.0 v 12 a 14 14 90 0 1 -14 14 H 155 a 14 14 90 0 1 -14 -14 V 158.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="141" y="132" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="141" y1="158" x2="247" y2="158" stroke="#4393c3" stroke-width="1"/>
-	<text x="148" y="150.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR CDE</text>
-	<text x="148" y="176.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+<g id="association-TIERSADR FAC">
+	<path d="M 233 376 a 14 14 90 0 1 14 14 V 402 h -106 V 390 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 247 402.0 v 12 a 14 14 90 0 1 -14 14 H 155 a 14 14 90 0 1 -14 -14 V 402.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="141" y="376" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="141" y1="402" x2="247" y2="402" stroke="#4393c3" stroke-width="1"/>
+	<text x="148" y="394.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR FAC</text>
+	<text x="148" y="420.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
 </g>
 
-<!-- Association PROD DEFAUT -->
-<line x1="60" y1="835" x2="194" y2="644" stroke="#4393c3" stroke-width="1"/>
-<text x="108" y="785.365417615653" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<line x1="194" y1="549" x2="194" y2="644" stroke="#4393c3" stroke-width="1"/>
-<text x="199.0" y="610" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<g id="association-PROD DEFAUT">
-	<path d="M 232 618 a 14 14 90 0 1 14 14 V 644 h -104 V 632 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 246 644.0 v 12 a 14 14 90 0 1 -14 14 H 156 a 14 14 90 0 1 -14 -14 V 644.0 H 104" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="142" y="618" width="104" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="142" y1="644" x2="246" y2="644" stroke="#4393c3" stroke-width="1"/>
-	<text x="149" y="636.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PROD DEFAUT</text>
+<!-- Association EMBALLAGE DEFAUT -->
+<line x1="60" y1="835" x2="350" y2="644" stroke="#4393c3" stroke-width="1"/>
+<text x="108" y="818.6242456522612" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="522" y1="644" x2="350" y2="644" stroke="#4393c3" stroke-width="1"/>
+<text x="428" y="661.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<g id="association-EMBALLAGE DEFAUT">
+	<path d="M 408 618 a 14 14 90 0 1 14 14 V 644 h -144 V 632 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 422 644.0 v 12 a 14 14 90 0 1 -14 14 H 292 a 14 14 90 0 1 -14 -14 V 644.0 H 144" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="278" y="618" width="144" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="278" y1="644" x2="422" y2="644" stroke="#4393c3" stroke-width="1"/>
+	<text x="285" y="636.6" fill="#000000" font-family="Trebuchet MS" font-size="14">EMBALLAGE DEFAUT</text>
+</g>
+
+<!-- Association TEXTE ENTETE -->
+<line x1="786" y1="44" x2="656" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="769.0885086133211" y="96" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="786" y1="549" x2="656" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="764.1669998083628" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-TEXTE ENTETE">
+	<path d="M 696 272 a 14 14 90 0 1 14 14 V 298 h -108 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 710 298.0 v 12 a 14 14 90 0 1 -14 14 H 616 a 14 14 90 0 1 -14 -14 V 298.0 H 108" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="602" y="272" width="108" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="602" y1="298" x2="710" y2="298" stroke="#4393c3" stroke-width="1"/>
+	<text x="609" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TEXTE ENTETE</text>
+</g>
+
+<!-- Association LISTE ADR -->
+<line x1="350" y1="158" x2="350" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="355.0" y="264" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<line x1="194" y1="549" x2="350" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="200.14458281376494" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-LISTE ADR">
+	<path d="M 387 272 a 14 14 90 0 1 14 14 V 298 h -102 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 401 298.0 v 12 a 14 14 90 0 1 -14 14 H 313 a 14 14 90 0 1 -14 -14 V 298.0 H 102" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="299" y="272" width="102" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="299" y1="298" x2="401" y2="298" stroke="#4393c3" stroke-width="1"/>
+	<text x="317" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">LISTE ADR</text>
+	<text x="306" y="316.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+</g>
+
+<!-- Association PIECEADR FAC -->
+<line x1="350" y1="158" x2="522" y2="402" stroke="#4393c3" stroke-width="1"/>
+<text x="401" y="220.62141597143278" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="786" y1="549" x2="522" y2="402" stroke="#4393c3" stroke-width="1"/>
+<text x="710" y="533.8260024888773" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-PIECEADR FAC">
+	<path d="M 561 376 a 14 14 90 0 1 14 14 V 402 h -106 V 390 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 575 402.0 v 12 a 14 14 90 0 1 -14 14 H 483 a 14 14 90 0 1 -14 -14 V 402.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="469" y="376" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="469" y1="402" x2="575" y2="402" stroke="#4393c3" stroke-width="1"/>
+	<text x="476" y="394.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PIECEADR FAC</text>
+</g>
+
+<!-- Association TIERSADR DEV -->
+<line x1="350" y1="158" x2="194" y2="44" stroke="#4393c3" stroke-width="1"/>
+<text x="278" y="135.8506707068615" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="194" y1="549" x2="194" y2="44" stroke="#4393c3" stroke-width="1"/>
+<text x="199.0" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-TIERSADR DEV">
+	<path d="M 233 18 a 14 14 90 0 1 14 14 V 44 h -106 V 32 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 247 44.0 v 12 a 14 14 90 0 1 -14 14 H 155 a 14 14 90 0 1 -14 -14 V 44.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="141" y="18" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="141" y1="44" x2="247" y2="44" stroke="#4393c3" stroke-width="1"/>
+	<text x="148" y="36.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR DEV</text>
+	<text x="148" y="62.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+</g>
+
+<!-- Association PIECEADR DEV -->
+<line x1="350" y1="158" x2="522" y2="44" stroke="#4393c3" stroke-width="1"/>
+<text x="401" y="139.42812271245043" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="786" y1="549" x2="522" y2="44" stroke="#4393c3" stroke-width="1"/>
+<text x="763.9175121255803" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-PIECEADR DEV">
+	<path d="M 561 18 a 14 14 90 0 1 14 14 V 44 h -106 V 32 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 575 44.0 v 12 a 14 14 90 0 1 -14 14 H 483 a 14 14 90 0 1 -14 -14 V 44.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="469" y="18" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="469" y1="44" x2="575" y2="44" stroke="#4393c3" stroke-width="1"/>
+	<text x="476" y="36.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PIECEADR DEV</text>
 </g>
 
 <!-- Association TARIF -->
@@ -66,143 +150,6 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<text x="26" y="585.6" fill="#000000" font-family="Trebuchet MS" font-size="14">prix</text>
 </g>
 
-<!-- Association PIECEADR DEV -->
-<line x1="350" y1="158" x2="522" y2="44" stroke="#4393c3" stroke-width="1"/>
-<text x="401" y="139.42812271245043" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="786" y1="549" x2="522" y2="44" stroke="#4393c3" stroke-width="1"/>
-<text x="763.9175121255803" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-PIECEADR DEV">
-	<path d="M 561 18 a 14 14 90 0 1 14 14 V 44 h -106 V 32 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 575 44.0 v 12 a 14 14 90 0 1 -14 14 H 483 a 14 14 90 0 1 -14 -14 V 44.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="469" y="18" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="469" y1="44" x2="575" y2="44" stroke="#4393c3" stroke-width="1"/>
-	<text x="476" y="36.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PIECEADR DEV</text>
-</g>
-
-<!-- Association TEXTE ENTETE -->
-<line x1="786" y1="44" x2="656" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="769.0885086133211" y="96" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="786" y1="549" x2="656" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="764.1669998083628" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-TEXTE ENTETE">
-	<path d="M 696 272 a 14 14 90 0 1 14 14 V 298 h -108 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 710 298.0 v 12 a 14 14 90 0 1 -14 14 H 616 a 14 14 90 0 1 -14 -14 V 298.0 H 108" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="602" y="272" width="108" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="602" y1="298" x2="710" y2="298" stroke="#4393c3" stroke-width="1"/>
-	<text x="609" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TEXTE ENTETE</text>
-</g>
-
-<!-- Association LIEN_PIECES -->
-<line x1="786" y1="549" x2="522" y2="480" stroke="#4393c3" stroke-width="1"/>
-<text x="710" y="550.9139739005624" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<line x1="194" y1="549" x2="522" y2="480" stroke="#4393c3" stroke-width="1"/>
-<text x="239" y="555.9782782425796" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-LIEN_PIECES">
-	<path d="M 555 454 a 14 14 90 0 1 14 14 V 480 h -94 V 468 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 569 480.0 v 12 a 14 14 90 0 1 -14 14 H 489 a 14 14 90 0 1 -14 -14 V 480.0 H 94" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="475" y="454" width="94" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="475" y1="480" x2="569" y2="480" stroke="#4393c3" stroke-width="1"/>
-	<text x="482" y="472.6" fill="#000000" font-family="Trebuchet MS" font-size="14">LIEN_PIECES</text>
-</g>
-
-<!-- Association PIECEADR BL -->
-<line x1="350" y1="158" x2="522" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="401" y="193.49258159474573" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="786" y1="549" x2="522" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="737.9024599180615" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-PIECEADR BL">
-	<path d="M 556 272 a 14 14 90 0 1 14 14 V 298 h -96 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 570 298.0 v 12 a 14 14 90 0 1 -14 14 H 488 a 14 14 90 0 1 -14 -14 V 298.0 H 96" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="474" y="272" width="96" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="474" y1="298" x2="570" y2="298" stroke="#4393c3" stroke-width="1"/>
-	<text x="481" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PIECEADR BL</text>
-</g>
-
-<!-- Association CALIBRE DEFAUT -->
-<line x1="60" y1="835" x2="350" y2="1026" stroke="#4393c3" stroke-width="1"/>
-<text x="108" y="860.3757543477388" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<line x1="522" y1="1026" x2="350" y2="1026" stroke="#4393c3" stroke-width="1"/>
-<text x="458" y="1043.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<g id="association-CALIBRE DEFAUT">
-	<path d="M 397 1000 a 14 14 90 0 1 14 14 V 1026 h -122 V 1014 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 411 1026.0 v 12 a 14 14 90 0 1 -14 14 H 303 a 14 14 90 0 1 -14 -14 V 1026.0 H 122" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="289" y="1000" width="122" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="289" y1="1026" x2="411" y2="1026" stroke="#4393c3" stroke-width="1"/>
-	<text x="296" y="1018.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CALIBRE DEFAUT</text>
-</g>
-
-<!-- Association TEXTE EDITION -->
-<line x1="786" y1="44" x2="350" y2="402" stroke="#4393c3" stroke-width="1"/>
-<text x="727" y="69.18967801036418" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="194" y1="549" x2="350" y2="402" stroke="#4393c3" stroke-width="1"/>
-<text x="239" y="521.5335882203585" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
-<g id="association-TEXTE EDITION">
-	<path d="M 392 349 a 14 14 90 0 1 14 14 V 375 h -112 V 363 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 406 375.0 v 66 a 14 14 90 0 1 -14 14 H 308 a 14 14 90 0 1 -14 -14 V 375.0 H 112" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="294" y="349" width="112" height="106" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="294" y1="375" x2="406" y2="375" stroke="#4393c3" stroke-width="1"/>
-	<text x="301" y="367.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TEXTE EDITION</text>
-	<text x="301" y="393.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affDevis</text>
-	<text x="301" y="411.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affCde</text>
-	<text x="301" y="429.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affBL</text>
-	<text x="301" y="447.6" fill="#000000" font-family="Trebuchet MS" font-size="14">affFac</text>
-</g>
-
-<!-- Association PIECEADR FAC -->
-<line x1="350" y1="158" x2="522" y2="402" stroke="#4393c3" stroke-width="1"/>
-<text x="401" y="220.62141597143278" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="786" y1="549" x2="522" y2="402" stroke="#4393c3" stroke-width="1"/>
-<text x="710" y="533.8260024888773" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-PIECEADR FAC">
-	<path d="M 561 376 a 14 14 90 0 1 14 14 V 402 h -106 V 390 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 575 402.0 v 12 a 14 14 90 0 1 -14 14 H 483 a 14 14 90 0 1 -14 -14 V 402.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="469" y="376" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="469" y1="402" x2="575" y2="402" stroke="#4393c3" stroke-width="1"/>
-	<text x="476" y="394.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PIECEADR FAC</text>
-</g>
-
-<!-- Association PARAM EMB/PAL -->
-<line x1="60" y1="835" x2="350" y2="549" stroke="#4393c3" stroke-width="1"/>
-<text x="108" y="802.5915455523317" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<line x1="522" y1="644" x2="350" y2="549" stroke="#4393c3" stroke-width="1"/>
-<text x="459.3315199926054" y="601" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<line x1="194" y1="549" x2="350" y2="549" stroke="#4393c3" stroke-width="1"/>
-<text x="239" y="566.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<g id="association-PARAM EMB/PAL">
-	<path d="M 396 523 a 14 14 90 0 1 14 14 V 549 h -120 V 537 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 410 549.0 v 12 a 14 14 90 0 1 -14 14 H 304 a 14 14 90 0 1 -14 -14 V 549.0 H 120" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="290" y="523" width="120" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="290" y1="549" x2="410" y2="549" stroke="#4393c3" stroke-width="1"/>
-	<text x="297" y="541.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PARAM EMB/PAL</text>
-</g>
-
-<!-- Association TIERSADR BL -->
-<line x1="350" y1="158" x2="194" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="278" y="197.81330387815333" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="194" y1="549" x2="194" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="199.0" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-TIERSADR BL">
-	<path d="M 231 272 a 14 14 90 0 1 14 14 V 298 h -102 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 245 298.0 v 12 a 14 14 90 0 1 -14 14 H 157 a 14 14 90 0 1 -14 -14 V 298.0 H 102" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="143" y="272" width="102" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="143" y1="298" x2="245" y2="298" stroke="#4393c3" stroke-width="1"/>
-	<text x="153" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR BL</text>
-	<text x="150" y="316.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
-</g>
-
-<!-- Association TEXTE PIED -->
-<line x1="786" y1="44" x2="786" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="791.0" y="96" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="786" y1="549" x2="786" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="791.0" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-TEXTE PIED">
-	<path d="M 816 272 a 14 14 90 0 1 14 14 V 298 h -88 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 830 298.0 v 12 a 14 14 90 0 1 -14 14 H 756 a 14 14 90 0 1 -14 -14 V 298.0 H 88" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="742" y="272" width="88" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="742" y1="298" x2="830" y2="298" stroke="#4393c3" stroke-width="1"/>
-	<text x="749" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TEXTE PIED</text>
-</g>
-
 <!-- Association PIECEADR CDE -->
 <line x1="350" y1="158" x2="522" y2="158" stroke="#4393c3" stroke-width="1"/>
 <text x="401" y="175.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
@@ -214,19 +161,6 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<rect x="469" y="132" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
 	<line x1="469" y1="158" x2="575" y2="158" stroke="#4393c3" stroke-width="1"/>
 	<text x="476" y="150.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PIECEADR CDE</text>
-</g>
-
-<!-- Association CATEGORIE DEFAUT -->
-<line x1="60" y1="835" x2="350" y2="739" stroke="#4393c3" stroke-width="1"/>
-<text x="108" y="835.185118667568" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<line x1="522" y1="739" x2="350" y2="739" stroke="#4393c3" stroke-width="1"/>
-<text x="450" y="756.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<g id="association-CATEGORIE DEFAUT">
-	<path d="M 407 713 a 14 14 90 0 1 14 14 V 739 h -142 V 727 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 421 739.0 v 12 a 14 14 90 0 1 -14 14 H 293 a 14 14 90 0 1 -14 -14 V 739.0 H 142" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="279" y="713" width="142" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="279" y1="739" x2="421" y2="739" stroke="#4393c3" stroke-width="1"/>
-	<text x="286" y="731.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CATEGORIE DEFAUT</text>
 </g>
 
 <!-- Association ORIGINE DEFAUT -->
@@ -242,18 +176,59 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<text x="296" y="923.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ORIGINE DEFAUT</text>
 </g>
 
-<!-- Association TIERSADR FAC -->
-<line x1="350" y1="158" x2="194" y2="402" stroke="#4393c3" stroke-width="1"/>
-<text x="278" y="226.8711207273105" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="194" y1="549" x2="194" y2="402" stroke="#4393c3" stroke-width="1"/>
+<!-- Association TIERSADR CDE -->
+<line x1="350" y1="158" x2="194" y2="158" stroke="#4393c3" stroke-width="1"/>
+<text x="278" y="175.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="194" y1="549" x2="194" y2="158" stroke="#4393c3" stroke-width="1"/>
 <text x="199.0" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-TIERSADR FAC">
-	<path d="M 233 376 a 14 14 90 0 1 14 14 V 402 h -106 V 390 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 247 402.0 v 12 a 14 14 90 0 1 -14 14 H 155 a 14 14 90 0 1 -14 -14 V 402.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="141" y="376" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="141" y1="402" x2="247" y2="402" stroke="#4393c3" stroke-width="1"/>
-	<text x="148" y="394.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR FAC</text>
-	<text x="148" y="420.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+<g id="association-TIERSADR CDE">
+	<path d="M 233 132 a 14 14 90 0 1 14 14 V 158 h -106 V 146 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 247 158.0 v 12 a 14 14 90 0 1 -14 14 H 155 a 14 14 90 0 1 -14 -14 V 158.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="141" y="132" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="141" y1="158" x2="247" y2="158" stroke="#4393c3" stroke-width="1"/>
+	<text x="148" y="150.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR CDE</text>
+	<text x="148" y="176.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+</g>
+
+<!-- Association PIECEADR BL -->
+<line x1="350" y1="158" x2="522" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="401" y="193.49258159474573" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="786" y1="549" x2="522" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="737.9024599180615" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-PIECEADR BL">
+	<path d="M 556 272 a 14 14 90 0 1 14 14 V 298 h -96 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 570 298.0 v 12 a 14 14 90 0 1 -14 14 H 488 a 14 14 90 0 1 -14 -14 V 298.0 H 96" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="474" y="272" width="96" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="474" y1="298" x2="570" y2="298" stroke="#4393c3" stroke-width="1"/>
+	<text x="481" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PIECEADR BL</text>
+</g>
+
+<!-- Association TEXTE PIED -->
+<line x1="786" y1="44" x2="786" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="791.0" y="96" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="786" y1="549" x2="786" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="791.0" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-TEXTE PIED">
+	<path d="M 816 272 a 14 14 90 0 1 14 14 V 298 h -88 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 830 298.0 v 12 a 14 14 90 0 1 -14 14 H 756 a 14 14 90 0 1 -14 -14 V 298.0 H 88" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="742" y="272" width="88" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="742" y1="298" x2="830" y2="298" stroke="#4393c3" stroke-width="1"/>
+	<text x="749" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TEXTE PIED</text>
+</g>
+
+<!-- Association PARAM EMB/PAL -->
+<line x1="60" y1="835" x2="350" y2="549" stroke="#4393c3" stroke-width="1"/>
+<text x="108" y="802.5915455523317" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="522" y1="644" x2="350" y2="549" stroke="#4393c3" stroke-width="1"/>
+<text x="459.3315199926054" y="601" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="194" y1="549" x2="350" y2="549" stroke="#4393c3" stroke-width="1"/>
+<text x="239" y="566.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<g id="association-PARAM EMB/PAL">
+	<path d="M 396 523 a 14 14 90 0 1 14 14 V 549 h -120 V 537 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 410 549.0 v 12 a 14 14 90 0 1 -14 14 H 304 a 14 14 90 0 1 -14 -14 V 549.0 H 120" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="290" y="523" width="120" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="290" y1="549" x2="410" y2="549" stroke="#4393c3" stroke-width="1"/>
+	<text x="297" y="541.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PARAM EMB/PAL</text>
 </g>
 
 <!-- Association EST COMPOSE -->
@@ -283,45 +258,70 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<text x="741" y="880.6" fill="#000000" font-family="Trebuchet MS" font-size="14">montant</text>
 </g>
 
-<!-- Association LISTE ADR -->
-<line x1="350" y1="158" x2="350" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="355.0" y="264" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
-<line x1="194" y1="549" x2="350" y2="298" stroke="#4393c3" stroke-width="1"/>
-<text x="200.14458281376494" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-LISTE ADR">
-	<path d="M 387 272 a 14 14 90 0 1 14 14 V 298 h -102 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 401 298.0 v 12 a 14 14 90 0 1 -14 14 H 313 a 14 14 90 0 1 -14 -14 V 298.0 H 102" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="299" y="272" width="102" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="299" y1="298" x2="401" y2="298" stroke="#4393c3" stroke-width="1"/>
-	<text x="317" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">LISTE ADR</text>
-	<text x="306" y="316.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+<!-- Association PROD DEFAUT -->
+<line x1="60" y1="835" x2="194" y2="644" stroke="#4393c3" stroke-width="1"/>
+<text x="108" y="785.365417615653" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="194" y1="549" x2="194" y2="644" stroke="#4393c3" stroke-width="1"/>
+<text x="199.0" y="610" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<g id="association-PROD DEFAUT">
+	<path d="M 232 618 a 14 14 90 0 1 14 14 V 644 h -104 V 632 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 246 644.0 v 12 a 14 14 90 0 1 -14 14 H 156 a 14 14 90 0 1 -14 -14 V 644.0 H 104" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="142" y="618" width="104" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="142" y1="644" x2="246" y2="644" stroke="#4393c3" stroke-width="1"/>
+	<text x="149" y="636.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PROD DEFAUT</text>
 </g>
 
-<!-- Association EMBALLAGE DEFAUT -->
-<line x1="60" y1="835" x2="350" y2="644" stroke="#4393c3" stroke-width="1"/>
-<text x="108" y="818.6242456522612" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<line x1="522" y1="644" x2="350" y2="644" stroke="#4393c3" stroke-width="1"/>
-<text x="428" y="661.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<g id="association-EMBALLAGE DEFAUT">
-	<path d="M 408 618 a 14 14 90 0 1 14 14 V 644 h -144 V 632 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 422 644.0 v 12 a 14 14 90 0 1 -14 14 H 292 a 14 14 90 0 1 -14 -14 V 644.0 H 144" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="278" y="618" width="144" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="278" y1="644" x2="422" y2="644" stroke="#4393c3" stroke-width="1"/>
-	<text x="285" y="636.6" fill="#000000" font-family="Trebuchet MS" font-size="14">EMBALLAGE DEFAUT</text>
+<!-- Association LIEN_PIECES -->
+<line x1="786" y1="549" x2="522" y2="480" stroke="#4393c3" stroke-width="1"/>
+<text x="710" y="550.9139739005624" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="194" y1="549" x2="522" y2="480" stroke="#4393c3" stroke-width="1"/>
+<text x="239" y="555.9782782425796" fill="#b2182b" font-family="Verdana" font-size="12">0,N</text>
+<g id="association-LIEN_PIECES">
+	<path d="M 555 454 a 14 14 90 0 1 14 14 V 480 h -94 V 468 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 569 480.0 v 12 a 14 14 90 0 1 -14 14 H 489 a 14 14 90 0 1 -14 -14 V 480.0 H 94" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="475" y="454" width="94" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="475" y1="480" x2="569" y2="480" stroke="#4393c3" stroke-width="1"/>
+	<text x="482" y="472.6" fill="#000000" font-family="Trebuchet MS" font-size="14">LIEN_PIECES</text>
 </g>
 
-<!-- Association TIERSADR DEV -->
-<line x1="350" y1="158" x2="194" y2="44" stroke="#4393c3" stroke-width="1"/>
-<text x="278" y="135.8506707068615" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
-<line x1="194" y1="549" x2="194" y2="44" stroke="#4393c3" stroke-width="1"/>
+<!-- Association CATEGORIE DEFAUT -->
+<line x1="60" y1="835" x2="350" y2="739" stroke="#4393c3" stroke-width="1"/>
+<text x="108" y="835.185118667568" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="522" y1="739" x2="350" y2="739" stroke="#4393c3" stroke-width="1"/>
+<text x="450" y="756.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<g id="association-CATEGORIE DEFAUT">
+	<path d="M 407 713 a 14 14 90 0 1 14 14 V 739 h -142 V 727 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 421 739.0 v 12 a 14 14 90 0 1 -14 14 H 293 a 14 14 90 0 1 -14 -14 V 739.0 H 142" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="279" y="713" width="142" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="279" y1="739" x2="421" y2="739" stroke="#4393c3" stroke-width="1"/>
+	<text x="286" y="731.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CATEGORIE DEFAUT</text>
+</g>
+
+<!-- Association TIERSADR BL -->
+<line x1="350" y1="158" x2="194" y2="298" stroke="#4393c3" stroke-width="1"/>
+<text x="278" y="197.81330387815333" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<line x1="194" y1="549" x2="194" y2="298" stroke="#4393c3" stroke-width="1"/>
 <text x="199.0" y="497" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
-<g id="association-TIERSADR DEV">
-	<path d="M 233 18 a 14 14 90 0 1 14 14 V 44 h -106 V 32 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
-	<path d="M 247 44.0 v 12 a 14 14 90 0 1 -14 14 H 155 a 14 14 90 0 1 -14 -14 V 44.0 H 106" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
-	<rect x="141" y="18" width="106" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
-	<line x1="141" y1="44" x2="247" y2="44" stroke="#4393c3" stroke-width="1"/>
-	<text x="148" y="36.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR DEV</text>
-	<text x="148" y="62.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+<g id="association-TIERSADR BL">
+	<path d="M 231 272 a 14 14 90 0 1 14 14 V 298 h -102 V 286 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 245 298.0 v 12 a 14 14 90 0 1 -14 14 H 157 a 14 14 90 0 1 -14 -14 V 298.0 H 102" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="143" y="272" width="102" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="143" y1="298" x2="245" y2="298" stroke="#4393c3" stroke-width="1"/>
+	<text x="153" y="290.6" fill="#000000" font-family="Trebuchet MS" font-size="14">TIERSADR BL</text>
+	<text x="150" y="316.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_adresse</text>
+</g>
+
+<!-- Association CALIBRE DEFAUT -->
+<line x1="60" y1="835" x2="350" y2="1026" stroke="#4393c3" stroke-width="1"/>
+<text x="108" y="860.3757543477388" fill="#b2182b" font-family="Verdana" font-size="12">1,1</text>
+<line x1="522" y1="1026" x2="350" y2="1026" stroke="#4393c3" stroke-width="1"/>
+<text x="458" y="1043.0" fill="#b2182b" font-family="Verdana" font-size="12">0,1</text>
+<g id="association-CALIBRE DEFAUT">
+	<path d="M 397 1000 a 14 14 90 0 1 14 14 V 1026 h -122 V 1014 a 14 14 90 0 1 14 -14" fill="#92c5de" stroke="#92c5de" stroke-width="0"/>
+	<path d="M 411 1026.0 v 12 a 14 14 90 0 1 -14 14 H 303 a 14 14 90 0 1 -14 -14 V 1026.0 H 122" fill="#d1e5f0" stroke="#d1e5f0" stroke-width="0"/>
+	<rect x="289" y="1000" width="122" height="52" fill="none" rx="14" stroke="#4393c3" stroke-width="1.5"/>
+	<line x1="289" y1="1026" x2="411" y2="1026" stroke="#4393c3" stroke-width="1"/>
+	<text x="296" y="1018.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CALIBRE DEFAUT</text>
 </g>
 
 <!-- Entity ENLEVEMENT -->
@@ -336,92 +336,6 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<text x="471" y="1130.6" fill="#000000" font-family="Trebuchet MS" font-size="14">emlevement_id</text>
 	<line x1="471" y1="1133.0" x2="572" y2="1133.0" stroke="#000000" stroke-width="1"/>
 	<text x="471" y="1148.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
-</g>
-
-<!-- Entity EMBALLAGE -->
-<g id="entity-EMBALLAGE">
-	<g id="frame-EMBALLAGE">
-		<rect x="454" y="609" width="136" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
-		<rect x="454" y="635.0" width="136" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
-		<rect x="454" y="609" width="136" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
-		<line x1="454" y1="635" x2="590" y2="635" stroke="#d6604d" stroke-width="1"/>
-	</g>
-	<text x="484" y="627.6" fill="#000000" font-family="Trebuchet MS" font-size="14">EMBALLAGE</text>
-	<text x="459" y="653.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_emballage_id</text>
-	<line x1="459" y1="656.0" x2="584" y2="656.0" stroke="#000000" stroke-width="1"/>
-	<text x="459" y="671.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
-</g>
-
-<!-- Entity LIBELLE TARIF -->
-<g id="entity-LIBELLE TARIF">
-	<g id="frame-LIBELLE TARIF">
-		<rect x="9" y="254" width="102" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
-		<rect x="9" y="280.0" width="102" height="62" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
-		<rect x="9" y="254" width="102" height="88" fill="none" stroke="#d6604d" stroke-width="1.5"/>
-		<line x1="9" y1="280" x2="111" y2="280" stroke="#d6604d" stroke-width="1"/>
-	</g>
-	<text x="14" y="272.6" fill="#000000" font-family="Trebuchet MS" font-size="14">LIBELLE TARIF</text>
-	<text x="14" y="298.6" fill="#000000" font-family="Trebuchet MS" font-size="14">codetarif_id</text>
-	<line x1="14" y1="301.0" x2="94" y2="301.0" stroke="#000000" stroke-width="1"/>
-	<text x="14" y="316.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_tarif</text>
-	<text x="14" y="334.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
-</g>
-
-<!-- Entity ORIGINE -->
-<g id="entity-ORIGINE">
-	<g id="frame-ORIGINE">
-		<rect x="484" y="896" width="76" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
-		<rect x="484" y="922.0" width="76" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
-		<rect x="484" y="896" width="76" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
-		<line x1="484" y1="922" x2="560" y2="922" stroke="#d6604d" stroke-width="1"/>
-	</g>
-	<text x="495" y="914.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ORIGINE</text>
-	<text x="489" y="940.6" fill="#000000" font-family="Trebuchet MS" font-size="14">origine_id</text>
-	<line x1="489" y1="943.0" x2="554" y2="943.0" stroke="#000000" stroke-width="1"/>
-	<text x="489" y="958.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
-</g>
-
-<!-- Entity CALIBRE -->
-<g id="entity-CALIBRE">
-	<g id="frame-CALIBRE">
-		<rect x="484" y="991" width="76" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
-		<rect x="484" y="1017.0" width="76" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
-		<rect x="484" y="991" width="76" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
-		<line x1="484" y1="1017" x2="560" y2="1017" stroke="#d6604d" stroke-width="1"/>
-	</g>
-	<text x="495" y="1009.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CALIBRE</text>
-	<text x="489" y="1035.6" fill="#000000" font-family="Trebuchet MS" font-size="14">calibre_id</text>
-	<line x1="489" y1="1038.0" x2="554" y2="1038.0" stroke="#000000" stroke-width="1"/>
-	<text x="489" y="1053.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
-</g>
-
-<!-- Entity CATEGORIE -->
-<g id="entity-CATEGORIE">
-	<g id="frame-CATEGORIE">
-		<rect x="476" y="704" width="92" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
-		<rect x="476" y="730.0" width="92" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
-		<rect x="476" y="704" width="92" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
-		<line x1="476" y1="730" x2="568" y2="730" stroke="#d6604d" stroke-width="1"/>
-	</g>
-	<text x="485" y="722.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CATEGORIE</text>
-	<text x="481" y="748.6" fill="#000000" font-family="Trebuchet MS" font-size="14">categorie_id</text>
-	<line x1="481" y1="751.0" x2="562" y2="751.0" stroke="#000000" stroke-width="1"/>
-	<text x="481" y="766.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
-</g>
-
-<!-- Entity PARTNER -->
-<g id="entity-PARTNER">
-	<g id="frame-PARTNER">
-		<rect x="154" y="505" width="80" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
-		<rect x="154" y="531.0" width="80" height="62" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
-		<rect x="154" y="505" width="80" height="88" fill="none" stroke="#d6604d" stroke-width="1.5"/>
-		<line x1="154" y1="531" x2="234" y2="531" stroke="#d6604d" stroke-width="1"/>
-	</g>
-	<text x="164" y="523.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PARTNER</text>
-	<text x="159" y="549.6" fill="#000000" font-family="Trebuchet MS" font-size="14">partner_id</text>
-	<line x1="159" y1="552.0" x2="228" y2="552.0" stroke="#000000" stroke-width="1"/>
-	<text x="159" y="567.6" fill="#000000" font-family="Trebuchet MS" font-size="14">name</text>
-	<text x="159" y="585.6" fill="#000000" font-family="Trebuchet MS" font-size="14">rais_soc</text>
 </g>
 
 <!-- Entity ARTICLE -->
@@ -440,6 +354,83 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<text x="22" y="862.6" fill="#000000" font-family="Trebuchet MS" font-size="14">lavage</text>
 	<text x="22" y="880.6" fill="#000000" font-family="Trebuchet MS" font-size="14">prixmin</text>
 	<text x="22" y="898.6" fill="#000000" font-family="Trebuchet MS" font-size="14">prix_max</text>
+</g>
+
+<!-- Entity CATEGORIE -->
+<g id="entity-CATEGORIE">
+	<g id="frame-CATEGORIE">
+		<rect x="476" y="704" width="92" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="476" y="730.0" width="92" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="476" y="704" width="92" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="476" y1="730" x2="568" y2="730" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="485" y="722.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CATEGORIE</text>
+	<text x="481" y="748.6" fill="#000000" font-family="Trebuchet MS" font-size="14">categorie_id</text>
+	<line x1="481" y1="751.0" x2="562" y2="751.0" stroke="#000000" stroke-width="1"/>
+	<text x="481" y="766.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
+</g>
+
+<!-- Entity CALIBRE -->
+<g id="entity-CALIBRE">
+	<g id="frame-CALIBRE">
+		<rect x="484" y="991" width="76" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="484" y="1017.0" width="76" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="484" y="991" width="76" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="484" y1="1017" x2="560" y2="1017" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="495" y="1009.6" fill="#000000" font-family="Trebuchet MS" font-size="14">CALIBRE</text>
+	<text x="489" y="1035.6" fill="#000000" font-family="Trebuchet MS" font-size="14">calibre_id</text>
+	<line x1="489" y1="1038.0" x2="554" y2="1038.0" stroke="#000000" stroke-width="1"/>
+	<text x="489" y="1053.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
+</g>
+
+<!-- Entity ADRESSE -->
+<g id="entity-ADRESSE">
+	<g id="frame-ADRESSE">
+		<rect x="304" y="69" width="92" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="304" y="95.0" width="92" height="152" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="304" y="69" width="92" height="178" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="304" y1="95" x2="396" y2="95" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="322" y="87.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ADRESSE</text>
+	<text x="309" y="113.6" fill="#000000" font-family="Trebuchet MS" font-size="14">adr_Id</text>
+	<line x1="309" y1="116.0" x2="351" y2="116.0" stroke="#000000" stroke-width="1"/>
+	<text x="309" y="131.6" fill="#000000" font-family="Trebuchet MS" font-size="14">nom</text>
+	<text x="309" y="149.6" fill="#000000" font-family="Trebuchet MS" font-size="14">rue</text>
+	<text x="309" y="167.6" fill="#000000" font-family="Trebuchet MS" font-size="14">complement</text>
+	<text x="309" y="185.6" fill="#000000" font-family="Trebuchet MS" font-size="14">localite</text>
+	<text x="309" y="203.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_postal</text>
+	<text x="309" y="221.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ville</text>
+	<text x="309" y="239.6" fill="#000000" font-family="Trebuchet MS" font-size="14">pays</text>
+</g>
+
+<!-- Entity PARTNER -->
+<g id="entity-PARTNER">
+	<g id="frame-PARTNER">
+		<rect x="154" y="505" width="80" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="154" y="531.0" width="80" height="62" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="154" y="505" width="80" height="88" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="154" y1="531" x2="234" y2="531" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="164" y="523.6" fill="#000000" font-family="Trebuchet MS" font-size="14">PARTNER</text>
+	<text x="159" y="549.6" fill="#000000" font-family="Trebuchet MS" font-size="14">partner_id</text>
+	<line x1="159" y1="552.0" x2="228" y2="552.0" stroke="#000000" stroke-width="1"/>
+	<text x="159" y="567.6" fill="#000000" font-family="Trebuchet MS" font-size="14">name</text>
+	<text x="159" y="585.6" fill="#000000" font-family="Trebuchet MS" font-size="14">rais_soc</text>
+</g>
+
+<!-- Entity ORIGINE -->
+<g id="entity-ORIGINE">
+	<g id="frame-ORIGINE">
+		<rect x="484" y="896" width="76" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="484" y="922.0" width="76" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="484" y="896" width="76" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="484" y1="922" x2="560" y2="922" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="495" y="914.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ORIGINE</text>
+	<text x="489" y="940.6" fill="#000000" font-family="Trebuchet MS" font-size="14">origine_id</text>
+	<line x1="489" y1="943.0" x2="554" y2="943.0" stroke="#000000" stroke-width="1"/>
+	<text x="489" y="958.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
 </g>
 
 <!-- Entity TEXTE -->
@@ -471,23 +462,32 @@ xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 l
 	<text x="741" y="585.6" fill="#000000" font-family="Trebuchet MS" font-size="14">adresse</text>
 </g>
 
-<!-- Entity ADRESSE -->
-<g id="entity-ADRESSE">
-	<g id="frame-ADRESSE">
-		<rect x="304" y="69" width="92" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
-		<rect x="304" y="95.0" width="92" height="152" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
-		<rect x="304" y="69" width="92" height="178" fill="none" stroke="#d6604d" stroke-width="1.5"/>
-		<line x1="304" y1="95" x2="396" y2="95" stroke="#d6604d" stroke-width="1"/>
+<!-- Entity EMBALLAGE -->
+<g id="entity-EMBALLAGE">
+	<g id="frame-EMBALLAGE">
+		<rect x="454" y="609" width="136" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="454" y="635.0" width="136" height="44" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="454" y="609" width="136" height="70" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="454" y1="635" x2="590" y2="635" stroke="#d6604d" stroke-width="1"/>
 	</g>
-	<text x="322" y="87.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ADRESSE</text>
-	<text x="309" y="113.6" fill="#000000" font-family="Trebuchet MS" font-size="14">adr_Id</text>
-	<line x1="309" y1="116.0" x2="351" y2="116.0" stroke="#000000" stroke-width="1"/>
-	<text x="309" y="131.6" fill="#000000" font-family="Trebuchet MS" font-size="14">nom</text>
-	<text x="309" y="149.6" fill="#000000" font-family="Trebuchet MS" font-size="14">rue</text>
-	<text x="309" y="167.6" fill="#000000" font-family="Trebuchet MS" font-size="14">complement</text>
-	<text x="309" y="185.6" fill="#000000" font-family="Trebuchet MS" font-size="14">localite</text>
-	<text x="309" y="203.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_postal</text>
-	<text x="309" y="221.6" fill="#000000" font-family="Trebuchet MS" font-size="14">ville</text>
-	<text x="309" y="239.6" fill="#000000" font-family="Trebuchet MS" font-size="14">pays</text>
+	<text x="484" y="627.6" fill="#000000" font-family="Trebuchet MS" font-size="14">EMBALLAGE</text>
+	<text x="459" y="653.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_emballage_id</text>
+	<line x1="459" y1="656.0" x2="584" y2="656.0" stroke="#000000" stroke-width="1"/>
+	<text x="459" y="671.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
+</g>
+
+<!-- Entity LIBELLE TARIF -->
+<g id="entity-LIBELLE TARIF">
+	<g id="frame-LIBELLE TARIF">
+		<rect x="9" y="254" width="102" height="26" fill="#f4a582" stroke="#f4a582" stroke-width="0"/>
+		<rect x="9" y="280.0" width="102" height="62" fill="#fddbc7" stroke="#fddbc7" stroke-width="0"/>
+		<rect x="9" y="254" width="102" height="88" fill="none" stroke="#d6604d" stroke-width="1.5"/>
+		<line x1="9" y1="280" x2="111" y2="280" stroke="#d6604d" stroke-width="1"/>
+	</g>
+	<text x="14" y="272.6" fill="#000000" font-family="Trebuchet MS" font-size="14">LIBELLE TARIF</text>
+	<text x="14" y="298.6" fill="#000000" font-family="Trebuchet MS" font-size="14">codetarif_id</text>
+	<line x1="14" y1="301.0" x2="94" y2="301.0" stroke="#000000" stroke-width="1"/>
+	<text x="14" y="316.6" fill="#000000" font-family="Trebuchet MS" font-size="14">code_tarif</text>
+	<text x="14" y="334.6" fill="#000000" font-family="Trebuchet MS" font-size="14">libelle</text>
 </g>
 </svg>

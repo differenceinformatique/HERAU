@@ -24,8 +24,8 @@ class DiInheritedProduct(models.Model):
     di_calibre_id = fields.Many2one("di.calibre",string="Calibre")
     di_calibre_di_des = fields.Char(related='di_calibre_id.di_des')#, store='False')
     
-    di_enlevement_id = fields.Many2one("di.enlevement",string="Enlèvement")
-    di_enlevement_di_des = fields.Char(related='di_enlevement_id.di_des')#, store='False')
+    di_station_id = fields.Many2one("di.station",string="Station")
+    di_station_di_des = fields.Char(related='di_station_id.di_des')#, store='False')
     
     di_producteur_id = fields.Many2one("res.partner",string="Producteur")
     di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')  

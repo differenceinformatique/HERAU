@@ -25,8 +25,7 @@
 					<label class="oe_edit_only" for="name" string="Désignation"
 						style="font-style: oblique;" />
 				</xpath>
-				<!-- ajout ajoute un group pour mettre nos champ sur l'onglet Informations 
-					Générales -->
+				<!-- ajout group pour mettre nos champ sur l'onglet Informations Générales -->
 				<xpath expr="//group[@name='group_standard_price']" position="after">
 					<group>
 						<field name="di_un_saisie" />
@@ -92,10 +91,10 @@
 									<field class="oe_inline" name="di_calibre_di_des"
 										nolabel="1" readonly="1" style="margin-left:40px" />
 								</div>
-								<label for="di_enlevement_id" string="Enlèvement" />
+								<label for="di_station_id" string="Station" />
 								<div>
-									<field class="oe_inline" name="di_enlevement_id" />
-									<field class="oe_inline" name="di_enlevement_di_des"
+									<field class="oe_inline" name="di_station_id" />
+									<field class="oe_inline" name="di_station_di_des"
 										nolabel="1" readonly="1" style="margin-left:40px" />
 								</div>
 								<label for="di_producteur_id" string="Producteur" />

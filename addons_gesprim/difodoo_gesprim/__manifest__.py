@@ -37,6 +37,7 @@
 
     # always loaded
     'data': [
+        "gesprim_menu.xml",
        
         # 'security/ir.model.access.csv',
       

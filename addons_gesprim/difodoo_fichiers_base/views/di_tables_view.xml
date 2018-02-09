@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!--Origine -->
+	<record id="view_origine_tree" model="ir.ui.view">
+		<field name="name">di.origine.tree</field>
+		<field name="model">di.origine</field>
+		<field name="arch" type="xml">
+			<tree string="Origine" default_order="name">
+				<field name="name" />
+				<field name="di_des" />
+			</tree>
+		</field>
+	</record>
+	<record id="view_origine_form" model="ir.ui.view">
+		<field name="name">di.origine.tree</field>
+		<field name="model">di.origine</field>
+		<field name="arch" type="xml">
+			<form string="Origine">
+				<sheet string="Origine" modifiers="{}">
+					<group>
+						<field name="di_company_id" can_create="true" can_write="true"
+							modifiers="{'readonly':true}" />
+						<field name="name" modifiers="{'required':true}" />
+						<field name="di_des" modifiers="{'required':true}" />
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="di_action_origine" model="ir.actions.act_window">
+		<field name="name">Origines</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">di.origine</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Aide
+			</p>
+			<p>
+				Cliquer pour gérer les origines
+			</p>
+		</field>
+	</record>
+	<!--Catégorie -->
+	<record id="view_categorie_tree" model="ir.ui.view">
+		<field name="name">di.categorie.tree</field>
+		<field name="model">di.categorie</field>
+		<field name="arch" type="xml">
+			<tree string="Catégorie" default_order="name">
+				<field name="name" />
+				<field name="di_des" />
+			</tree>
+		</field>
+	</record>
+	<record id="view_categorie_form" model="ir.ui.view">
+		<field name="name">di.categorie.tree</field>
+		<field name="model">di.categorie</field>
+		<field name="arch" type="xml">
+			<form string="Catégorie">
+				<sheet string="Catégorie" modifiers="{}">
+					<group>
+						<field name="di_company_id" can_create="true" can_write="true"
+							modifiers="{'readonly':true}" />
+						<field name="name" modifiers="{'required':true}" />
+						<field name="di_des" modifiers="{'required':true}" />
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="di_action_categorie" model="ir.actions.act_window">
+		<field name="name">Categories</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">di.categorie</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Aide
+			</p>
+			<p>
+				Cliquer pour gérer les catégories
+			</p>
+		</field>
+	</record>
+	<!--Marque -->
+	<record id="view_marque_tree" model="ir.ui.view">
+		<field name="name">di.marque.tree</field>
+		<field name="model">di.marque</field>
+		<field name="arch" type="xml">
+			<tree string="Marque" default_order="name">
+				<field name="name" />
+				<field name="di_des" />
+			</tree>
+		</field>
+	</record>
+	<record id="view_marque_form" model="ir.ui.view">
+		<field name="name">di.marque.tree</field>
+		<field name="model">di.marque</field>
+		<field name="arch" type="xml">
+			<form string="Marque">
+				<sheet string="Marque" modifiers="{}">
+					<group>
+						<field name="di_company_id" can_create="true" can_write="true"
+							modifiers="{'readonly':true}" />
+						<field name="name" modifiers="{'required':true}" />
+						<field name="di_des" modifiers="{'required':true}" />
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="di_action_marque" model="ir.actions.act_window">
+		<field name="name">Marques</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">di.marque</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Aide
+			</p>
+			<p>
+				Cliquer pour gérer les marques
+			</p>
+		</field>
+	</record>
+	<!--Calibre -->
+	<record id="view_calibre_tree" model="ir.ui.view">
+		<field name="name">di.calibre.tree</field>
+		<field name="model">di.calibre</field>
+		<field name="arch" type="xml">
+			<tree string="Calibre" default_order="name">
+				<field name="name" />
+				<field name="di_des" />
+			</tree>
+		</field>
+	</record>
+	<record id="view_calibre_form" model="ir.ui.view">
+		<field name="name">di.calibre.tree</field>
+		<field name="model">di.calibre</field>
+		<field name="arch" type="xml">
+			<form string="Calibre">
+				<sheet string="Calibre" modifiers="{}">
+					<group>
+						<field name="di_company_id" can_create="true" can_write="true"
+							modifiers="{'readonly':true}" />
+						<field name="name" modifiers="{'required':true}" />
+						<field name="di_des" modifiers="{'required':true}" />
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="di_action_calibre" model="ir.actions.act_window">
+		<field name="name">Calibres</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">di.calibre</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Aide
+			</p>
+			<p>
+				Cliquer pour gérer les calibres
+			</p>
+		</field>
+	</record>
+<!--Stations  -->
+	<record id="view_station_tree" model="ir.ui.view">
+		<field name="name">di.station.tree</field>
+		<field name="model">di.station</field>
+		<field name="arch" type="xml">
+			<tree string="Station" default_order="name">
+				<field name="name" />
+				<field name="di_des" />
+			</tree>
+		</field>
+	</record>
+	<record id="view_station_form" model="ir.ui.view">
+		<field name="name">di.station.tree</field>
+		<field name="model">di.station</field>
+		<field name="arch" type="xml">
+			<form string="Station">
+				<sheet string="Station" modifiers="{}">
+					<group>
+						<field name="di_company_id" can_create="true" can_write="true"
+							modifiers="{'readonly':true}" />
+						<field name="name" modifiers="{'required':true}" />
+						<field name="di_des" modifiers="{'required':true}" />
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="di_action_station" model="ir.actions.act_window">
+		<field name="name">Stations</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">di.station</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Aide
+			</p>
+			<p>
+				Cliquer pour gérer les stations
+			</p>
+		</field>
+	</record>
+</odoo>
