@@ -4,20 +4,118 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from addons import sale,account,stock,sale_stock 
+from difodoo import *
 
 class DiInheritedSaleOrderLine(models.Model):
     _inherit = "sale.order.line"
     
-    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie')
-    di_un_saisie     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie")
+    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie',store=True)
+    di_un_saisie     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie",store=True)
     di_type_palette  = fields.Many2one('product.packaging', string='Palette') 
-    di_nb_pieces     = fields.Integer(string='Nb pièces',compute="_compute_qte_aff",store=True)
+    di_nb_pieces     = fields.Integer(string='Nb pièces' ,compute="_compute_qte_aff",store=True)
     di_nb_colis      = fields.Integer(string='Nb colis',compute="_compute_qte_aff",store=True)
     di_nb_palette    = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True)
     di_poin          = fields.Float(string='Poids net',compute="_compute_qte_aff",store=True)
-    di_poib          = fields.Float(string='Poids brut')
-    di_tare          = fields.Float(string='Tare')
-        
+    di_poib          = fields.Float(string='Poids brut',store=True)
+    di_tare          = fields.Float(string='Tare',store=True)
+
+    di_qte_un_saisie_liv = fields.Float(string='Quantité livrée en unité de saisie')
+    di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie livrée")
+    di_type_palette_liv  = fields.Many2one('product.packaging', string='Palette livrée') 
+    di_nb_pieces_liv     = fields.Integer(string='Nb pièces livrées')
+    di_nb_colis_liv      = fields.Integer(string='Nb colis livrés')
+    di_nb_palette_liv    = fields.Float(string='Nb palettes livrées')
+    di_poin_liv          = fields.Float(string='Poids net livré')
+    di_poib_liv          = fields.Float(string='Poids brut livré')
+    di_tare_liv          = fields.Float(string='Tare livrée')
+    di_product_packaging_liv=fields.Many2one('product.packaging', string='Colis livré')
+    
+    di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie')
+    di_un_saisie_fac     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie facturés")
+    di_type_palette_fac  = fields.Many2one('product.packaging', string='Palette facturée') 
+    di_nb_pieces_fac     = fields.Integer(string='Nb pièces facturées')
+    di_nb_colis_fac      = fields.Integer(string='Nb colis facturés')
+    di_nb_palette_fac    = fields.Float(string='Nb palettes facturées')
+    di_poin_fac          = fields.Float(string='Poids net facturé')
+    di_poib_fac          = fields.Float(string='Poids brut facturé')
+    di_tare_fac          = fields.Float(string='Tare facturée')
+    di_product_packaging_fac=fields.Many2one('product.packaging', string='Colis facturé')
+     
+    @api.multi
+    def _get_qte_un_saisie_liv(self):
+        self.ensure_one()        
+        qty = 0.0
+        for move in self.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped):
+            if move.location_dest_id.usage == "customer":
+                if not move.origin_returned_move_id:
+                    qty+=move.di_qte_un_saisie                    
+            elif move.location_dest_id.usage != "customer" and move.to_refund:
+                qty-=move.di_qte_un_saisie                
+        return qty
+   
+    @api.multi
+    def _get_nb_pieces_liv(self):
+        self.ensure_one()        
+        qty = 0.0
+        for move in self.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped):
+            if move.location_dest_id.usage == "customer":
+                if not move.origin_returned_move_id:
+                    qty+=move.di_nb_pieces                    
+            elif move.location_dest_id.usage != "customer" and move.to_refund:
+                qty-=move.di_nb_pieces                
+        return qty
+    
+    @api.multi
+    def _get_nb_colis_liv(self):
+        self.ensure_one()        
+        qty = 0.0
+        for move in self.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped):
+            if move.location_dest_id.usage == "customer":
+                if not move.origin_returned_move_id:
+                    qty+=move.di_nb_colis                    
+            elif move.location_dest_id.usage != "customer" and move.to_refund:
+                qty-=move.di_nb_colis                
+        return qty
+    
+    @api.multi
+    def _get_nb_palettes_liv(self):
+        self.ensure_one()        
+        qty = 0.0
+        for move in self.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped):
+            if move.location_dest_id.usage == "customer":
+                if not move.origin_returned_move_id:
+                    qty+=move.di_nb_palette                    
+            elif move.location_dest_id.usage != "customer" and move.to_refund:
+                qty-=move.di_nb_palette                
+        return qty
+    
+    @api.multi
+    def _get_poin_liv(self):
+        self.ensure_one()        
+        qty = 0.0
+        for move in self.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped):
+            if move.location_dest_id.usage == "customer":
+                if not move.origin_returned_move_id:
+                    qty+=move.di_poin                    
+            elif move.location_dest_id.usage != "customer" and move.to_refund:
+                qty-=move.di_poin                
+        return qty
+    
+    @api.multi
+    def _get_poib_liv(self):
+        self.ensure_one()        
+        qty = 0.0
+        for move in self.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped):
+            if move.location_dest_id.usage == "customer":
+                if not move.origin_returned_move_id:
+                    qty+=move.di_poib                    
+            elif move.location_dest_id.usage != "customer" and move.to_refund:
+                qty-=move.di_poib                
+        return qty
+    
+    
+           
     @api.one
     @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette','di_poib','di_tare','product_packaging')
     def _compute_qte_aff(self):
@@ -32,7 +130,7 @@ class DiInheritedSaleOrderLine(models.Model):
             else:
                 self.di_nb_palette = self.di_nb_colis
             self.di_poin = self.product_uom_qty * self.product_id.weight             
-                  
+                   
         elif self.di_un_saisie == "COLIS":
             self.di_nb_colis = self.di_qte_un_saisie            
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
@@ -41,7 +139,7 @@ class DiInheritedSaleOrderLine(models.Model):
             else:
                 self.di_nb_palette = self.di_nb_colis
             self.di_poin = self.product_uom_qty * self.product_id.weight             
-                                 
+                                  
         elif self.di_un_saisie == "PALETTE":            
             self.di_nb_palette = self.di_qte_un_saisie
             if self.di_type_palette.di_qte_cond_inf!=0.0:
@@ -50,7 +148,7 @@ class DiInheritedSaleOrderLine(models.Model):
                 self.di_nb_colis = self.di_nb_palette
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis            
             self.di_poin = self.product_uom_qty * self.product_id.weight             
-            
+             
         elif self.di_un_saisie == "POIDS":
             self.di_poin = self.di_qte_un_saisie                        
             if self.product_packaging.qty !=0.0:
@@ -62,7 +160,7 @@ class DiInheritedSaleOrderLine(models.Model):
             else:  
                 self.di_nb_palette = self.di_nb_colis
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
-            
+             
         else:
             self.di_poin = self.di_qte_un_saisie            
             self.product_uom_qty = self.di_poin
@@ -180,17 +278,3 @@ class DiInheritedSaleOrderLine(models.Model):
                     return {'warning': warning_mess}
         return {}
     
-#     @api.multi    
-#     def _di_recalcule_nb_colis(self,vals):
-#         nbcolis = fields.Integer()
-#         nbcolis = 3
-#         return nbcolis
-#     
-#     @api.model
-#     def create(self, vals):                    
-#         vals["di_nb_colis"] = self._di_recalcule_nb_colis(vals)
-#         vals["di_nb_pieces"] = 4
-#         vals["di_nb_palette"] = 1
-#         vals["di_poin"] = 8
-#         res = super(DiInheritedSaleOrderLine, self).create(vals)                           
-#         return res
