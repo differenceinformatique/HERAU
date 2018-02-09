@@ -37,11 +37,17 @@ class DiInheritedStockMove(models.Model):
             line.di_nb_palette_liv    = line._get_nb_palettes_liv()
             line.di_poin_liv          = line._get_poin_liv()
             line.di_poib_liv          = line._get_poib_liv()
-            move =   self.env['stock.move'].search([('sale_line_id','=',line.id)])                      
-            line.di_type_palette_liv  = move.di_type_palette
-            line.di_un_saisie_liv     = move.di_un_saisie
-            line.di_product_packaging_liv = move.product_packaging
-            line.di_tare_liv          = move.di_tare 
+            dimoves = self.env['stock.move'].search([('sale_line_id', '=', line.id)])
+            for dimove in dimoves:                                                    
+                line.di_type_palette_liv  = dimove.di_type_palette
+                line.di_un_saisie_liv     = dimove.di_un_saisie
+                line.di_product_packaging_liv = dimove.product_packaging
+                line.di_tare_liv          = dimove.di_tare
+                                  
+#             line.di_type_palette_liv  = result.di_type_palette
+#             line.di_un_saisie_liv     = result.di_un_saisie
+#             line.di_product_packaging_liv = result.product_packaging
+#             line.di_tare_liv          = result.di_tare  
     
         return result
     
