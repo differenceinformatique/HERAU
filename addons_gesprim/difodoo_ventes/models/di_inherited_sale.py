@@ -31,7 +31,7 @@ class DiInheritedSaleOrderLine(models.Model):
     di_tare_liv          = fields.Float(string='Tare livrée')
     di_product_packaging_liv=fields.Many2one('product.packaging', string='Colis livré')
     
-    di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie')
+    di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie',compute='_get_invoice_qty')
     di_un_saisie_fac     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie facturés")
     di_type_palette_fac  = fields.Many2one('product.packaging', string='Palette facturée') 
     di_nb_pieces_fac     = fields.Integer(string='Nb pièces facturées')
@@ -41,6 +41,8 @@ class DiInheritedSaleOrderLine(models.Model):
     di_poib_fac          = fields.Float(string='Poids brut facturé')
     di_tare_fac          = fields.Float(string='Tare facturée')
     di_product_packaging_fac=fields.Many2one('product.packaging', string='Colis facturé')
+    
+    di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_get_to_invoice_qty')
      
     @api.multi
     def _get_qte_un_saisie_liv(self):
@@ -278,3 +280,50 @@ class DiInheritedSaleOrderLine(models.Model):
                     return {'warning': warning_mess}
         return {}
     
+    @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state')
+    def _get_to_invoice_qty(self):
+        
+        """
+        Compute the quantity to invoice. If the invoice policy is order, the quantity to invoice is
+        calculated from the ordered quantity. Otherwise, the quantity delivered is used.
+        """
+        for line in self:
+            if line.order_id.state in ['sale', 'done']:
+                if line.product_id.invoice_policy == 'order':
+                    line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
+                else:
+                    line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
+            else:
+                line.di_qte_a_facturer_un_saisie = 0
+        super(DiInheritedSaleOrderLine, self)._get_to_invoice_qty()
+                
+    @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.di_qte_un_saisie')
+    def _get_invoice_qty(self):
+        
+        """
+        Compute the quantity invoiced. If case of a refund, the quantity invoiced is decreased. Note
+        that this is the case only if the refund is generated from the SO and that is intentional: if
+        a refund made would automatically decrease the invoiced quantity, then there is a risk of reinvoicing
+        it automatically, which may not be wanted at all. That's why the refund has to be created from the SO
+        """
+        for line in self:
+            qty_invoiced = 0.0
+            for invoice_line in line.invoice_lines:
+                if invoice_line.invoice_id.state != 'cancel':
+                    if invoice_line.invoice_id.type == 'out_invoice':
+                        qty_invoiced += invoice_line.di_qte_un_saisie
+                    elif invoice_line.invoice_id.type == 'out_refund':
+                        qty_invoiced -= invoice_line.di_qte_un_saisie
+            line.di_qte_un_saisie_fac = qty_invoiced
+        super(DiInheritedSaleOrderLine, self)._get_invoice_qty()
+  
+class DiInheritedSaleOrder(models.Model):
+    _inherit = "sale.order"  
+    
+    def _force_lines_to_invoice_policy_order(self):
+        super(DiInheritedSaleOrder, self)._force_lines_to_invoice_policy_order()
+        for line in self.order_line:
+            if self.state in ['sale', 'done']:
+                line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
+            else:
+                line.di_qte_a_facturer_un_saisie = 0
