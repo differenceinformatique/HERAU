@@ -70,7 +70,8 @@ class DiInheritedProductPackaging(models.Model):
     
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
-    di_type_colis       = fields.Many2one('product.packaging', string='Colis') 
+    di_type_colis   = fields.Many2one('product.packaging', string='Colis')
+    di_des          = fields.Char(string="Désignation")#, required=True)
            
 #     @api.model
 #     def create(self,vals):

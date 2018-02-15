@@ -155,7 +155,10 @@
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
 				<xpath expr="/form/sheet/label[@for='name']" position="replace">
-					<label string="Libellé conditionnement" />
+					<label string="Code Conditionnement" />
+				</xpath>
+				<xpath expr="//group" position="before">
+					<field name="di_des" modifiers="{'required':true}" />
 				</xpath>
 				<xpath expr="//group[@name='qty']" position="after">
 					<group name="specif">

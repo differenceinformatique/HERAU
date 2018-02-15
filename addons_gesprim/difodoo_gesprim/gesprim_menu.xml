@@ -2,14 +2,29 @@
 <odoo>
 	<!-- Menu Gesprim -->
 	<menuitem id="menu_gesprim" name="Gesprim" sequence="309"/> <!-- groups="group_parc_user"/> -->
+	<!-- menu Fichiers -->
 	<menuitem id="menu_gesprim_fichiers" name="Fichiers" sequence="10" parent="menu_gesprim" />
-	<menuitem id="menu_gesprim_article" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
-	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />
-	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="30" parent="menu_gesprim_fichiers" action="base.action_partner_supplier_form" />
+	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers"/>
+	<menuitem id="menu_gesprim_articles" name="Articles" sequence="10" parent="menu_gesprim_art" action="product.product_template_action_all" />
+	<menuitem id="menu_gesprim_tiers" name="Tiers" sequence="20" parent="menu_gesprim_fichiers" />
+	<menuitem id="menu_gesprim_clients" name="Clients" sequence="10" parent="menu_gesprim_tiers" action="base.action_partner_form" />
+	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="20" parent="menu_gesprim_tiers" action="base.action_partner_supplier_form" />
 	<menuitem id="menu_gesprim_tables" name="Tables" sequence="100" parent="menu_gesprim_fichiers" />
-	<menuitem id="menu_gesprim_categorie" sequence="10" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_categorie" />
-	<menuitem id="menu_gesprim_origine" sequence="20" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_origine" />
-	<menuitem id="menu_gesprim_marque" sequence="30" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_marque" />
-	<menuitem id="menu_gesprim_calibre" sequence="40" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_calibre" />
-	<menuitem id="menu_gesprim_station" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" />             
+	<menuitem id="menu_gesprim_categories" sequence="10" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_categorie" />
+	<menuitem id="menu_gesprim_origines" sequence="20" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_origine" />
+	<menuitem id="menu_gesprim_marques" sequence="30" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_marque" />
+	<menuitem id="menu_gesprim_calibres" sequence="40" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_calibre" />
+	<menuitem id="menu_gesprim_stations" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" /> 
+	<!-- menu Ventes -->
+	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
+	<menuitem id="menu_gesprim_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />  
+	<!-- menu Livraisons --> 
+	<menuitem id="menu_gesprim_liv" name="Livraisons" sequence="30" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_livraisons" name="Livraisons" sequence="10" parent="menu_gesprim_liv" action="stock.action_picking_tree_all"/>
+	<!-- menu Facturation -->
+	<menuitem id="menu_gesprim_fact" name="Facturation" sequence="40" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_cde_fact" name="Commandes à facturer" sequence="10" parent="menu_gesprim_fact" action="sale.action_orders_to_invoice"/>
+	<menuitem id="menu_gesprim_factures" name="Factures clients" sequence="20" parent="menu_gesprim_fact" action="account.action_invoice_tree1"/>    
+	<menuitem id="menu_gesprim_avoirs" name="Avoirs clients" sequence="30" parent="menu_gesprim_fact" action="account.action_invoice_out_refund"/>        
 </odoo>
