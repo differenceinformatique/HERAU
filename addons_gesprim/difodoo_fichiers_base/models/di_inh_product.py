@@ -3,6 +3,7 @@ from odoo import osv
 from odoo.exceptions import Warning
 from odoo import models, fields, api
 from xlrd.formula import FMLA_TYPE_COND_FMT
+from suds import null
 
 class DiInheritedProduct(models.Model):
     _inherit = "product.template"
@@ -29,10 +30,10 @@ class DiInheritedProduct(models.Model):
     
     di_producteur_id = fields.Many2one("res.partner",string="Producteur")
     di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')  
-    
+#   TODO, modifier le nom de ces champs  
     di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie")
-    di_type_palette     = fields.Many2one('product.packaging', string='Palette')   
-    di_type_colis       = fields.Many2one('product.packaging', string='Colis')
+    di_type_palette     = fields.Many2one('product.packaging', string='Palette par défaut')   
+    di_type_colis       = fields.Many2one('product.packaging', string='Colis par défaut')
      
     @api.one
     def di_get_type_piece(self):
@@ -70,9 +71,18 @@ class DiInheritedProductPackaging(models.Model):
     
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
-    di_type_colis   = fields.Many2one('product.packaging', string='Colis')
+    di_type_colis   = fields.Many2one('product.packaging', string='Type conditionnement inférieur')
     di_des          = fields.Char(string="Désignation")#, required=True)
-           
+    
+    @api.onchange('di_type_cond', 'di_type_colis', 'di_qte_cond_inf')
+    def onchange_company_type(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
+        if self.di_type_cond=='PIECE':
+            self.di_type_colis=''
+            self.di_qte_cond_inf=1
+        if self.di_type_cond=='COLIS':
+            self.di_type_colis=self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).id
+            self.qty = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).qty*self.di_qte_cond_inf
+                       
 #     @api.model
 #     def create(self,vals):
 #         #surcharge de la fonction create

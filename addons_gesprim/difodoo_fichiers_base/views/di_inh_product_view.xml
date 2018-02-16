@@ -63,7 +63,7 @@
 				<xpath expr="//group[@name='packaging']" position="replace">
 				</xpath>
 				<xpath expr="//page[@name='general_information']" position="inside">
-					<group name="Colisage" string="Packaging" colspan="4"
+					<group name="Colisage" string="Conditionnements" colspan="4"
 						attrs="{'invisible':['|', ('type', 'not in', ['product', 'consu']), ('product_variant_count', '>', 1)]}"
 						groups="product.group_stock_packaging">
 						<field name="packaging_ids" nolabel="1"
@@ -125,7 +125,7 @@
 				</xpath>
 			</field>
 		</record>
-
+		<!-- -->
 		<record id="di_product_template_tree_view" model="ir.ui.view">
 			<field name="name">di.product.template.tree.view</field>
 			<field name="model">product.template</field>
@@ -147,33 +147,7 @@
 				</xpath>
 			</field>
 		</record>
-
-		<record id="di_product_packaging_form_view" model="ir.ui.view">
-			<field name="name">di.product.packaging.form.view</field>
-			<field name="model">product.packaging</field>
-			<field name="inherit_id" ref="product.product_packaging_form_view" />
-			<field eval="99" name="priority" />
-			<field name="arch" type="xml">
-				<xpath expr="/form/sheet/label[@for='name']" position="replace">
-					<label string="Code Conditionnement" />
-				</xpath>
-				<xpath expr="//group" position="before">
-					<field name="di_des" modifiers="{'required':true}" />
-				</xpath>
-				<xpath expr="//group[@name='qty']" position="after">
-					<group name="specif">
-						<field name="di_type_cond" />
-						<field name="di_qte_cond_inf" attrs="{'invisible':[('di_type_cond','=','PIECE')]}" />
-						<field name="di_type_colis"
-							attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}"
-							context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
-							domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]"
-							groups="product.group_stock_packaging" />
-					</group>
-				</xpath>
-			</field>
-		</record>
-
+		<!-- -->
 		<record id="product_packaging_search_view" model="ir.ui.view">
 			<field name="name">product.packaging.search.view</field>
 			<field name="model">product.packaging</field>
@@ -189,31 +163,103 @@
 				</search>
 			</field>
 		</record>
-	</data>
+		<!-- mode liste en priorité - tous les articles -->
+		<record id="product.product_template_action_all" model="ir.actions.act_window">
+			<field name="name">Products</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">product.template</field>
+			<field name="view_mode">tree,kanban,form</field>
+			<field eval="99" name="priority" />
+		</record>
+		<!-- mode liste en priorité - articles en ventes -->
+		<record id="product.product_template_action" model="ir.actions.act_window">
+			<field name="name">Products</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">product.template</field>
+			<field name="view_mode">tree,kanban,form</field>
+			<field name="view_id" ref="product.product_template_tree_view" />
+			<field eval="99" name="priority" />
+		</record>
+		<!-- mode liste en priorité - articles en achats -->
+		<record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
+			<field name="name">Products</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">product.template</field>
+			<field name="view_mode">tree,kanban,form</field>
+			<field eval="99" name="priority" />
+		</record>
+		<!-- Formulaire conditionnement -->
+		<record id="di_product_packaging_form_view" model="ir.ui.view">
+			<field name="name">di.product.packaging.form.view</field>
+			<field name="model">product.packaging</field>
+			<field name="inherit_id" ref="product.product_packaging_form_view" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<!-- Modification libellé du champ -->
+				<xpath expr="/form/sheet/label[@for='name']" position="replace">
+					<label string="Code Conditionnement" />
+				</xpath>
+				<xpath expr="//group" position="before">
+					<label string="Désignation" />
+					<field name="di_des" required="True" />
+				</xpath>
+				<xpath expr="//group[@name='qty']" position="after">
+					<group name="specif">
+						<!-- ajout champs spécifiques -->
+						<field name="di_type_cond" required="True" />
+						<field name="di_type_colis" string='Type conditionnement inférieur'
+							attrs="{'required':[('di_type_cond','=','PALETTE')],'readonly':[('di_type_cond','!=','PALETTE')]}"
+							context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 
+								'form_view_ref':'product.product_packaging_form_view'}"
+							domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]"
+							groups="product.group_stock_packaging" />
+						<field name="di_qte_cond_inf"
+							attrs="{'required':[('di_type_cond','!=','PIECE')],'readonly':[('di_type_cond','=','PIECE')]}" />
+					</group>
+				</xpath>
+			</field>
+		</record>
+		<!-- Liste conditionnement -->
+		<record id="di_product_packaging_tree_view" model="ir.ui.view">
+			<field name="name">di.product.packaging.tree.view</field>
+			<field name="model">product.packaging</field>
+			<field name="inherit_id" ref="product.product_packaging_tree_view" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<!-- liste modifiable + tri par code conditionnement -->
+				<xpath expr="//tree" position="attributes">
+					<!-- <attribute name="editable">bottom</attribute> TODO : valider la 
+						saisie en mode formulaire avant + pouvoir switcher -->
+					<!-- <attribute name="default_order">di_type_cond,name</attribute> TODO 
+						: ne marche pas -->
+				</xpath>
+				<!-- suppression champ sequence + ajout bouton -->
+				<!-- <xpath expr="//field[@name='sequence']" position="replace"> </xpath> 
+					TODO : à réactiver quand le tri fonctionnera -->
+				<!-- Modification libellé du champ -->
+				<xpath expr="//field[@name='name']" position="attributes">
+					<attribute name="string">Code Conditionnement</attribute>
+				</xpath>
+				<!-- Article obligatoire -->
+				<xpath expr="//field[@name='product_id']" position="attributes">
+					<attribute name="required">True</attribute>
+				</xpath>
+				<!-- ajout champs spécifiques -->
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="di_type_cond" string="Type cond." required="True" />
+					<field name="di_qte_cond_inf" string="Qté cond. inf."
+						attrs="{'readonly':[('di_type_cond','=','PIECE')]}" />
+					<field name="di_type_colis" string="Type cond. inf." />
 
-	<!-- mode liste en priorité - tous les articles -->
-	<record id="product.product_template_action_all" model="ir.actions.act_window">
-		<field name="name">Products</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="res_model">product.template</field>
-		<field name="view_mode">tree,kanban,form</field>
-		<field eval="99" name="priority" />
-	</record>
-	<!-- mode liste en priorité - module vente -->
-	<record id="product.product_template_action" model="ir.actions.act_window">
-		<field name="name">Products</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="res_model">product.template</field>
-		<field name="view_mode">tree,kanban,form</field>
-		<field name="view_id" ref="product.product_template_tree_view" />
-		<field eval="99" name="priority" />
-	</record>
-	<!-- mode liste en priorité - module achat -->
-	<record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
-		<field name="name">Products</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="res_model">product.template</field>
-		<field name="view_mode">tree,kanban,form</field>
-		<field eval="99" name="priority" />
-	</record>
+
+					<!-- <field name="di_type_colis" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}" 
+						context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 
+						'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" 
+						groups="product.group_stock_packaging" /> -->
+
+
+				</xpath>
+			</field>
+		</record>
+	</data>
 </odoo>
