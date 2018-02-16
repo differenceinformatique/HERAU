@@ -27,24 +27,7 @@ class DiInheritedAccountInvoiceLine(models.Model):
 #     di_tare_init = fields.Float(related="sale_line_id.di_tare")
 #     product_packaging_init = fields.Many2one(related="sale_line_id.product_packaging")    
    
-#     def _action_done(self):
-#         result = super(DiInheritedStockMove, self)._action_done()
-#         for line in self.mapped('sale_line_id'):
-#             line.qty_delivered = line._get_delivered_qty()
-#             line.di_qte_un_saisie_liv = line._get_qte_un_saisie_liv()
-#             line.di_nb_pieces_liv     = line._get_nb_pieces_liv()
-#             line.di_nb_colis_liv      = line._get_nb_colis_liv()
-#             line.di_nb_palette_liv    = line._get_nb_palettes_liv()
-#             line.di_poin_liv          = line._get_poin_liv()
-#             line.di_poib_liv          = line._get_poib_liv()
-#             move =   self.env['stock.move'].search([('sale_line_id','=',line.id)])                      
-#             line.di_type_palette_liv  = move.di_type_palette
-#             line.di_un_saisie_liv     = move.di_un_saisie
-#             line.di_product_packaging_liv = move.product_packaging
-#             line.di_tare_liv          = move.di_tare 
-#     
-#         return result
-    
+
 
     @api.one
     @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette', 'di_poib', 'di_tare', 'product_packaging')
@@ -180,22 +163,21 @@ class DiInheritedAccountInvoiceLine(models.Model):
                 self.di_nb_palette = self.di_nb_colis
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
               
-#     @api.model
-#     def create(self, vals):               
-#         di_avec_sale_line_id = False  # initialisation d'une variable       
-#         di_ctx = dict(self._context or {})  # chargement du contexte
-#         for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-#             if key[0] == "sale_line_id":  # si on a modifié sale_line_id
-#                 di_avec_sale_line_id = True
-#         if di_avec_sale_line_id == True:
-#             if vals["sale_line_id"] != False and  vals["sale_line_id"] != 0 :  # si on a bien un sale_line_id 
-#                 # recherche de l'enregistrement sale order line avec un sale_line_id = sale_line_id
-#                 Disaleorderline = self.env['sale.order.line'].search([('id', '=', vals["sale_line_id"])], limit=1)            
-#                 if Disaleorderline.id != False:               
-#                     #on attribue par défaut les valeurs de la ligne de commande     
-#                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
-#                     vals["di_type_palette"] = Disaleorderline.di_type_palette.id
-#                     vals["product_packaging"] = Disaleorderline.product_packaging.id     
-# 
-#         res = super(DiInheritedStockMove, self).create(vals)                           
-#         return res
+    @api.model
+    def create(self, vals):               
+        di_avec_sale_line_ids = False  # initialisation d'une variable       
+        di_ctx = dict(self._context or {})  # chargement du contexte
+        for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+            if key[0] == "sale_line_ids":  # si on a modifié sale_line_id
+                di_avec_sale_line_ids = True
+        if di_avec_sale_line_ids == True:
+            for id_ligne in vals["sale_line_ids"][0][2]:
+                Disaleorderline = self.env['sale.order.line'].search([('id', '=', id_ligne)], limit=1)                                 
+                if Disaleorderline.id != False:               
+                    #on attribue par défaut les valeurs de la ligne de commande     
+                    vals["di_un_saisie"] = Disaleorderline.di_un_saisie
+                    vals["di_type_palette"] = Disaleorderline.di_type_palette.id
+                    vals["product_packaging"] = Disaleorderline.product_packaging.id     
+ 
+        res = super(DiInheritedAccountInvoiceLine, self).create(vals)                           
+        return res
