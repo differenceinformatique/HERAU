@@ -42,7 +42,18 @@ class DiInheritedProduct(models.Model):
             ('product_id', '=', self.id),
             ('di_type_cond', '=', 'PIECE')]).id
         return ProductPack
-        
+    
+    def di_create_condi(self):
+#         PP = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
+        PP = self.di_get_type_piece()
+        if PP.id == False:
+            self.env['product.packaging'].create({'name' : 'P', 'product_id' : self.id, 'di_type_cond' : 'PIECE', 'di_qte_cond_inf' : 1})
+#         ProductPack=self.di_get_type_piece()
+#         res=True
+#         if ProductPack == False:
+
+
+     
 class DiInheritedProductProduct(models.Model):
     _inherit = "product.product"
     default_code = fields.Char('Internal Reference', index=True, copy=False)
@@ -64,7 +75,6 @@ class DiInheritedProductProduct(models.Model):
 
             if default_code:
                 raise Warning("Le code existe déjà.")
-                
         
 class DiInheritedProductPackaging(models.Model):
     _inherit = "product.packaging"
@@ -75,14 +85,21 @@ class DiInheritedProductPackaging(models.Model):
     di_des          = fields.Char(string="Désignation")#, required=True)
     
     @api.onchange('di_type_cond', 'di_type_colis', 'di_qte_cond_inf')
-    def onchange_company_type(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
+    def onchange_recalc_colisage(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
         if self.di_type_cond=='PIECE':
             self.di_type_colis=''
             self.di_qte_cond_inf=1
         if self.di_type_cond=='COLIS':
             self.di_type_colis=self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).id
             self.qty = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).qty*self.di_qte_cond_inf
-                       
+        return res 
+                
+#     @api.multi
+#     def write(self,vals):
+#         res=super(product_packaging,self).write(vals)
+#         for DiInheritedProductPackaging in self.DiInheritedProductPackaging_Id:
+#             toto = DiInheritedProductPackaging.id            
+#         return res
 #     @api.model
 #     def create(self,vals):
 #         #surcharge de la fonction create
