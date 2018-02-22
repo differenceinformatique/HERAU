@@ -38,7 +38,7 @@ class DiInheritedProduct(models.Model):
     @api.one
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search([
-            '|',
+            '&',
             ('product_id', '=', self.id),
             ('di_type_cond', '=', 'PIECE')]).id
         return ProductPack
