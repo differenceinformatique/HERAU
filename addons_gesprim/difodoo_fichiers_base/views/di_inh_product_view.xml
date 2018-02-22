@@ -59,13 +59,14 @@
 						</group>
 					</xpath>
 				</xpath>
-				<!-- déplacement colisage -->
+				<!-- déplacement colisage + ajout bouton créer conditionnement-->
 				<xpath expr="//group[@name='packaging']" position="replace">
 				</xpath>
 				<xpath expr="//page[@name='general_information']" position="inside">
+					<button name="di_create_condi" type="object" string="Créer les conditionnements par défaut"/>
 					<group name="Colisage" string="Conditionnements" colspan="4"
 						attrs="{'invisible':['|', ('type', 'not in', ['product', 'consu']), ('product_variant_count', '>', 1)]}"
-						groups="product.group_stock_packaging">
+						groups="product.group_stock_packaging">						
 						<field name="packaging_ids" nolabel="1"
 							context="{'default_product_id': product_variant_id,'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" />
 					</group>
@@ -195,7 +196,7 @@
 			<field name="inherit_id" ref="product.product_packaging_form_view" />
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
-				<!-- Modification libellé du champ -->
+				<!-- Modification libellé du champ-->
 				<xpath expr="/form/sheet/label[@for='name']" position="replace">
 					<label string="Code Conditionnement" />
 				</xpath>
