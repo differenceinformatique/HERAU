@@ -204,11 +204,14 @@ class DiInheritedStockMove(models.Model):
                 # recherche de l'enregistrement sale order line avec un sale_line_id = sale_line_id
                 Disaleorderline = self.env['sale.order.line'].search([('id', '=', vals["sale_line_id"])], limit=1)            
                 if Disaleorderline.id != False:               
-                    #on attribue par défaut les valeurs de la ligne de commande     
+                    #on attribue par défaut les valeurs de la ligne de commande   
+                    vals["di_tare"] = Disaleorderline.di_tare   
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette"] = Disaleorderline.di_type_palette.id
-                    vals["product_packaging"] = Disaleorderline.product_packaging.id     
-
+                    vals["product_packaging"] = Disaleorderline.product_packaging.id                                                         
+                    vals["di_qte_un_saisie"] = Disaleorderline.di_qte_un_saisie - Disaleorderline.di_qte_un_saisie_liv
+                    vals["di_tare"] = Disaleorderline.di_poib
+                                                    
         res = super(DiInheritedStockMove, self).create(vals)                           
         return res
 
