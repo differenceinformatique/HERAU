@@ -171,13 +171,21 @@ class DiInheritedAccountInvoiceLine(models.Model):
             if key[0] == "sale_line_ids":  # si on a modifié sale_line_id
                 di_avec_sale_line_ids = True
         if di_avec_sale_line_ids == True:
+            qte_a_fac = 0.0
+            poib = 0.0
             for id_ligne in vals["sale_line_ids"][0][2]:
                 Disaleorderline = self.env['sale.order.line'].search([('id', '=', id_ligne)], limit=1)                                 
                 if Disaleorderline.id != False:               
-                    #on attribue par défaut les valeurs de la ligne de commande     
+                    #on attribue par défaut les valeurs de la ligne de commande   
+                    vals["di_tare"] = Disaleorderline.di_tare  
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette"] = Disaleorderline.di_type_palette.id
-                    vals["product_packaging"] = Disaleorderline.product_packaging.id     
+                    vals["product_packaging"] = Disaleorderline.product_packaging.id 
+                    qte_a_fac += Disaleorderline.di_qte_a_facturer_un_saisie   
+                    poib += Disaleorderline.di_poib
+                    
+            vals["di_qte_un_saisie"] = qte_a_fac
+            vals["di_poib"] = poib
  
         res = super(DiInheritedAccountInvoiceLine, self).create(vals)                           
         return res
