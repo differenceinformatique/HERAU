@@ -75,16 +75,16 @@ class ProductPackaging(models.Model):
     
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
-    di_type_colis_id   = fields.Many2one('product.packaging', string='Type conditionnement inférieur')
+    di_type_cond_inf_id   = fields.Many2one('product.packaging', string='Type conditionnement inférieur')
     di_des          = fields.Char(string="Désignation")#, required=True)
     
-    @api.onchange('di_type_cond', 'di_type_colis_id', 'di_qte_cond_inf')
+    @api.onchange('di_type_cond', 'di_type_cond_inf_id', 'di_qte_cond_inf')
     def onchange_recalc_colisage(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
         if self.di_type_cond=='PIECE':
-            self.di_type_colis_id=''
+            self.di_type_cond_inf_id=''
             self.di_qte_cond_inf=1
         if self.di_type_cond=='COLIS':
-            self.di_type_colis_id=self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).id
+            self.di_type_cond_inf_id=self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).id
             self.qty = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).qty*self.di_qte_cond_inf
    
                 

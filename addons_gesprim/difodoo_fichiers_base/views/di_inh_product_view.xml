@@ -208,7 +208,7 @@
 					<group name="specif">
 						<!-- ajout champs spécifiques -->
 						<field name="di_type_cond" required="True" />
-						<field name="di_type_colis_id" string='Type conditionnement inférieur'
+						<field name="di_type_cond_inf_id" string='Type conditionnement inférieur'
 							attrs="{'required':[('di_type_cond','=','PALETTE')],'readonly':[('di_type_cond','!=','PALETTE')]}"
 							context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 
 								'form_view_ref':'product.product_packaging_form_view'}"
@@ -250,7 +250,7 @@
 					<field name="di_type_cond" string="Type cond." required="True" />
 					<field name="di_qte_cond_inf" string="Qté cond. inf."
 						attrs="{'readonly':[('di_type_cond','=','PIECE')]}" />
-					<field name="di_type_colis_id" string="Type cond. inf." />
+					<field name="di_type_cond_inf_id" string="Type cond. inf." />
 
 
 					<!-- <field name="di_type_colis_id" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}" 
