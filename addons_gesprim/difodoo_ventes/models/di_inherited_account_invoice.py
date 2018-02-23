@@ -189,5 +189,5 @@ class AccountInvoiceLine(models.Model):
             vals["di_qte_un_saisie"] = qte_a_fac
             vals["di_poib"] = poib
   
-        res = super(DiInheritedAccountInvoiceLine, self).create(vals)                           
+        res = super(AccountInvoiceLine, self).create(vals)                           
         return res

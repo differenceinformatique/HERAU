@@ -28,7 +28,7 @@ class StockMove(models.Model):
     di_product_packaging_init_id = fields.Many2one(related="sale_line_id.product_packaging")    
     
     def _action_done(self):
-        result = super(DiInheritedStockMove, self)._action_done()
+        result = super(StockMove, self)._action_done()
         for line in self.mapped('sale_line_id'):
             line.qty_delivered = line._get_delivered_qty()
             line.di_qte_un_saisie_liv = line._get_qte_un_saisie_liv()
@@ -214,7 +214,7 @@ class StockMove(models.Model):
                     vals["di_qte_un_saisie"] = Disaleorderline.di_qte_un_saisie - Disaleorderline.di_qte_un_saisie_liv
                     vals["di_tare"] = Disaleorderline.di_poib
                                                      
-        res = super(DiInheritedStockMove, self).create(vals)                           
+        res = super(StockMove, self).create(vals)                           
         return res
  
 class StockMoveLine(models.Model):

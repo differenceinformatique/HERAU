@@ -297,7 +297,7 @@ class SaleOrderLine(models.Model):
                     line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
             else:
                 line.di_qte_a_facturer_un_saisie = 0
-        super(DiInheritedSaleOrderLine, self)._get_to_invoice_qty()
+        super(SaleOrderLine, self)._get_to_invoice_qty()
                 
     @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.di_qte_un_saisie')
     def _get_invoice_qty(self):
@@ -317,13 +317,13 @@ class SaleOrderLine(models.Model):
                     elif invoice_line.invoice_id.type == 'out_refund':
                         qty_invoiced -= invoice_line.di_qte_un_saisie
             line.di_qte_un_saisie_fac = qty_invoiced
-        super(DiInheritedSaleOrderLine, self)._get_invoice_qty()
+        super(SaleOrderLine, self)._get_invoice_qty()
   
 class SaleOrder(models.Model):
     _inherit = "sale.order"  
     
     def _force_lines_to_invoice_policy_order(self):
-        super(DiInheritedSaleOrder, self)._force_lines_to_invoice_policy_order()
+        super(SaleOrder, self)._force_lines_to_invoice_policy_order()
         for line in self.order_line:
             if self.state in ['sale', 'done']:
                 line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
