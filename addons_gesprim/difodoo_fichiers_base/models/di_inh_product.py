@@ -53,7 +53,7 @@ class ProductProduct(models.Model):
     default_code = fields.Char('Internal Reference', index=True, copy=False)
     
     
-    @api.one
+#     @api.one
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
         return ProductPack

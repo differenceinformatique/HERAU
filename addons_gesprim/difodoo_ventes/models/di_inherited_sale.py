@@ -184,7 +184,7 @@ class SaleOrderLine(models.Model):
             if self.product_id.id != False:
                 self.di_un_saisie = self.product_id.di_un_saisie
                 self.di_type_palette_id = self.product_id.di_type_palette_id
-                self.product_packaging = self.product_id.di_type_colis            
+                self.product_packaging = self.product_id.di_type_colis_id            
     @api.multi    
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_poib','di_tare','product_packaging')
     def _di_recalcule_quantites(self):

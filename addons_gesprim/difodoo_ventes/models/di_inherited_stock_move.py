@@ -125,7 +125,7 @@ class StockMove(models.Model):
             if self.product_id.id != False:
                 self.di_un_saisie = self.product_id.di_un_saisie
                 self.di_type_palette_id = self.product_id.di_type_palette_id
-                self.di_product_packaging_id = self.product_id.di_type_colis
+                self.di_product_packaging_id = self.product_id.di_type_colis_id
     @api.multi            
     @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_poib', 'di_tare', 'di_product_packaging_id')
     def _di_recalcule_quantites(self):
