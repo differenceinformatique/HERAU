@@ -29,11 +29,11 @@
 				<xpath expr="//group[@name='group_standard_price']" position="after">
 					<group>
 						<field name="di_un_saisie" />
-						<field name="di_type_palette"
+						<field name="di_type_palette_id"
 							context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
 							domain="[('product_id','=',id),('di_type_cond','=','PALETTE')]"
 							groups="product.group_stock_packaging" />
-						<field name="di_type_colis"
+						<field name="di_type_colis_id"
 							context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
 							domain="[('product_id','=',id),('di_type_cond','=','COLIS')]"
 							groups="product.group_stock_packaging" />
@@ -208,7 +208,7 @@
 					<group name="specif">
 						<!-- ajout champs spécifiques -->
 						<field name="di_type_cond" required="True" />
-						<field name="di_type_colis" string='Type conditionnement inférieur'
+						<field name="di_type_colis_id" string='Type conditionnement inférieur'
 							attrs="{'required':[('di_type_cond','=','PALETTE')],'readonly':[('di_type_cond','!=','PALETTE')]}"
 							context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 
 								'form_view_ref':'product.product_packaging_form_view'}"
@@ -250,10 +250,10 @@
 					<field name="di_type_cond" string="Type cond." required="True" />
 					<field name="di_qte_cond_inf" string="Qté cond. inf."
 						attrs="{'readonly':[('di_type_cond','=','PIECE')]}" />
-					<field name="di_type_colis" string="Type cond. inf." />
+					<field name="di_type_colis_id" string="Type cond. inf." />
 
 
-					<!-- <field name="di_type_colis" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}" 
+					<!-- <field name="di_type_colis_id" attrs="{'invisible':[('di_type_cond','!=','PALETTE')]}" 
 						context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 
 						'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" 
 						groups="product.group_stock_packaging" /> -->
