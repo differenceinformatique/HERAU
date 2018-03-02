@@ -14,6 +14,7 @@ class AccountInvoiceLine(models.Model):
     di_poib = fields.Float(string='Poids brut', store=True)
     di_tare = fields.Float(string='Tare', store=True)
     di_product_packaging_id = fields.Many2one('product.packaging', string='Package', default=False, store=True)
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",store=True)
      
      
 #     di_qte_un_saisie_init = fields.Float(related="sale_line_id.di_qte_un_saisie")
@@ -28,7 +29,38 @@ class AccountInvoiceLine(models.Model):
 #     product_packaging_init = fields.Many2one(related="sale_line_id.di_product_packaging_id")    
     
  
- 
+    @api.one
+    @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
+        'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
+        'invoice_id.date_invoice', 'invoice_id.date','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
+    def _compute_price(self):
+        currency = self.invoice_id and self.invoice_id.currency_id or None
+        price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
+        taxes = False
+        di_qte_prix = 0.0
+        
+        if line.di_un_prix == "PIECE":
+            di_qte_prix = self.di_nb_pieces
+        elif line.di_un_prix == "COLIS":
+            di_qte_prix = self.di_nb_colis
+        elif line.di_un_prix == "PALETTE":
+            di_qte_prix = self.di_nb_palette
+        elif line.di_un_prix == "POIDS":
+            di_qte_prix = self.di_poin
+        elif line.di_un_prix == False or line.di_un_prix == '':
+            di_qte_prix = self.quantity
+            
+        if self.invoice_line_tax_ids:
+            taxes = self.invoice_line_tax_ids.compute_all(price, currency, di_qte_prix, product=self.product_id, partner=self.invoice_id.partner_id)        
+        self.price_subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else di_qte_prix * price
+        self.price_total = taxes['total_included'] if taxes else self.price_subtotal
+        if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
+            price_subtotal_signed = self.invoice_id.currency_id.with_context(date=self.invoice_id._get_currency_rate_date()).compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
+        sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
+        self.price_subtotal_signed = price_subtotal_signed * sign
+        
+        
+
     @api.one
     @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_poib', 'di_tare', 'di_product_packaging_id')
     def _compute_qte_aff(self):
@@ -96,6 +128,7 @@ class AccountInvoiceLine(models.Model):
                 self.di_un_saisie = self.product_id.di_un_saisie
                 self.di_type_palette_id = self.product_id.di_type_palette_id
                 self.di_product_packaging_id = self.product_id.di_type_colis_id
+                self.di_un_prix = self.product_id.di_un_prix
                  
     @api.multi            
     @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_poib', 'di_tare', 'di_product_packaging_id')
@@ -182,7 +215,8 @@ class AccountInvoiceLine(models.Model):
                     vals["di_tare"] = Disaleorderline.di_tare  
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
-                    vals["di_product_packaging_id"] = Disaleorderline.di_product_packaging_id.id 
+                    vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id 
+                    vals["di_un_prix"] = Disaleorderline.di_un_prix
                     qte_a_fac += Disaleorderline.di_qte_a_facturer_un_saisie   
                     poib += Disaleorderline.di_poib
                      

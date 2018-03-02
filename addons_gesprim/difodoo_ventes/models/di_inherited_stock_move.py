@@ -26,6 +26,7 @@ class StockMove(models.Model):
     di_poib_init = fields.Float(related="sale_line_id.di_poib")
     di_tare_init = fields.Float(related="sale_line_id.di_tare")
     di_product_packaging_init_id = fields.Many2one(related="sale_line_id.product_packaging")    
+        
     
     def _action_done(self):
         result = super(StockMove, self)._action_done()
@@ -210,7 +211,7 @@ class StockMove(models.Model):
                     vals["di_tare"] = Disaleorderline.di_tare   
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
-                    vals["di_product_packaging_id"] = Disaleorderline.di_product_packaging_id.id                                                         
+                    vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id                                                         
                     vals["di_qte_un_saisie"] = Disaleorderline.di_qte_un_saisie - Disaleorderline.di_qte_un_saisie_liv
                     vals["di_tare"] = Disaleorderline.di_poib
                                                      
@@ -221,6 +222,8 @@ class StockMoveLine(models.Model):
     _inherit = "stock.move.line"
       
     di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True)  
+    
+    # TODO : Prévoir de remplir les quantités et n° de lot en auto à la confirmation de la commande
      
     @api.multi                     
     @api.onchange('di_qte_un_saisie')

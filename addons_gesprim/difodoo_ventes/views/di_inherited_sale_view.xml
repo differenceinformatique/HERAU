@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty'] " position="before">
                     <field name="di_un_saisie" required="True"/>
+                    <field name="di_un_prix" string="Unité de prix" required="True"/>
                     <field name="di_qte_un_saisie" required="True"/>
                     <field name="di_tare" />
                     <field name="di_poib" />                                                    
@@ -32,6 +33,7 @@
                 </xpath>
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_uom_qty'] " position="before">
                     <field name="di_un_saisie" required="True"/>
+                    <field name="di_un_prix" string="Unité de prix" required="True"/>
                     <field name="di_qte_un_saisie" required="True"/>
                     <field name="di_tare" />
                     <field name="di_poib" />                                                    

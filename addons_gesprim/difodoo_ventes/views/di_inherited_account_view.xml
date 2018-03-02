@@ -10,6 +10,7 @@
                                          
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
                     <field name="di_un_saisie" string="Unité saisie" />
+                    <field name="di_un_prix" string="Unité de prix" />
                     <field name="di_qte_un_saisie" string="Qté init. un. saisie"/>
                     <field name="di_tare" string="Tare"/>
                     <field name="di_poib"  string="Poids brut"/>                                                    

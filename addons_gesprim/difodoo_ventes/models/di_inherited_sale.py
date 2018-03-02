@@ -5,20 +5,22 @@ from datetime import datetime, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from addons import sale,account,stock,sale_stock 
-from difodoo import *
+from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
+
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
     
-    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie',store=True)
-    di_un_saisie     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie",store=True)
+    di_qte_un_saisie= fields.Float(string='Quantité en unité de saisie',store=True)
+    di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie",store=True)
     di_type_palette_id  = fields.Many2one('product.packaging', string='Palette') 
-    di_nb_pieces     = fields.Integer(string='Nb pièces' ,compute="_compute_qte_aff",store=True)
-    di_nb_colis      = fields.Integer(string='Nb colis',compute="_compute_qte_aff",store=True)
-    di_nb_palette    = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True)
-    di_poin          = fields.Float(string='Poids net',compute="_compute_qte_aff",store=True)
-    di_poib          = fields.Float(string='Poids brut',store=True)
-    di_tare          = fields.Float(string='Tare',store=True)
+    di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute="_compute_qte_aff",store=True)
+    di_nb_colis     = fields.Integer(string='Nb colis',compute="_compute_qte_aff",store=True)
+    di_nb_palette   = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True)
+    di_poin         = fields.Float(string='Poids net',compute="_compute_qte_aff",store=True)
+    di_poib         = fields.Float(string='Poids brut',store=True)
+    di_tare         = fields.Float(string='Tare',store=True)
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",store=True)
 
     di_qte_un_saisie_liv = fields.Float(string='Quantité livrée en unité de saisie')
     di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie livrée")
@@ -41,9 +43,39 @@ class SaleOrderLine(models.Model):
     di_poib_fac          = fields.Float(string='Poids brut facturé')
     di_tare_fac          = fields.Float(string='Tare facturée')
     di_product_packaging_fac_id=fields.Many2one('product.packaging', string='Colis facturé')
+    di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix facturé",store=True)
     
     di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_get_to_invoice_qty')
-     
+    
+    
+
+    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
+    def _compute_amount(self):
+        """
+        Compute the amounts of the SO line.
+        """
+        for line in self:
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            
+            di_qte_prix = 0.0
+            if line.di_un_prix == "PIECE":
+                di_qte_prix = line.di_nb_pieces
+            elif line.di_un_prix == "COLIS":
+                di_qte_prix = line.di_nb_colis
+            elif line.di_un_prix == "PALETTE":
+                di_qte_prix = line.di_nb_palette
+            elif line.di_un_prix == "POIDS":
+                di_qte_prix = line.di_poin
+            elif line.di_un_prix == False or line.di_un_prix == '':
+                di_qte_prix = line.product_uom_qty
+             
+            taxes = line.tax_id.compute_all(price, line.order_id.currency_id, di_qte_prix, product=line.product_id, partner=line.order_id.partner_shipping_id)
+            line.update({
+                'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                'price_total': taxes['total_included'],
+                'price_subtotal': taxes['total_excluded'],
+            })
+    
     @api.multi
     def _get_qte_un_saisie_liv(self):
         self.ensure_one()        
@@ -184,7 +216,27 @@ class SaleOrderLine(models.Model):
             if self.product_id.id != False:
                 self.di_un_saisie = self.product_id.di_un_saisie
                 self.di_type_palette_id = self.product_id.di_type_palette_id
-                self.product_packaging = self.product_id.di_type_colis_id            
+                self.product_packaging = self.product_id.di_type_colis_id    
+                self.di_un_prix = self.product_id.di_un_prix        
+                
+    @api.multi
+    @api.onchange('product_id','order_id.partner_id','order_id.date_order','di_un_prix','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','product_uom_qty')
+    def _di_changer_prix(self):
+        for line in self:
+            di_qte_prix = 0.0
+            if line.di_un_prix == "PIECE":
+                di_qte_prix = line.di_nb_pieces
+            elif line.di_un_prix == "COLIS":
+                di_qte_prix = line.di_nb_colis
+            elif line.di_un_prix == "PALETTE":
+                di_qte_prix = line.di_nb_palette
+            elif line.di_un_prix == "POIDS":
+                di_qte_prix = line.di_poin
+            elif line.di_un_prix == False or line.di_un_prix == '':
+                di_qte_prix = line.product_uom_qty
+            # TODO : A voir si on peut utiliser le standard ou non            
+            line.price_unit = di_recherche_prix_unitaire(line.price_unit,line.order_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.order_id.date_order)
+
     @api.multi    
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_poib','di_tare','product_packaging')
     def _di_recalcule_quantites(self):
