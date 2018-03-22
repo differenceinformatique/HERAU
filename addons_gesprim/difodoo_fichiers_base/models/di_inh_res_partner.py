@@ -10,4 +10,4 @@ class ResPartner(models.Model):
      di_siret = fields.Char(string="N° siret")
      #référencement article 
      di_refarticle_ids = fields.Many2many('product.product', 'di_referencement_article_tiers', 'partner_id','product_id', string='Référencement article')
-          
+     di_code_tarif_id = fields.Many2one('di.code.tarif',string="Code tarif")               

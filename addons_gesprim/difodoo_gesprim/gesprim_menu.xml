@@ -7,14 +7,15 @@
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers"/>
 	<menuitem id="menu_gesprim_articles" name="Articles" sequence="10" parent="menu_gesprim_art" action="product.product_template_action_all" />
 	<menuitem id="menu_gesprim_tiers" name="Tiers" sequence="20" parent="menu_gesprim_fichiers" />
-	<menuitem id="menu_gesprim_clients" name="Clients" sequence="10" parent="menu_gesprim_tiers" action="base.action_partner_form" />
+	<menuitem id="menu_gesprim_clients" name="Clients" sequence="10" parent="menu_gesprim_tiers" action="base.action_partner_form" />	
 	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="20" parent="menu_gesprim_tiers" action="base.action_partner_supplier_form" />
 	<menuitem id="menu_gesprim_tables" name="Tables" sequence="100" parent="menu_gesprim_fichiers" />
 	<menuitem id="menu_gesprim_categories" sequence="10" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_categorie" />
 	<menuitem id="menu_gesprim_origines" sequence="20" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_origine" />
 	<menuitem id="menu_gesprim_marques" sequence="30" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_marque" />
 	<menuitem id="menu_gesprim_calibres" sequence="40" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_calibre" />
-	<menuitem id="menu_gesprim_stations" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" /> 
+	<menuitem id="menu_gesprim_stations" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" />
+	<menuitem id="menu_gesprim_codes_tarifs" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_code_tarif" /> 
 	<!-- menu Ventes -->
 	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>

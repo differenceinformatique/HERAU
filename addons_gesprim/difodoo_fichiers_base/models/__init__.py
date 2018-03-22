@@ -8,3 +8,4 @@ from . import di_categorie
 from . import di_station
 from . import di_marque
 from . import di_origine
+from . import di_code_tarif

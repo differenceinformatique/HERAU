@@ -210,4 +210,48 @@
 			</p>
 		</field>
 	</record>
+	<!--Code tarif -->
+    <record id="view_code_tarif_tree" model="ir.ui.view">
+        <field name="name">di.code.tarif.tree</field>
+        <field name="model">di.code.tarif</field>
+        <field name="arch" type="xml">
+            <tree string="Code tarif" default_order="name">
+                <field name="name" />
+                <field name="di_des" />
+                <field name="di_coef" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_code_tarif_form" model="ir.ui.view">
+        <field name="name">di.code.tarif.tree</field>
+        <field name="model">di.code.tarif</field>
+        <field name="arch" type="xml">
+            <form string="Code tarif">
+                <sheet string="Code tarif" modifiers="{}">
+                    <group>
+                        <field name="di_company_id" can_create="true" can_write="true"
+                            modifiers="{'readonly':true}" />
+                        <field name="name" modifiers="{'required':true}" />
+                        <field name="di_des" modifiers="{'required':true}" />
+                        <field name="di_coef" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="di_action_code_tarif" model="ir.actions.act_window">
+        <field name="name">Codes tarifs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.code.tarif</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            <p>
+                Cliquer pour gérer les codes tarifs
+            </p>
+        </field>
+    </record>
 </odoo>
