@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "difodoo_fichiers_base",
+    'name': "difodoo_achats",
 
     'summary': """
-        difodoo_fichiers_base""",
+        difodoo_achats""",
 
     'description': """
-        Surcharge des fichiers de base
+        Surcharge de Purchase, Purchase order, purchase order line
     """,
 
     'author': "Difference informatique",
@@ -19,14 +19,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','product','sale_stock'],
+    'depends': ['base','purchase','product','difodoo_ventes'],
 
     # always loaded
-    'data': [
-        "views/di_inh_product_view.xml",
-        "views/di_inh_res_partner_view.xml",        
-        "views/di_tables_view.xml",
-        "wizards/di_wiz_referencer_article.xml",
+    'data': [        
+        "views/di_inh_purchase_view.xml",
+#         "views/di_inherited_picking_view.xml",
+#         "views/di_inherited_account_view.xml",
         # 'security/ir.model.access.csv',
       
     ],

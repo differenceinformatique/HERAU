@@ -1,6 +1,55 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
- 
+from odoo.tools.float_utils import float_compare
+
+class AccountInvoice(models.Model):
+    _inherit = 'account.invoice'
+
+    def _prepare_invoice_line_from_po_line(self, line):
+        #Copie du standard pour ajouter des éléments dans data
+        if line.product_id.purchase_method == 'purchase':
+            qty = line.product_qty - line.qty_invoiced
+            di_qte_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
+            di_poib = line.di_poib - line.di_poib_fac            
+        #ajout difodoo
+        else:
+            qty = line.qty_received - line.qty_invoiced
+            di_qte_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
+            di_poib = line.di_poib_liv - line.di_poib_fac
+        #ajout difodoo
+        if float_compare(qty, 0.0, precision_rounding=line.product_uom.rounding) <= 0:
+            qty = 0.0
+        taxes = line.taxes_id
+        invoice_line_tax_ids = line.order_id.fiscal_position_id.map_tax(taxes)
+        invoice_line = self.env['account.invoice.line']
+        data = {
+            'purchase_line_id': line.id,
+            'name': line.order_id.name+': '+line.name,
+            'origin': line.order_id.origin,
+            'uom_id': line.product_uom.id,
+            'product_id': line.product_id.id,
+            'account_id': invoice_line.with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
+            'price_unit': line.order_id.currency_id.with_context(date=self.date_invoice).compute(line.price_unit, self.currency_id, round=False),
+            'quantity': qty,
+            'discount': 0.0,
+            'account_analytic_id': line.account_analytic_id.id,
+            'analytic_tag_ids': line.analytic_tag_ids.ids,
+            'invoice_line_tax_ids': invoice_line_tax_ids.ids,
+            #Ajout des éléments difodoo
+            'di_tare':line.di_tare,  
+            'di_un_saisie':line.di_un_saisie,
+            'di_type_palette_id':line.di_type_palette_id,
+            'di_product_packaging_id':line.product_packaging,
+            'di_un_prix':line.di_un_prix,
+            'di_qte_un_saisie':di_qte_un_saisie,
+            'di_poib':di_poib
+                               
+        }
+        account = invoice_line.get_invoice_line_account('in_invoice', line.product_id, line.order_id.fiscal_position_id, self.env.user.company_id)
+        if account:
+            data['account_id'] = account.id
+        return data
+     
 class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
      
@@ -39,15 +88,16 @@ class AccountInvoiceLine(models.Model):
         taxes = False
         di_qte_prix = 0.0
         
-        if line.di_un_prix == "PIECE":
+   
+        if self.di_un_prix == "PIECE":
             di_qte_prix = self.di_nb_pieces
-        elif line.di_un_prix == "COLIS":
+        elif self.di_un_prix == "COLIS":
             di_qte_prix = self.di_nb_colis
-        elif line.di_un_prix == "PALETTE":
+        elif self.di_un_prix == "PALETTE":
             di_qte_prix = self.di_nb_palette
-        elif line.di_un_prix == "POIDS":
+        elif self.di_un_prix == "POIDS":
             di_qte_prix = self.di_poin
-        elif line.di_un_prix == False or line.di_un_prix == '':
+        elif self.di_un_prix == False or self.di_un_prix == '':
             di_qte_prix = self.quantity
             
         if self.invoice_line_tax_ids:
@@ -219,6 +269,29 @@ class AccountInvoiceLine(models.Model):
                     vals["di_un_prix"] = Disaleorderline.di_un_prix
                     qte_a_fac += Disaleorderline.di_qte_a_facturer_un_saisie   
                     poib += Disaleorderline.di_poib
+                     
+            vals["di_qte_un_saisie"] = qte_a_fac
+            vals["di_poib"] = poib
+            
+        di_avec_purchase_line_ids = False  # initialisation d'une variable       
+        di_ctx = dict(self._context or {})  # chargement du contexte
+        for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+            if key[0] == "purchase_line_ids":  # si on a modifié sale_line_id
+                di_avec_purchase_line_ids = True
+        if di_avec_purchase_line_ids == True:
+            qte_a_fac = 0.0
+            poib = 0.0
+            for id_ligne in vals["purchase_line_ids"][0][2]:
+                Dipurchaseorderline = self.env['purchase.order.line'].search([('id', '=', id_ligne)], limit=1)                                 
+                if Dipurchaseorderline.id != False:               
+                    #on attribue par défaut les valeurs de la ligne de commande   
+                    vals["di_tare"] = Dipurchaseorderline.di_tare  
+                    vals["di_un_saisie"] = Dipurchaseorderline.di_un_saisie
+                    vals["di_type_palette_id"] = Dipurchaseorderline.di_type_palette_id.id
+                    vals["di_product_packaging_id"] = Dipurchaseorderline.product_packaging.id 
+                    vals["di_un_prix"] = Dipurchaseorderline.di_un_prix
+                    qte_a_fac += Dipurchaseorderline.di_qte_un_saisie   
+                    poib += Dipurchaseorderline.di_poib
                      
             vals["di_qte_un_saisie"] = qte_a_fac
             vals["di_poib"] = poib

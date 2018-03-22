@@ -28,6 +28,7 @@
         'product',
         'difodoo_fichiers_base',
         'difodoo_ventes',
+        'difodoo_achats',
         'web_sheet_full_width'
         ,'report_intrastat'
         ,'l10n_fr_sale_closing',

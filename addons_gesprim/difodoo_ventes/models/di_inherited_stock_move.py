@@ -29,7 +29,9 @@ class StockMove(models.Model):
         
     
     def _action_done(self):
+        #standard de validadtion de livraison        
         result = super(StockMove, self)._action_done()
+        #ajout des calculs sur les champs spé
         for line in self.mapped('sale_line_id'):
             line.qty_delivered = line._get_delivered_qty()
             line.di_qte_un_saisie_liv = line._get_qte_un_saisie_liv()
@@ -214,8 +216,29 @@ class StockMove(models.Model):
                     vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id                                                         
                     vals["di_qte_un_saisie"] = Disaleorderline.di_qte_un_saisie - Disaleorderline.di_qte_un_saisie_liv
                     vals["di_tare"] = Disaleorderline.di_poib
+                    
+#         di_avec_purchase_line_id = False  # initialisation d'une variable       
+#         di_ctx = dict(self._context or {})  # chargement du contexte
+#         for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+#             if key[0] == "purchase_line_id":  # si on a modifié sale_line_id
+#                 di_avec_purchase_line_id = True
+#         if di_avec_purchase_line_id == True:
+#             if vals["purchase_line_id"] != False and  vals["purchase_line_id"] != 0 :  # si on a bien un sale_line_id 
+#                 # recherche de l'enregistrement sale order line avec un sale_line_id = sale_line_id
+#                 Dipurchaseorderline = self.env['purchase.order.line'].search([('id', '=', vals["purchase_line_id"])], limit=1)            
+#                 if Dipurchaseorderline.id != False:               
+#                     #on attribue par défaut les valeurs de la ligne de commande   
+#                     vals["di_tare"] = Dipurchaseorderline.di_tare   
+#                     vals["di_un_saisie"] = Dipurchaseorderline.di_un_saisie
+#                     vals["di_type_palette_id"] = Dipurchaseorderline.di_type_palette_id.id
+#                     vals["di_product_packaging_id"] = Dipurchaseorderline.product_packaging.id                                                         
+#                     vals["di_qte_un_saisie"] = Dipurchaseorderline.di_qte_un_saisie - Dipurchaseorderline.di_qte_un_saisie_liv
+#                     vals["di_tare"] = Dipurchaseorderline.di_poib
                                                      
-        res = super(StockMove, self).create(vals)                           
+        res = super(StockMove, self).create(vals)      
+        #en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
+        if res.move_line_ids.id==False:
+            self.env['stock.move.line'].create(res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability))                     
         return res
  
 class StockMoveLine(models.Model):
@@ -245,4 +268,48 @@ class StockMoveLine(models.Model):
             else:
                 self.qty_done = self.di_qte_un_saisie
                 
-    
+            
+    @api.model
+    def create(self, vals):
+        if vals.get('picking_id') :
+            if vals['picking_id']!=False:                  
+                picking = self.env['stock.picking'].browse(vals['picking_id'])
+                if picking.picking_type_id.id==1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.
+               
+                    if not vals.get('lot_id'): #si pas de lot saisi
+            #             vals
+            #         else:
+                        if vals.get('move_id') : # si on a une commande liée
+                            if vals['move_id']!=False:            
+                                move = self.env['stock.move'].browse(vals['move_id'])
+                                if move.purchase_line_id.order_id.id !=False:
+                                    data = {
+                                    'name': move.purchase_line_id.order_id.name,  
+                                    'product_id' : move.product_id.id                                      
+                                    }            
+                                    lot = self.env['stock.production.lot'].create(data)       # création du lot      
+                        #             vals['lot_id']= move.purchase_line_id.order_id.name
+                                    vals['lot_id']=lot.id 
+                                    vals['lot_name']=lot.name
+                            
+                        if not vals.get('lot_id'):
+            #                 vals
+            #             else:
+                            picking = self.env['stock.picking'].browse(vals['picking_id'])
+                            data = {
+                            'name': picking.name,
+                            'product_id' : move.product_id.id                                        
+                            } 
+                            lot = self.env['stock.production.lot'].create(data)
+                            vals['lot_id']=lot.id
+                            vals['lot_name']=lot.name
+#             vals['lot_id']= picking.name
+#         if ml.move_id.purchase_line_id.order_id.name != False:
+# #             vals['lot_id']= ml.move_id.purchase_line_id.order_id.name
+#             ml.lot_id.name= ml.move_id.purchase_line_id.order_id.name
+#         else:
+# #             vals['lot_id']= ml.move_id.picking_id.name    
+#             ml.lot_id.name= ml.move_id.picking_id.name
+            
+        ml = super(StockMoveLine, self).create(vals)
+        return ml

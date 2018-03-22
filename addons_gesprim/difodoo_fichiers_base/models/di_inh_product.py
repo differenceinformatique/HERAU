@@ -36,6 +36,8 @@ class ProductTemplate(models.Model):
     di_type_palette_id     = fields.Many2one('product.packaging', string='Palette par défaut')   
     di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut')
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",store=True)
+    
+    
      
     
     def di_create_condi(self):
@@ -46,7 +48,8 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = "product.product"
     default_code = fields.Char('Internal Reference', index=True, copy=False)
-    
+        
+    di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')
     
 #     @api.one
     def di_get_type_piece(self):
