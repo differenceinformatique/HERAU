@@ -26,7 +26,7 @@
         "views/di_inh_product_view.xml",
         "views/di_inh_res_partner_view.xml",        
         "views/di_tables_view.xml",
-        "wizards/di_wiz_referencer_article.xml",
+        "wizard/di_wiz_referencer_article.xml",
         # 'security/ir.model.access.csv',
       
     ],
