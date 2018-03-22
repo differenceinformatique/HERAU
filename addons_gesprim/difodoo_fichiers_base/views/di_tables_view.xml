@@ -254,4 +254,48 @@
             </p>
         </field>
     </record>
+<!--Conditionnement par défaut  -->
+	<record id="view_cond_defaut_tree" model="ir.ui.view">
+		<field name="name">di.conddefaut.tree</field>
+		<field name="model">di.conddefaut</field>
+		<field name="arch" type="xml">
+			<tree string="Conditionnement par défaut" default_order="name">
+				<field name="name" />
+				<field name="di_des" />
+				<field name="di_type_cond" />
+			</tree>
+		</field>
+	</record>
+	<record id="view_cond_defaut_form" model="ir.ui.view">
+		<field name="name">di.conddefaut.tree</field>
+		<field name="model">di.conddefaut</field>
+		<field name="arch" type="xml">
+			<form string="Conditionnement par défaut">
+				<sheet string="Conditionnement par défaut" modifiers="{}">
+					<group>
+						<field name="di_company_id" can_create="true" can_write="true"
+							modifiers="{'readonly':true}" />
+						<field name="name" modifiers="{'required':true}" />
+						<field name="di_des" modifiers="{'required':true}" />
+						<field name="di_type_cond" modifiers="{'required':true}"/>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="di_action_cond_defaut" model="ir.actions.act_window">
+		<field name="name">Conditionnements par défaut</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">di.conddefaut</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Aide
+			</p>
+			<p>
+				Cliquer pour gérer les Conditionnement par défaut
+			</p>
+		</field>
+	</record>
 </odoo>

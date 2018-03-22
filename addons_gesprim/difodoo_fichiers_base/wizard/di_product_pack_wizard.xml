@@ -1,0 +1,30 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="wiz_create_producpack" model="ir.ui.view">
+		<field name="name">di.prodpack_wiz.form</field>
+		<field name="model">di.prodpack_wiz</field>
+		<field name="arch" type="xml">
+			<form string="Création conditionnements">
+				<field name="message" colspan="6" readonly="1" nolabel="1" />
+				<footer>
+					<button string="OK" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<act_window
+		id="di_action_wiz_create_producpack"
+		multi="True"
+		key2="client_action_multi"
+		name="Création conditionnements"
+		res_model="di.prodpack_wiz"
+		src_model="di.conddefaut"
+		view_mode="form"
+		target="new"
+		view_type="form"
+		view_id="wiz_create_producpack">	
+	</act_window>
+
+</odoo>
+ -->

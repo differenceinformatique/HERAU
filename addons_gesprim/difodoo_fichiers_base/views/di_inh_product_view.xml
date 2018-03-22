@@ -65,6 +65,7 @@
 				</xpath>
 				<xpath expr="//page[@name='general_information']" position="inside">
 					<button name="di_create_condi" type="object" string="Créer les conditionnements par défaut"/>
+					<button name="di_recalc_condi" type="object" string="Recalculer les coefficents de conditionnements"/>
 					<group name="Colisage" string="Conditionnements" colspan="4"
 						attrs="{'invisible':['|', ('type', 'not in', ['product', 'consu']), ('product_variant_count', '>', 1)]}"
 						groups="product.group_stock_packaging">						
