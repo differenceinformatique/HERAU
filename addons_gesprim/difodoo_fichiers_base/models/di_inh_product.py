@@ -75,9 +75,9 @@ class ProductProduct(models.Model):
                     ProductPack.qty = PP_Piece.qty*ProductPack.di_qte_cond_inf 
         for ProductPack in self.packaging_ids:
             if ProductPack.di_type_cond == 'PALETTE':
-                PP_Colis = self.env['product.packaging'].browse(ProductPack.di_type_cond_inf_id)
+                PP_Colis = self.env['product.packaging'].browse(ProductPack.di_type_cond_inf_id).id
                 if PP_Colis:
-                    ProductPack.qty = PP_Piece.qty*ProductPack.di_qte_cond_inf 
+                    ProductPack.qty = PP_Colis.qty*ProductPack.di_qte_cond_inf 
         res = super(ProductProduct, self).write(vals)
         return res
     
