@@ -218,6 +218,49 @@ class SaleOrderLine(models.Model):
                 self.di_type_palette_id = self.product_id.di_type_palette_id
                 self.product_packaging = self.product_id.di_type_colis_id    
                 self.di_un_prix = self.product_id.di_un_prix        
+
+
+    @api.multi
+    @api.onchange('product_id')
+    def product_id_change(self):
+        result=super(SaleOrderLine, self).product_id_change()
+        #surcharge de la procédure pour recalculer le prix car elle est appelée après _di_changer_prix quand on modifie l'article
+        vals = {}
+        if self.product_id and self.di_un_prix:
+#             if vals.get("price_unit"):
+            di_qte_prix = 0.0
+            if self.di_un_prix == "PIECE":
+                di_qte_prix = self.di_nb_pieces
+            elif self.di_un_prix == "COLIS":
+                di_qte_prix = self.di_nb_colis
+            elif self.di_un_prix == "PALETTE":
+                di_qte_prix = self.di_nb_palette
+            elif self.di_un_prix == "POIDS":
+                di_qte_prix = self.di_poin
+            elif self.di_un_prix == False or self.di_un_prix == '':
+                di_qte_prix = self.product_uom_qty
+                
+            vals['price_unit'] = di_recherche_prix_unitaire(self,self.price_unit,self.order_id.partner_id,self.product_id,self.di_un_prix,di_qte_prix,self.order_id.date_order)
+            self.update(vals)       
+        return result
+
+    @api.onchange('product_uom', 'product_uom_qty')
+    def product_uom_change(self):
+        super(SaleOrderLine, self).product_uom_change()
+        #surcharge de la procédure pour recalculer le prix car elle est appelée après _di_changer_prix quand on modifie l'article
+        if self.product_id and self.di_un_prix:
+            di_qte_prix = 0.0
+            if self.di_un_prix == "PIECE":
+                di_qte_prix = self.di_nb_pieces
+            elif self.di_un_prix == "COLIS":
+                di_qte_prix = self.di_nb_colis
+            elif self.di_un_prix == "PALETTE":
+                di_qte_prix = self.di_nb_palette
+            elif self.di_un_prix == "POIDS":
+                di_qte_prix = self.di_poin
+            elif self.di_un_prix == False or self.di_un_prix == '':
+                di_qte_prix = self.product_uom_qty
+            self.price_unit = di_recherche_prix_unitaire(self,self.price_unit,self.order_id.partner_id,self.product_id,self.di_un_prix,di_qte_prix,self.order_id.date_order)       
                 
     @api.multi
     @api.onchange('product_id','order_id.partner_id','order_id.date_order','di_un_prix','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','product_uom_qty')
@@ -234,8 +277,9 @@ class SaleOrderLine(models.Model):
                 di_qte_prix = line.di_poin
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.product_uom_qty
-            # TODO : A voir si on peut utiliser le standard ou non            
-            line.price_unit = di_recherche_prix_unitaire(line.price_unit,line.order_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.order_id.date_order)
+            # TODO : A voir si on peut utiliser le standard ou non     
+            if line.product_id.id != False and line.di_un_prix:       
+                line.price_unit = di_recherche_prix_unitaire(self,line.price_unit,line.order_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.order_id.date_order)
 
     @api.multi    
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_poib','di_tare','product_packaging')

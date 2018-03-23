@@ -298,4 +298,60 @@
 			</p>
 		</field>
 	</record>
+	<!-- Tarifs -->
+    <record id="view_tarifs_tree" model="ir.ui.view">
+        <field name="name">di.tarifs.tree</field>
+        <field name="model">di.tarifs</field>
+        <field name="arch" type="xml">
+            <tree string="Tarifs" default_order="di_date_effet desc,di_product_id">
+                <field name="di_product_id" />
+                <field name="di_partner_id" />
+                <field name="di_code_tarif_id" />
+                <field name="di_un_prix" />
+                <field name="di_qte_seuil" />
+                <field name="di_date_effet" />
+                <field name="di_date_fin" />
+                <field name="di_prix" />                            
+            </tree>
+        </field>
+    </record>
+    <record id="view_code_tarif_form" model="ir.ui.view">
+        <field name="name">di.tarif.tree</field>
+        <field name="model">di.tarifs</field>
+        <field name="arch" type="xml">
+            <form string="Tarifs">
+                <sheet string="Tarifs" modifiers="{}">
+                    <group>
+                        <field name="di_company_id" can_create="true" can_write="true"
+                            modifiers="{'readonly':true}" />
+                            
+                        <field name="di_product_id" modifiers="{'required':true}"/>
+                        <field name="di_partner_id" />
+                        <field name="di_code_tarif_id" modifiers="{'required':true}"/>
+                        <field name="di_un_prix" modifiers="{'required':true}"/>
+                        <field name="di_qte_seuil" />
+                        <field name="di_date_effet" modifiers="{'required':true}"/>
+                        <field name="di_date_fin" />
+                        <field name="di_prix" />                                            
+                        
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="di_action_tarifs" model="ir.actions.act_window">
+        <field name="name">Tarifs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.tarifs</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            <p>
+                Cliquer pour gérer les Tarifs
+            </p>
+        </field>
+    </record>
 </odoo>

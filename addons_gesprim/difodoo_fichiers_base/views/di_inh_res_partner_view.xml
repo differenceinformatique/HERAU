@@ -59,6 +59,10 @@
 					<field name="zip" placeholder="ZIP" />
 					<field name="city" placeholder="City" />
 				</xpath>
+				<!-- Ajout dans l'onglet Ventes & achats -->
+				<xpath expr="//group[@name='sale']/field[@name='user_id']" position="after">
+                    <field name="di_code_tarif_id" />
+                </xpath>
 			</field>
 		</record>
 		<!-- modification vue kanban par défaut, on préfère le mode liste - Clients -->

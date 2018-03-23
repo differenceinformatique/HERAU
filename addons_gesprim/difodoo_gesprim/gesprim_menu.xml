@@ -18,6 +18,7 @@
 	<menuitem id="menu_gesprim_stations" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" />
 	<menuitem id="menu_gesprim_conditionnement_defaut" name="Conditionnements" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_cond_defaut" /> 
 	<menuitem id="menu_gesprim_codes_tarifs" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_code_tarif" />
+	<menuitem id="menu_gesprim_tarifs" sequence="70" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_tarifs" />
 	<!-- menu Ventes -->
 	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim_titre" />
 	<menuitem id="menu_gesprim_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
