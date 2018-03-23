@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.tools.float_utils import float_compare
+from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import *
+import datetime
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
@@ -109,6 +111,24 @@ class AccountInvoiceLine(models.Model):
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
         self.price_subtotal_signed = price_subtotal_signed * sign
         
+    @api.multi
+    @api.onchange('product_id','invoice_id.partner_id','invoice_id.date','di_un_prix','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','quantity')
+    def _di_changer_prix(self):
+        for line in self:
+            di_qte_prix = 0.0
+            if line.di_un_prix == "PIECE":
+                di_qte_prix = line.di_nb_pieces
+            elif line.di_un_prix == "COLIS":
+                di_qte_prix = line.di_nb_colis
+            elif line.di_un_prix == "PALETTE":
+                di_qte_prix = line.di_nb_palette
+            elif line.di_un_prix == "POIDS":
+                di_qte_prix = line.di_poin
+            elif line.di_un_prix == False or line.di_un_prix == '':
+                di_qte_prix = line.quantity
+            # TODO : A voir si on peut utiliser le standard ou non     
+            if line.product_id.id != False and line.di_un_prix:       
+                line.price_unit = di_recherche_prix_unitaire(self,line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date)
         
 
     @api.one

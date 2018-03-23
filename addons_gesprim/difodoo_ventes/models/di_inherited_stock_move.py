@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import *
  
 class StockMove(models.Model):
     _inherit = "stock.move"
@@ -235,10 +236,18 @@ class StockMove(models.Model):
 #                     vals["di_qte_un_saisie"] = Dipurchaseorderline.di_qte_un_saisie - Dipurchaseorderline.di_qte_un_saisie_liv
 #                     vals["di_tare"] = Dipurchaseorderline.di_poib
                                                      
-        res = super(StockMove, self).create(vals)      
-        #en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
-        if res.move_line_ids.id==False:
-            self.env['stock.move.line'].create(res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability))                     
+        res = super(StockMove, self).create(vals)    
+        
+                               
+        if res.picking_type_id.id==1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
+            #en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
+            if res.move_line_ids.id==False and  res.purchase_line_id.order_id.id ==False: # si on confirme une commande d'achat, la ligne est déjà créée
+                self.env['stock.move.line'].create(res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability))
+                                     
+#         elif res.picking_type_id.id==5: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
+#             #en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
+#             if res.move_line_ids.id==False : #and  res.sale_line_id.order_id.id ==False: # si on confirme une commande d'achat, la ligne est déjà créée
+#                 self.env['stock.move.line'].create(res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability))
         return res
  
 class StockMoveLine(models.Model):
@@ -274,11 +283,8 @@ class StockMoveLine(models.Model):
         if vals.get('picking_id') :
             if vals['picking_id']!=False:                  
                 picking = self.env['stock.picking'].browse(vals['picking_id'])
-                if picking.picking_type_id.id==1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.
-               
+                if picking.picking_type_id.id==1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.               
                     if not vals.get('lot_id'): #si pas de lot saisi
-            #             vals
-            #         else:
                         if vals.get('move_id') : # si on a une commande liée
                             if vals['move_id']!=False:            
                                 move = self.env['stock.move'].browse(vals['move_id'])
@@ -287,14 +293,11 @@ class StockMoveLine(models.Model):
                                     'name': move.purchase_line_id.order_id.name,  
                                     'product_id' : move.product_id.id                                      
                                     }            
-                                    lot = self.env['stock.production.lot'].create(data)       # création du lot      
-                        #             vals['lot_id']= move.purchase_line_id.order_id.name
+                                    lot = self.env['stock.production.lot'].create(data)       # création du lot                              
                                     vals['lot_id']=lot.id 
                                     vals['lot_name']=lot.name
                             
-                        if not vals.get('lot_id'):
-            #                 vals
-            #             else:
+                        if not vals.get('lot_id'):            
                             picking = self.env['stock.picking'].browse(vals['picking_id'])
                             data = {
                             'name': picking.name,
@@ -303,13 +306,27 @@ class StockMoveLine(models.Model):
                             lot = self.env['stock.production.lot'].create(data)
                             vals['lot_id']=lot.id
                             vals['lot_name']=lot.name
-#             vals['lot_id']= picking.name
-#         if ml.move_id.purchase_line_id.order_id.name != False:
-# #             vals['lot_id']= ml.move_id.purchase_line_id.order_id.name
-#             ml.lot_id.name= ml.move_id.purchase_line_id.order_id.name
-#         else:
-# #             vals['lot_id']= ml.move_id.picking_id.name    
-#             ml.lot_id.name= ml.move_id.picking_id.name
-            
+
+#                 elif picking.picking_type_id.id==5: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.
+#                     if not vals.get('lot_id'): #si pas de lot saisi
+#                         if vals.get('move_id') : # si on a une commande liée
+#                             if vals['move_id']!=False:            
+#                                 move = self.env['stock.move'].browse(vals['move_id'])
+#                                 if move.purchase_line_id.order_id.id !=False:                                                                    
+#                                     product=self.env['product.product'].browse(vals['product_id'])
+#                                     location=self.env['stock.location'].browse(vals['location_id'])
+#                                     lotsqtes=di_rechercher_lot_qte_libre(self,product ,  location)
+#                                     for lot_id,qtelot in lotsqtes.items():
+#                                         if qtelot >= move.product_qty:
+#                                             StockLot = self.env['stock.production.lot'].browse(lot_id)
+#                                             vals['lot_id']=StockLot.id
+#                                             vals['lot_name']=StockLot.name
+#                                             vals['product_qty']=move.product_qty
+#                                             break
+                                
+                            
+                        #TODO attribuer les lots en fonction du stock et de la date d'entrée 
+#                         vals['lot_id']=123
+#                         vals['lot_name']='123'
         ml = super(StockMoveLine, self).create(vals)
         return ml
