@@ -7,7 +7,18 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-                <xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty'] " position="before">
+            	<!-- On enlève les adresses du choix du tiers  -->
+            	<xpath expr="//sheet/group/group/field[@name='partner_id']" position="replace">
+            		<field name="partner_id" domain="[('customer','=',True),('parent_id','=',False)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
+            	</xpath>
+            	<!-- Pas les autres tiers, ni leurs adresses  -->
+             	<xpath expr="//sheet/group/group/field[@name='partner_invoice_id']" position="replace">
+            		<field name="partner_invoice_id" domain="['|',('id','=',partner_id),('parent_id','=',partner_id)]" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}" options='{"always_reload": True}'/>
+            	</xpath>
+             	<xpath expr="//sheet/group/group/field[@name='partner_shipping_id']" position="replace">
+            		<field name="partner_shipping_id" domain="['|',('id','=',partner_id),('parent_id','=',partner_id)]" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}" options='{"always_reload": True}'/>
+            	</xpath>
+            	<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty'] " position="before">
                     <field name="di_un_saisie" required="True"/>
                     <field name="di_un_prix" string="Unité de prix" required="True"/>
                     <field name="di_qte_un_saisie" required="True"/>
