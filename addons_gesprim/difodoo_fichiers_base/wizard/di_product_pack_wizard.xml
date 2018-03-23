@@ -5,8 +5,23 @@
 		<field name="model">di.prodpack_wiz</field>
 		<field name="arch" type="xml">
 			<form string="Création conditionnements">
-				<label for="product_id" />
-				<field name="product_id" colspan="6" readonly="True" />
+				<div>
+					<label for="product_id" />
+					<field name="product_id" readonly="True" />
+				</div>
+				<div>
+					<label for="uom_id" />
+					<field name="uom_id" readonly="True" />
+				</div>
+				<div>				
+					<label for="weight" />
+					<field name="weight" readonly="True" />
+				</div>
+				<div>				
+					<label for="QtePiece" />
+					<field name="QtePiece" class="oe_inline" />
+				</div>
+				<separator/>
 				<field name="cond_ids">
 					<tree order="name,di_des">
 						<field name="name" />

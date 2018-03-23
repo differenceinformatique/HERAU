@@ -37,23 +37,12 @@ class ProductTemplate(models.Model):
     di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut')
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Type unité prix")   
     
-#     def di_create_condi(self):
-#         PP = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
-#         if PP.id == False:     
-#             self.env['product.packaging'].create({'name' : 'P', 'product_id' : self.id, 'di_type_cond' : 'PIECE', 'di_qte_cond_inf' : 1})
-#                   
-#     def di_recalc_condi(self):
-#         PP = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
-#         if PP.id == False:     
-#             self.env['product.packaging'].create({'name' : 'P', 'product_id' : self.id, 'di_type_cond' : 'PIECE', 'di_qte_cond_inf' : 1})
-           
 class ProductProduct(models.Model):
     _inherit = "product.product"
     default_code = fields.Char('Internal Reference', index=True, copy=False)
         
     di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')
     
-#     @api.one
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
         return ProductPack
