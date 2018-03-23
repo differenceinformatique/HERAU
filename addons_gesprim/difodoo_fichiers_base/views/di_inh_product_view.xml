@@ -28,7 +28,7 @@
 				<!-- ajout group pour mettre nos champ sur l'onglet Informations Générales -->
 				<xpath expr="//group[@name='group_standard_price']" position="after">
 					<group>
-						<field name="di_un_saisie" />
+						<field name="di_un_saisie" string="Type unité saisie"/>
 						<field name="di_un_prix" />
 						<field name="di_type_palette_id"
 							context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
@@ -60,15 +60,16 @@
 						</group>
 					</xpath>
 				</xpath>
-				<!-- déplacement colisage + ajout bouton créer conditionnement-->
+				<!-- déplacement colisage + ajout bouton créer conditionnement -->
 				<xpath expr="//group[@name='packaging']" position="replace">
 				</xpath>
 				<xpath expr="//page[@name='general_information']" position="inside">
-					<button name="di_create_condi" type="object" string="Créer les conditionnements par défaut"/>
-					<button name="di_recalc_condi" type="object" string="Recalculer les coefficents de conditionnements"/>
+					<!-- <button name="di_create_condi" type="object" string="Créer les 
+						conditionnements par défaut"/> <button name="di_recalc_condi" type="object" 
+						string="Recalculer les coefficents de conditionnements"/> -->
 					<group name="Colisage" string="Conditionnements" colspan="4"
 						attrs="{'invisible':['|', ('type', 'not in', ['product', 'consu']), ('product_variant_count', '>', 1)]}"
-						groups="product.group_stock_packaging">						
+						groups="product.group_stock_packaging">
 						<field name="packaging_ids" nolabel="1"
 							context="{'default_product_id': product_variant_id,'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" />
 					</group>
@@ -198,9 +199,12 @@
 			<field name="inherit_id" ref="product.product_packaging_form_view" />
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
-				<!-- Modification libellé du champ-->
+				<!-- Modification libellé du champ -->
 				<xpath expr="/form/sheet/label[@for='name']" position="replace">
 					<label string="Code Conditionnement" />
+				</xpath>
+				<xpath expr="//field[@name='qty']" position="attributes">
+					<attribute name="string">Qté en unité de mesure</attribute>
 				</xpath>
 				<xpath expr="//group" position="before">
 					<label string="Désignation" />
@@ -230,18 +234,16 @@
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
 				<!-- liste modifiable + tri par code conditionnement -->
-				<xpath expr="//tree" position="attributes">
-					<!-- <attribute name="editable">bottom</attribute> TODO : valider la 
+ 				<xpath expr="//tree" position="attributes">
+<!-- 					<attribute name="editable">bottom</attribute> TODO : valider la 
 						saisie en mode formulaire avant + pouvoir switcher -->
-					<!-- <attribute name="default_order">di_type_cond,name</attribute> TODO 
-						: ne marche pas -->
 				</xpath>
-				<!-- suppression champ sequence + ajout bouton -->
-				<!-- <xpath expr="//field[@name='sequence']" position="replace"> </xpath> 
-					TODO : à réactiver quand le tri fonctionnera -->
 				<!-- Modification libellé du champ -->
 				<xpath expr="//field[@name='name']" position="attributes">
 					<attribute name="string">Code Conditionnement</attribute>
+				</xpath>
+				<xpath expr="//field[@name='qty']" position="attributes">
+					<attribute name="string">Qté en unité de mesure</attribute>
 				</xpath>
 				<!-- Article obligatoire -->
 				<xpath expr="//field[@name='product_id']" position="attributes">

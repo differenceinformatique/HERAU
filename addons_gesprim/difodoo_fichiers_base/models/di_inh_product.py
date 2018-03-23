@@ -32,24 +32,21 @@ class ProductTemplate(models.Model):
     di_producteur_id = fields.Many2one("res.partner",string="Producteur")
     di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')  
 
-    di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie")
+    di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Type unité saisie")
     di_type_palette_id     = fields.Many2one('product.packaging', string='Palette par défaut')   
     di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut')
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",store=True)
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Type unité prix")   
     
-    
-     
-    
-    def di_create_condi(self):
-        PP = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
-        if PP.id == False:     
-            self.env['product.packaging'].create({'name' : 'P', 'product_id' : self.id, 'di_type_cond' : 'PIECE', 'di_qte_cond_inf' : 1})
-            
-    def di_recalc_condi(self):
-        PP = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
-        if PP.id == False:     
-            self.env['product.packaging'].create({'name' : 'P', 'product_id' : self.id, 'di_type_cond' : 'PIECE', 'di_qte_cond_inf' : 1})
-     
+#     def di_create_condi(self):
+#         PP = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
+#         if PP.id == False:     
+#             self.env['product.packaging'].create({'name' : 'P', 'product_id' : self.id, 'di_type_cond' : 'PIECE', 'di_qte_cond_inf' : 1})
+#                   
+#     def di_recalc_condi(self):
+#         PP = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
+#         if PP.id == False:     
+#             self.env['product.packaging'].create({'name' : 'P', 'product_id' : self.id, 'di_type_cond' : 'PIECE', 'di_qte_cond_inf' : 1})
+           
 class ProductProduct(models.Model):
     _inherit = "product.product"
     default_code = fields.Char('Internal Reference', index=True, copy=False)
@@ -72,8 +69,29 @@ class ProductProduct(models.Model):
 
             if default_code:
                 raise Warning("Le code existe déjà.")
-            
-            
+                     
+    @api.multi
+    def write(self, vals):
+        # à l'écriture de l'article on va recalculer les quantités entre conditionnements
+        # on commence par parcourir les emballages de type pièces, puis colis, puis palette
+        for ProductPack in self.packaging_ids:
+            if ProductPack.di_type_cond == 'PIECE':
+                ProductPack.di_type_cond_inf_id = ''
+                ProductPack.di_qte_cond_inf = 1
+        for ProductPack in self.packaging_ids:
+            if ProductPack.di_type_cond == 'COLIS':
+                PP_Piece = self.env['product.packaging'].search(['&', ('product_id', '=', self.id), ('di_type_cond', '=', 'PIECE')], limit=1)
+                if PP_Piece:
+                    ProductPack.di_type_cond_inf_id = PP_Piece.id
+                    ProductPack.qty = PP_Piece.qty*ProductPack.di_qte_cond_inf 
+        for ProductPack in self.packaging_ids:
+            if ProductPack.di_type_cond == 'PALETTE':
+                PP_Colis = self.env['product.packaging'].browse(ProductPack.di_type_cond_inf_id)
+                if PP_Colis:
+                    ProductPack.qty = PP_Piece.qty*ProductPack.di_qte_cond_inf 
+        res = super(ProductProduct, self).write(vals)
+        return res
+    
 #     def _compute_quantities_dict(self, lot_id, owner_id, package_id, from_date=False, to_date=False):
 #         domain_quant_loc, domain_move_in_loc, domain_move_out_loc = self._get_domain_locations()
 #         domain_quant = [('product_id', 'in', self.ids)] + domain_quant_loc
@@ -130,8 +148,8 @@ class ProductProduct(models.Model):
 #                 precision_rounding=product.uom_id.rounding)
 # 
 #         return res
+# 
 
-        
 class ProductPackaging(models.Model):
     _inherit = "product.packaging"
     
@@ -200,7 +218,7 @@ class ProductPackaging(models.Model):
 #             rec = super(DiInheritedProductPackaging, self.with_context(di_ctx)).write(vals)
 #         return rec   
     
-     #vérifie qu'on a un seul conditionnement pièce par article
+    #vérifie qu'on a un seul conditionnement pièce par article
     @api.one
     @api.constrains('product_id','di_type_cond')
     def _check_cond_piece_article(self):

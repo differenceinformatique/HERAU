@@ -1,30 +1,33 @@
-<!-- <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 	<record id="wiz_create_producpack" model="ir.ui.view">
 		<field name="name">di.prodpack_wiz.form</field>
 		<field name="model">di.prodpack_wiz</field>
 		<field name="arch" type="xml">
 			<form string="Création conditionnements">
-				<field name="message" colspan="6" readonly="1" nolabel="1" />
+				<label for="product_id" />
+				<field name="product_id" colspan="6" readonly="True" />
+				<field name="cond_ids">
+					<tree order="name,di_des">
+						<field name="name" />
+						<field name="di_des" />
+						<field name="di_type_cond" />
+					</tree>
+				</field>
 				<footer>
-					<button string="OK" special="cancel" />
+					<button string='Générer' name="di_gen_cond" type="object"
+						class="btn-primary" />
+					<button string="Annuler" class="btn-default" special="cancel" />
 				</footer>
 			</form>
 		</field>
 	</record>
 
-	<act_window
-		id="di_action_wiz_create_producpack"
-		multi="True"
-		key2="client_action_multi"
-		name="Création conditionnements"
-		res_model="di.prodpack_wiz"
-		src_model="di.conddefaut"
-		view_mode="form"
-		target="new"
-		view_type="form"
-		view_id="wiz_create_producpack">	
+	<act_window id="di_action_wiz_create_producpack" multi="False"
+		key2="client_action_multi" name="Création conditionnements" res_model="di.prodpack_wiz"
+		src_model="product.template" view_mode="form" target="new" view_type="form"
+		view_id="wiz_create_producpack">
 	</act_window>
 
 </odoo>
- -->
+ 
