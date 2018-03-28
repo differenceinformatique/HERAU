@@ -144,7 +144,7 @@ class ProductPackaging(models.Model):
     
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
-    di_type_cond_inf_id   = fields.Many2one('product.packaging', string='Type conditionnement inférieur')
+    di_type_cond_inf_id   = fields.Many2one('product.packaging', string='Conditionnement inférieur')
     di_des          = fields.Char(string="Désignation")#, required=True)
     
     @api.onchange('di_type_cond', 'di_type_cond_inf_id', 'di_qte_cond_inf')

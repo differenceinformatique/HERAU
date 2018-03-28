@@ -214,7 +214,7 @@
 					<group name="specif">
 						<!-- ajout champs spécifiques -->
 						<field name="di_type_cond" required="True" />
-						<field name="di_type_cond_inf_id" string='Type conditionnement inférieur'
+						<field name="di_type_cond_inf_id" string='Conditionnement inférieur'
 							attrs="{'required':[('di_type_cond','=','PALETTE')],'readonly':[('di_type_cond','!=','PALETTE')]}"
 							context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 
 								'form_view_ref':'product.product_packaging_form_view'}"
@@ -251,7 +251,7 @@
 				<!-- ajout champs spécifiques -->
 				<xpath expr="//field[@name='name']" position="after">
 					<field name="di_type_cond" string="Type cond." required="True" />
-					<field name="di_type_cond_inf_id" string="Type cond. inf."
+					<field name="di_type_cond_inf_id" string="Cond. inf."
 						attrs="{'required':[('di_type_cond','=','PALETTE')]}"
 						context="{ 'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
 						domain="[('product_id','=',product_id)]"
