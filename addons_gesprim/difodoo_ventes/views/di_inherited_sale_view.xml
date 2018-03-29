@@ -18,59 +18,74 @@
              	<xpath expr="//sheet/group/group/field[@name='partner_shipping_id']" position="replace">
             		<field name="partner_shipping_id" domain="['|',('id','=',partner_id),('parent_id','=',partner_id)]" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}" options='{"always_reload": True}'/>
             	</xpath>
-            	<!-- lignes en mode fiche --> 
-            	<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty'] " position="before">
+            	<!-- lignes en mode fiche  -->
+<!--             	mode fiche sur 5 colonnes
+                <xpath expr="//page/field[@name='order_line']/form/group " position="attributes">                    
+                    <attribute name="col">5</attribute>                                                                              
+                </xpath> -->
+	         	<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty']" position="before">
             		<field name="di_qte_un_saisie" required="True"/>
                     <field name="di_un_saisie" required="True"/>
                 </xpath>                    
-            	<xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit'] " position="after">                                        
+            	<xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="after">                                        
                     <field name="di_un_prix" string="Unité de prix" required="True"/>                                                                   
                 </xpath>
-                 <xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='qty_delivered'] " position="before">
-                    <field name="di_qte_un_saisie_liv" readonly="1" invisible="1"/>                                                   
-                </xpath>
-                <xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='qty_invoiced'] " position="before">
-                    <field name="di_qte_un_saisie_fac" readonly="1" invisible="1"/>                                                   
-                </xpath>
-                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='product_packaging'] " position="before">                    
-					<field name="di_nb_pieces" readonly="1" force_save="1"/>
-                    <field name="di_nb_colis" readonly="1" force_save="1"/>                                                      
-                </xpath> 
-                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='tax_id'] " position="before">                    
-                    <field name="di_nb_palette" readonly="1" force_save="1"/>
-                    <field name="di_type_palette_id" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>                                    
-                    <field name="di_poin" readonly="1" force_save="1"/> 
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='tax_id']" position="before">                    
+  					<field name="di_nb_pieces" readonly="1" force_save="1"/>
+  					<label for="di_nb_colis"/>
+  					<div>
+  						<field name="di_nb_colis" nolabel="1" readonly="1" force_save="1"/>
+  						<field name="product_packaging" nolabel="1" attrs="{'invisible': [('product_id', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id)]" groups="product.group_stock_packaging" />
+  					</div>
+  					<label for="di_nb_palette"/>
+  					<div>
+  						<field name="di_nb_palette" readonly="1" force_save="1"/>
+  						<field name="di_type_palette_id" nolabel="1" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>  					
+  					</div>
+					<field name="di_poin" readonly="1" force_save="1"/> 
                     <field name="di_tare" />
                     <field name="di_poib" />                                                                                
-                </xpath>
-<!--                 <xpath expr="//page/field[@name='order_line']/form/group " position="attributes">                    
-                    <attribute name="colspan">6</attribute>                                                                              
-                </xpath>
-                <xpath expr="//page/field[@name='order_line']/form/group/group " position="attributes">                    
-                    <group>
-                    	<attribute name="colspan">2</attribute>   
-                    </group>                                                                               
-                </xpath>
-                <xpath expr="//page/field[@name='order_line']/form/group " position="inside">                    
-                    <group colspan="2">
-                    	<label string="TOTO"/>
-                    </group>                                                                               
-                </xpath> -->
-				<!-- lignes en mode liste --> 
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='name'] " position="replace"/>
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='tax_id'] " position="replace"/>
+                </xpath>                
                 <!-- suppression champs pour déplacement -->
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_delivered'] " position="replace"/>
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_invoiced'] " position="replace"/>
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='purchase_price'] " position="replace"/>
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal'] " position="after"> 
-                    <field name="qty_delivered"
-                        attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])], 'readonly': [('qty_delivered_updateable', '=', False)]}"/>
-                    <field name="qty_invoiced"
-                        attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                <xpath expr="//page/field[@name='order_line']/form/label[@for='name']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/field[@name='name']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='product_id']" position="after">
+                	<field name="name"/>
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='product_packaging']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/div/field[@name='qty_delivered']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/div/field[@name='qty_invoiced']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='qty_delivered']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='qty_invoiced']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='purchase_price']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">                    
+  					<label for="qty_delivered" string="Delivered Quantity" attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                    <div attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}">
+                        <field name="qty_delivered" attrs="{'readonly': [('qty_delivered_updateable', '=', False)]}"/>
+                    </div>
+                    <field name="di_qte_un_saisie_liv" readonly="1" invisible="1"/>
+                    <label for="qty_invoiced" string="Invoiced Quantity" attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                    <div attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}">
+                        <field name="qty_invoiced" attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                    </div>
+                    <field name="di_qte_un_saisie_fac" readonly="1" invisible="1"/> 
+                    <field name="purchase_price" groups="base.group_user"/>                                                                              
+                </xpath>
+                <!-- lignes en mode liste --> 
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='tax_id']" position="replace"/>
+                <!-- suppression champs pour déplacement -->
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_delivered']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_invoiced']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='purchase_price']" position="replace"/>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after"> 
+                    <field name="qty_delivered" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])], 'readonly': [('qty_delivered_updateable', '=', False)]}"/>
+                    <field name="di_qte_un_saisie_liv" readonly="1" invisible="1"/>
+                    <field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                    <field name="di_qte_un_saisie_fac" readonly="1" invisible="1"/>
                     <field name="purchase_price" groups="base.group_user"/>
                 </xpath>
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id'] " position="after">                
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="after">                
                     <field name="di_qte_un_saisie" string="Qté unité saisie" required="True"/>  
                     <field name="di_un_saisie" required="True"/>          
                     <field name="di_nb_pieces" readonly="1" force_save="1"/>
@@ -82,16 +97,9 @@
                     <field name="di_tare" />
                     <field name="di_poib" />                                                            
                 </xpath>                   
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit'] " position="after">
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field name="di_un_prix" string="Unité de prix" required="True"/>                                                           
-                </xpath>   
-                
-                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_delivered'] " position="before">                    
-                    <field name="di_qte_un_saisie_liv" readonly="1" invisible="1"/>                                                            
-                </xpath>
-                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_invoiced'] " position="before">                    
-                    <field name="di_qte_un_saisie_fac" readonly="1" invisible="1"/>                                                            
-                </xpath>                         
+                </xpath>                       
             </field>                                    
         </record>        
         <record id="di_view_order_form_inherit_sale_stock" model="ir.ui.view">
