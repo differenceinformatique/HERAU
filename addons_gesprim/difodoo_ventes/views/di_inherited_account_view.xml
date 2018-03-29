@@ -9,6 +9,7 @@
             <field name="arch" type="xml"> 
                                          
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
+                    <field name="di_flg_modif_uom"  invisible="1"/>
                     <field name="di_un_saisie" string="Unité saisie" />
                     <field name="di_un_prix" string="Unité de prix" />
                     <field name="di_qte_un_saisie" string="Qté init. un. saisie"/>
@@ -33,6 +34,7 @@
             <field name="arch" type="xml"> 
                                          
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
+                    <field name="di_flg_modif_uom"  invisible="1"/>
                     <field name="di_un_saisie" string="Unité saisie" />
                     <field name="di_un_prix" string="Unité de prix" />
                     <field name="di_qte_un_saisie" string="Qté init. un. saisie"/>
