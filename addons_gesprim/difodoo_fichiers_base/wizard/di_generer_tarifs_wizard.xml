@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_generer_tarifs_wiz" model="ir.ui.view">
+        <field name="name">di.generer.tarifs.form</field>
+        <field name="model">di.gen.tar.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Génération tarifs">                
+                <div>           
+                    <label for="di_tarif_orig_id" string="Code tarif origine" />                                                
+                    <field name="di_tarif_orig_id" string="Code tarif origine"/>
+                </div>                   
+                <div>         
+                    <label for="di_date_effet" string="Date d'effet nouveaux tarifs" />           
+                    <field name="di_date_effet" string="Date d'effet nouveaux tarifs"/>
+                    <label for="di_date_fin" string="Date de fin nouveaux tarifs" />                    
+                    <field name="di_date_fin" string="Date de fin nouveaux tarifs"/>                                           
+                </div>
+                <separator />
+                <label for="di_tarifs_dest_ids" string="Code tarifs à générer" />
+                <field name="di_tarifs_dest_ids">
+                    <tree order="name">
+                        <field name="name" />
+                        <field name="di_des" />
+                        <field name="di_coef" />                          
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Générer les tarifs" type="object" name="generer_tarifs"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <act_window
+        id="action_di_generer_tarifs_wiz"
+        multi="False"
+        key2="client_action_multi"
+        name="Génération tarifs"
+        res_model="di.gen.tar.wiz"
+        src_model="di.tarifs"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_generer_tarifs_wiz">    
+    </act_window>
+    
+
+</odoo>

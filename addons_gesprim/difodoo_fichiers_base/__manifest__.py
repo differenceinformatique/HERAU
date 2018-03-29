@@ -28,6 +28,7 @@
         "views/di_tables_view.xml",
         "wizard/di_wiz_referencer_article.xml",
         "wizard/di_product_pack_wizard.xml",
+        "wizard/di_generer_tarifs_wizard.xml"
         # 'security/ir.model.access.csv',
       
     ],
