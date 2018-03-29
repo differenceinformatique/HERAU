@@ -26,7 +26,10 @@
 						style="font-style: oblique;" />
 				</xpath>
 				<!-- ajout group pour mettre nos champ sur l'onglet Informations Générales -->
-				<xpath expr="//group[@name='group_standard_price']" position="after">
+				<xpath expr="//page[1]/group[1]" position="attributes">                    
+                    <attribute name="col">3</attribute>
+                </xpath>
+				<xpath expr="//group[@name='group_general']" position="after">
 					<group>
 						<field name="di_un_saisie" string="Type unité saisie" />
 						<field name="di_un_prix" />
@@ -55,7 +58,6 @@
 								<field name="di_prixmax" nolabel="1" style="font-style: oblique;" />
 							</group>
 							<group>
-
 							</group>
 						</group>
 					</xpath>

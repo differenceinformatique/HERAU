@@ -26,6 +26,7 @@
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_picking_view.xml",
         "views/di_inherited_account_view.xml",
+        "report/di_sale_report_templates.xml"
         # 'security/ir.model.access.csv',
       
     ],
