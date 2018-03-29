@@ -19,10 +19,10 @@
                 <xpath expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty'] " position="after">
                     <field name="di_product_packaging_id"  string="Colis" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging" />
                     <field name="di_type_palette_id"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>                                    
-                    <field name="di_nb_pieces" readonly="1" string="Nb pièces initial"/>
-                    <field name="di_nb_colis" readonly="1" string="Nb colis initial"/>
-                    <field name="di_nb_palette" readonly="1" string="Nb palette initial"/>
-                    <field name="di_poin" readonly="1" string="Poids net initial"/>                                                            
+                    <field name="di_nb_pieces" readonly="1" string="Nb pièces"/>
+                    <field name="di_nb_colis" readonly="1" string="Nb colis"/>
+                    <field name="di_nb_palette" readonly="1" string="Nb palette"/>
+                    <field name="di_poin" readonly="1" string="Poids net"/>                                                            
                 </xpath>                                         
             </field>                                    
         </record> 

@@ -26,6 +26,7 @@
 	         	<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty']" position="before">
             		<field name="di_qte_un_saisie" required="True"/>
                     <field name="di_un_saisie" required="True"/>
+                    <field name="di_flg_modif_uom"  invisible="1"/> 
                 </xpath>                    
             	<xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="after">                                        
                     <field name="di_un_prix" string="Unité de prix" required="True"/>                                                                   
