@@ -80,6 +80,7 @@
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_invoiced']" position="replace"/>
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='purchase_price']" position="replace"/>
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after"> 
+                    <field name="di_flg_modif_uom"  invisible="1"/> 
                     <field name="qty_delivered" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])], 'readonly': [('qty_delivered_updateable', '=', False)]}"/>
                     <field name="di_qte_un_saisie_liv" readonly="1" invisible="1"/>
                     <field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>

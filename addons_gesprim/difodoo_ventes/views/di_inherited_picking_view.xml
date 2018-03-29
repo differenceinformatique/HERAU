@@ -11,6 +11,7 @@
             <field name="arch" type="xml"> 
                                          
                 <xpath expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty'] " position="before">
+                    <field name="di_flg_modif_uom"  invisible="1"/>
                     <field name="di_un_saisie" string="Unité saisie"/>
                     <field name="di_qte_un_saisie" string="Qté un. saisie"/>
                     <field name="di_tare"  string="Tare"/>
@@ -46,6 +47,7 @@
                     <field name="di_poin_init" readonly="1" string="Poids net initial"/>                     -->
                 </xpath>
                 <xpath expr="//label[@for='quantity_done']" position="before">
+                    <field name="di_flg_modif_uom"  invisible="1"/>
                     <field name="di_un_saisie" />
                     <field name="di_qte_un_saisie"  string="Qté un. saisie"/>
                     <field name="di_product_packaging_id" invisible="1"/>
