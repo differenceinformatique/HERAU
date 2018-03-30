@@ -16,7 +16,7 @@
 	<!-- ****Menu Tarifs -->
 	<menuitem id="menu_gesprim_codes_tarifs" sequence="10" parent="menu_gesprim_tar" action="difodoo_fichiers_base.di_action_code_tarif" />
 	<menuitem id="menu_gesprim_tarifs" sequence="20" parent="menu_gesprim_tar" action="difodoo_fichiers_base.di_action_tarifs" />
-	<menuitem id="menu_gesprim_gen_tarifs" sequence="30" parent="menu_gesprim_tar" action="difodoo_fichiers_base.action_di_generer_tarifs_wiz" />
+	<menuitem id="menu_gesprim_gen_tarifs" sequence="30" parent="menu_gesprim_tar" action="difodoo_fichiers_base.action_di_generer_tarifs_menu_wiz" />
 	<!-- ****Menu Tables -->
 	<menuitem id="menu_gesprim_taxes" sequence="10" parent="menu_gesprim_tables" action="account.action_tax_form" />
 	<menuitem id="menu_gesprim_categories" sequence="20" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_categorie" />

@@ -35,7 +35,7 @@
         </field>
     </record>
     <act_window
-        id="action_di_generer_tarifs_wiz"
+        id="action_di_generer_tarifs_di_tarifs_wiz"
         context="{'di_prg_orig': 'di.tarifs'}"
         multi="False"
         key2="client_action_multi"
@@ -48,7 +48,7 @@
         view_id="di_generer_tarifs_wiz">    
     </act_window>
     <act_window
-        id="action_di_generer_tarifs_wiz"
+        id="action_di_generer_tarifs_di_code_tarif_wiz"
         context="{'di_prg_orig': 'di.code.tarif'}"
         multi="False"
         key2="client_action_multi"
@@ -61,7 +61,7 @@
         view_id="di_generer_tarifs_wiz">    
     </act_window>
     <act_window
-        id="action_di_generer_tarifs_wiz"        
+        id="action_di_generer_tarifs_menu_wiz"        
         multi="False"
         key2="client_action_multi"
         name="Génération tarifs"
