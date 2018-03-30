@@ -16,14 +16,15 @@ class DiTarifs(models.Model):
     di_un_prix    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",required=True)
     di_prix = fields.Float(string="Prix",required=True,default=0.0)
     di_qte_seuil = fields.Float(string="Quantité seuil",required=True,default=0.0)
-    di_date_effet = fields.Datetime(string="Date d'effet", required=True)
-    di_date_fin = fields.Datetime(string="Date de fin")
+    di_date_effet = fields.Date(string="Date d'effet", required=True)
+    di_date_fin = fields.Date(string="Date de fin")
     
     def _di_get_prix(self, tiers, article, di_un_prix , qte, date):            
         prix=0.0
         # recheche du prix avec un client spécifique
         if date ==False:
-            date=datetime.datetime.now()
+#             date=datetime.datetime.now()
+            date=fields.Date.today()
         if tiers.di_code_tarif_id.id :
             query_args = {'di_product_id': article.id,'di_code_tarif_id' : tiers.di_code_tarif_id.id,'di_partner_id' : tiers.id,'di_qte_seuil':qte,'di_date':date,'di_un_prix':di_un_prix}
             query = """ SELECT  di_prix 
