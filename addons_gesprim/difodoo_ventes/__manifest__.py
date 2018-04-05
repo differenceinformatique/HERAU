@@ -24,7 +24,6 @@
     # always loaded
     'data': [        
         "views/di_inherited_sale_view.xml",
-        "views/di_inherited_picking_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
         "report/di_sale_report_templates.xml"

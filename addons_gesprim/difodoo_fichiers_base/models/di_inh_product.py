@@ -56,7 +56,6 @@ class ProductProduct(models.Model):
             default_code = self.search([
                 ('id', '!=', self.id),
                 ('default_code', '=', self.default_code)], limit=1)
-
             if default_code:
                 raise Warning("Le code existe déjà.")
                      
