@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="di_impression_tarifs">
+		<t t-call="web.external_layout">
+
+			<div class="page">
+				<h2>Tarifs</h2>
+				<table class="table table-bordered">
+					<tr>
+						<th>Article</th>
+						<th>Unité de prix</th>
+						<th>Date d'effet</th>
+						<th>Quantité seuil</th>						
+						<th>Code tarif</th>
+						<th>Prix</th>											
+						<th>Date de fin</th>												
+					</tr>
+
+					<t t-foreach="docs" t-as="wiz">
+						<t t-foreach="wiz.di_tarifs_ids" t-as="tarif">
+							<tr>
+								<td>
+									<span t-field="tarif.di_product_id.name" />
+								</td>
+								<td>
+									<span t-field="tarif.di_un_prix" />
+								</td>
+								<td>
+									<span t-field="tarif.di_date_effet"  t-field-options="{'format':'dd/MM/YYYY'}" />
+								</td>
+								<td>
+									<span t-field="tarif.di_qte_seuil" />
+								</td>
+								<td>
+									<span t-field="tarif.di_code_tarif_id" />
+								</td>
+								<td>
+									<span t-field="tarif.di_prix" />
+								</td>
+								<td>
+									<span t-field="tarif.di_date_fin" t-field-options="{'format':'dd/MM/YYYY'}" />
+								</td>
+	
+							</tr>	
+						</t>					
+					</t>
+				</table>
+			</div>
+		</t>
+	</template>
+</odoo>

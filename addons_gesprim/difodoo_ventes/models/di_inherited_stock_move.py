@@ -310,7 +310,7 @@ class StockMove(models.Model):
         res = super(StockMove, self).create(vals)    
         
                                
-        if res.picking_type_id.id==1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
+        if res.picking_type_id.code=='incoming':#1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
             #en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
             if res.move_line_ids.id==False and  res.purchase_line_id.order_id.id ==False: # si on confirme une commande d'achat, la ligne est déjà créée
                 self.env['stock.move.line'].create(res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability))
@@ -354,7 +354,7 @@ class StockMoveLine(models.Model):
         if vals.get('picking_id') :
             if vals['picking_id']!=False:                  
                 picking = self.env['stock.picking'].browse(vals['picking_id'])
-                if picking.picking_type_id.id==1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.               
+                if picking.picking_type_id.code=='incoming': # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.               
                     if not vals.get('lot_id'): #si pas de lot saisi
                         if vals.get('move_id') : # si on a une commande liée
                             if vals['move_id']!=False:            

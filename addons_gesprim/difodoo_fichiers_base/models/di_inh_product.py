@@ -42,6 +42,7 @@ class ProductProduct(models.Model):
     default_code = fields.Char('Internal Reference', index=True, copy=False)
         
     di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')
+    di_tarifs_ids = fields.One2many('di.tarifs', 'id',string='Tarifs de l\'article')
     
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
