@@ -18,6 +18,7 @@ class DiTarifs(models.Model):
     di_qte_seuil = fields.Float(string="Quantité seuil",required=True,default=0.0)
     di_date_effet = fields.Date(string="Date d'effet", required=True)
     di_date_fin = fields.Date(string="Date de fin")
+
     
     def _di_get_prix(self, tiers, article, di_un_prix , qte, date):            
         prix=0.0
@@ -77,3 +78,48 @@ class DiTarifs(models.Model):
 #           
                
         return prix
+    
+    
+    def di_get_liste_articles(self,date):            
+        
+       
+        query_args = {'di_date':date}
+        query = """ SELECT  distinct di_product_id 
+                        FROM di_tarifs                         
+                        WHERE di_date_effet <= %(di_date)s
+                        AND 
+                        (di_date_fin >= %(di_date)s OR di_date_fin is null)
+                        ORDER BY di_product_id asc                            
+                        """
+
+        self.env.cr.execute(query, query_args)
+        article_ids = [(r[0]) for r in self.env.cr.fetchall()]
+        articles = []
+        for article_id in article_ids:
+            article=self.env['product.product'].browse(article_id)
+            articles.append(article)                        
+               
+        return articles
+    
+    def di_get_liste_codes_tarif(self,date):            
+        
+       
+        query_args = {'di_date':date}
+        query = """ SELECT distinct di_code_tarif_id 
+                        FROM di_tarifs                         
+                        WHERE di_date_effet <= %(di_date)s
+                        AND 
+                        (di_date_fin >= %(di_date)s OR di_date_fin is null)
+                        ORDER BY di_code_tarif_id asc                            
+                        """
+
+        self.env.cr.execute(query, query_args)
+        code_tarifs_ids = [(r[0]) for r in self.env.cr.fetchall()]
+        
+        codes_tarifs = []
+        for code_tarif_id in code_tarifs_ids:
+            code_tarif=self.env['di.code.tarif'].browse(code_tarif_id)
+            codes_tarifs.append(code_tarif)                        
+               
+        return codes_tarifs
+                                                           

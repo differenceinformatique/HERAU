@@ -305,7 +305,8 @@
         <field name="arch" type="xml">
             <tree string="Tarifs" default_order="di_date_effet desc,di_product_id">
                 <field name="di_product_id" />
-                <field name="di_partner_id" />
+                <!-- <field name="di_partner_id" />   On va l'afficher plus tard-->
+                <!-- TODO : Filtrer sur les clients -->
                 <field name="di_code_tarif_id" />
                 <field name="di_un_prix" />
                 <field name="di_qte_seuil" />
@@ -326,7 +327,8 @@
                             modifiers="{'readonly':true}" />
                             
                         <field name="di_product_id" modifiers="{'required':true}"/>
-                        <field name="di_partner_id" />
+                        <!-- <field name="di_partner_id" /> -->                        
+                        <!-- TODO : Filtrer sur les clients -->
                         <field name="di_code_tarif_id" modifiers="{'required':true}"/>
                         <field name="di_un_prix" modifiers="{'required':true}"/>
                         <field name="di_qte_seuil" />

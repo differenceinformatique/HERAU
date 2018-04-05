@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            id="di_action_report_tarifs"
+            string="Tarifs"
+            model="di.imp.tar.wiz" 
+            report_type="qweb-pdf"
+            file="difodoo_fichiers_base.di_impression_tarifs" 
+            name="difodoo_fichiers_base.di_impression_tarifs"
+            print_report_name="'Tarifs'"            
+        />
+       
+    </data>
+</odoo>
