@@ -28,10 +28,14 @@
 	<!-- ***Menu Ventes -->	
 	<menuitem id="menu_gesprim_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
 	<menuitem id="menu_gesprim_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />  
-	<menuitem id="menu_gesprim_liv" name="Livraisons" sequence="30" parent="menu_gesprim_ventes" />
+	<menuitem id="menu_gesprim_liv" name="Livraisons" sequence="30" parent="menu_gesprim_ventes" />- 
 	<menuitem id="menu_gesprim_fact" name="Facturation" sequence="40" parent="menu_gesprim_ventes" />
 	<!-- ****Menu Livraisons -->	
-	<menuitem id="menu_gesprim_livraisons" name="Livraisons" sequence="10" parent="menu_gesprim_liv" action="stock.action_picking_tree_all"/>
+	<menuitem id="menu_gesprim_liv_liv" name="Livraisons" sequence="10" parent="menu_gesprim_liv" action="difodoo_ventes.di_stock_picking_type_action_ventes"/>
+	<menuitem id="menu_gesprim_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_tree_ventes_attente"/>
+	<menuitem id="menu_gesprim_liv_att" name="A Faire" sequence="30" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_tree_ventes_a_faire"/>
+	<menuitem id="menu_gesprim_liv_ret" name="En Retard" sequence="40" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_tree_ventes_retard"/>
+	<menuitem id="menu_gesprim_liv_all" name="Toutes" sequence="50" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_ventes_all"/>
 	<!-- ****Menu Facturation -->      
 	<menuitem id="menu_gesprim_cde_fact" name="Commandes à facturer" sequence="10" parent="menu_gesprim_fact" action="sale.action_orders_to_invoice"/>
 	<menuitem id="menu_gesprim_factures" name="Factures clients" sequence="20" parent="menu_gesprim_fact" action="account.action_invoice_tree1"/>    

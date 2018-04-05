@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!-- filtres par défaut types de livraison -->
+	<record id="di_view_picking_type_action_search" model="ir.ui.view">
+		<field name="name">di.stock.picking.type.search</field>
+		<field name="model">stock.picking.type</field>
+		<field name="arch" type="xml">
+			<search string="Picking type Lists">
+				<filter name="expedition" string="Expéditions" domain="[('code','=','outgoing')]"
+					help="Flux d'expédition" />
+				<filter name="reception" string="Réceptions" domain="[('code','=','incoming')]"
+					help="Flux de réception" />
+			</search>
+		</field>
+	</record>
+	<!-- Choix des types de livraison -->
+	<record id="di_stock_picking_type_action_ventes" model="ir.actions.act_window">
+		<field name="name">Inventaire</field>
+		<field name="res_model">stock.picking.type</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">kanban,form</field>
+		<field name="context">{
+			'search_default_expedition': 1
+			}
+		</field>
+		<field name="di_search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search" />
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click to create a new operation type.
+			</p>
+			<p>
+				The operation type system allows you to assign each stock
+				operation a specific type which will alter its views accordingly.
+				On
+				the operation type you could e.g. specify if packing is needed by
+				default,
+				if it should show the customer.
+			</p>
+		</field>
+	</record>
+	<!-- surcharge filtres par défaut livraisons -->
+	<record id="di_view_picking_internal_search" model="ir.ui.view">
+		<field name="name">di.stock.picking.internal.search</field>
+		<field name="model">stock.picking</field>
+		<field name="inherit_id" ref="stock.view_picking_internal_search" />
+		<field eval="99" name="priority" />
+		<field name="arch" type="xml">
+			<xpath expr="//search/field[@name='name']" position="before">
+				<filter name="expedition" string="Expéditions"
+					domain="[('picking_type_id.code','=','outgoing')]" help="Flux d'expédition" />
+				<filter name="reception" string="Réceptions"
+					domain="[('picking_type_id.code','=','incoming')]" help="Flux de réception" />
+			</xpath>
+		</field>
+	</record>
+	<!-- Liste des livraisons en attente -->
+	<record id="di_action_picking_tree_ventes_attente" model="ir.actions.act_window">
+		<field name="name">En attente</field>
+		<field name="res_model">stock.picking</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,kanban,form,calendar</field>
+		<field name="domain"></field>
+		<field name="context">{
+			'contact_display': 'partner_address',
+			'search_default_waiting': 1,
+			'search_default_expedition': 1
+			}
+		</field>
+		<field name="search_view_id" ref="stock.view_picking_internal_search" />
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click here to create a new transfer.
+			</p>
+			<p>
+				You can either do it immediately or mark it as Todo for future
+				processing. Use your scanner to validate the transferred quantity
+				quicker.
+			</p>
+		</field>
+	</record>
+	<!-- Liste des livraisons en attente -->
+	<record id="di_action_picking_tree_ventes_retard" model="ir.actions.act_window">
+		<field name="name">En retard</field>
+		<field name="res_model">stock.picking</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,kanban,form,calendar</field>
+		<field name="domain"></field>
+		<field name="context">{
+			'contact_display': 'partner_address',
+			'search_default_late': 1,
+			'search_default_confirmed': 1,
+			'search_default_expedition': 1
+			}
+		</field>
+		<field name="search_view_id" ref="stock.view_picking_internal_search" />
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click here to create a new transfer.
+			</p>
+			<p>
+				You can either do it immediately or mark it as Todo for future
+				processing. Use your scanner to validate the transferred quantity
+				quicker.
+			</p>
+		</field>
+	</record>
+	<!-- Liste des livraisons prêtes -->
+	<record id="di_action_picking_tree_ventes_a_faire" model="ir.actions.act_window">
+		<field name="name">A faire</field>
+		<field name="res_model">stock.picking</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,kanban,form,calendar</field>
+		<field name="domain"></field>
+		<field name="context">{
+			'contact_display': 'partner_address',
+			'search_default_available': 1,
+			'search_default_expedition': 1
+			}
+		</field>
+		<field name="search_view_id" ref="stock.view_picking_internal_search" />
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click here to create a new transfer.
+			</p>
+			<p>
+				You can either do it immediately or mark it as Todo for future
+				processing. Use your scanner to validate the transferred quantity
+				quicker.
+			</p>
+		</field>
+	</record>
+	<!-- Liste des livraisons (toutes) -->
+	<record id="di_action_picking_ventes_all" model="ir.actions.act_window">
+		<field name="name">Toutes les expéditions</field>
+		<field name="res_model">stock.picking</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,kanban,form,calendar</field>
+		<field name="domain"></field>
+		<field name="context">{
+			'contact_display': 'partner_address',
+			'search_default_expedition': 1
+			}
+		</field>
+		<field name="search_view_id" ref="stock.view_picking_internal_search" />
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click here to create a new transfer.
+			</p>
+			<p>
+				You can either do it immediately or mark it as Todo for future
+				processing. Use your scanner to validate the transferred quantity
+				quicker.
+			</p>
+		</field>
+	</record>
+</odoo>
+        
