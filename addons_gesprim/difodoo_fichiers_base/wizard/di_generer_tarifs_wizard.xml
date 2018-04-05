@@ -4,7 +4,7 @@
         <field name="name">di.generer.tarifs.form</field>
         <field name="model">di.gen.tar.wiz</field>
         <field name="arch" type="xml">
-            <form string="Génération tarifs">                
+            <form string="Génération Tarifs de vente">                
                 <div>           
                     <label for="di_tarif_orig_id" string="Code tarif origine" />                                                
                     <field name="di_tarif_orig_id" string="Code tarif origine"/>
@@ -39,7 +39,7 @@
         context="{'di_prg_orig': 'di.tarifs'}"
         multi="False"
         key2="client_action_multi"
-        name="Génération tarifs"
+        name="Génération Tarifs de vente"
         res_model="di.gen.tar.wiz"
         src_model="di.tarifs"
         view_mode="form"
@@ -52,7 +52,7 @@
         context="{'di_prg_orig': 'di.code.tarif'}"
         multi="False"
         key2="client_action_multi"
-        name="Génération tarifs"
+        name="Génération Tarifs de vente"
         res_model="di.gen.tar.wiz"
         src_model="di.code.tarif"
         view_mode="form"
@@ -64,7 +64,7 @@
         id="action_di_generer_tarifs_menu_wiz"        
         multi="False"
         key2="client_action_multi"
-        name="Génération tarifs"
+        name="Génération Tarifs de vente"
         res_model="di.gen.tar.wiz"
         view_mode="form"
         target="new"

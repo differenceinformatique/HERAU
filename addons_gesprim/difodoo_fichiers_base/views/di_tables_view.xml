@@ -303,7 +303,7 @@
         <field name="name">di.tarifs.tree</field>
         <field name="model">di.tarifs</field>
         <field name="arch" type="xml">
-            <tree string="Tarifs" default_order="di_date_effet desc,di_product_id">
+            <tree string="Tarifs de vente" default_order="di_date_effet desc,di_product_id" editable="bottom">
                 <field name="di_product_id" />
                 <!-- <field name="di_partner_id" />   On va l'afficher plus tard-->
                 <!-- TODO : Filtrer sur les clients -->
@@ -320,8 +320,8 @@
         <field name="name">di.tarif.tree</field>
         <field name="model">di.tarifs</field>
         <field name="arch" type="xml">
-            <form string="Tarifs">
-                <sheet string="Tarifs" modifiers="{}">
+            <form string="Tarifs de vente">
+                <sheet string="Tarifs de vente" modifiers="{}">
                     <group>
                         <field name="di_company_id" can_create="true" can_write="true"
                             modifiers="{'readonly':true}" />
@@ -342,7 +342,7 @@
         </field>
     </record>
     <record id="di_action_tarifs" model="ir.actions.act_window">
-        <field name="name">Tarifs</field>
+        <field name="name">Tarifs de vente</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">di.tarifs</field>
         <field name="view_type">form</field>

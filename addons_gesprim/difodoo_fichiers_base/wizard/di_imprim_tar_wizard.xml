@@ -4,7 +4,7 @@
         <field name="name">di.imprimer.tarifs.form</field>
         <field name="model">di.imp.tar.wiz</field>
         <field name="arch" type="xml">
-            <form string="Impression tarifs">                
+            <form string="Impression Tarifs de vente">                
                 <div>           
                     <label for="di_date_effet" string="Date d'application" />                                                
                     <field name="di_date_effet" string="Date d'application"/>                    
@@ -43,7 +43,7 @@
         context="{'di_prg_orig': 'di.code.tarif'}"
         multi="False"
         key2="client_action_multi"
-        name="Impression tarifs"
+        name="Impression Tarifs de vente"
         res_model="di.imp.tar.wiz"
         src_model="di.code.tarif"
         view_mode="form"
@@ -55,7 +55,7 @@
         id="action_di_imprimer_tarifs_menu_wiz"        
         multi="False"
         key2="client_action_multi"
-        name="Impression tarifs"
+        name="Impression Tarifs de vente"
         res_model="di.imp.tar.wiz"
         view_mode="form"
         target="new"
