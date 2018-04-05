@@ -20,7 +20,7 @@
 						<t t-foreach="wiz.di_tarifs_ids" t-as="tarif">
 							<tr>
 								<td>
-									<span t-field="tarif.di_product_id.name" />
+									<span t-field="tarif.di_product_id.display_name" />
 								</td>
 								<td>
 									<span t-field="tarif.di_un_prix" />

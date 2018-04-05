@@ -25,7 +25,7 @@
             </form>
         </field>
     </record>
-    <act_window
+    <!-- <act_window
         id="action_di_imprimer_tarifs_di_tarifs_wiz"
         context="{'di_prg_orig': 'di.tarifs'}"
         multi="False"
@@ -37,7 +37,7 @@
         target="new"
         view_type="form"
         view_id="di_imprimer_tarifs_wiz">    
-    </act_window>
+    </act_window> -->
     <act_window
         id="action_di_imprimer_tarifs_di_code_tarif_wiz"
         context="{'di_prg_orig': 'di.code.tarif'}"
