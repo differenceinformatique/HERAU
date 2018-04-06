@@ -7,7 +7,7 @@ from odoo.exceptions import ValidationError
 
 class DiImpTarWiz(models.TransientModel):
     _name = "di.imp.tar.wiz"
-    _description = "Wizard d'impression de tarifs"
+    _description = "Wizard d'impression de Tarifs de vente"
         
     di_date_effet = fields.Date(string="Date d'application du tarif", required=True)    
     di_codes_tarifs_ids = fields.Many2many("di.code.tarif")

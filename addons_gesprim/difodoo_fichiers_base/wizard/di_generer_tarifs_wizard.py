@@ -7,7 +7,7 @@ from odoo.exceptions import ValidationError
 
 class DiGenTarWiz(models.TransientModel):
     _name = "di.gen.tar.wiz"
-    _description = "Wizard de génération de tarifs"
+    _description = "Wizard de génération de Tarifs de vente"
     
     di_tarif_orig_id = fields.Many2one("di.code.tarif", string="Code tarif origine", required=True)
     di_date_effet_orig = fields.Date(string="Date d'effet", required=True)
