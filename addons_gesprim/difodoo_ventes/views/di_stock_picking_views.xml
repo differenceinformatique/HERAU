@@ -254,7 +254,13 @@
 		<field eval="99" name="priority" />
 		<field name="arch" type="xml">
 			<xpath expr="//field[@name='qty_done']" position="before">
-				<field name="di_qte_un_saisie" />
+				<field name="di_qte_un_saisie" invisible="1" />
+				<field name="di_nb_palette" />
+				<field name="di_nb_colis" />
+				<field name="di_nb_pieces" />
+				<field name="di_poin" />
+				<field name="di_tare" />
+				<field name="di_poib" />
 			</xpath>
 		</field>
 	</record>
