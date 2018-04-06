@@ -166,31 +166,57 @@
 		<field eval="99" name="priority" />
 		<field name="arch" type="xml">
 			<xpath
-				expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty'] "
+				expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']"
 				position="before">
 				<field name="di_flg_modif_uom" invisible="1" />
-				<field name="di_un_saisie" string="Unité saisie" />
-				<field name="di_qte_un_saisie" string="Qté un. saisie" />
-				<field name="di_tare" string="Tare" />
-				<field name="di_poib" string="Poids brut" />
-			</xpath>
-			<xpath
-				expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty'] "
-				position="after">
-				<field name="di_product_packaging_id" string="Colis"
-					attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')]}"
-					context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
-					domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]"
-					groups="product.group_stock_packaging" />
-				<field name="di_type_palette_id"
-					attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')]}"
-					context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
-					domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]"
-					groups="product.group_stock_packaging" />
+				<field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie" />
+				<field name="di_qte_un_saisie" string="Qté validée unité saisie" />
+				<field name="di_un_saisie_init" readonly="1" string="Unité de saisie" />
 				<field name="di_nb_pieces" readonly="1" string="Nb pièces" />
 				<field name="di_nb_colis" readonly="1" string="Nb colis" />
+				<field name="product_packaging" string="Colis" readonly="1" />
 				<field name="di_nb_palette" readonly="1" string="Nb palette" />
+				<field name="di_type_palette_id" readonly="1" />
 				<field name="di_poin" readonly="1" string="Poids net" />
+				<field name="di_tare" readonly="1" string="Tare" />
+				<field name="di_poib" readonly="1" string="Poids brut" />
+			</xpath>
+		</field>
+	</record>
+	<!-- surcharge stock.view_move_form -->
+	<record id="di_view_move_picking_form" model="ir.ui.view">
+		<field name="name">di.stock.move.form</field>
+		<field name="model">stock.move</field>
+		<field name="inherit_id" ref="stock.view_move_picking_form" />
+		<field eval="99" name="priority" />
+		<field name="arch" type="xml">
+			<xpath expr="//group/group[1]" position="inside">
+				<field name="di_flg_modif_uom" invisible="1" />
+				<field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie" />
+				<field name="di_qte_un_saisie" string="Qté validée unité saisie" />
+				<field name="di_un_saisie_init" readonly="1" string="Unité de saisie" />
+			</xpath>
+			<xpath expr="//group[1]" position="after">
+				<group>
+					<group>
+						<field name="di_nb_pieces" readonly="1" string="Nb pièces" />
+						<label for="di_nb_colis" />
+						<div>
+							<field name="di_nb_colis" readonly="1" />
+							<field name="product_packaging" readonly="1" />
+						</div>
+						<label for="di_nb_palette" />
+						<div>
+							<field name="di_nb_palette" readonly="1" />
+							<field name="di_type_palette_id" readonly="1" />
+						</div>
+					</group>
+					<group>
+						<field name="di_poin" readonly="1" string="Poids net" />
+						<field name="di_tare" readonly="1" string="Tare" />
+						<field name="di_poib" readonly="1" string="Poids brut" />
+					</group>
+				</group>
 			</xpath>
 		</field>
 	</record>
@@ -202,16 +228,18 @@
 		<field eval="99" name="priority" />
 		<field name="arch" type="xml">
 			<xpath expr="//label[@for='product_uom_qty']" position="before">
+				<field name="di_qte_un_saisie_init" string="Qté initiale unité saisie"
+					readonly="1" />
+				<field name="di_qte_un_saisie" string="Qté validée unité saisie"
+					readonly="1" />
 				<field name="di_un_saisie_init" readonly="1"
 					string="Unité de saisie initiale" />
-				<field name="di_qte_un_saisie_init" readonly="1"
-					string="Qté initiale un.saisie" />
 			</xpath>
 			<xpath expr="//label[@for='quantity_done']" position="before">
 				<field name="di_flg_modif_uom" invisible="1" />
-				<field name="di_un_saisie" />
-				<field name="di_qte_un_saisie" string="Qté un. saisie" />
-				<field name="di_product_packaging_id" invisible="1" />
+				<field name="di_un_saisie" readonly="1" />
+				<field name="di_qte_un_saisie" string="Qté unité saisie" />
+				<field name="product_packaging" invisible="1" />
 				<field name="di_type_palette_id" invisible="1" />
 				<field name="di_poib" invisible="1" />
 				<field name="di_tare" invisible="1" />
