@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.tools.float_utils import float_compare
-from .di_outils import *
+# from .di_outils import *
 import datetime
 from math import *
+from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
@@ -132,8 +133,7 @@ class AccountInvoiceLine(models.Model):
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.quantity             
             if line.product_id.id != False and line.di_un_prix:       
-                line.price_unit = di_recherche_prix_unitaire(self,line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date)
-            
+                line.price_unit = di_recherche_prix_unitaire(self,line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date)            
      
     @api.multi            
     @api.onchange('product_id')

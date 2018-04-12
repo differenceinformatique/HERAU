@@ -7,7 +7,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 # from addons import sale,account,stock,sale_stock 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
-from .di_outils import *
+from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
 from math import *
 
 
