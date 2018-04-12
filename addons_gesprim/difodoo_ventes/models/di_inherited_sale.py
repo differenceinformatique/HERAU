@@ -1,9 +1,8 @@
 
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
-from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 # from addons import sale,account,stock,sale_stock 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
@@ -411,7 +410,7 @@ class SaleOrderLine(models.Model):
         
     @api.onchange('product_uom_qty', 'product_uom', 'route_id')
     def _onchange_product_id_check_availability(self):
-       #surcharge pour enlever la remise à 0 de product_packaging
+        #surcharge pour enlever la remise à 0 de product_packaging
         if self.product_id.type == 'product':
             precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
             product = self.product_id.with_context(warehouse=self.order_id.warehouse_id.id)

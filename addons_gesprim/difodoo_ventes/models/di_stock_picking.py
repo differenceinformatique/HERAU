@@ -124,5 +124,4 @@ class Picking(models.Model):
 #             if qty_done:
 #                 pack_op_vals['qty_done'] = qty_done
 #         return pack_operation_values
-#   
-   
+#

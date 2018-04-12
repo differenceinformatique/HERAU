@@ -125,5 +125,4 @@ class DiTarifs(models.Model):
             code_tarif=self.env['di.code.tarif'].browse(code_tarif_id)
             codes_tarifs.append(code_tarif)                        
                
-        return codes_tarifs
-                                                           
+        return codes_tarifs         
