@@ -478,3 +478,9 @@ class SaleOrder(models.Model):
                 line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
             else:
                 line.di_qte_a_facturer_un_saisie = 0
+                
+#     @api.model
+#     def create(self, vals):                
+#         vals['state']='sale'
+#         result = super(SaleOrder, self).create(vals)
+#         return result
