@@ -285,6 +285,24 @@ class StockMoveLine(models.Model):
         else:
             self.di_qte_un_saisie = self.qty_done   
                        
+    
+    @api.multi                     
+    @api.onchange('di_nb_palette')
+    def _di_change_nb_palette(self):
+        if self.ensure_one():   
+            if self._context.get('di_move_id'):
+                move = self.env['stock.move'].browse(self._context['di_move_id'])
+            else:
+                move = self.move_id
+#             if move.di_un_saisie == "PALETTE":                                         
+            
+            self.di_nb_colis = ceil(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf)
+            self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+            self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
+            self.di_poin = self.qty_done * move.product_id.weight 
+            self.di_poib = self.di_poin + self.di_tare 
+      
+      
     @api.multi                     
     @api.onchange('di_nb_colis')
     def _di_change_nb_colis(self):
@@ -302,24 +320,6 @@ class StockMoveLine(models.Model):
                 self.di_nb_palette = self.di_nb_colis
             self.di_poin = self.qty_done * move.product_id.weight 
             self.di_poib = self.di_poin + self.di_tare
-    @api.multi                     
-    @api.onchange('di_nb_palette')
-    def _di_change_nb_palette(self):
-        if self.ensure_one():   
-            if self._context.get('di_move_id'):
-                move = self.env['stock.move'].browse(self._context['di_move_id'])
-            else:
-                move = self.move_id
-#             if move.di_un_saisie == "PALETTE":                                         
-            if move.di_type_palette_id.di_qte_cond_inf != 0.0:
-                self.di_nb_colis = ceil(self.di_nb_palette / move.di_type_palette_id.di_qte_cond_inf)
-            else:
-                self.di_nb_colis = ceil(self.di_nb_palette)
-            self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
-            self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
-            self.di_poin = self.qty_done * move.product_id.weight 
-            self.di_poib = self.di_poin + self.di_tare 
-      
 #     @api.multi                     
 #     @api.onchange('di_nb_pieces')
 #     def _di_change_nb_pieces(self):
