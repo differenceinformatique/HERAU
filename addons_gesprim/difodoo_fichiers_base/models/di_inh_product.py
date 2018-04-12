@@ -32,10 +32,25 @@ class ProductTemplate(models.Model):
     di_producteur_id = fields.Many2one("res.partner",string="Producteur")
     di_producteur_nom = fields.Char(related='di_producteur_id.display_name')#, store='False')  
 
-    di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Type unité saisie")
+    di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Type unité saisie")
     di_type_palette_id     = fields.Many2one('product.packaging', string='Palette par défaut')   
     di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut')
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Type unité prix")   
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Type unité prix")
+    
+    @api.multi
+    def write(self, vals):                              
+        for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+            if key[0] == "di_un_prix":  # si on a modifié sale_line_id
+                if vals['di_un_prix'] == False:
+                    vals['di_un_saisie']=False
+                    break
+            elif key[0] == "di_un_saisie":
+                if vals['di_un_saisie'] == False:
+                    vals['di_un_prix']=False 
+                    break                                    
+        res = super(ProductTemplate, self).write(vals)
+        return res   
+           
     
 class ProductProduct(models.Model):
     _inherit = "product.product"
@@ -60,7 +75,8 @@ class ProductProduct(models.Model):
                 raise Warning("Le code existe déjà.")
                      
     @api.multi
-    def write(self, vals):
+    def write(self, vals):     
+                         
         # à l'écriture de l'article on va recalculer les quantités entre conditionnements
         # on commence par parcourir les emballages de type pièces, puis colis, puis palette
         for ProductPack in self.packaging_ids:
@@ -129,3 +145,5 @@ class ProductPackaging(models.Model):
         if ProductPack:
             raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements avec le même nom pour un même article.") 
         
+
+

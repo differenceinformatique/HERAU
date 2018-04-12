@@ -9,7 +9,7 @@ class StockMove(models.Model):
     modifparprg = False
      
     di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True,compute='_compute_quantites')
-    di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("POIDS", "Poids")], string="Unité de saisie", store=True)
+    di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("KG", "Kg")], string="Unité de saisie", store=True)
     di_type_palette_id = fields.Many2one('product.packaging', string='Palette', store=True) 
     di_nb_pieces = fields.Integer(string='Nb pièces', store=True,compute='_compute_quantites')
     di_nb_colis = fields.Integer(string='Nb colis' , store=True,compute='_compute_quantites')
@@ -161,7 +161,7 @@ class StockMove(models.Model):
                     line.di_poib = line.di_poin + line.di_tare
                     
                     
-                elif move.di_un_saisie =="POIDS":
+                elif move.di_un_saisie =="KG":
                     if move.product_id.weight !=0.0:
                         line.di_qte_un_saisie = line.qty_done / move.product_id.weight 
                     else:
@@ -280,7 +280,7 @@ class StockMoveLine(models.Model):
             self.di_qte_un_saisie = self.di_nb_colis
         elif move.di_un_saisie == "PALETTE":
             self.di_qte_un_saisie = self.di_nb_palette
-        elif move.di_un_saisie == "POIDS":
+        elif move.di_un_saisie == "KG":
             self.di_qte_un_saisie = self.di_poib
         else:
             self.di_qte_un_saisie = self.qty_done   
@@ -360,7 +360,7 @@ class StockMoveLine(models.Model):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
                 move = self.move_id    
-#             if move.di_un_saisie == "POIDS":
+#             if move.di_un_saisie == "KG":
             self.di_poib = self.di_poin + self.di_tare
             
             

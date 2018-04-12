@@ -14,10 +14,10 @@ class WizReferArticle(models.TransientModel):
 
     
 #     product_id = fields.Many2one("product.product", string="Article associé", required=True)    
-#     di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie")
+#     di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie")
 #     di_type_palette_id     = fields.Many2one('product.packaging', string='Palette par défaut')   
 #     di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut')
-#     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix")
+#     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix")
     
     message = fields.Text(string="Information")
     
@@ -58,7 +58,7 @@ class WizReferArticle(models.TransientModel):
 #     _description = "Wizard contenant un article d'autres valeurs"
 #     
 #     product_id          = fields.Many2one("product.product", string="Article associé", required=True)
-#     di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie")
+#     di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie")
 #     di_type_palette_id  = fields.Many2one('product.packaging', string='Palette par défaut')   
 #     di_type_colis_id    = fields.Many2one('product.packaging', string='Colis par défaut')
-#     di_un_prix          = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix")
+#     di_un_prix          = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix")

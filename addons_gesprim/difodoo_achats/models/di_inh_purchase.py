@@ -15,7 +15,7 @@ class PurchaseOrderLine(models.Model):
     
     product_packaging = fields.Many2one('product.packaging', string='Package', default=False)
     di_qte_un_saisie= fields.Float(string='Quantité en unité de saisie',store=True)
-    di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie",store=True)
+    di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie",store=True)
     di_type_palette_id  = fields.Many2one('product.packaging', string='Palette') 
     di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute="_compute_qte_aff",store=True)
     di_nb_colis     = fields.Integer(string='Nb colis',compute="_compute_qte_aff",store=True)
@@ -23,10 +23,10 @@ class PurchaseOrderLine(models.Model):
     di_poin         = fields.Float(string='Poids net',compute="_compute_qte_aff",store=True)
     di_poib         = fields.Float(string='Poids brut',store=True)
     di_tare         = fields.Float(string='Tare',store=True)
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",store=True)
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
     di_qte_un_saisie_liv = fields.Float(string='Quantité reçue en unité de saisie')
-    di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie reçue")
+    di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie reçue")
     di_type_palette_liv_id  = fields.Many2one('product.packaging', string='Palette reçue') 
     di_nb_pieces_liv     = fields.Integer(string='Nb pièces reçues')
     di_nb_colis_liv      = fields.Integer(string='Nb colis reçus')
@@ -37,7 +37,7 @@ class PurchaseOrderLine(models.Model):
     di_product_packaging_liv_id=fields.Many2one('product.packaging', string='Colis reçu')
     
     di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie',compute='_compute_qty_invoiced')
-    di_un_saisie_fac     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de saisie facturés")
+    di_un_saisie_fac     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie facturés")
     di_type_palette_fac_id  = fields.Many2one('product.packaging', string='Palette facturée') 
     di_nb_pieces_fac     = fields.Integer(string='Nb pièces facturées')
     di_nb_colis_fac      = fields.Integer(string='Nb colis facturés')
@@ -46,7 +46,7 @@ class PurchaseOrderLine(models.Model):
     di_poib_fac          = fields.Float(string='Poids brut facturé')
     di_tare_fac          = fields.Float(string='Tare facturée')
     di_product_packaging_fac_id=fields.Many2one('product.packaging', string='Colis facturé')
-    di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix facturé",store=True)
+    di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix facturé",store=True)
  
     
 
@@ -64,7 +64,7 @@ class PurchaseOrderLine(models.Model):
                 di_qte_prix = line.di_nb_colis
             elif line.di_un_prix == "PALETTE":
                 di_qte_prix = line.di_nb_palette
-            elif line.di_un_prix == "POIDS":
+            elif line.di_un_prix == "KG":
                 di_qte_prix = line.di_poin
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.product_qty
@@ -168,7 +168,7 @@ class PurchaseOrderLine(models.Model):
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis            
             self.di_poin = self.product_qty * self.product_id.weight             
               
-        elif self.di_un_saisie == "POIDS":
+        elif self.di_un_saisie == "KG":
             self.di_poin = self.di_qte_un_saisie                        
             if self.product_packaging.qty !=0.0:
                 self.di_nb_colis = self.product_qty / self.product_packaging.qty
@@ -244,7 +244,7 @@ class PurchaseOrderLine(models.Model):
                 self.di_poin = self.product_qty * self.product_id.weight 
                 self.di_poib = self.di_poin + self.di_tare
                  
-            elif self.di_un_saisie == "POIDS":
+            elif self.di_un_saisie == "KG":
                 self.di_poin = self.di_qte_un_saisie
                 self.di_poib = self.di_poin + self.di_tare
                 self.product_qty = self.di_poin

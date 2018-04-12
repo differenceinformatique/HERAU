@@ -59,7 +59,7 @@ class AccountInvoiceLine(models.Model):
     modifparprg = False
      
     di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True)
-    di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("POIDS", "Poids")], string="Unité de saisie", store=True)
+    di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("KG", "Kg")], string="Unité de saisie", store=True)
     di_type_palette_id = fields.Many2one('product.packaging', string='Palette', store=True) 
     di_nb_pieces = fields.Integer(string='Nb pièces', compute="_compute_qte_aff", store=True)
     di_nb_colis = fields.Integer(string='Nb colis' ,compute="_compute_qte_aff", store=True)
@@ -68,9 +68,9 @@ class AccountInvoiceLine(models.Model):
     di_poib = fields.Float(string='Poids brut', store=True)
     di_tare = fields.Float(string='Tare', store=True)
     di_product_packaging_id = fields.Many2one('product.packaging', string='Package', default=False, store=True)
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",store=True)
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
     di_flg_modif_uom = fields.Boolean(default=False)
-     
+ 
      
 #     di_qte_un_saisie_init = fields.Float(related="sale_line_id.di_qte_un_saisie")
 #     di_un_saisie_init = fields.Selection(related="sale_line_id.di_un_saisie")
@@ -101,7 +101,7 @@ class AccountInvoiceLine(models.Model):
             di_qte_prix = self.di_nb_colis
         elif self.di_un_prix == "PALETTE":
             di_qte_prix = self.di_nb_palette
-        elif self.di_un_prix == "POIDS":
+        elif self.di_un_prix == "KG":
             di_qte_prix = self.di_poin
         elif self.di_un_prix == False or self.di_un_prix == '':
             di_qte_prix = self.quantity
@@ -126,7 +126,7 @@ class AccountInvoiceLine(models.Model):
                 di_qte_prix = line.di_nb_colis
             elif line.di_un_prix == "PALETTE":
                 di_qte_prix = line.di_nb_palette
-            elif line.di_un_prix == "POIDS":
+            elif line.di_un_prix == "KG":
                 di_qte_prix = line.di_poin
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.quantity             
@@ -222,7 +222,7 @@ class AccountInvoiceLine(models.Model):
                     self.di_poin = self.quantity * self.product_id.weight 
                     self.di_poib = self.di_poin + self.di_tare
                      
-                elif self.di_un_saisie == "POIDS":
+                elif self.di_un_saisie == "KG":
                     self.di_poin = self.di_qte_un_saisie
                     self.di_poib = self.di_poin + self.di_tare
                     self.quantity = self.di_poin
@@ -284,7 +284,7 @@ class AccountInvoiceLine(models.Model):
                 self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
                 self.di_poin = self.quantity * self.product_id.weight             
                   
-            elif self.di_un_saisie == "POIDS":
+            elif self.di_un_saisie == "KG":
                 self.di_poin = self.di_qte_un_saisie                        
                 if self.di_product_packaging_id.qty != 0.0:
                     self.di_nb_colis = ceil(self.quantity / self.di_product_packaging_id.qty)

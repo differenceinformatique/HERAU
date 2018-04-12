@@ -13,7 +13,7 @@ class DiTarifs(models.Model):
     di_product_id = fields.Many2one('product.product', string='Article', required=True)    
     di_code_tarif_id = fields.Many2one('di.code.tarif', string='Code tarif', required=True)
     di_partner_id = fields.Many2one('res.partner',string="Client")
-    di_un_prix    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix",required=True)
+    di_un_prix    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",required=True)
     di_prix = fields.Float(string="Prix",required=True,default=0.0)
     di_qte_seuil = fields.Float(string="Quantité seuil",required=True,default=0.0)
     di_date_effet = fields.Date(string="Date d'effet", required=True)
