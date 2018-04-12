@@ -4,8 +4,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from addons import purchase,account,stock 
-from difodoo.addons_gesprim import difodoo_ventes
+
 # from difodoo.addons_gesprim.difodoo_ventes.models import di_inherited_stock_move 
 
 
