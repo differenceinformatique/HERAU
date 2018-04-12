@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.tools.float_utils import float_compare
-from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import *
+from .di_outils import *
 import datetime
 from math import *
 

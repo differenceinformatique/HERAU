@@ -1,7 +1,6 @@
-
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
-from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import *
+from .di_outils import *
 from math import *
  
 class StockMove(models.Model):
