@@ -220,8 +220,7 @@ class SaleOrderLine(models.Model):
             elif line.di_un_prix == "POIDS":
                 di_qte_prix = line.di_poin
             elif line.di_un_prix == False or line.di_un_prix == '':
-                di_qte_prix = line.product_uom_qty
-            # TODO : A voir si on peut utiliser le standard ou non     
+                di_qte_prix = line.product_uom_qty             
             if line.product_id.id != False and line.di_un_prix:       
                 line.price_unit = di_recherche_prix_unitaire(self,line.price_unit,line.order_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.order_id.date_order)
     @api.multi

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_saisie_code_wiz" model="ir.ui.view">
+        <field name="name">di.saisie.code.form</field>
+        <field name="model">di.saisie.code.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Saisie du code">                
+                <div>           
+                    <label for="code" string="Code" />                                                
+                    <field name="code" string="Code"/>                    
+                </div>                                                   
+                <footer>
+                    <button string="OK" type="object" name="valider_code"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window
+        id="di_action_di_saisie_code_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Saisie code"
+        res_model="di.saisie.code.wiz"       
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_saisie_code_wiz">    
+    </act_window>
+        <!-- src_model="di.code.tarif" -->
+</odoo>

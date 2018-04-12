@@ -62,5 +62,3 @@ class WizReferArticle(models.TransientModel):
 #     di_type_palette_id  = fields.Many2one('product.packaging', string='Palette par défaut')   
 #     di_type_colis_id    = fields.Many2one('product.packaging', string='Colis par défaut')
 #     di_un_prix          = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("POIDS","Poids")], string="Unité de prix")
-    #TODO faire requète pour récupérer les infos
-    

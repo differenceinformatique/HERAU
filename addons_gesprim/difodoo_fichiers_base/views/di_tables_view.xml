@@ -305,8 +305,7 @@
         <field name="arch" type="xml">
             <tree string="Tarifs de vente" default_order="di_date_effet desc,di_product_id" editable="bottom">
                 <field name="di_product_id" />
-                <!-- <field name="di_partner_id" />   On va l'afficher plus tard-->
-                <!-- TODO : Filtrer sur les clients -->
+                <!-- <field name="di_partner_id" domain="[('customer','=',True),('parent_id','=',False)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>   On va l'afficher plus tard-->                
                 <field name="di_code_tarif_id" />
                 <field name="di_un_prix" />
                 <field name="di_qte_seuil" />
@@ -327,8 +326,7 @@
                             modifiers="{'readonly':true}" />
                             
                         <field name="di_product_id" modifiers="{'required':true}"/>
-                        <!-- <field name="di_partner_id" /> -->                        
-                        <!-- TODO : Filtrer sur les clients -->
+                        <!-- <field name="di_partner_id" domain="[('customer','=',True),('parent_id','=',False)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/> -->                                                
                         <field name="di_code_tarif_id" modifiers="{'required':true}"/>
                         <field name="di_un_prix" modifiers="{'required':true}"/>
                         <field name="di_qte_seuil" />

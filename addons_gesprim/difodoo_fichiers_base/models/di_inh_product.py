@@ -81,6 +81,18 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, self).write(vals)
         return res
     
+#     @api.model
+#     def create(self, vals):               
+#         if not vals.get('default_code'):
+#             vals['default_code']=self.env.ref('difodoo_fichiers_base.di_action_di_saisie_code_wiz').read([])[0]
+#                       
+#                              
+#         if vals.get('default_code') and vals['default_code']!=False:
+#             res = super(ProductProduct, self).create(vals)
+#         else:
+#             res =False
+#         return res
+    
 
 class ProductPackaging(models.Model):
     _inherit = "product.packaging"
