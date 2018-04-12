@@ -72,6 +72,14 @@ class AccountInvoiceLine(models.Model):
     di_product_packaging_id = fields.Many2one('product.packaging', string='Package', default=False, store=True)
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
     di_flg_modif_uom = fields.Boolean(default=False)
+    
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    
+    @api.one
+    @api.depends('product_id.di_spe_saisissable')
+    def _di_compute_spe_saisissable(self):        
+        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+     
  
      
 #     di_qte_un_saisie_init = fields.Float(related="sale_line_id.di_qte_un_saisie")

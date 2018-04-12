@@ -52,7 +52,13 @@ class SaleOrderLine(models.Model):
     
     di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_get_to_invoice_qty')
     
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
+    @api.one
+    @api.depends('product_id.di_spe_saisissable')
+    def _di_compute_spe_saisissable(self):        
+        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+     
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
     def _compute_amount(self):

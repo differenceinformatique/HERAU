@@ -38,6 +38,17 @@ class ProductTemplate(models.Model):
     di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut')
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Type unité prix")
     
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    
+    @api.one
+    @api.depends('di_un_saisie', 'di_un_prix')
+    def _di_compute_spe_saisissable(self):
+        if self.di_un_prix is not False or self.di_un_saisie is not False :
+            self.di_spe_saisissable =True
+        else:
+            self.di_spe_saisissable=False
+            
+    
     @api.multi
     def write(self, vals):                              
         for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      

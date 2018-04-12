@@ -46,7 +46,13 @@ class PurchaseOrderLine(models.Model):
     di_product_packaging_fac_id=fields.Many2one('product.packaging', string='Colis facturé')
     di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix facturé",store=True)
  
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
+    @api.one
+    @api.depends('product_id.di_spe_saisissable')
+    def _di_compute_spe_saisissable(self):        
+        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+       
 
     @api.depends('product_qty', 'price_unit', 'taxes_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
     def _compute_amount(self):

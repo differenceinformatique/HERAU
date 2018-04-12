@@ -160,16 +160,17 @@
 			<xpath
 				expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']"
 				position="before">
+				<field name="di_spe_saisissable" invisible="1"/>
 				<field name="di_flg_modif_uom" invisible="1" />
 				<field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie" />
-				<field name="di_qte_un_saisie" string="Qté validée unité saisie" />
+				<field name="di_qte_un_saisie" string="Qté validée unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
 				<field name="sale_line_id" invisible="1" />
-				<field name="di_un_saisie"  string="Unité de saisie" attrs="{'readonly': [('sale_line_id', '!=', False)]}"/>				
+				<field name="di_un_saisie"  string="Unité de saisie" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />				
 				<field name="di_nb_pieces" readonly="1" string="Nb pièces" />
 				<field name="di_nb_colis" readonly="1" string="Nb colis" />
-				<field name="di_product_packaging_id" string="Colis" attrs="{'readonly': [('sale_line_id', '!=', False)]}" />
+				<field name="di_product_packaging_id" string="Colis" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />
 				<field name="di_nb_palette" readonly="1" string="Nb palette" />
-				<field name="di_type_palette_id" attrs="{'readonly': [('sale_line_id', '!=', False)]}"/> 
+				<field name="di_type_palette_id" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" /> 
 				<field name="di_poin" readonly="1" string="Poids net" />
 				<field name="di_tare" readonly="1" string="Tare" />
 				<field name="di_poib" readonly="1" string="Poids brut" />
@@ -184,11 +185,12 @@
 		<field eval="99" name="priority" />
 		<field name="arch" type="xml">
 			<xpath expr="//group/group[1]" position="inside">
+			     <field name="di_spe_saisissable" invisible="1"/>
 			    <field name="sale_line_id" invisible="1" />
 				<field name="di_flg_modif_uom" invisible="1" />
 				<field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie" />
-				<field name="di_qte_un_saisie" string="Qté validée unité saisie" />
-				<field name="di_un_saisie"  string="Unité de saisie" attrs="{'readonly': [('sale_line_id', '!=', False)]}"/>
+				<field name="di_qte_un_saisie" string="Qté validée unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+				<field name="di_un_saisie"  string="Unité de saisie" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />
 			</xpath>
 			<xpath expr="//group[1]" position="after">
 				<group>
@@ -197,12 +199,12 @@
 						<label for="di_nb_colis" />
 						<div>
 							<field name="di_nb_colis" readonly="1" />
-							<field name="di_product_packaging_id"  attrs="{'readonly': [('sale_line_id', '!=', False)]}"/>
+							<field name="di_product_packaging_id"  attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />
 						</div>
 						<label for="di_nb_palette" />
 						<div>
 							<field name="di_nb_palette" readonly="1" />
-							<field name="di_type_palette_id" attrs="{'readonly': [('sale_line_id', '!=', False)]}" />
+							<field name="di_type_palette_id" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />
 						</div>
 					</group>
 					<group>
@@ -230,10 +232,11 @@
 					string="Unité de saisie initiale" readonly="1"/>
 			</xpath>
 			<xpath expr="//label[@for='quantity_done']" position="before">
+			     <field name="di_spe_saisissable" invisible="1"/>
 			    <field name="sale_line_id" invisible="1" />
 				<field name="di_flg_modif_uom" invisible="1" />
-				<field name="di_un_saisie" attrs="{'readonly': [('sale_line_id', '!=', False)]}" />
-				<field name="di_qte_un_saisie" string="Qté unité saisie" />
+				<field name="di_un_saisie" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />
+				<field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
 				<field name="di_product_packaging_id" invisible="1" />
 				<field name="di_type_palette_id" invisible="1" />
 				<field name="di_poib" invisible="1" />
@@ -249,14 +252,15 @@
 		<field eval="99" name="priority" />
 		<field name="arch" type="xml">
 			<xpath expr="//field[@name='qty_done']" position="before">
+			     <field name="di_spe_saisissable" invisible="1"/>
 				<field name="di_qte_un_saisie" invisible="1" />
 				<field name="move_id" invisible="1" />
-				<field name="di_nb_palette" />
-				<field name="di_nb_colis" />
-				<field name="di_nb_pieces" />
-				<field name="di_poin" />
-				<field name="di_tare" />
-				<field name="di_poib" />
+				<field name="di_nb_palette" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+				<field name="di_nb_colis" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+				<field name="di_nb_pieces" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+				<field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+				<field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+				<field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
 			</xpath>
 		</field>
 	</record>

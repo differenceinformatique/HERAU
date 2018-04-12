@@ -31,6 +31,14 @@ class StockMove(models.Model):
     di_poib_init = fields.Float(related="sale_line_id.di_poib")
     di_tare_init = fields.Float(related="sale_line_id.di_tare")
     di_product_packaging_init_id = fields.Many2one(related="sale_line_id.product_packaging")    
+    
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    
+    @api.one
+    @api.depends('product_id.di_spe_saisissable')
+    def _di_compute_spe_saisissable(self):        
+        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+     
         
     def action_show_details(self):
         # surcharge pour ajouter un champ dans le contexte
@@ -264,6 +272,14 @@ class StockMoveLine(models.Model):
     di_poib = fields.Float(string='Poids brut', store=True)
     di_tare = fields.Float(string='Tare', store=True)    
     di_flg_modif_uom = fields.Boolean(default=False)
+    
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    
+    @api.one
+    @api.depends('product_id.di_spe_saisissable')
+    def _di_compute_spe_saisissable(self):        
+        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+     
         
     @api.one    
     @api.depends('di_poib','di_tare','di_nb_colis','di_nb_pieces','di_nb_palette')
