@@ -484,8 +484,7 @@ class SaleOrder(models.Model):
             if self.state in ['sale', 'done']:
                 line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
             else:
-                line.di_qte_a_facturer_un_saisie = 0
-                
+                line.di_qte_a_facturer_un_saisie = 0    
 #     @api.model
 #     def create(self, vals):                
 #         vals['state']='sale'

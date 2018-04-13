@@ -7,14 +7,14 @@
 			<th>Unité Prix</th>
 		</xpath>
 		<!-- suppression quantité en unité de mesure-->
-		<xpath expr="//th[2]" position="replace"/>
+<!-- 		<xpath expr="//th[2]" position="replace"/> -->
 		<!-- ajout colonnes pièces, colis, palettes, poids -->
 		<xpath expr="//th[1]" position="after">
 			<th>Nb Pièces</th>
 			<th>Nb Colis</th>
 			<th>Type Colis</th>
-			<th>Nb Pal.</th>
-			<th>Type Pal.</th>
+<!-- 			<th>Nb Pal.</th>
+			<th>Type Pal.</th> -->
 			<th>Poids Net</th>
 		</xpath>
 		<!-- Modification sur le contenu des colonnes -->
@@ -35,17 +35,17 @@
 			<td>
                 <span t-field="l.product_packaging"/>
             </td>
-			<td class="text-right">
+<!-- 			<td class="text-right">
                 <span t-field="l.di_nb_palette"/>
             </td>                
 			<td>
                 <span t-field="l.di_type_palette_id"/>
-            </td>
+            </td> -->
 			<td class="text-right">
                 <span t-field="l.di_poin"/>
             </td>            
 		</xpath>
 		<!-- suppression quantité en unité de mesure-->
-		<xpath expr="//td[2]" position="replace"/>
+		<!-- <xpath expr="//td[2]" position="replace"/> -->
 	</template>
 </odoo>

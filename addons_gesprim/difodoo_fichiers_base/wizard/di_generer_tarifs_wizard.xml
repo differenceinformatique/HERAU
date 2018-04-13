@@ -4,19 +4,17 @@
         <field name="name">di.generer.tarifs.form</field>
         <field name="model">di.gen.tar.wiz</field>
         <field name="arch" type="xml">
-            <form string="Génération Tarifs de vente">                
-                <div>           
-                    <label for="di_tarif_orig_id" string="Code tarif origine" />                                                
-                    <field name="di_tarif_orig_id" string="Code tarif origine"/>
-                    <label for="di_date_effet_orig" string="Date d'effet des tarifs à reprendre" />           
-                    <field name="di_date_effet_orig" string="Date d'effet des tarifs à reprendre"/>
-                </div>                   
-                <div>         
-                    <label for="di_date_effet" string="Date d'effet nouveaux tarifs" />           
-                    <field name="di_date_effet" string="Date d'effet nouveaux tarifs"/>
-                    <label for="di_date_fin" string="Date de fin nouveaux tarifs" />                    
-                    <field name="di_date_fin" string="Date de fin nouveaux tarifs"/>                                           
-                </div>
+            <form string="Génération Tarifs de vente">
+            	<group>                
+	                <group>                                              
+	                    <field name="di_tarif_orig_id" string="Code tarif origine"/>       
+	                    <field name="di_date_effet_orig" string="Date d'effet des tarifs à reprendre"/>
+	                </group>                   
+	                <group>        
+	                    <field name="di_date_effet" string="Date d'effet nouveaux tarifs"/>                
+	                    <field name="di_date_fin" string="Date de fin nouveaux tarifs"/>                                           
+	                </group>
+	            </group>
                 <separator />
                 <label for="di_tarifs_dest_ids" string="Code tarifs à générer" />
                 <field name="di_tarifs_dest_ids">
