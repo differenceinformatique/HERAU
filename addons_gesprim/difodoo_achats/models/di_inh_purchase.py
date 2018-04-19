@@ -23,27 +23,27 @@ class PurchaseOrderLine(models.Model):
     di_tare         = fields.Float(string='Tare',store=True)
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
-    di_qte_un_saisie_liv = fields.Float(string='Quantité reçue en unité de saisie')
-    di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie reçue")
-    di_type_palette_liv_id  = fields.Many2one('product.packaging', string='Palette reçue') 
-    di_nb_pieces_liv     = fields.Integer(string='Nb pièces reçues')
-    di_nb_colis_liv      = fields.Integer(string='Nb colis reçus')
-    di_nb_palette_liv    = fields.Float(string='Nb palettes reçues')
-    di_poin_liv          = fields.Float(string='Poids net reçu')
-    di_poib_liv          = fields.Float(string='Poids brut reçu')
-    di_tare_liv          = fields.Float(string='Tare reçue')
-    di_product_packaging_liv_id=fields.Many2one('product.packaging', string='Colis reçu')
+    di_qte_un_saisie_liv = fields.Float(string='Quantité reçue en unité de saisie',compute='_compute_qty_received',store=True)
+    di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie reçue",store=True)
+    di_type_palette_liv_id  = fields.Many2one('product.packaging', string='Palette reçue',store=True) 
+    di_nb_pieces_liv     = fields.Integer(string='Nb pièces reçues',compute='_compute_qty_received',store=True)
+    di_nb_colis_liv      = fields.Integer(string='Nb colis reçus',compute='_compute_qty_received',store=True)
+    di_nb_palette_liv    = fields.Float(string='Nb palettes reçues',compute='_compute_qty_received',store=True)
+    di_poin_liv          = fields.Float(string='Poids net reçu',compute='_compute_qty_received',store=True)
+    di_poib_liv          = fields.Float(string='Poids brut reçu',compute='_compute_qty_received',store=True)
+    di_tare_liv          = fields.Float(string='Tare reçue',compute='_compute_qty_received',store=True)
+    di_product_packaging_liv_id=fields.Many2one('product.packaging', string='Colis reçu',store=True)
     
-    di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie',compute='_compute_qty_invoiced')
-    di_un_saisie_fac     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie facturés")
-    di_type_palette_fac_id  = fields.Many2one('product.packaging', string='Palette facturée') 
-    di_nb_pieces_fac     = fields.Integer(string='Nb pièces facturées')
-    di_nb_colis_fac      = fields.Integer(string='Nb colis facturés')
-    di_nb_palette_fac    = fields.Float(string='Nb palettes facturées')
-    di_poin_fac          = fields.Float(string='Poids net facturé')
-    di_poib_fac          = fields.Float(string='Poids brut facturé')
-    di_tare_fac          = fields.Float(string='Tare facturée')
-    di_product_packaging_fac_id=fields.Many2one('product.packaging', string='Colis facturé')
+    di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie',compute='_compute_qty_invoiced',store=True)
+    di_un_saisie_fac     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie facturés",store=True)
+    di_type_palette_fac_id  = fields.Many2one('product.packaging', string='Palette facturée',store=True) 
+    di_nb_pieces_fac     = fields.Integer(string='Nb pièces facturées',store=True)
+    di_nb_colis_fac      = fields.Integer(string='Nb colis facturés',store=True)
+    di_nb_palette_fac    = fields.Float(string='Nb palettes facturées',store=True)
+    di_poin_fac          = fields.Float(string='Poids net facturé',store=True)
+    di_poib_fac          = fields.Float(string='Poids brut facturé',store=True)
+    di_tare_fac          = fields.Float(string='Tare facturée',store=True)
+    di_product_packaging_fac_id=fields.Many2one('product.packaging', string='Colis facturé',store=True)
     di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix facturé",store=True)
  
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
@@ -81,8 +81,10 @@ class PurchaseOrderLine(models.Model):
             })    
              
         
+        
     @api.depends('order_id.state', 'move_ids.state', 'move_ids.product_uom_qty','move_ids.di_qte_un_saisie','move_ids.di_nb_pieces','move_ids.di_nb_colis','move_ids.di_nb_palette','move_ids.di_poin','move_ids.di_poib')
     def _compute_qty_received(self):
+        
         for line in self:
             if line.order_id.state not in ['purchase', 'done']:
                 line.di_qte_un_saisie_liv = 0.0
@@ -134,9 +136,9 @@ class PurchaseOrderLine(models.Model):
             line.di_nb_colis_liv = total_nb_colis_liv
             line.di_nb_palette_liv = total_nb_palette_liv
             line.di_poin_liv = total_poin_liv
-            line.di_poib_liv = total_poib_liv
-              
-        super(PurchaseOrderLine, self)._compute_qty_received()    
+            line.di_poib_liv = total_poib_liv            
+        super(PurchaseOrderLine, self)._compute_qty_received() 
+            
            
     @api.one
     @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_poib','di_tare','product_packaging')
@@ -277,19 +279,59 @@ class PurchaseOrderLine(models.Model):
                 self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
                
          
-    @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.quantity','invoice_lines.di_qte_un_saisie')
+    @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.quantity','invoice_lines.di_qte_un_saisie','invoice_lines.di_nb_pieces','invoice_lines.di_nb_colis','invoice_lines.di_nb_palette','invoice_lines.di_poin','invoice_lines.di_poib')
     def _compute_qty_invoiced(self):
         for line in self:
             qty = 0.0
             poib = 0.0
+            nbpieces=0.0
+            nbcol = 0.0
+            nbpal=0.0
+            poin=0.0
             for inv_line in line.invoice_lines:
                 if inv_line.invoice_id.state not in ['cancel']:
                     if inv_line.invoice_id.type == 'in_invoice':
                         qty += inv_line.di_qte_un_saisie
                         poib += inv_line.di_poib
+                        nbpieces += inv_line.di_nb_pieces
+                        nbcol += inv_line.di_nb_colis
+                        nbpal += inv_line.di_nb_palette
+                        poin += inv_line.di_poin
                     elif inv_line.invoice_id.type == 'in_refund':
                         qty -= inv_line.di_qte_un_saisie
                         poib -= inv_line.di_poib
+                        nbpieces -= inv_line.di_nb_pieces
+                        nbcol -= inv_line.di_nb_colis
+                        nbpal -= inv_line.di_nb_palette
+                        poin -= inv_line.di_poin
             line.di_qte_un_saisie_fac = qty
             line.di_poib = poib
+            line.di_nb_pieces = nbpieces
+            line.di_nb_colis = nbcol
+            line.di_nb_palette = nbpal
+            line.di_poin = poin
+                    
         super(PurchaseOrderLine, self)._compute_qty_invoiced()
+        
+#     def di_somme_quantites(self,product_id,date =False):
+#         qte =0.0
+#         if date:
+#             mouvs=self.env['purchase.order.line'].search(['&',('product_id','=',product_id),('order_id.date_order','=',date),('qty_received','!=',0.0)])
+#         else:
+#             mouvs=self.env['purchase.order.line'].search([('product_id','=',product_id),('qty_received','!=',0.0)])
+#             
+#         for mouv in mouvs:
+#             qte = qte + mouv.qty_received
+#         return qte
+#         
+#         
+#     def di_somme_montants(self,product_id,date =False):
+#         mont =0.0
+#         if date:
+#             mouvs=self.env['purchase.order.line'].search(['&',('product_id','=',product_id),('order_id.date_order','=',date),('qty_received','!=',0.0)])
+#         else:
+#             mouvs=self.env['purchase.order.line'].search([('product_id','=',product_id),('qty_received','!=',0.0)])
+#             
+#         for mouv in mouvs:
+#             mont = mont + mouv.price_total 
+#         return mont

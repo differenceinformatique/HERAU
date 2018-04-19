@@ -24,8 +24,10 @@
 	<menuitem id="menu_gesprim_origines" sequence="30" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_origine" />
 	<menuitem id="menu_gesprim_marques" sequence="40" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_marque" />
 	<menuitem id="menu_gesprim_calibres" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_calibre" />
-	<menuitem id="menu_gesprim_stations" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" />
-	<menuitem id="menu_gesprim_conditionnement_defaut" name="Conditionnements" sequence="70" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_cond_defaut" /> 
+	<menuitem id="menu_gesprim_stations" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" />	
+	<menuitem id="menu_gesprim_conditionnement_defaut" name="Conditionnements" sequence="70" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_cond_defaut" />
+	<menuitem id="menu_gesprim_couts" sequence="80" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_couts" />
+	<menuitem id="menu_gesprim_couts_gen" sequence="90" parent="menu_gesprim_tables" action="difodoo_fichiers_base.action_di_generer_couts_menu_wiz" /> 
 	<!-- ***Menu Ventes -->	
 	<menuitem id="menu_gesprim_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
 	<menuitem id="menu_gesprim_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />  

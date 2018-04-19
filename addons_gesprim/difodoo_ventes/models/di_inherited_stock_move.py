@@ -2,6 +2,7 @@
 from odoo import api, fields, models, _
 from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
 from math import *
+from datetime import  datetime
  
 class StockMove(models.Model):
     _inherit = "stock.move"
@@ -248,7 +249,16 @@ class StockMove(models.Model):
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id                                                         
                     vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom
-                    
+        
+        
+        if vals.get('purchase_line_id'):    
+            purchaseline = self.env['purchase.order.line'].search([('id', '=', vals["purchase_line_id"])], limit=1)            
+            if purchaseline.id != False: 
+                vals["di_tare"] = purchaseline.di_tare   
+                vals["di_un_saisie"] = purchaseline.di_un_saisie
+                vals["di_type_palette_id"] = purchaseline.di_type_palette_id.id
+                vals["di_product_packaging_id"] = purchaseline.product_packaging.id 
+    
                  
                                                      
         res = super(StockMove, self).create(vals)    
@@ -257,10 +267,76 @@ class StockMove(models.Model):
         if res.picking_type_id.code=='incoming':#1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
             #en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
             if res.move_line_ids.id==False and  res.purchase_line_id.order_id.id ==False: # si on confirme une commande d'achat, la ligne est déjà créée
-                self.env['stock.move.line'].create(res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability))
+                vals=res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability)
+#                 if vals.get('purchase_line_id'):
+#                     Dipurchaseorderline = self.env['purchase.order.line'].search([('id', '=', vals["purchase_line_id"])], limit=1)
+#                     if Dipurchaseorderline:
+#                         vals["di_tare"] = Dipurchaseorderline.di_tare   
+#                         vals["di_un_saisie"] = Dipurchaseorderline.di_un_saisie
+#                         vals["di_type_palette_id"] = Dipurchaseorderline.di_type_palette_id.id
+#                         vals["di_product_packaging_id"] = Dipurchaseorderline.product_packaging.id                                                         
+#                         vals["di_flg_modif_uom"]=Dipurchaseorderline.di_flg_modif_uom
+                self.env['stock.move.line'].create(vals)
 
         return res
- 
+    
+    def di_somme_quantites_montants(self,product_id,date =False):
+        qte =0.0
+        mont =0.0
+        nbcol =0.0
+        nbpal = 0.0
+        nbpiece =0.0
+        poids = 0.0
+        if date:
+#             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
+            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('product_uom_qty','!=',0.0)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date)
+        else:
+            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('product_uom_qty','!=',0.0)])
+             
+        for mouv in mouvs:
+            if mouv.picking_type_id.code=='incoming':
+                qte = qte + mouv.product_uom_qty
+                nbcol = nbcol + mouv.di_nb_colis
+                nbpal = nbpal + mouv.di_nb_palette
+                nbpiece = nbpiece + mouv.di_nb_pieces
+                poids = poids + mouv.di_poin
+                if mouv.purchase_line_id:
+                    mont = mont + mouv.purchase_line_id.price_total
+                elif mouv.sale_line_id:
+                    mont = mont + (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
+            else:
+                qte = qte - mouv.product_uom_qty
+                nbcol = nbcol - mouv.di_nb_colis
+                nbpal = nbpal - mouv.di_nb_palette
+                nbpiece = nbpiece - mouv.di_nb_pieces
+                poids = poids - mouv.di_poin
+                if mouv.purchase_line_id:
+                    mont = mont - mouv.purchase_line_id.price_total
+                elif mouv.sale_line_id:
+                    mont = mont - (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
+             
+        if date:
+#             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
+            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('product_uom_qty','!=',0.0)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
+        else:
+            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('product_uom_qty','!=',0.0)])
+             
+        for mouv in mouvs:
+            if mouv.remaining_qty:
+                qte = qte + mouv.product_uom_qty
+                nbcol = nbcol + mouv.di_nb_colis
+                nbpal = nbpal + mouv.di_nb_palette
+                nbpiece = nbpiece + mouv.di_nb_pieces
+                poids = poids + mouv.di_poin
+            else:
+                qte = qte - mouv.product_uom_qty 
+                nbcol = nbcol - mouv.di_nb_colis
+                nbpal = nbpal - mouv.di_nb_palette
+                nbpiece = nbpiece - mouv.di_nb_pieces
+                poids = poids - mouv.di_poin                       
+                
+        return (qte,mont,nbcol,nbpal,nbpiece,poids)
+                 
 class StockMoveLine(models.Model):
     _inherit = "stock.move.line"
       
@@ -414,7 +490,18 @@ class StockMoveLine(models.Model):
         if vals.get('picking_id') :
             if vals['picking_id']!=False:                  
                 picking = self.env['stock.picking'].browse(vals['picking_id'])
-                if picking.picking_type_id.code=='incoming': # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.               
+                if picking.picking_type_id.code=='incoming': # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.
+                    
+#                     if vals.get('move_id') : # si on a une commande liée
+#                         if vals['move_id']!=False:            
+#                             move = self.env['stock.move'].browse(vals['move_id'])
+#                             if move.purchase_line_id:                       
+#                                 vals["di_tare"] = move.purchase_line_id.di_tare   
+#                                 vals["di_un_saisie"] = move.purchase_line_id.di_un_saisie
+#                                 vals["di_type_palette_id"] = move.purchase_line_id.di_type_palette_id.id
+#                                 vals["di_product_packaging_id"] = move.purchase_line_id.product_packaging.id                                                                                             
+                            
+                                       
                     if not vals.get('lot_id'): #si pas de lot saisi
                         if vals.get('move_id') : # si on a une commande liée
                             if vals['move_id']!=False:            
@@ -440,3 +527,5 @@ class StockMoveLine(models.Model):
 
         ml = super(StockMoveLine, self).create(vals)
         return ml
+    
+    

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_generer_couts_wiz" model="ir.ui.view">
+        <field name="name">di.generer.couts.form</field>
+        <field name="model">di.gen.couts.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Génération Coûts">                
+                <label string="Voulez-vous lancer la génération des coûts ?"/>
+                <footer>
+                    <button string="Oui" type="object" name="di_generer_couts"
+                        default_focus="1" />
+                    <button string="Non" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>   
+    <act_window
+        id="action_di_generer_couts_menu_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Génération coûts"
+        res_model="di.gen.couts.wiz"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_generer_couts_wiz">    
+    </act_window>
+    
+
+</odoo>

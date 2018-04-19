@@ -354,4 +354,58 @@
             </p>
         </field>
     </record>
+    <!--Coûts -->
+    <record id="view_couts_tree" model="ir.ui.view">
+        <field name="name">di.couts.tree</field>
+        <field name="model">di.cout</field>
+        <field name="arch" type="xml">
+            <tree string="Coûts" default_order="name">
+                <field name="di_product_id" readonly="1" />
+                <field name="di_date" readonly="1" string="Date"/>
+                <field name="di_cmp" readonly="1" />
+                <field name="di_qte" readonly="1" string="Quantité"/>
+                <field name="di_poin" readonly="1" string="Poids"/>
+                <field name="di_nbpiece" readonly="1" string="Pièces"/>
+                <field name="di_nbcol" readonly="1" string="Colis"/>
+                <field name="di_nbpal" readonly="1" string="Palettes"/>   
+                <field name="di_mont" readonly="1" string="Valorisation"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_couts_form" model="ir.ui.view">
+        <field name="name">di.couts.tree</field>
+        <field name="model">di.cout</field>
+        <field name="arch" type="xml">
+            <form string="Coûts">
+                <sheet string="Coûts" modifiers="{}">
+                    <group>
+                        <field name="di_company_id" can_create="true" can_write="true"
+                            modifiers="{'readonly':true}" />                     
+                        <field name="di_product_id" readonly="1" />
+                        <field name="di_date" readonly="1" string="Date"/>
+                        <field name="di_cmp" readonly="1" />
+                        <field name="di_qte" readonly="1" string="Quantité"/>
+                        <field name="di_poin" readonly="1" string="Poids"/>
+                        <field name="di_nbpiece" readonly="1" string="Pièces"/>
+                        <field name="di_nbcol" readonly="1" string="Colis"/>
+                        <field name="di_nbpal" readonly="1" string="Palettes"/>   
+                        <field name="di_mont" readonly="1" string="Valorisation"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="di_action_couts" model="ir.actions.act_window">
+        <field name="name">Coûts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.cout</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            
+        </field>
+    </record>
 </odoo>

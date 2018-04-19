@@ -3,5 +3,6 @@
 from . import di_wiz_referencer_article
 from . import di_product_pack_wizard
 from . import di_generer_tarifs_wizard
+from . import di_generer_couts_wizard
 from . import di_imprim_tar_wizard
 from . import di_saisie_code_wizard

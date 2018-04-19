@@ -14,7 +14,7 @@ class DiTarifs(models.Model):
     di_product_id = fields.Many2one('product.product', string='Article', required=True)    
     di_code_tarif_id = fields.Many2one('di.code.tarif', string='Code tarif', required=True)
     di_partner_id = fields.Many2one('res.partner',string="Client")
-    di_un_prix    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",required=True)
+    di_un_prix    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix")
     di_prix = fields.Float(string="Prix",required=True,default=0.0)
     di_qte_seuil = fields.Float(string="Quantité seuil",required=True,default=0.0)
     di_date_effet = fields.Date(string="Date d'effet", required=True)
@@ -80,6 +80,49 @@ class DiTarifs(models.Model):
     #             if r2:
     #                 prix = r2[0]
 #           
+
+#Recherche sans unité de prix
+#             if prix==0.0 :
+#                 query_args = {'di_product_id': article.id,'di_code_tarif_id' : tiers.di_code_tarif_id.id,'di_partner_id' : tiers.id,'di_qte_seuil':qte,'di_date':date}
+#                 query = """ SELECT  di_prix 
+#                                 FROM di_tarifs                         
+#                                 WHERE di_product_id = %(di_product_id)s
+#                                 AND di_partner_id = %(di_partner_id)s 
+#                                 AND di_code_tarif_id=%(di_code_tarif_id)s                                
+#                                 AND di_qte_seuil<=%(di_qte_seuil)s
+#                                 AND di_date_effet <= %(di_date)s
+#                                 AND 
+#                                 (di_date_fin >= %(di_date)s OR di_date_fin is null)
+#                                 ORDER BY di_date_effet desc,di_qte_seuil desc
+#                                 LIMIT 1
+#                                 """
+#         
+#                 self.env.cr.execute(query, query_args)
+#                 prix_multi = [(r[0]) for r in self.env.cr.fetchall()]
+#         
+#                 for prix_simple in prix_multi:
+#                     prix=prix_simple
+#         
+#                 if prix==0.0 :   
+#                     query_args = {'di_product_id': article.id,'di_code_tarif_id' : tiers.di_code_tarif_id.id,'di_qte_seuil':qte,'di_date':date}         
+#                     query = """ SELECT di_prix 
+#                                 FROM di_tarifs                         
+#                                 WHERE di_product_id = %(di_product_id)s                        
+#                                 AND di_code_tarif_id=%(di_code_tarif_id)s                                
+#                                 AND di_qte_seuil<=%(di_qte_seuil)s
+#                                 AND di_date_effet <= %(di_date)s
+#                                 
+#                                 AND 
+#                                 (di_date_fin >= %(di_date)s OR di_date_fin is null)
+#                                 ORDER BY di_date_effet desc,di_qte_seuil desc
+#                                 LIMIT 1
+#                                 """
+#         
+#                     self.env.cr.execute(query, query_args)         
+#                     prix_multi = [(r[0]) for r in self.env.cr.fetchall()]
+#                     #r= self.env.cr.fetchall()
+#                     for prix_simple in prix_multi:
+#                         prix=prix_simple   
                
         return prix
     
