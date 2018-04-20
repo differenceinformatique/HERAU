@@ -56,7 +56,7 @@
 	</record>
 	<!-- Liste des livraisons en attente -->
 	<record id="di_action_picking_tree_ventes_attente" model="ir.actions.act_window">
-		<field name="name">En attente</field>
+		<field name="name">En Attente</field>
 		<field name="res_model">stock.picking</field>
 		<field name="type">ir.actions.act_window</field>
 		<field name="view_type">form</field>
@@ -65,6 +65,7 @@
 		<field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_waiting': 1,
+			'search_default_confirmed': 1,
 			'search_default_expedition': 1
 			}
 		</field>
@@ -73,14 +74,13 @@
 			<p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>
-				
+			<p>				
 			</p>
 		</field>
 	</record>
-	<!-- Liste des livraisons en attente -->
+	<!-- Liste des livraisons en retard -->
 	<record id="di_action_picking_tree_ventes_retard" model="ir.actions.act_window">
-		<field name="name">En retard</field>
+		<field name="name">En Retard</field>
 		<field name="res_model">stock.picking</field>
 		<field name="type">ir.actions.act_window</field>
 		<field name="view_type">form</field>
@@ -98,8 +98,7 @@
 			<p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>
-				
+			<p>				
 			</p>
 		</field>
 	</record>
@@ -122,8 +121,7 @@
 			<p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>
-				
+			<p>				
 			</p>
 		</field>
 	</record>
@@ -145,8 +143,7 @@
 			<p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>
-				
+			<p>				
 			</p>
 		</field>
 	</record>

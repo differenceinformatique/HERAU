@@ -476,7 +476,9 @@ class SaleOrderLine(models.Model):
         super(SaleOrderLine, self)._get_invoice_qty()
   
 class SaleOrder(models.Model):
-    _inherit = "sale.order"  
+    _inherit = "sale.order"
+    di_period_fact = fields.Selection(string="Périodicité de Facturation", related='partner_id.di_period_fact')#,store=True)
+    di_regr_fact = fields.Boolean(string="Regroupement sur Facture", related='partner_id.di_regr_fact')#,store=True)
     
     def _force_lines_to_invoice_policy_order(self):
         super(SaleOrder, self)._force_lines_to_invoice_policy_order()

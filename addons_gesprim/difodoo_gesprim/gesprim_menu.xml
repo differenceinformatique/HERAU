@@ -36,7 +36,7 @@
 	<!-- ****Menu Livraisons -->	
 	<menuitem id="menu_gesprim_liv_liv" name="Livraisons" sequence="10" parent="menu_gesprim_liv" action="difodoo_ventes.di_stock_picking_type_action_ventes"/>
 	<menuitem id="menu_gesprim_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_tree_ventes_attente"/>
-	<menuitem id="menu_gesprim_liv_att" name="A Faire" sequence="30" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_tree_ventes_a_faire"/>
+	<menuitem id="menu_gesprim_liv_afaire" name="A Faire" sequence="30" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_tree_ventes_a_faire"/>
 	<menuitem id="menu_gesprim_liv_ret" name="En Retard" sequence="40" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_tree_ventes_retard"/>
 	<menuitem id="menu_gesprim_liv_all" name="Toutes" sequence="50" parent="menu_gesprim_liv" action="difodoo_ventes.di_action_picking_ventes_all"/>
 	<!-- ****Menu Facturation -->      
