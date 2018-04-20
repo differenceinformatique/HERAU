@@ -486,7 +486,7 @@ class SaleOrder(models.Model):
             else:
                 line.di_qte_a_facturer_un_saisie = 0    
 #     @api.model
-#     def create(self, vals):                
-#         vals['state']='sale'
-#         result = super(SaleOrder, self).create(vals)
+#     def write(self, vals):                
+#         result = super(SaleOrder, self).write(vals)
+#         self.action_confirm()
 #         return result
