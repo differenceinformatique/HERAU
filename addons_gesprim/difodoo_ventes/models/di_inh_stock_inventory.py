@@ -158,15 +158,16 @@ class InventoryLine(models.Model):
             self.di_nb_pieces = self.di_nb_pieces_theo
             self.di_poin = self.di_poin_theo
             
-    #TODO : surcharger ces deux fonctions pour prendre en compte les nb de colis etc         
-    def _get_move_values(self, qty, location_id, location_dest_id, out,nbcol,nbpal,nbpiece,poids):
+            
+            
+    def _di_get_move_values_col(self, qty, location_id, location_dest_id, out):
         #je dois surcharger en copiant le standard
         self.ensure_one()
         return {
             'name': _('INV:') + (self.inventory_id.name or ''),
             'product_id': self.product_id.id,
             'product_uom': self.product_uom_id.id,
-            'product_uom_qty': qty,
+            'product_uom_qty': 0.0,
             'date': self.inventory_id.date,
             'company_id': self.inventory_id.company_id.id,
             'inventory_id': self.inventory_id.id,
@@ -174,28 +175,127 @@ class InventoryLine(models.Model):
             'restrict_partner_id': self.partner_id.id,
             'location_id': location_id,
             'location_dest_id': location_dest_id,
-            #surcharge          
-            'di_nb_pieces': nbpiece,
-            'di_nb_colis': nbcol,
-            'di_nb_palette': nbpal,
-            'di_poin': poids,
+            #surcharge                      
+            'di_nb_colis': qty,            
             #fin surcharge                        
             'move_line_ids': [(0, 0, {
                 'product_id': self.product_id.id,
                 'lot_id': self.prod_lot_id.id,
                 'product_uom_qty': 0,  # bypass reservation here
                 'product_uom_id': self.product_uom_id.id,
-                'qty_done': qty,
+                'qty_done': 1.0,
                 'package_id': out and self.package_id.id or False,
                 'result_package_id': (not out) and self.package_id.id or False,
                 'location_id': location_id,
                 'location_dest_id': location_dest_id,
                 'owner_id': self.partner_id.id,
-                #surcharge
-                'di_nb_pieces': nbpiece,
-                'di_nb_colis': nbcol,
-                'di_nb_palette': nbpal,
-                'di_poin': poids,
+                #surcharge                            
+                'di_nb_colis': qty                
+                #fin surcharge
+            })]
+        }
+        
+    def _di_get_move_values_piece(self, qty, location_id, location_dest_id, out):
+        #je dois surcharger en copiant le standard
+        self.ensure_one()
+        return {
+            'name': _('INV:') + (self.inventory_id.name or ''),
+            'product_id': self.product_id.id,
+            'product_uom': self.product_uom_id.id,
+            'product_uom_qty': 0.0,
+            'date': self.inventory_id.date,
+            'company_id': self.inventory_id.company_id.id,
+            'inventory_id': self.inventory_id.id,
+            'state': 'confirmed',
+            'restrict_partner_id': self.partner_id.id,
+            'location_id': location_id,
+            'location_dest_id': location_dest_id,
+            #surcharge                      
+            'di_nb_pieces': qty,            
+            #fin surcharge                        
+            'move_line_ids': [(0, 0, {
+                'product_id': self.product_id.id,
+                'lot_id': self.prod_lot_id.id,
+                'product_uom_qty': 0,  # bypass reservation here
+                'product_uom_id': self.product_uom_id.id,
+                'qty_done': 1.0,
+                'package_id': out and self.package_id.id or False,
+                'result_package_id': (not out) and self.package_id.id or False,
+                'location_id': location_id,
+                'location_dest_id': location_dest_id,
+                'owner_id': self.partner_id.id,
+                #surcharge                            
+                'di_nb_pieces': qty                
+                #fin surcharge
+            })]
+        }
+        
+    def _di_get_move_values_poids(self, qty, location_id, location_dest_id, out):
+        #je dois surcharger en copiant le standard
+        self.ensure_one()
+        return {
+            'name': _('INV:') + (self.inventory_id.name or ''),
+            'product_id': self.product_id.id,
+            'product_uom': self.product_uom_id.id,
+            'product_uom_qty': 0.0,
+            'date': self.inventory_id.date,
+            'company_id': self.inventory_id.company_id.id,
+            'inventory_id': self.inventory_id.id,
+            'state': 'confirmed',
+            'restrict_partner_id': self.partner_id.id,
+            'location_id': location_id,
+            'location_dest_id': location_dest_id,
+            #surcharge                      
+            'di_poin': qty,            
+            #fin surcharge                        
+            'move_line_ids': [(0, 0, {
+                'product_id': self.product_id.id,
+                'lot_id': self.prod_lot_id.id,
+                'product_uom_qty': 0,  # bypass reservation here
+                'product_uom_id': self.product_uom_id.id,
+                'qty_done': 1.0,
+                'package_id': out and self.package_id.id or False,
+                'result_package_id': (not out) and self.package_id.id or False,
+                'location_id': location_id,
+                'location_dest_id': location_dest_id,
+                'owner_id': self.partner_id.id,
+                #surcharge                            
+                'di_poin': qty                
+                #fin surcharge
+            })]
+        }        
+         
+    def _di_get_move_values_pal(self, qty, location_id, location_dest_id, out):
+        #je dois surcharger en copiant le standard
+        self.ensure_one()
+        return {
+            'name': _('INV:') + (self.inventory_id.name or ''),
+            'product_id': self.product_id.id,
+            'product_uom': self.product_uom_id.id,
+            'product_uom_qty': 0.0,
+            'date': self.inventory_id.date,
+            'company_id': self.inventory_id.company_id.id,
+            'inventory_id': self.inventory_id.id,
+            'state': 'confirmed',
+            'restrict_partner_id': self.partner_id.id,
+            'location_id': location_id,
+            'location_dest_id': location_dest_id,
+            #surcharge                      
+            'di_nb_palette': qty,            
+            #fin surcharge                        
+            'move_line_ids': [(0, 0, {
+                'product_id': self.product_id.id,
+                'lot_id': self.prod_lot_id.id,
+                'product_uom_qty': 0,  # bypass reservation here
+                'product_uom_id': self.product_uom_id.id,
+                'qty_done': 1.0,
+                'package_id': out and self.package_id.id or False,
+                'result_package_id': (not out) and self.package_id.id or False,
+                'location_id': location_id,
+                'location_dest_id': location_dest_id,
+                'owner_id': self.partner_id.id,
+                #surcharge                            
+                'di_nb_palette': qty                
                 #fin surcharge
             })]
         }
@@ -204,18 +304,55 @@ class InventoryLine(models.Model):
         #je dois surcharger en copiant le standard
         moves = self.env['stock.move']
         for line in self:
-            if float_utils.float_compare(line.theoretical_qty, line.product_qty, precision_rounding=line.product_id.uom_id.rounding) == 0:
+            if float_utils.float_compare(line.theoretical_qty, line.product_qty, precision_rounding=line.product_id.uom_id.rounding) == 0 \
+            and float_utils.float_compare(line.di_nb_palette_theo, line.di_nb_palette, precision_rounding=line.product_id.uom_id.rounding) == 0 \
+            and float_utils.float_compare(line.di_nb_colis_theo, line.di_nb_colis, precision_rounding=line.product_id.uom_id.rounding) == 0 \
+            and float_utils.float_compare(line.di_nb_pieces_theo, line.di_nb_pieces, precision_rounding=line.product_id.uom_id.rounding) == 0 \
+            and float_utils.float_compare(line.di_poin_theo, line.di_poin, precision_rounding=line.product_id.uom_id.rounding) == 0 :                                    
                 continue
             diff = line.theoretical_qty - line.product_qty
             di_diff_pal = line.di_nb_palette_theo - line.di_nb_palette
             di_diff_col = line.di_nb_colis_theo - line.di_nb_colis
             di_diff_piece = line.di_nb_pieces_theo - line.di_nb_pieces
             di_diff_poids = line.di_poin_theo - line.di_poin
+                        
+            
+            if di_diff_pal < 0:  # found more than expected
+                diff = diff + 1 # obligé de mettre qty_done = 1 pour que le move soit créé, je rétabli la quantité
+                vals = line._di_get_move_values_pal(abs(di_diff_pal), line.product_id.property_stock_inventory.id, line.location_id.id, False)
+            else:
+                diff = diff - 1
+                vals = line._di_get_move_values_pal(abs(di_diff_pal), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+            moves |= self.env['stock.move'].create(vals)
+            
+            if di_diff_col < 0:  # found more than expected
+                diff = diff + 1
+                vals = line._di_get_move_values_col(abs(di_diff_col), line.product_id.property_stock_inventory.id, line.location_id.id, False)
+            else:
+                diff = diff - 1
+                vals = line._di_get_move_values_col(abs(di_diff_col), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+            moves |= self.env['stock.move'].create(vals)
+            
+            if di_diff_piece < 0:  # found more than expected
+                diff = diff + 1
+                vals = line._di_get_move_values_piece(abs(di_diff_piece), line.product_id.property_stock_inventory.id, line.location_id.id, False)
+            else:
+                diff = diff - 1
+                vals = line._di_get_move_values_piece(abs(di_diff_piece), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+            moves |= self.env['stock.move'].create(vals)
+            
+            if di_diff_poids < 0:  # found more than expected
+                diff = diff + 1
+                vals = line._di_get_move_values_poids(abs(di_diff_poids), line.product_id.property_stock_inventory.id, line.location_id.id, False)
+            else:
+                diff = diff - 1
+                vals = line._di_get_move_values_poids(abs(di_diff_poids), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+            moves |= self.env['stock.move'].create(vals)
             
             if diff < 0:  # found more than expected
-                vals = line._get_move_values(abs(diff), line.product_id.property_stock_inventory.id, line.location_id.id, False,di_diff_col,di_diff_pal,di_diff_piece,di_diff_poids)
+                vals = line._get_move_values(abs(diff), line.product_id.property_stock_inventory.id, line.location_id.id, False)
             else:
-                vals = line._get_move_values(abs(diff), line.location_id.id, line.product_id.property_stock_inventory.id, True,di_diff_col,di_diff_pal,di_diff_piece,di_diff_poids)
+                vals = line._get_move_values(abs(diff), line.location_id.id, line.product_id.property_stock_inventory.id, True)
             moves |= self.env['stock.move'].create(vals)
 #             date_veille = datetime.strptime(self.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() + timedelta(days=-1)
 #             cout = self.env['di.cout'].search(['&', ('di_product_id', '=', line.product_id), ('di_date', '=',  date_veille )])

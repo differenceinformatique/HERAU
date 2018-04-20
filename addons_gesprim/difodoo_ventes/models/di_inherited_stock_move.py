@@ -351,6 +351,7 @@ class StockMoveLine(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
+    
     @api.one
     @api.depends('product_id.di_spe_saisissable')
     def _di_compute_spe_saisissable(self):        
@@ -361,27 +362,28 @@ class StockMoveLine(models.Model):
     @api.depends('di_poib','di_tare','di_nb_colis','di_nb_pieces','di_nb_palette')
     def _compute_qte_un_saisie(self):
         #recalcule la quantité en unité de saisie
-        if self._context.get('di_move_id'):
-            move = self.env['stock.move'].browse(self._context['di_move_id'])
-        else:
-            move = self.move_id
-         
-        if move.di_un_saisie == "PIECE":
-            self.di_qte_un_saisie = self.di_nb_pieces
-        elif move.di_un_saisie == "COLIS":
-            self.di_qte_un_saisie = self.di_nb_colis
-        elif move.di_un_saisie == "PALETTE":
-            self.di_qte_un_saisie = self.di_nb_palette
-        elif move.di_un_saisie == "KG":
-            self.di_qte_un_saisie = self.di_poib
-        else:
-            self.di_qte_un_saisie = self.qty_done   
+        if self.move_id.inventory_id==False:
+            if self._context.get('di_move_id'):
+                move = self.env['stock.move'].browse(self._context['di_move_id'])
+            else:
+                move = self.move_id
+             
+            if move.di_un_saisie == "PIECE":
+                self.di_qte_un_saisie = self.di_nb_pieces
+            elif move.di_un_saisie == "COLIS":
+                self.di_qte_un_saisie = self.di_nb_colis
+            elif move.di_un_saisie == "PALETTE":
+                self.di_qte_un_saisie = self.di_nb_palette
+            elif move.di_un_saisie == "KG":
+                self.di_qte_un_saisie = self.di_poib
+            else:
+                self.di_qte_un_saisie = self.qty_done   
                        
     
     @api.multi                     
     @api.onchange('di_nb_palette')
     def _di_change_nb_palette(self):
-        if self.ensure_one():   
+        if self.ensure_one()and self.move_id.inventory_id==False:   
             if self._context.get('di_move_id'):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
@@ -398,7 +400,7 @@ class StockMoveLine(models.Model):
     @api.multi                     
     @api.onchange('di_nb_colis')
     def _di_change_nb_colis(self):
-        if self.ensure_one():      
+        if self.ensure_one()and self.move_id.inventory_id==False:      
             if self._context.get('di_move_id'):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
@@ -435,19 +437,19 @@ class StockMoveLine(models.Model):
     @api.multi                     
     @api.onchange('di_poib')
     def _di_change_poib(self):
-        if self.ensure_one():
+        if self.ensure_one()and self.move_id.inventory_id==False:
             self.di_tare = self.di_poib - self.di_poin
     @api.multi                     
     @api.onchange('di_tare')
     def _di_change_tare(self):
-        if self.ensure_one():
+        if self.ensure_one()and self.move_id.inventory_id==False:
             self.di_poib = self.di_poin + self.di_tare
             
             
     @api.multi                     
     @api.onchange('di_poin')
     def _di_change_poin(self):
-        if self.ensure_one():  
+        if self.ensure_one()and self.move_id.inventory_id==False:  
             if self._context.get('di_move_id'):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
@@ -474,7 +476,7 @@ class StockMoveLine(models.Model):
     @api.multi                     
     @api.onchange('qty_done')
     def _di_change_qty_done(self):
-        if self.ensure_one():
+        if self.ensure_one() and self.move_id.inventory_id==False:
             if self._context.get('di_move_id'):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
