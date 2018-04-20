@@ -12,7 +12,7 @@
 		</field>
 	</record>
 	<record id="view_origine_form" model="ir.ui.view">
-		<field name="name">di.origine.tree</field>
+		<field name="name">di.origine.form</field>
 		<field name="model">di.origine</field>
 		<field name="arch" type="xml">
 			<form string="Origine">
@@ -54,7 +54,7 @@
 		</field>
 	</record>
 	<record id="view_categorie_form" model="ir.ui.view">
-		<field name="name">di.categorie.tree</field>
+		<field name="name">di.categorie.form</field>
 		<field name="model">di.categorie</field>
 		<field name="arch" type="xml">
 			<form string="Catégorie">
@@ -96,7 +96,7 @@
 		</field>
 	</record>
 	<record id="view_marque_form" model="ir.ui.view">
-		<field name="name">di.marque.tree</field>
+		<field name="name">di.marque.form</field>
 		<field name="model">di.marque</field>
 		<field name="arch" type="xml">
 			<form string="Marque">
@@ -138,7 +138,7 @@
 		</field>
 	</record>
 	<record id="view_calibre_form" model="ir.ui.view">
-		<field name="name">di.calibre.tree</field>
+		<field name="name">di.calibre.form</field>
 		<field name="model">di.calibre</field>
 		<field name="arch" type="xml">
 			<form string="Calibre">
@@ -180,7 +180,7 @@
 		</field>
 	</record>
 	<record id="view_station_form" model="ir.ui.view">
-		<field name="name">di.station.tree</field>
+		<field name="name">di.station.form</field>
 		<field name="model">di.station</field>
 		<field name="arch" type="xml">
 			<form string="Station">
@@ -223,7 +223,7 @@
         </field>
     </record>
     <record id="view_code_tarif_form" model="ir.ui.view">
-        <field name="name">di.code.tarif.tree</field>
+        <field name="name">di.code.tarif.form</field>
         <field name="model">di.code.tarif</field>
         <field name="arch" type="xml">
             <form string="Code tarif">
@@ -267,7 +267,7 @@
 		</field>
 	</record>
 	<record id="view_cond_defaut_form" model="ir.ui.view">
-		<field name="name">di.conddefaut.tree</field>
+		<field name="name">di.conddefaut.form</field>
 		<field name="model">di.conddefaut</field>
 		<field name="arch" type="xml">
 			<form string="Conditionnement par défaut">
@@ -316,7 +316,7 @@
         </field>
     </record>
     <record id="view_code_tarif_form" model="ir.ui.view">
-        <field name="name">di.tarif.tree</field>
+        <field name="name">di.tarif.form</field>
         <field name="model">di.tarifs</field>
         <field name="arch" type="xml">
             <form string="Tarifs de vente">
@@ -373,7 +373,7 @@
         </field>
     </record>
     <record id="view_couts_form" model="ir.ui.view">
-        <field name="name">di.couts.tree</field>
+        <field name="name">di.couts.form</field>
         <field name="model">di.cout</field>
         <field name="arch" type="xml">
             <form string="Coûts">

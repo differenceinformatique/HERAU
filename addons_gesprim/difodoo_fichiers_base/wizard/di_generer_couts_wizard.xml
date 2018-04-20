@@ -4,8 +4,16 @@
         <field name="name">di.generer.couts.form</field>
         <field name="model">di.gen.couts.wiz</field>
         <field name="arch" type="xml">
-            <form string="Génération Coûts">                
-                <label string="Voulez-vous lancer la génération des coûts ?"/>
+            <form string="Génération Coûts">           
+            <group>
+                <group>     
+                    <label string="Voulez-vous lancer la génération des coûts ?"/>
+                </group>
+                <group>
+                    <field name="di_generer_tous_tar" string="Générer tous les tarifs"/>
+                </group>
+            </group>
+                
                 <footer>
                     <button string="Oui" type="object" name="di_generer_couts"
                         default_focus="1" />
@@ -24,7 +32,5 @@
         target="new"
         view_type="form"
         view_id="di_generer_couts_wiz">    
-    </act_window>
-    
-
+    </act_window>    
 </odoo>

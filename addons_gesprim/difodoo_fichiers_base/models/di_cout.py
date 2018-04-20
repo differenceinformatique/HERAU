@@ -9,7 +9,7 @@ class DiCout(models.Model):
     _order = "name"
     
     di_company_id = fields.Many2one('res.company', string='Société', readonly=True,  default=lambda self: self.env.user.company_id)                 
-    name = fields.Char(string="Name", compute='_compute_name')
+    name = fields.Char(string="Name", compute='_compute_name',store=True)
     di_product_id = fields.Many2one('product.product', string='Article')
     di_cmp = fields.Float(string="Coût moyen")
     di_qte = fields.Float(string="Quantité en stock")
@@ -23,7 +23,7 @@ class DiCout(models.Model):
     @api.one
     @api.depends('di_product_id','di_date')
     def _compute_name(self):
-        self.name = self.di_product_id.name + ' ' + self.di_date
+        self.name = self.di_product_id.display_name + ' ' + self.di_date
         
     def di_get_cout_uom(self,product_id,date):        
         dernier_mouv_achat = self.env['purchase.order.line'].new()

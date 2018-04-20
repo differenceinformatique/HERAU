@@ -289,9 +289,9 @@ class StockMove(models.Model):
         poids = 0.0
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('product_uom_qty','!=',0.0)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date)
+            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date)
         else:
-            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('product_uom_qty','!=',0.0)])
+            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)])
              
         for mouv in mouvs:
             if mouv.picking_type_id.code=='incoming':
@@ -317,9 +317,9 @@ class StockMove(models.Model):
              
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('product_uom_qty','!=',0.0)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
+            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
         else:
-            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('product_uom_qty','!=',0.0)])
+            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','=',False)])
              
         for mouv in mouvs:
             if mouv.remaining_qty:
@@ -528,4 +528,44 @@ class StockMoveLine(models.Model):
         ml = super(StockMoveLine, self).create(vals)
         return ml
     
-    
+    def di_qte_spe_en_stock(self,product_id,date,lot):            
+        nbcol =0.0
+        nbpal = 0.0
+        nbpiece =0.0
+        poids = 0.0
+        if date:
+#             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
+            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.move_id.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() <= date)
+        else:
+            mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('picking_id','!=',False)])
+             
+        for mouv in mouvs:
+            if mouv.move_id.picking_type_id.code=='incoming':                
+                nbcol = nbcol + mouv.di_nb_colis
+                nbpal = nbpal + mouv.di_nb_palette
+                nbpiece = nbpiece + mouv.di_nb_pieces
+                poids = poids + mouv.di_poin                
+            else:                
+                nbcol = nbcol - mouv.di_nb_colis
+                nbpal = nbpal - mouv.di_nb_palette
+                nbpiece = nbpiece - mouv.di_nb_pieces
+                poids = poids - mouv.di_poin                             
+        if date:
+#             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
+            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.move_id.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() <= date)
+        else:
+            mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)])
+             
+        for mouv in mouvs:
+            if mouv.move_id.remaining_qty:                
+                nbcol = nbcol + mouv.di_nb_colis
+                nbpal = nbpal + mouv.di_nb_palette
+                nbpiece = nbpiece + mouv.di_nb_pieces
+                poids = poids + mouv.di_poin
+            else:                
+                nbcol = nbcol - mouv.di_nb_colis
+                nbpal = nbpal - mouv.di_nb_palette
+                nbpiece = nbpiece - mouv.di_nb_pieces
+                poids = poids - mouv.di_poin                       
+                
+        return (nbcol,nbpal,nbpiece,poids)
