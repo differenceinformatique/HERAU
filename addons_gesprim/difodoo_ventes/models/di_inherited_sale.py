@@ -53,7 +53,7 @@ class SaleOrderLine(models.Model):
     di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_get_to_invoice_qty')
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
-    
+                                         
     @api.one
     @api.depends('product_id.di_spe_saisissable')
     def _di_compute_spe_saisissable(self):        
@@ -479,7 +479,29 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
     di_period_fact = fields.Selection(string="Périodicité de Facturation", related='partner_id.di_period_fact')#,store=True)
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", related='partner_id.di_regr_fact')#,store=True)
-    
+    di_livdt = fields.Date(string='Date de livraison', copy=False, help="Date de livraison souhaitée",
+                           default=lambda wdate : datetime.today().date()+timedelta(days=1))
+    di_prepdt = fields.Date(string='Date de préparation', copy=False, help="Date de préparation",
+                           default=lambda wdate : datetime.today().date())
+     
+    @api.multi
+    @api.onchange('di_livdt')
+    def modif_livdt(self):
+        if datetime.strptime(self.di_livdt,'%Y-%m-%d').date()<datetime.today().date():
+            return {'warning': {'Erreur date livraison': _('Error'), 'message': _('La date de livraison ne peut être inférieure à la date du jour !'),},}       
+        self.di_prepdt = datetime.strptime(self.di_livdt,'%Y-%m-%d').date() + timedelta(days=-1)
+        if datetime.strptime(self.di_prepdt,'%Y-%m-%d').date()<datetime.today().date():
+            self.di_prepdt=datetime.today().date()
+        self.requested_date = datetime.strptime(self.di_livdt,'%Y-%m-%d')
+     
+    @api.multi
+    @api.onchange('di_prepdt')
+    def modif_prepdt(self):
+        if datetime.strptime(self.di_prepdt,'%Y-%m-%d').date()<datetime.today().date():
+            return {'warning': {'Erreur date préparation': _('Error'), 'message': _('La date de préparation ne peut être inférieure à la date du jour !'),},}
+        self.di_livdt = datetime.strptime(self.di_prepdt,'%Y-%m-%d').date() + timedelta(days=1)
+        self.requested_date = datetime.strptime(self.di_livdt,'%Y-%m-%d')
+     
     def _force_lines_to_invoice_policy_order(self):
         super(SaleOrder, self)._force_lines_to_invoice_policy_order()
         for line in self.order_line:
