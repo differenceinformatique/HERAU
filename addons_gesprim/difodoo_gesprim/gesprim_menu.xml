@@ -12,6 +12,7 @@
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
 	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="30" parent="menu_gesprim_fichiers" action="base.action_partner_supplier_form" />
+	<menuitem id="menu_gesprim_param" name="Paramétrage" sequence="40" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_param" />
 	<menuitem id="menu_gesprim_tar" name="Tarifs" sequence="100" parent="menu_gesprim_fichiers" />
 	<menuitem id="menu_gesprim_tables" name="Tables" sequence="200" parent="menu_gesprim_fichiers" />
 	<!-- ****Menu Tarifs -->

@@ -408,4 +408,45 @@
             
         </field>
     </record>
+    <!--Paramétrage -->
+    <record id="view_param_tree" model="ir.ui.view">
+        <field name="name">di.param.tree</field>
+        <field name="model">di.param</field>
+        <field name="arch" type="xml">
+            <tree string="Paramètres" default_order="di_company_id">
+                <field name="di_company_id" readonly="1" />
+                <field name="di_horizon" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_param_form" model="ir.ui.view">
+        <field name="name">di.param.form</field>
+        <field name="model">di.param</field>
+        <field name="arch" type="xml">
+            <form string="Paramètres">
+                <sheet string="Paramètres" modifiers="{}">
+                    <group>
+                        <field name="di_company_id" can_create="true" can_write="true"
+                            readonly="1" />
+                        <field name="di_horizon" />                        
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="di_action_param" model="ir.actions.act_window">
+        <field name="name">Paramètres</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.param</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Paramétrage
+            </p>
+            <p>
+                Cliquer pour gérer les paramètres
+            </p>
+        </field>
+    </record>
 </odoo>

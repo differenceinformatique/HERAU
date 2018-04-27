@@ -12,5 +12,6 @@ from . import di_ref_art_tiers
 from . import di_station
 from . import di_tarifs
 from . import di_cout
+from . import di_param
 
 

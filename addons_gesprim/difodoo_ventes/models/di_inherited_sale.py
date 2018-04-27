@@ -509,6 +509,33 @@ class SaleOrder(models.Model):
                 line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
             else:
                 line.di_qte_a_facturer_un_saisie = 0    
+                
+    @api.multi
+    def di_action_grille_vente(self):
+        self.ensure_one()        
+         
+        view=self.env.ref('difodoo_ventes.di_grille_vente_wiz').id
+        #       
+      
+        ctx= {                
+                'di_model':'sale.order',   
+                'di_order': self                           
+            }
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'name': 'Grille de vente',
+            'res_model': 'di.grille.vente.wiz',
+            'views': [(view, 'form')],
+            'view_id': view,                        
+            'target': 'new',
+            'multi':'False',
+            'id':'di_action_grille_vente_wiz',
+            'key2':'client_action_multi',
+            'context': ctx            
+        }
+
 #     @api.model
 #     def write(self, vals):                
 #         result = super(SaleOrder, self).write(vals)

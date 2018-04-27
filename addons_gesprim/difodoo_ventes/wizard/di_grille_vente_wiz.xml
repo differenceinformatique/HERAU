@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_grille_vente_wiz" model="ir.ui.view">
+        <field name="name">di.grille.vente.form</field>
+        <field name="model">di.grille.vente.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Grille de vente">
+                <group>                
+                    <group>                                              
+                        <field name="di_order_id" string="Commande"/>                               
+                    </group>                                      
+                </group>
+                <separator />
+                <label for="di_product_ids" string="Produits" />
+                <field name="di_product_ids">
+                    <tree order="display_name">
+                        <field name="display_name" />                                               
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Valider" type="object" name="di_valider_grille"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>    
+   <!--  <act_window
+        id="di_action_grille_vente_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Grille de vente"
+        res_model="di.grille.vente.wiz"        
+        view_mode="form"
+        target="new"
+        view_type="form"
+        context="self"
+        view_id="di_grille_vente_wiz">    
+    </act_window> -->
+   
+
+</odoo>
