@@ -9,6 +9,64 @@ from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+    
+    @api.multi
+    def _invoice_line_tax_values(self):
+        self.ensure_one()
+        tax_datas = {}
+        TAX = self.env['account.tax']
+
+        for line in self.mapped('invoice_line_ids'):
+            di_qte_prix = 0.0
+           
+            if line.di_un_prix == "PIECE":
+                di_qte_prix = line.di_nb_pieces
+            elif line.di_un_prix == "COLIS":
+                di_qte_prix = line.di_nb_colis
+            elif line.di_un_prix == "PALETTE":
+                di_qte_prix = line.di_nb_palette
+            elif line.di_un_prix == "KG":
+                di_qte_prix = line.di_poin
+            elif line.di_un_prix == False or line.di_un_prix == '':
+                di_qte_prix = line.quantity
+                
+            price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            tax_lines = line.invoice_line_tax_ids.compute_all(price_unit, line.invoice_id.currency_id, di_qte_prix, line.product_id, line.invoice_id.partner_id)['taxes']
+            for tax_line in tax_lines:
+                tax_line['tag_ids'] = TAX.browse(tax_line['id']).tag_ids.ids
+            tax_datas[line.id] = tax_lines
+        return tax_datas
+    
+    @api.multi
+    def get_taxes_values(self):            
+        tax_grouped = {}
+        for line in self.invoice_line_ids:
+            di_qte_prix = 0.0
+           
+            if line.di_un_prix == "PIECE":
+                di_qte_prix = line.di_nb_pieces
+            elif line.di_un_prix == "COLIS":
+                di_qte_prix = line.di_nb_colis
+            elif line.di_un_prix == "PALETTE":
+                di_qte_prix = line.di_nb_palette
+            elif line.di_un_prix == "KG":
+                di_qte_prix = line.di_poin
+            elif line.di_un_prix == False or line.di_un_prix == '':
+                di_qte_prix = line.quantity
+                                
+            price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+#             taxes = line.invoice_line_tax_ids.compute_all(price_unit, self.currency_id, line.quantity, line.product_id, self.partner_id)['taxes']
+            taxes = line.invoice_line_tax_ids.compute_all(price_unit, self.currency_id, di_qte_prix, line.product_id, self.partner_id)['taxes']
+            for tax in taxes:
+                val = self._prepare_tax_line_vals(line, tax)
+                key = self.env['account.tax'].browse(tax['id']).get_grouping_key(val)
+
+                if key not in tax_grouped:
+                    tax_grouped[key] = val
+                else:
+                    tax_grouped[key]['amount'] += val['amount']
+                    tax_grouped[key]['base'] += val['base']
+        return tax_grouped
 
     def _prepare_invoice_line_from_po_line(self, line):
         #Copie du standard pour ajouter des éléments dans data
@@ -94,6 +152,37 @@ class AccountInvoiceLine(models.Model):
 #     product_packaging_init = fields.Many2one(related="sale_line_id.di_product_packaging_id")    
     
  
+    @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
+        'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
+        'invoice_id.date_invoice')
+    def _compute_total_price(self):
+        for line in self:
+            di_qte_prix = 0.0
+            if line.di_un_prix == "PIECE":
+                di_qte_prix = line.di_nb_pieces
+            elif line.di_un_prix == "COLIS":
+                di_qte_prix = line.di_nb_colis
+            elif line.di_un_prix == "PALETTE":
+                di_qte_prix = line.di_nb_palette
+            elif line.di_un_prix == "KG":
+                di_qte_prix = line.di_poin
+            elif line.di_un_prix == False or line.di_un_prix == '':
+                di_qte_prix = line.quantity
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            taxes = line.invoice_line_tax_ids.compute_all(price, line.invoice_id.currency_id, di_qte_prix, product=line.product_id, partner=line.invoice_id.partner_id)
+            line.price_total = taxes['total_included']
+
+    sale_line_ids = fields.Many2many(
+        'sale.order.line',
+        'sale_order_line_invoice_rel',
+        'invoice_line_id', 'order_line_id',
+        string='Sales Order Lines', readonly=True, copy=False)
+    layout_category_id = fields.Many2one('sale.layout_category', string='Section')
+    layout_category_sequence = fields.Integer(string='Layout Sequence')
+    # TODO: remove layout_category_sequence in master or make it work properly
+    price_total = fields.Monetary(compute='_compute_total_price', string='Total Amount', store=True)
+    
+    
     @api.one
     @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
         'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
@@ -102,9 +191,7 @@ class AccountInvoiceLine(models.Model):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = False
-        di_qte_prix = 0.0
-        
-   
+        di_qte_prix = 0.0        
         if self.di_un_prix == "PIECE":
             di_qte_prix = self.di_nb_pieces
         elif self.di_un_prix == "COLIS":
@@ -384,3 +471,154 @@ class AccountInvoiceLine(models.Model):
   
         res = super(AccountInvoiceLine, self).create(vals)                           
         return res
+
+
+
+class AccountTax(models.Model):
+    _inherit = 'account.tax'
+        
+    di_taxe_id = fields.Many2one('account.tax', string='Taxe sur la taxe',help="""Permet par exemple d'affecter de la TVA sur l'interfel """)
+    
+    @api.multi
+    def compute_all(self, price_unit, currency=None, quantity=1.0, product=None, partner=None):
+        """ Returns all information required to apply taxes (in self + their children in case of a tax goup).
+            We consider the sequence of the parent for group of taxes.
+                Eg. considering letters as taxes and alphabetic order as sequence :
+                [G, B([A, D, F]), E, C] will be computed as [A, D, F, C, E, G]
+
+        RETURN: {
+            'total_excluded': 0.0,    # Total without taxes
+            'total_included': 0.0,    # Total with taxes
+            'taxes': [{               # One dict for each tax in self and their children
+                'id': int,
+                'name': str,
+                'amount': float,
+                'sequence': int,
+                'account_id': int,
+                'refund_account_id': int,
+                'analytic': boolean,
+            }]
+        } """
+        if len(self) == 0:
+            company_id = self.env.user.company_id
+        else:
+            company_id = self[0].company_id
+        if not currency:
+            currency = company_id.currency_id
+        taxes = []
+        # By default, for each tax, tax amount will first be computed
+        # and rounded at the 'Account' decimal precision for each
+        # PO/SO/invoice line and then these rounded amounts will be
+        # summed, leading to the total amount for that tax. But, if the
+        # company has tax_calculation_rounding_method = round_globally,
+        # we still follow the same method, but we use a much larger
+        # precision when we round the tax amount for each line (we use
+        # the 'Account' decimal precision + 5), and that way it's like
+        # rounding after the sum of the tax amounts of each line
+        prec = currency.decimal_places
+
+        # In some cases, it is necessary to force/prevent the rounding of the tax and the total
+        # amounts. For example, in SO/PO line, we don't want to round the price unit at the
+        # precision of the currency.
+        # The context key 'round' allows to force the standard behavior.
+        round_tax = False if company_id.tax_calculation_rounding_method == 'round_globally' else True
+        round_total = True
+        if 'round' in self.env.context:
+            round_tax = bool(self.env.context['round'])
+            round_total = bool(self.env.context['round'])
+
+        if not round_tax:
+            prec += 5
+
+        base_values = self.env.context.get('base_values')
+        if not base_values:
+            total_excluded = total_included = base = round(price_unit * quantity, prec)
+        else:
+            total_excluded, total_included, base = base_values
+
+        # Sorting key is mandatory in this case. When no key is provided, sorted() will perform a
+        # search. However, the search method is overridden in account.tax in order to add a domain
+        # depending on the context. This domain might filter out some taxes from self, e.g. in the
+        # case of group taxes.
+        
+        for tax in self.sorted(key=lambda r: r.sequence):
+            if tax.amount_type == 'group':
+                children = tax.children_tax_ids.with_context(base_values=(total_excluded, total_included, base))
+                ret = children.compute_all(price_unit, currency, quantity, product, partner)
+                total_excluded = ret['total_excluded']
+                base = ret['base'] if tax.include_base_amount else base
+                total_included = ret['total_included']
+                tax_amount = total_included - total_excluded
+                taxes += ret['taxes']
+                continue
+
+            tax_amount = tax._compute_amount(base, price_unit, quantity, product, partner)
+            if not round_tax:
+                tax_amount = round(tax_amount, prec)
+            else:
+                tax_amount = currency.round(tax_amount)
+
+            if tax.price_include:
+                total_excluded -= tax_amount
+                base -= tax_amount
+            else:
+                total_included += tax_amount
+
+            # Keep base amount used for the current tax
+            tax_base = base
+
+            if tax.include_base_amount:
+                base += tax_amount
+
+            taxes.append({
+                'id': tax.id,
+                'name': tax.with_context(**{'lang': partner.lang} if partner else {}).name,
+                'amount': tax_amount,
+                'base': tax_base,
+                'sequence': tax.sequence,
+                'account_id': tax.account_id.id,
+                'refund_account_id': tax.refund_account_id.id,
+                'analytic': tax.analytic,
+                'price_include': tax.price_include,
+            })
+            
+            
+            if tax.di_taxe_id:
+                di_tax_amount = tax.di_taxe_id._compute_amount(tax_amount, tax_amount, 1.0, product, partner)
+                if not round_tax:
+                    di_tax_amount = round(di_tax_amount, prec)
+                else:
+                    di_tax_amount = currency.round(di_tax_amount)                
+                taxes.append({
+                    'id': tax.di_taxe_id.id,
+                    'name': tax.di_taxe_id.with_context(**{'lang': partner.lang} if partner else {}).name,
+                    'amount': di_tax_amount,
+                    'base': tax_amount,
+                    'sequence': tax.di_taxe_id.sequence,
+                    'account_id': tax.di_taxe_id.account_id.id,
+                    'refund_account_id': tax.di_taxe_id.refund_account_id.id,
+                    'analytic': tax.di_taxe_id.analytic,
+                    'price_include': tax.di_taxe_id.price_include,
+                })
+                
+            # modif temporaire pour test interfel
+#             if tax.id == 46:
+#                 taxes.append({
+#                     'id': 48,
+#                     'name': "TVA sur interfel",
+#                     'amount': 0.0412,
+#                     'base': 0.206,
+#                     'sequence': 0,
+#                     'account_id': tax.account_id.id,
+#                     'refund_account_id': tax.refund_account_id.id,
+#                     'analytic': tax.analytic,
+#                     'price_include': False,
+#                 })
+                
+
+        return {
+            'taxes': sorted(taxes, key=lambda k: k['sequence']),
+            'total_excluded': currency.round(total_excluded) if round_total else total_excluded,
+            'total_included': currency.round(total_included) if round_total else total_included,
+            'base': base,
+        }

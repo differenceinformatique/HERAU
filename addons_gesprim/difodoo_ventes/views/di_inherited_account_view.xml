@@ -53,6 +53,16 @@
                 </xpath>                                         
             </field>                                    
         </record> 
+        <record model="ir.ui.view" id="di_account_tax_form">
+            <field name="name">di.account.tax.form</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">                        
+                <xpath expr="//field[@name='price_include']" position="after">
+                    <field name="di_taxe_id" string="Taxe appliquée sur cette taxe"/>       
+                </xpath>     
+            </field>
+        </record>
                    
     </data>
 </odoo> 

@@ -52,10 +52,10 @@ class SaleOrderLine(models.Model):
     
     di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_get_to_invoice_qty')
     
-    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=True,compute='_di_compute_spe_saisissable',store=True)
                                          
     @api.one
-    @api.depends('product_id.di_spe_saisissable')
+    @api.depends('product_id.di_spe_saisissable','product_id','di_qte_un_saisie')
     def _di_compute_spe_saisissable(self):        
         self.di_spe_saisissable =self.product_id.di_spe_saisissable
      
@@ -168,7 +168,8 @@ class SaleOrderLine(models.Model):
                 self.di_un_saisie = self.product_id.di_un_saisie
                 self.di_type_palette_id = self.product_id.di_type_palette_id
                 self.product_packaging = self.product_id.di_type_colis_id    
-                self.di_un_prix = self.product_id.di_un_prix        
+                self.di_un_prix = self.product_id.di_un_prix    
+                self.di_spe_saisissable = self.product_id.di_spe_saisissable    
 
 
     @api.multi
@@ -266,7 +267,7 @@ class SaleOrderLine(models.Model):
     @api.multi    
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_tare','product_packaging')
     def _di_recalcule_quantites(self):
-        if self.ensure_one():
+        if self.ensure_one():            
             if self.di_flg_modif_uom == False:
                 SaleOrderLine.modifparprg=True
                 if self.di_un_saisie == "PIECE":
@@ -484,6 +485,40 @@ class SaleOrder(models.Model):
     di_prepdt = fields.Date(string='Date de préparation', copy=False, help="Date de préparation",
                            default=lambda wdate : datetime.today().date())
      
+    @api.multi
+    def _get_tax_amount_by_group(self):
+        self.ensure_one()
+        res = {}
+        for line in self.order_line:
+            di_qte_prix = 0.0
+            if line.di_un_prix == "PIECE":
+                di_qte_prix = line.di_nb_pieces
+            elif line.di_un_prix == "COLIS":
+                di_qte_prix = line.di_nb_colis
+            elif line.di_un_prix == "PALETTE":
+                di_qte_prix = line.di_nb_palette
+            elif line.di_un_prix == "KG":
+                di_qte_prix = line.di_poin
+            elif line.di_un_prix == False or line.di_un_prix == '':
+                di_qte_prix = line.product_uom_qty 
+            base_tax = 0
+            for tax in line.tax_id:
+                group = tax.tax_group_id
+                res.setdefault(group, {'amount': 0.0, 'base': 0.0})
+                # FORWARD-PORT UP TO SAAS-17
+                price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+                taxes = tax.compute_all(price_reduce + base_tax, quantity=di_qte_prix,
+                                         product=line.product_id, partner=self.partner_shipping_id)['taxes']
+                for t in taxes:
+                    res[group]['amount'] += t['amount']
+                    res[group]['base'] += t['base']
+                if tax.include_base_amount:
+                    base_tax += tax.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,
+                                                partner=self.partner_shipping_id)['taxes'][0]['amount']
+        res = sorted(res.items(), key=lambda l: l[0].sequence)
+        res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]
+        return res
+    
     @api.multi
     @api.onchange('di_livdt')
     def modif_livdt(self):
