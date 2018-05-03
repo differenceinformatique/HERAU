@@ -17,6 +17,7 @@ class AccountInvoice(models.Model):
         TAX = self.env['account.tax']
 
         for line in self.mapped('invoice_line_ids'):
+            # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
            
             if line.di_un_prix == "PIECE":
@@ -41,6 +42,7 @@ class AccountInvoice(models.Model):
     def get_taxes_values(self):            
         tax_grouped = {}
         for line in self.invoice_line_ids:
+            # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
            
             if line.di_un_prix == "PIECE":
@@ -157,6 +159,7 @@ class AccountInvoiceLine(models.Model):
         'invoice_id.date_invoice')
     def _compute_total_price(self):
         for line in self:
+            # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
             if line.di_un_prix == "PIECE":
                 di_qte_prix = line.di_nb_pieces
@@ -191,6 +194,8 @@ class AccountInvoiceLine(models.Model):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = False
+        
+        # modif de la quantité à prendre en compte 
         di_qte_prix = 0.0        
         if self.di_un_prix == "PIECE":
             di_qte_prix = self.di_nb_pieces
@@ -582,7 +587,7 @@ class AccountTax(models.Model):
                 'price_include': tax.price_include,
             })
             
-            
+            # spé pour affecter une taxe sur une autre taxe
             if tax.di_taxe_id:
                 di_tax_amount = tax.di_taxe_id._compute_amount(tax_amount, tax_amount, 1.0, product, partner)
                 if not round_tax:
@@ -601,19 +606,7 @@ class AccountTax(models.Model):
                     'price_include': tax.di_taxe_id.price_include,
                 })
                 
-            # modif temporaire pour test interfel
-#             if tax.id == 46:
-#                 taxes.append({
-#                     'id': 48,
-#                     'name': "TVA sur interfel",
-#                     'amount': 0.0412,
-#                     'base': 0.206,
-#                     'sequence': 0,
-#                     'account_id': tax.account_id.id,
-#                     'refund_account_id': tax.refund_account_id.id,
-#                     'analytic': tax.analytic,
-#                     'price_include': False,
-#                 })
+                #fin spé
                 
 
         return {

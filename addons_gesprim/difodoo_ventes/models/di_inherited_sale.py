@@ -67,7 +67,7 @@ class SaleOrderLine(models.Model):
         """
         for line in self:
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            
+            # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
             if line.di_un_prix == "PIECE":
                 di_qte_prix = line.di_nb_pieces
@@ -180,6 +180,7 @@ class SaleOrderLine(models.Model):
         vals = {}
         if self.product_id and self.di_un_prix:
 #             if vals.get("price_unit"):
+            # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
             if self.di_un_prix == "PIECE":
                 di_qte_prix = self.di_nb_pieces
@@ -200,7 +201,7 @@ class SaleOrderLine(models.Model):
     def product_uom_change(self):
         super(SaleOrderLine, self).product_uom_change()
         #surcharge de la procédure pour recalculer le prix car elle est appelée après _di_changer_prix quand on modifie l'article
-        if self.product_id and self.di_un_prix:
+        if self.product_id and self.di_un_prix:            
             di_qte_prix = 0.0
             if self.di_un_prix == "PIECE":
                 di_qte_prix = self.di_nb_pieces
@@ -490,6 +491,7 @@ class SaleOrder(models.Model):
         self.ensure_one()
         res = {}
         for line in self.order_line:
+            # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
             if line.di_un_prix == "PIECE":
                 di_qte_prix = line.di_nb_pieces
