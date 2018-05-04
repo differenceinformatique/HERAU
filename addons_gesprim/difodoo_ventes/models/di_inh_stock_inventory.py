@@ -17,6 +17,7 @@ class Inventory(models.Model):
         return ret
     
     def _get_inventory_lines_values(self):
+        # copie standard
         # je n'ai pas réussi à surcharger proprement donc j'ai repris tout le standard
         # TDE CLEANME: is sql really necessary ? I don't think so
         locations = self.env['stock.location'].search([('id', 'child_of', [self.location_id.id])])
@@ -301,6 +302,7 @@ class InventoryLine(models.Model):
         }
 
     def _generate_moves(self):
+        # copie standard
         #je dois surcharger en copiant le standard
         moves = self.env['stock.move']
         for line in self:

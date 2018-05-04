@@ -12,6 +12,7 @@ class AccountInvoice(models.Model):
     
     @api.multi
     def _invoice_line_tax_values(self):
+        # copie standard
         self.ensure_one()
         tax_datas = {}
         TAX = self.env['account.tax']
@@ -39,7 +40,8 @@ class AccountInvoice(models.Model):
         return tax_datas
     
     @api.multi
-    def get_taxes_values(self):            
+    def get_taxes_values(self):  
+        # copie standard          
         tax_grouped = {}
         for line in self.invoice_line_ids:
             # modif de la quantité à prendre en compte
@@ -71,6 +73,7 @@ class AccountInvoice(models.Model):
         return tax_grouped
 
     def _prepare_invoice_line_from_po_line(self, line):
+        # copie standard
         #Copie du standard pour ajouter des éléments dans data
         if line.product_id.purchase_method == 'purchase':
             qty = line.product_qty - line.qty_invoiced
@@ -158,6 +161,7 @@ class AccountInvoiceLine(models.Model):
         'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
         'invoice_id.date_invoice')
     def _compute_total_price(self):
+        # copie standard
         for line in self:
             # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
@@ -191,6 +195,7 @@ class AccountInvoiceLine(models.Model):
         'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
         'invoice_id.date_invoice', 'invoice_id.date','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
     def _compute_price(self):
+        # copie standard
         currency = self.invoice_id and self.invoice_id.currency_id or None
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = False
@@ -486,6 +491,7 @@ class AccountTax(models.Model):
     
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0, product=None, partner=None):
+        # copie standard
         """ Returns all information required to apply taxes (in self + their children in case of a tax goup).
             We consider the sequence of the parent for group of taxes.
                 Eg. considering letters as taxes and alphabetic order as sequence :

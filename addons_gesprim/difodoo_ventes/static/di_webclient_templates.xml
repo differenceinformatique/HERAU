@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <!-- Adds all assets in Odoo -->
+        <template id="di_assets_backend" name="Backend Assets  surcharge (used in backend interface)" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/difodoo_ventes/static/di_form_controller.js"></script>      
+            </xpath>
+        </template>
+    </data>
+</odoo>

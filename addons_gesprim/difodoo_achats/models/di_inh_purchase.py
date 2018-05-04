@@ -56,6 +56,7 @@ class PurchaseOrderLine(models.Model):
 
     @api.depends('product_qty', 'price_unit', 'taxes_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
     def _compute_amount(self):
+        # copie standard
         """
         Compute the amounts of the SO line.
         """

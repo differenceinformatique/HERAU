@@ -62,6 +62,7 @@ class SaleOrderLine(models.Model):
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
     def _compute_amount(self):
+        # copie standard
         """
         Compute the amounts of the SO line.
         """
@@ -413,11 +414,13 @@ class SaleOrderLine(models.Model):
             
     @api.multi
     def _check_package(self):    
+        # copie standard
         #surcharge pour enlever le contrôle sur le nombre d'unités saisies en fonction du colis choisi    
         return {}
         
     @api.onchange('product_uom_qty', 'product_uom', 'route_id')
     def _onchange_product_id_check_availability(self):
+        # copie standard
         #surcharge pour enlever la remise à 0 de product_packaging
         if self.product_id.type == 'product':
             precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
@@ -488,6 +491,7 @@ class SaleOrder(models.Model):
      
     @api.multi
     def _get_tax_amount_by_group(self):
+        # copie standard
         self.ensure_one()
         res = {}
         for line in self.order_line:
@@ -573,8 +577,10 @@ class SaleOrder(models.Model):
             'context': ctx            
         }
 
-#     @api.model
-#     def write(self, vals):                
-#         result = super(SaleOrder, self).write(vals)
-#         self.action_confirm()
-#         return result
+    @api.model
+    def create(self, vals):               
+        
+        cde = super(SaleOrder, self).create(vals)   
+        if self.env.context.get('search_default_di_cde'):
+            cde.action_confirm()
+        return cde

@@ -28,6 +28,7 @@
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
         "views/di_stock_inventory_views.xml",
+        "static/di_webclient_templates.xml",
         "report/di_sale_report_templates.xml"
         
         # 'security/ir.model.access.csv',

@@ -42,6 +42,7 @@ class StockMove(models.Model):
      
         
     def action_show_details(self):
+        # copie standard
         # surcharge pour ajouter un champ dans le contexte
         """ Returns an action that will open a form view (in a popup) allowing to work on all the
         move lines of a particular move. This form view is used when "show operations" is not

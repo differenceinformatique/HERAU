@@ -10,7 +10,7 @@
 			<field name="arch" type="xml">
 			     <!-- Header -->
 			     <xpath expr="//header/field[@name='state']" position="before">                                       
-                    <button name="di_action_grille_vente" type="object" string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client."/>                      
+                    <button class="di_class_grille_vente" name="di_action_grille_vente" type="object" string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client."/>                      
                 </xpath>
 				<!-- on enlève les adresses du choix du tiers -->
 				<xpath expr="//sheet/group/group/field[@name='partner_id']" position="replace">
@@ -222,6 +222,8 @@
 					<separator />
 					<filter string="Non facturées" name="di_NonFact" domain="[('invoice_status','=',('no'))]" />
 					<separator />
+					<filter string="Commandes" name="di_cde" domain="[('state','=',('sale'))]" />
+					<separator />
 				</xpath>
 			</field>
 		</record>
@@ -235,7 +237,7 @@
 			<field name="search_view_id" ref="di_sale_order_view_search_inherit_sale"/>
 			<field name="inherit_id" ref="sale.action_orders" />
 			<field eval="99" name="priority" />
-			<field name="context">{'search_default_di_NonFact': 1}</field>
+			<field name="context">{'search_default_di_NonFact': 1,'search_default_di_cde': 1}</field>
 		</record>
 	</data>
 </odoo>
