@@ -22,8 +22,17 @@
 					<field name="di_siret" />
 				</xpath>
 				<!-- ajout onglet spécifique -->
-				<!-- <xpath expr="//page[@name='accounting']" position="after"> <page name="specifs" string="Spécifiques" 
-					style="font-style: oblique;"> ajout label bidon pour test <label string="TOTO" /> </page> </xpath> -->
+				<xpath expr="//page[@name='accounting']" position="after">
+					<page name="specifs" string="Spécifiques" style="font-style: oblique;" col="4">
+						<group>
+							<group name="editions" string="Editions">
+								<field name="di_pres_bl"/>
+							</group>
+							<group>
+							</group>
+						</group>
+					</page>
+				</xpath>
 				<!-- masquage champ état + modif place ville/code postal sur la 1ère page du formulaire -->
 				<xpath expr="//field[@name='city']" position="replace">
 				</xpath>

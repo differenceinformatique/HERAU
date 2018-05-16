@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="di_report_delivery_document" inherit_id="stock.report_delivery_document">
+		<!-- Modification colonnes si pas mouvements de stock -->
+		<xpath expr="//div" position="before">
+			<t t-if="o.partner_id.parent_id">
+				<t t-set="di_pres_bl" t-value="o.partner_id.parent_id.di_pres_bl" />
+			</t>
+			<t t-if="not o.partner_id.parent_id">
+				<t t-set="di_pres_bl" t-value="o.partner_id.di_pres_bl" />
+			</t>
+		</xpath>
+		<xpath expr="//table[@class='table table-condensed mt48'][1]/thead/tr/th" position="after">
+		<th>Nb Pièces</th>
+			<th>Nb Colis</th>
+			<th>Type Colis</th>
+			<th>Poids Net</th>
+		</xpath>
+		<xpath expr="//table[@class='table table-condensed mt48'][1]/thead/tr" position="inside">
+			<t t-if="di_pres_bl == 'CHIFFRE'">
+				<th>Prix Unitaire</th>
+				<th>Unité Prix</th>
+				<th>Montant</th>
+			</t>
+		</xpath>
+		<xpath expr="//table[@class='table table-condensed mt48'][1]/tbody/tr/td" position="after">
+			<td>
+				<span t-field="move.sale_line_id.di_nb_pieces" />
+			</td>
+			<td>
+				<span t-field="move.sale_line_id.di_nb_colis" />
+			</td>
+			<td>
+				<span t-field="move.sale_line_id.product_packaging" />
+			</td>
+			<td>
+				<span t-field="move.sale_line_id.di_poin" />
+			</td>
+		</xpath>
+		<xpath expr="//table[@class='table table-condensed mt48'][1]/tbody/tr" position="inside">
+			<t t-if="di_pres_bl == 'CHIFFRE'">
+				<td>
+					<span t-field="move.sale_line_id.price_unit" />
+				</td>
+				<td>
+					<span t-field="move.sale_line_id.price_unit" />
+				</td>
+				<td>
+					<span t-field="move.sale_line_id.price_subtotal" />
+				</td>
+			</t>
+		</xpath>
+		<!-- Modification colonnes si mouvements de stock -->
+		<xpath expr="//table[@class='table table-condensed mt48'][2]/thead/tr/th" position="after">
+			<th>Nb Pièces</th>
+			<th>Nb Colis</th>
+			<th>Type Colis</th>
+			<th>Poids Net</th>
+		</xpath>
+		<xpath expr="//table[@class='table table-condensed mt48'][2]/thead/tr" position="inside">
+			<t t-if="di_pres_bl == 'CHIFFRE'">
+				<th>Prix Unitaire</th>
+				<th>Unité Prix</th>
+				<th>Montant</th>
+			</t>
+		</xpath>
+		<xpath expr="//table[@class='table table-condensed mt48'][2]/tbody/tr/td" position="after">
+			<td>
+				<span t-field="move_line.di_nb_pieces" />
+			</td>
+			<td>
+				<span t-field="move_line.di_nb_colis" />
+			</td>
+			<td>
+				<span t-field="move_line.move_id.di_product_packaging_id" />
+			</td>
+			<td>
+				<span t-field="move_line.di_poin" />
+			</td>
+		</xpath>
+		<xpath expr="//table[@class='table table-condensed mt48'][2]/tbody/tr" position="inside">
+			<t t-if="di_pres_bl == 'CHIFFRE'">
+				<td>
+					<span t-field="move_line.move_id.sale_line_id.price_unit" />
+				</td>
+				<td>
+					<span t-field="move_line.move_id.sale_line_id.di_un_prix" />
+				</td>
+				<!-- <td><span t-field="move.product_id"/></td> --> <!-- TODO Calcul à refaire -->
+				<!-- <td><span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.ordered_qty " t-options="{'widget': 
+					'monetary', 'display_currency': o.currency_id}"/></td> -->
+				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PIECE'">
+					<td>
+						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_pieces" />
+					</td>
+				</t>
+				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'COLIS'">
+					<td>
+						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_colis" />
+					</td>
+				</t>
+				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PALETTE'">
+					<td>
+						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_palette" />
+					</td>
+				</t>
+				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'KG'">
+					<td>
+						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_poin" />
+					</td>
+				</t>
+				<t
+					t-if="move_line.move_id.sale_line_id.di_un_prix == False or move_line.move_id.sale_line_id.di_un_prix == ''">
+					<td>
+						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.quantity_done" />
+					</td>
+				</t>
+			</t>
+		</xpath>
+	</template>
+</odoo>
