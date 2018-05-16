@@ -590,9 +590,9 @@ class AccountTax(models.Model):
                 'account_id': tax.account_id.id,
                 'refund_account_id': tax.refund_account_id.id,
                 'analytic': tax.analytic,
-                'price_include': tax.price_include,
+                'price_include': tax.price_include,                
             })
-            
+             
             # spé pour affecter une taxe sur une autre taxe
             if tax.di_taxe_id:
                 di_tax_amount = tax.di_taxe_id._compute_amount(tax_amount, tax_amount, 1.0, product, partner)
@@ -609,7 +609,7 @@ class AccountTax(models.Model):
                     'account_id': tax.di_taxe_id.account_id.id,
                     'refund_account_id': tax.di_taxe_id.refund_account_id.id,
                     'analytic': tax.di_taxe_id.analytic,
-                    'price_include': tax.di_taxe_id.price_include,
+                    'price_include': tax.di_taxe_id.price_include,                    
                 })
                 
                 #fin spé
