@@ -17,10 +17,6 @@
 						<field name="ref" placeholder="Code tiers" required="True" />
 					</h1>
 				</xpath>
-				<!-- ajout du siret -->
-				<xpath expr="//field[@name='vat']" position="before">
-					<field name="di_siret" />
-				</xpath>
 				<!-- ajout onglet spécifique -->
 				<xpath expr="//page[@name='accounting']" position="after">
 					<page name="specifs" string="Spécifiques" style="font-style: oblique;" col="4">

@@ -21,9 +21,11 @@ class SaleAdvancePaymentInv(models.TransientModel):
             # le regroupement n'est pertinent que dans le cas où il y a plusieurs commandes, donc uniquement méthode "delivered"     
             # on récupère les commandes cochées
             sale_orders = self.env['sale.order'].browse(self._context.get('active_ids', []))
+            if len(sale_orders)<=1:
+                self.di_period_fact=sale_orders.partner_id.di_period_fact
             wPartnerId = 0
             wRegr = True
-            # on les parcourt par triées par partner_id
+            # on les parcourt triées par partner_id
             for order in sale_orders.sorted(key=lambda so: so.partner_id.id):
                 if order.partner_id.di_period_fact == self.di_period_fact:
                     # à chaque rupture de partner_id on lance une facturation
