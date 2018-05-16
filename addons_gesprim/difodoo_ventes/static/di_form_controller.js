@@ -31,13 +31,35 @@ var DiFormController = FormController.include({
             var edit_mode = (this.mode === 'edit');
             var record = this.model.get(this.handle).data;
             var invoice_status = record.invoice_status;
+//             var avec_lignes = false;
+//             window.alert('avant');
+//             window.alert(avec_lignes);
+//             if  (this.modelName == 'sale.order'){
+//                 var lignes = this.model.get(record.order_line.id).data;
+// //                 var lignes = record.order_line.model.get(this.handle).data;
+//                 window.alert(lignes);
+//                 window.alert(lignes.id);
+//                 window.alert(lignes.ids);
+//                 
+//                 avec_lignes = record.order_line.id;
+// //                 window.alert('affect');
+// //                 window.alert(avec_lignes);                    
+//             }
+//             else{
+//                 avec_lignes = false;
+// //                 window.alert('non_affect');
+// //                 window.alert(avec_lignes);
+//             }
+            
 //             this.$buttons.find('.o_form_buttons_edit')
 //                          .toggleClass('o_hidden', !edit_mode);
 //                          
 //             this.$buttons.find('.o_form_buttons_view')
 //                      .toggleClass('o_hidden', edit_mode);
                      
-            if (this.modelName == 'sale.order' && invoice_status == 'invoiced'){
+            if (this.modelName == 'sale.order' && invoice_status == 'invoiced'){// && avec_lignes !== false){
+//                 window.alert('dans');
+//                 window.alert(avec_lignes);
             
                 //var $di_buttons = $('<button/>');
                  

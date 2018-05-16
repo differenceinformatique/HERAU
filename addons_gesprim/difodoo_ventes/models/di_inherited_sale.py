@@ -495,7 +495,7 @@ class SaleOrder(models.Model):
         self.ensure_one()
         res = {}
         for line in self.order_line:
-            # modif de la quantité à prendre en compte
+            # modif de la quantité à prendre en compte            
             di_qte_prix = 0.0
             if line.di_un_prix == "PIECE":
                 di_qte_prix = line.di_nb_pieces
@@ -508,22 +508,43 @@ class SaleOrder(models.Model):
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.product_uom_qty 
             base_tax = 0
-            for tax in line.tax_id:
-                group = tax.tax_group_id
+            
+            # J'enlève un morceau du standard pour le remplacer afin de pouvoir afficher les taxes spé sur les impressions de commande
+            
+#             for tax in line.tax_id:
+#                 group = tax.tax_group_id
+#                 res.setdefault(group, {'amount': 0.0, 'base': 0.0})
+#                 # FORWARD-PORT UP TO SAAS-17
+#                 price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+#                 taxes = tax.compute_all(price_reduce + base_tax, quantity=di_qte_prix,
+#                                          product=line.product_id, partner=self.partner_shipping_id)['taxes']
+#                 for t in taxes:
+#                     res[group]['amount'] += t['amount']
+#                     res[group]['base'] += t['base']
+#                 if tax.include_base_amount:
+#                     base_tax += tax.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,
+#                                                 partner=self.partner_shipping_id)['taxes'][0]['amount']
+#         res = sorted(res.items(), key=lambda l: l[0].sequence)
+#         res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]
+
+            price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+            # Lecture de toutes  les taxes  de la ligne, y compris les taxes spé 
+            taxes = line.tax_id.compute_all(price_reduce + base_tax, quantity=di_qte_prix,product=line.product_id, partner=self.partner_shipping_id)['taxes']
+            for tax in taxes: # parcous des taxes trouvées
+                di_taxe = self.env['account.tax'].browse(tax['id'])# recherche de l'enreg de la taxe
+                group = di_taxe.tax_group_id
                 res.setdefault(group, {'amount': 0.0, 'base': 0.0})
-                # FORWARD-PORT UP TO SAAS-17
-                price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
-                taxes = tax.compute_all(price_reduce + base_tax, quantity=di_qte_prix,
-                                         product=line.product_id, partner=self.partner_shipping_id)['taxes']
-                for t in taxes:
-                    res[group]['amount'] += t['amount']
-                    res[group]['base'] += t['base']
-                if tax.include_base_amount:
-                    base_tax += tax.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,
-                                                partner=self.partner_shipping_id)['taxes'][0]['amount']
-        res = sorted(res.items(), key=lambda l: l[0].sequence)
-        res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]
-        return res
+                #ajout des montants par groupe
+                res[group]['amount'] += tax['amount']
+                res[group]['base'] += tax['base']
+                if di_taxe.include_base_amount:
+                    base_tax += di_taxe.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,partner=self.partner_shipping_id)['taxes'][0]['amount']
+                                            
+            res = sorted(res.items(), key=lambda l: l[0].sequence)
+            res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]                                            
+                
+                
+        return res                         
     
     @api.multi
     @api.onchange('di_livdt')
@@ -581,6 +602,6 @@ class SaleOrder(models.Model):
     def create(self, vals):               
         
         cde = super(SaleOrder, self).create(vals)   
-        if self.env.context.get('search_default_di_cde'):
+        if self.env.context.get('search_default_di_cde') and self.order_line:
             cde.action_confirm()
         return cde
