@@ -33,8 +33,8 @@
         "wizard/di_imprim_tar_wizard.xml",
         "wizard/di_saisie_code_wizard.xml",
         "wizard/di_generer_tarifs_wizard.xml",
-        "wizard/di_generer_couts_wizard.xml"
-        # 'security/ir.model.access.csv',
+        "wizard/di_generer_couts_wizard.xml",
+        "security/ir.model.access.csv"
       
     ],
     # only loaded in demonstration mode

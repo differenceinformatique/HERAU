@@ -236,9 +236,9 @@
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
 				<!-- liste modifiable -->
-				<xpath expr="//tree" position="attributes">
+<!-- 				<xpath expr="//tree" position="attributes">
 					<attribute name="editable">bottom</attribute>
-				</xpath>
+				</xpath> -->
 				<!-- Modification libellé du champ -->
 				<xpath expr="//field[@name='name']" position="attributes">
 					<attribute name="string">Code Cond.</attribute>

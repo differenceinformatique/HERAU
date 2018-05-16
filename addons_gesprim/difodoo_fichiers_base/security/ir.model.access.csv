@@ -1,1 +1,10 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_difodoo_fichier_base_dicalibre","access_difodoo_fichier_base_dicalibre","model_di_calibre","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_dicategorie","access_difodoo_fichier_base_dicategorie","model_di_categorie","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_dicodetarif","access_difodoo_fichier_base_dicodetarif","model_di_code_tarif","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_dimarque","access_difodoo_fichier_base_dimarque","model_di_marque","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_diorigine","access_difodoo_fichier_base_diorigine","model_di_origine","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_diparam","access_difodoo_fichier_base_diparam","model_di_param","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_distation","access_difodoo_fichier_base_distation","model_di_station","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_diconddefaut","access_difodoo_fichier_base_diconddefaut","model_di_conddefaut","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_dicout","access_difodoo_fichier_base_dicout","model_di_cout","base.group_user",1,1,1,1
