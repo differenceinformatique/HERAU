@@ -24,6 +24,7 @@
         'base',
         'sale',
         'sale_stock',
+        'sale_margin',
         'purchase',
         'product',
         'difodoo_fichiers_base',
