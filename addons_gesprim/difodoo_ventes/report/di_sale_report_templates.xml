@@ -4,7 +4,7 @@
 		<!-- Modification sur entêtes de colonnes -->
 		<!-- ajout de l'unité de prix après le prix -->
 		<xpath expr="//th[3]" position="after">
-			<th>Unité Prix</th>
+			<th>Unité Prix</th>	
 		</xpath>
 		<!-- suppression quantité en unité de mesure-->
 <!-- 		<xpath expr="//th[2]" position="replace"/> -->

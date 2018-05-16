@@ -1,9 +1,8 @@
 
 # -*- coding: utf-8 -*-
-from odoo import osv
+
 from odoo.exceptions import Warning
 from odoo import models, fields, api
-from xlrd.formula import FMLA_TYPE_COND_FMT
 
 class ResPartner(models.Model):
     _inherit = "res.partner"    
@@ -15,6 +14,8 @@ class ResPartner(models.Model):
     di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", default=True)
+    di_pres_bl = fields.Selection([('CHIFFRE','Chiffré'),('NONCHIFFRE','Non Chiffré')], default="NONCHIFFRE", string="Présentation BL",
+                                   help="Choix de la présentation du bon de livraison")
      
     #unicité du code tiers
     @api.one
