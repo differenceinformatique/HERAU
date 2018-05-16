@@ -526,7 +526,7 @@ class SaleOrder(models.Model):
 #                                                 partner=self.partner_shipping_id)['taxes'][0]['amount']
 #         res = sorted(res.items(), key=lambda l: l[0].sequence)
 #         res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]
-
+ 
             price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
             # Lecture de toutes  les taxes  de la ligne, y compris les taxes spé 
             taxes = line.tax_id.compute_all(price_reduce + base_tax, quantity=di_qte_prix,product=line.product_id, partner=self.partner_shipping_id)['taxes']

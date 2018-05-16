@@ -20,7 +20,7 @@ var DiFormController = FormController.include({
      */
     _updateButtons: function () {
             
-        
+         
         if (this.$buttons) {
             if (this.footerToButtons) {
                 var $footer = this.$('footer');

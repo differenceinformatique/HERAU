@@ -592,7 +592,7 @@ class AccountTax(models.Model):
                 'analytic': tax.analytic,
                 'price_include': tax.price_include,                
             })
-            
+             
             # spé pour affecter une taxe sur une autre taxe
             if tax.di_taxe_id:
                 di_tax_amount = tax.di_taxe_id._compute_amount(tax_amount, tax_amount, 1.0, product, partner)
