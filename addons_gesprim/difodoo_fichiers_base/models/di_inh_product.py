@@ -131,6 +131,7 @@ class ProductPackaging(models.Model):
     di_type_cond    = fields.Selection([("PIECE", "Cond. Réf."), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
     di_type_cond_inf_id   = fields.Many2one('product.packaging', string='Conditionnement inférieur')
     di_des          = fields.Char(string="Désignation")#, required=True)
+    di_product_tmpl_id = fields.Many2one('product.template', 'Product Template', related='product_id.product_tmpl_id')
     
     @api.onchange('di_type_cond', 'di_type_cond_inf_id', 'di_qte_cond_inf')
     def onchange_recalc_colisage(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
