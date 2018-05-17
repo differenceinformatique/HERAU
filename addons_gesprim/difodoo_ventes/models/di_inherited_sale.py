@@ -4,6 +4,8 @@ from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError
+import ctypes
+
 # from addons import sale,account,stock,sale_stock 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
 from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
@@ -608,7 +610,64 @@ class SaleOrder(models.Model):
         }
 
     @api.model
-    def create(self, vals):                       
+    def create(self, vals):   
+        status = 'aucun'
+        if vals.get('state'):
+            if vals['state']=='draft':
+                status='draft'
+            else:
+                status = 'autre'   
+        if ((self.state == 'draft' or  not self.state) and status == 'aucun')or(status == 'draft') :
+            # TODO : Question pour savoir si on doit supprimer les lignes à 0
+            lignes_a_zero = False
+            if vals.get('order_line'):
+                for index,element in enumerate(vals['order_line']):                    
+                    dict_line = element[2]
+                    
+                    di_avec_product_uom_qty = False  # initialisation d'une variable       
+                    
+                    for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+                        if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
+                            di_avec_product_uom_qty = True
+                            break
+                                                
+                    if di_avec_product_uom_qty:
+                        if dict_line['product_uom_qty']==0.0:
+                            lignes_a_zero = True
+                            break                            
+                    else:
+                        if element[1]:
+                            line = self.env['sale.order.line'].browse(element[1])
+                            if line.product_uom_qty ==0.0:
+                                lignes_a_zero = True
+                                break               
+                                 
+            if lignes_a_zero == True:
+                retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)
+                if retour_box == 6:
+                    #Suppression des lignes à 0
+                    if vals.get('order_line'):
+                        for index,element in enumerate(vals['order_line']):
+                            dict_line = element[2]
+                            
+                            di_avec_product_uom_qty = False  # initialisation d'une variable       
+                    
+                            for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+                                if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
+                                    di_avec_product_uom_qty = True
+                                    break
+                                
+                            if di_avec_product_uom_qty == True:
+                                if dict_line['product_uom_qty']==0.0:         
+#                                     element[0]=3                                                                   
+                                    del vals['order_line'][index]                                                                            
+                            else:
+                                line=self.env['sale.order.line'].browse(element[1])
+                                if line.product_uom_qty==0.0:
+                                    del vals['order_line'][index]
+#                                     element[0]=3
+
+                                                  
         cde = super(SaleOrder, self).create(vals)   
         if self.env.context.get('search_default_di_cde') :#and self.order_line:
             cde.action_confirm()
@@ -616,30 +675,152 @@ class SaleOrder(models.Model):
     
     
     
-#     @api.multi
-#     def write(self, vals):
-#         
-#         if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
-#             self.action_confirm()                                     
-# #         # TODO : Question pour savoir si on doit supprimer les lignes à 0
-# #         # TODO : SUppression des lignes à 0
-# # 
-# #           
-# # #         vals['order_line'] =self.env['sale.order.line'].search([('order_id', '=', self.id), ('product_uom_qty', '!=', 0.0)])
-# #         
-# #             
-#         res = super(SaleOrder, self).write(vals)
-# #         if vals.get('state'):            
-# #             self.state = vals['state']
-# # #         if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
-# # #             self.action_confirm()
-# #             
-# #         if self.state == 'draft' :
-# #             for line in self.order_line:
-# #                 if line.product_uom_qty ==0.0:
-# #                     self.order_line.browse(line.id).unlink()
-# #             if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
-# #                 self.action_confirm()
-# # #                     line.order_id.unlink()
-#         return res
+    @api.multi
+    def write(self, vals):
+        status = 'aucun'
+        if vals.get('state'):
+            if vals['state']=='draft':
+                status='draft'
+            else:
+                status = 'autre'        
+            
+        if (self.state == 'draft' and status == 'aucun')or(status == 'draft') :
+            # TODO : Question pour savoir si on doit supprimer les lignes à 0
+            lignes_a_zero = False
+            if vals.get('order_line'):
+                for index,element in enumerate(vals['order_line']):                    
+                    dict_line = element[2]
+                    
+                    di_avec_product_uom_qty = False  # initialisation d'une variable       
+                    
+                    for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+                        if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
+                            di_avec_product_uom_qty = True
+                            break
+                                                
+                    if di_avec_product_uom_qty:
+                        if dict_line['product_uom_qty']==0.0:
+                            lignes_a_zero = True
+                            break                            
+                    else:
+                        if element[1]:
+                            line = self.env['sale.order.line'].browse(element[1])
+                            if line.product_uom_qty ==0.0:
+                                lignes_a_zero = True
+                                break               
+                                 
+#             if lignes_a_zero == False:
+#                 if self.order_line:
+#                     for line in self.order_line:
+#                         if line.product_uom_qty==0.0:
+#                             lignes_a_zero = True
+#                             break
+            if lignes_a_zero == True:
+                retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)
+                if retour_box == 6:
+                    #Suppression des lignes à 0
+                    if vals.get('order_line'):
+                        for index,element in enumerate(vals['order_line']):
+                            di_avec_product_uom_qty = False  # initialisation d'une variable       
+                    
+                            for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+                                if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
+                                    di_avec_product_uom_qty = True
+                                    break
+                                
+                            if di_avec_product_uom_qty == True:
+                                if dict_line['product_uom_qty']==0.0:         
+                                    element[0]=3                                                                   
+#                                     del vals['order_line'][index]                                                                            
+                            else:
+                                line=self.env['sale.order.line'].browse(element[1])
+                                if line.product_uom_qty==0.0:
+                                    element[0]=3
+#                                 del vals['order_line'][index]                                                                            
+#                     if self.order_line:
+#                         for line in self.order_line:
+#                             if line.product_uom_qty ==0.0:
+#                                 self.order_line.browse(line.id).unlink()
+                        
+                                
+        # confirmer la commande si on a des lignes                        
+                               
+            # create an analytic account if at least an expense product
+            #Création de l'analytique, fait dans la fonction standard. Je ne peux pas appeler la fonction ici
+#             if any([expense_policy != 'no' for expense_policy in self.order_line.mapped('product_id.expense_policy')]):
+#                 if not self.analytic_account_id:                     
+#                     name = self.name                                        
+#                     analytic = self.env['account.analytic.account'].create({
+#                         'name': name,
+#                         'code': self.client_order_ref,
+#                         'company_id': self.company_id.id,
+#                         'partner_id': self.partner_id.id
+#                     })
+#                     vals['analytic_account_id']=analytic                    
+                                                            
+        res = super(SaleOrder, self).write(vals)
+        if status == 'aucun':
+            for order in self:
+                if order.state =='draft':
+                    if self.env.context.get('search_default_di_cde') and vals.get('order_line'):                        
+        #                 vals['state']='sale'
+        #                 vals['confirmation_date']=fields.Datetime.now()    
+                        order.update({                
+                                'state': 'sale',
+                                'confirmation_date':fields.Datetime.now()
+                            })
+                
+#         if vals.get('state'):            
+#             self.state = vals['state']
+# #         if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
+# #             self.action_confirm()
+#             
+#         if self.state == 'draft' :
+#             for line in self.order_line:
+#                 if line.product_uom_qty ==0.0:
+#                     self.order_line.browse(line.id).unlink()
+#             if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
+#                 self.action_confirm()
+# #                     line.order_id.unlink()
+        return res
     
+    
+    @api.depends('state', 'order_line.invoice_status')
+    def _get_invoiced(self):
+        """
+        Surcharge pour ne pas mettre le status facturé pour les commandes vides 
+        """
+        super(SaleOrder, self)._get_invoiced()
+        for order in self:                        
+            if not order.order_line:
+                invoice_status = 'no'                            
+                order.update({                
+                    'invoice_status': invoice_status
+                })
+                
+                
+    @api.multi
+    def _action_confirm(self):
+        # copie standard  pour ne pas confirmer une commande sans ligne
+        if self.order_line :
+            for order in self.filtered(lambda order: order.partner_id not in order.message_partner_ids):
+                order.message_subscribe([order.partner_id.id])
+        
+            self.write({
+                'state': 'sale',
+                'confirmation_date': fields.Datetime.now()
+            })
+            if self.env.context.get('send_email'):
+                self.force_quotation_send()
+    
+            # create an analytic account if at least an expense product
+            if any([expense_policy != 'no' for expense_policy in self.order_line.mapped('product_id.expense_policy')]):
+                if not self.analytic_account_id:
+                    self._create_analytic_account()
+            retour = True
+        else:
+            retour = False
+
+        return retour
+
+   
