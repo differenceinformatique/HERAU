@@ -24,11 +24,23 @@ class DiGrilleVenteWiz(models.TransientModel):
                         'di_type_palette_id': product.di_type_palette_id.id, 
                         'product_packaging': product.di_type_colis_id.id, 
                         'di_un_prix': product.di_un_prix, 
-                        'di_spe_saisissable': product.di_spe_saisissable,  
+                        'di_spe_saisissable': product.di_spe_saisissable,
+                        'product_uom_qty': 0.0,   
                                                                
                          }          
 
             self.di_order_id.order_line.create(vals)
+#         
+#         if self.di_order_id.order_line:
+#             self.di_order_id.action_confirm()
+#             
+#             query_args = {'di_order_id': self.di_order_id.id}
+#             query = """ delete   
+#                     FROM di_grille_vente_wiz                         
+#                     WHERE di_order_id = %(di_order_id)s                                                       
+#                     """
+# 
+#             self.env.cr.execute(query, query_args)
 #             self.env['sale.order.line'].create(vals)  
 #             self.env.cr.commit()
 #             

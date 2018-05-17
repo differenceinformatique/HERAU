@@ -53,7 +53,16 @@ class SaleOrderLine(models.Model):
     di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_get_to_invoice_qty')
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=True,compute='_di_compute_spe_saisissable',store=True)
-                                         
+          
+          
+#     @api.model
+#     def create(self, vals):         
+#         line = False              
+#         if vals['product_uom_qty'] and vals['product_uom_qty']!=0.0:
+#             line = super(SaleOrderLine, self).create(vals)                                
+#         return line
+    
+                                   
     @api.one
     @api.depends('product_id.di_spe_saisissable','product_id','di_qte_un_saisie')
     def _di_compute_spe_saisissable(self):        
@@ -599,9 +608,38 @@ class SaleOrder(models.Model):
         }
 
     @api.model
-    def create(self, vals):               
-        
+    def create(self, vals):                       
         cde = super(SaleOrder, self).create(vals)   
-        if self.env.context.get('search_default_di_cde') and self.order_line:
+        if self.env.context.get('search_default_di_cde') :#and self.order_line:
             cde.action_confirm()
         return cde
+    
+    
+    
+#     @api.multi
+#     def write(self, vals):
+#         
+#         if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
+#             self.action_confirm()                                     
+# #         # TODO : Question pour savoir si on doit supprimer les lignes à 0
+# #         # TODO : SUppression des lignes à 0
+# # 
+# #           
+# # #         vals['order_line'] =self.env['sale.order.line'].search([('order_id', '=', self.id), ('product_uom_qty', '!=', 0.0)])
+# #         
+# #             
+#         res = super(SaleOrder, self).write(vals)
+# #         if vals.get('state'):            
+# #             self.state = vals['state']
+# # #         if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
+# # #             self.action_confirm()
+# #             
+# #         if self.state == 'draft' :
+# #             for line in self.order_line:
+# #                 if line.product_uom_qty ==0.0:
+# #                     self.order_line.browse(line.id).unlink()
+# #             if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
+# #                 self.action_confirm()
+# # #                     line.order_id.unlink()
+#         return res
+    
