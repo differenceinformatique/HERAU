@@ -114,99 +114,35 @@ class DiGenCoutsWiz(models.TransientModel):
 #         date_lancement=date_lancement.replace(day=19)
         
         
-        for article in articles:               
-            self.di_generer_cmp(article.id, date_lancement)
-            #mise à jour du cout de la fiche article ( qui va se renseigner en auto sur les ventes)
-            cout = self.env['di.cout'].di_get_cout_uom(article.id,date_lancement)
-            data ={'standard_price': cout}                           
-            article.write(data)
-            
-            
-            di_cout = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_lancement)])
-            
-            code_tarif = self.env['di.code.tarif'].search([('name','=','CMP')])
-#             code_tarif = self.env['di.code.tarif'].browse('CMP')
-            
-            if not code_tarif:
-                data = {
-                            'name': 'CMP',
-                            'di_des': 'Tarif CMP'                                                                                                                                                
-                            } 
-                self.env['di.code.tarif'].create(data)
+        for article in articles:   
+            move = self.env['stock.move'].search([ ('product_id', '=', article.id)], limit=1)
+            if move:            
+                self.di_generer_cmp(article.id, date_lancement)
+                #mise à jour du cout de la fiche article ( qui va se renseigner en auto sur les ventes)
+                cout = self.env['di.cout'].di_get_cout_uom(article.id,date_lancement)
+                data ={'standard_price': cout}                           
+                article.write(data)
+                
+                
+                di_cout = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_lancement)])
+                
                 code_tarif = self.env['di.code.tarif'].search([('name','=','CMP')])
+    #             code_tarif = self.env['di.code.tarif'].browse('CMP')
                 
-            #création tarif uom
-            data = {'di_product_id': di_cout.di_product_id.id,
-                            'di_code_tarif_id': code_tarif.id,                                                        
-                            'di_prix': di_cout.di_cmp,
-                            'di_qte_seuil': 0.0,
-                            'di_date_effet': di_cout.di_date                                                            
-                            }      
-                             
-            #recherche si tarif existant                                    
-            tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
-                                                           ('di_date_effet','=',di_cout.di_date),
-                                                           ('di_company_id','=',self.env.user.company_id.id),
-                                                           ('di_product_id','=',di_cout.di_product_id.id),
-                                                           ('di_partner_id','=',False),
-                                                           ('di_un_prix','=',False),
-                                                           ('di_qte_seuil','=',0.0)
-                                                           ])
+                if not code_tarif:
+                    data = {
+                                'name': 'CMP',
+                                'di_des': 'Tarif CMP'                                                                                                                                                
+                                } 
+                    self.env['di.code.tarif'].create(data)
+                    code_tarif = self.env['di.code.tarif'].search([('name','=','CMP')])
                     
-            if tarif_existant:
-                # si il existe, on le met à jour
-                tarif_existant.update(data)     
-            else:
-                #sinon on le créé
-                self.env["di.tarifs"].create(data)
-                
-                
-                
-            #création tarif colis
-            if article.di_un_prix == 'COLIS' or self.di_generer_tous_tar:
-                if di_cout.di_nbcol !=0.0:
-                    cout_un = di_cout.di_mont/di_cout.di_nbcol
-                else:
-                    cout_un = di_cout.di_mont
-                    
+                #création tarif uom
                 data = {'di_product_id': di_cout.di_product_id.id,
                                 'di_code_tarif_id': code_tarif.id,                                                        
-                                'di_prix': cout_un,
+                                'di_prix': di_cout.di_cmp,
                                 'di_qte_seuil': 0.0,
-                                'di_date_effet': di_cout.di_date,
-                                'di_un_prix':'COLIS'                                                            
-                                }      
-                                 
-                #recherche si tarif existant                                    
-                tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
-                                                               ('di_company_id','=',self.env.user.company_id.id),
-                                                               ('di_product_id','=',di_cout.di_product_id.id),
-                                                               ('di_partner_id','=',False),
-                                                               ('di_un_prix','=','COLIS'),
-                                                               ('di_qte_seuil','=',0.0)
-                                                               ])
-                        
-                if tarif_existant:
-                    # si il existe, on le met à jour
-                    tarif_existant.update(data)     
-                else:
-                    #sinon on le créé
-                    self.env["di.tarifs"].create(data)
-                
-            
-            #création tarif piece
-            if article.di_un_prix == 'PIECE' or self.di_generer_tous_tar:
-                if di_cout.di_nbpiece !=0.0:
-                    cout_un = di_cout.di_mont/di_cout.di_nbpiece
-                else:
-                    cout_un = di_cout.di_mont
-                    
-                data = {'di_product_id': di_cout.di_product_id.id,
-                                'di_code_tarif_id': code_tarif.id,                                                        
-                                'di_prix': cout_un,
-                                'di_qte_seuil': 0.0,
-                                'di_date_effet': di_cout.di_date,
-                                'di_un_prix':'PIECE'                                                            
+                                'di_date_effet': di_cout.di_date                                                            
                                 }      
                                  
                 #recherche si tarif existant                                    
@@ -215,7 +151,7 @@ class DiGenCoutsWiz(models.TransientModel):
                                                                ('di_company_id','=',self.env.user.company_id.id),
                                                                ('di_product_id','=',di_cout.di_product_id.id),
                                                                ('di_partner_id','=',False),
-                                                               ('di_un_prix','=','PIECE'),
+                                                               ('di_un_prix','=',False),
                                                                ('di_qte_seuil','=',0.0)
                                                                ])
                         
@@ -225,71 +161,137 @@ class DiGenCoutsWiz(models.TransientModel):
                 else:
                     #sinon on le créé
                     self.env["di.tarifs"].create(data)
+                    
+                    
+                    
+                #création tarif colis
+                if article.di_un_prix == 'COLIS' or self.di_generer_tous_tar:
+                    if di_cout.di_nbcol !=0.0:
+                        cout_un = di_cout.di_mont/di_cout.di_nbcol
+                    else:
+                        cout_un = di_cout.di_mont
+                        
+                    data = {'di_product_id': di_cout.di_product_id.id,
+                                    'di_code_tarif_id': code_tarif.id,                                                        
+                                    'di_prix': cout_un,
+                                    'di_qte_seuil': 0.0,
+                                    'di_date_effet': di_cout.di_date,
+                                    'di_un_prix':'COLIS'                                                            
+                                    }      
+                                     
+                    #recherche si tarif existant                                    
+                    tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
+                                                                   ('di_company_id','=',self.env.user.company_id.id),
+                                                                   ('di_product_id','=',di_cout.di_product_id.id),
+                                                                   ('di_partner_id','=',False),
+                                                                   ('di_un_prix','=','COLIS'),
+                                                                   ('di_qte_seuil','=',0.0)
+                                                                   ])
+                            
+                    if tarif_existant:
+                        # si il existe, on le met à jour
+                        tarif_existant.update(data)     
+                    else:
+                        #sinon on le créé
+                        self.env["di.tarifs"].create(data)
+                    
                 
-            
-            #création tarif palette
-            if article.di_un_prix == 'PALETTE' or self.di_generer_tous_tar:
-                if di_cout.di_nbpal !=0.0:
-                    cout_un = di_cout.di_mont/di_cout.di_nbpal
-                else:
-                    cout_un = di_cout.di_mont
-                    
-                data = {'di_product_id': di_cout.di_product_id.id,
-                                'di_code_tarif_id': code_tarif.id,                                                        
-                                'di_prix': cout_un,
-                                'di_qte_seuil': 0.0,
-                                'di_date_effet': di_cout.di_date,
-                                'di_un_prix':'PALETTE'                                                            
-                                }      
-                                 
-                #recherche si tarif existant                                    
-                tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
-                                                               ('di_date_effet','=',di_cout.di_date),
-                                                               ('di_company_id','=',self.env.user.company_id.id),
-                                                               ('di_product_id','=',di_cout.di_product_id.id),
-                                                               ('di_partner_id','=',False),
-                                                               ('di_un_prix','=','PALETTE'),
-                                                               ('di_qte_seuil','=',0.0)
-                                                               ])
+                #création tarif piece
+                if article.di_un_prix == 'PIECE' or self.di_generer_tous_tar:
+                    if di_cout.di_nbpiece !=0.0:
+                        cout_un = di_cout.di_mont/di_cout.di_nbpiece
+                    else:
+                        cout_un = di_cout.di_mont
                         
-                if tarif_existant:
-                    # si il existe, on le met à jour
-                    tarif_existant.update(data)     
-                else:
-                    #sinon on le créé
-                    self.env["di.tarifs"].create(data)
+                    data = {'di_product_id': di_cout.di_product_id.id,
+                                    'di_code_tarif_id': code_tarif.id,                                                        
+                                    'di_prix': cout_un,
+                                    'di_qte_seuil': 0.0,
+                                    'di_date_effet': di_cout.di_date,
+                                    'di_un_prix':'PIECE'                                                            
+                                    }      
+                                     
+                    #recherche si tarif existant                                    
+                    tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
+                                                                   ('di_date_effet','=',di_cout.di_date),
+                                                                   ('di_company_id','=',self.env.user.company_id.id),
+                                                                   ('di_product_id','=',di_cout.di_product_id.id),
+                                                                   ('di_partner_id','=',False),
+                                                                   ('di_un_prix','=','PIECE'),
+                                                                   ('di_qte_seuil','=',0.0)
+                                                                   ])
+                            
+                    if tarif_existant:
+                        # si il existe, on le met à jour
+                        tarif_existant.update(data)     
+                    else:
+                        #sinon on le créé
+                        self.env["di.tarifs"].create(data)
                     
-            #création tarif KG
-            if article.di_un_prix == 'KG' or self.di_generer_tous_tar:
-                if di_cout.di_poin !=0.0:
-                    cout_un = di_cout.di_mont/di_cout.di_poin
-                else:
-                    cout_un = di_cout.di_mont
-                    
-                data = {'di_product_id': di_cout.di_product_id.id,
-                                'di_code_tarif_id': code_tarif.id,                                                        
-                                'di_prix': cout_un,
-                                'di_qte_seuil': 0.0,
-                                'di_date_effet': di_cout.di_date,
-                                'di_un_prix':'KG'                                                            
-                                }      
-                                 
-                #recherche si tarif existant                                    
-                tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
-                                                               ('di_date_effet','=',di_cout.di_date),
-                                                               ('di_company_id','=',self.env.user.company_id.id),
-                                                               ('di_product_id','=',di_cout.di_product_id.id),
-                                                               ('di_partner_id','=',False),
-                                                               ('di_un_prix','=','KG'),
-                                                               ('di_qte_seuil','=',0.0)
-                                                               ])
+                
+                #création tarif palette
+                if article.di_un_prix == 'PALETTE' or self.di_generer_tous_tar:
+                    if di_cout.di_nbpal !=0.0:
+                        cout_un = di_cout.di_mont/di_cout.di_nbpal
+                    else:
+                        cout_un = di_cout.di_mont
                         
-                if tarif_existant:
-                    # si il existe, on le met à jour
-                    tarif_existant.update(data)     
-                else:
-                    #sinon on le créé
-                    self.env["di.tarifs"].create(data)
+                    data = {'di_product_id': di_cout.di_product_id.id,
+                                    'di_code_tarif_id': code_tarif.id,                                                        
+                                    'di_prix': cout_un,
+                                    'di_qte_seuil': 0.0,
+                                    'di_date_effet': di_cout.di_date,
+                                    'di_un_prix':'PALETTE'                                                            
+                                    }      
+                                     
+                    #recherche si tarif existant                                    
+                    tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
+                                                                   ('di_date_effet','=',di_cout.di_date),
+                                                                   ('di_company_id','=',self.env.user.company_id.id),
+                                                                   ('di_product_id','=',di_cout.di_product_id.id),
+                                                                   ('di_partner_id','=',False),
+                                                                   ('di_un_prix','=','PALETTE'),
+                                                                   ('di_qte_seuil','=',0.0)
+                                                                   ])
+                            
+                    if tarif_existant:
+                        # si il existe, on le met à jour
+                        tarif_existant.update(data)     
+                    else:
+                        #sinon on le créé
+                        self.env["di.tarifs"].create(data)
+                        
+                #création tarif KG
+                if article.di_un_prix == 'KG' or self.di_generer_tous_tar:
+                    if di_cout.di_poin !=0.0:
+                        cout_un = di_cout.di_mont/di_cout.di_poin
+                    else:
+                        cout_un = di_cout.di_mont
+                        
+                    data = {'di_product_id': di_cout.di_product_id.id,
+                                    'di_code_tarif_id': code_tarif.id,                                                        
+                                    'di_prix': cout_un,
+                                    'di_qte_seuil': 0.0,
+                                    'di_date_effet': di_cout.di_date,
+                                    'di_un_prix':'KG'                                                            
+                                    }      
+                                     
+                    #recherche si tarif existant                                    
+                    tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
+                                                                   ('di_date_effet','=',di_cout.di_date),
+                                                                   ('di_company_id','=',self.env.user.company_id.id),
+                                                                   ('di_product_id','=',di_cout.di_product_id.id),
+                                                                   ('di_partner_id','=',False),
+                                                                   ('di_un_prix','=','KG'),
+                                                                   ('di_qte_seuil','=',0.0)
+                                                                   ])
+                            
+                    if tarif_existant:
+                        # si il existe, on le met à jour
+                        tarif_existant.update(data)     
+                    else:
+                        #sinon on le créé
+                        self.env["di.tarifs"].create(data)
                 
             
             
