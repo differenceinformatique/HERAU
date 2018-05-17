@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="di_report_invoice_document" inherit_id="account.report_invoice_document">
+		<!-- ajout entêtes -->
+		<xpath expr="//table/thead/tr/th[6]" position="after">
+			<th>Unité Prix</th>
+		</xpath>
+		<xpath expr="//table/thead/tr/th[1]" position="after">
+			<th>Nb Pièces</th>
+			<th>Nb Colis</th>
+			<th>Type Colis</th>
+			<th>Poids Net</th>
+		</xpath>
+		<!-- ajouts contenu colonnes -->
+		<xpath expr="//table/tbody/tr[1]/td[6]" position="after">
+			<td>
+				<span t-field="l.di_un_prix" />
+			</td>
+		</xpath>
+		<xpath expr="//table/tbody/tr[1]/td[1]" position="after">
+			<td>
+				<span t-field="l.di_nb_pieces" />
+			</td>
+			<td>
+				<span t-field="l.di_nb_colis" />
+			</td>
+			<td>
+				<span t-field="l.di_product_packaging_id" />
+			</td>
+			<td>
+				<span t-field="l.di_poin" />
+			</td>
+		</xpath>
+		<!-- ajout colonnes vide pour ne pas casser affichage du pied -->
+		<xpath expr="//table/tbody/tr[2]/td[6]" position="after">
+			<td></td>
+		</xpath>
+		<xpath expr="//table/tbody/tr[2]/td[1]" position="after">
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</xpath>
+	</template>
+</odoo>

@@ -9,12 +9,13 @@ class ResPartner(models.Model):
     #référencement article 
     di_refarticle_ids = fields.Many2many('product.product', 'di_referencement_article_tiers', 'partner_id','product_id', string='Référencement article')
     di_code_tarif_id = fields.Many2one('di.code.tarif', string="Code tarif", help="Sans code tarif, c'est le tarif de la fiche article qui est repris")
-    ref = fields.Char(string='Internal Reference', index=True, copy=False)
+    ref = fields.Char(string='Internal Reference', index=True, copy=False)  # modif attribut copy
     di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", default=True)
     di_pres_bl = fields.Selection([('CHIFFRE','Chiffré'),('NONCHIFFRE','Non Chiffré')], default="NONCHIFFRE", string="Présentation BL",
                                    help="Choix de la présentation du bon de livraison")
+    is_company = fields.Boolean(string='Is a Company', default=True, help="Check if the contact is a company, otherwise it is a person")  # modif attribut default
      
     #unicité du code tiers
     @api.one
