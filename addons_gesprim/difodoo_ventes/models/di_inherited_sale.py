@@ -673,8 +673,8 @@ class SaleOrder(models.Model):
 
                                                   
         cde = super(SaleOrder, self).create(vals)   
-        if self.env.context.get('search_default_di_cde') :#and self.order_line:
-            cde.action_confirm()
+#         if self.env.context.get('search_default_di_cde') :#and self.order_line:
+#             cde.action_confirm()
         return cde
     
     
@@ -773,10 +773,10 @@ class SaleOrder(models.Model):
                             state = 'done'
                         else:
                             state='sale'
-                        order.update({                
-                                'state': state,
-                                'confirmation_date':fields.Datetime.now()
-                            })                                        
+#                         order.update({                
+#                                 'state': state,
+#                                 'confirmation_date':fields.Datetime.now()
+#                             })                                        
                 
 #         if vals.get('state'):            
 #             self.state = vals['state']
@@ -810,8 +810,8 @@ class SaleOrder(models.Model):
     @api.multi
     def _action_confirm(self):
         # copie standard  pour ne pas confirmer une commande sans ligne
-        if self.order_line :
-            super(SaleOrder, self)._action_confirm()
+#         if self.order_line :
+        super(SaleOrder, self)._action_confirm()
         
         return True
 
