@@ -808,7 +808,7 @@ class SaleOrder(models.Model):
                 
                 
     @api.multi
-    def _action_confirm(self):
+    def _action_confirm(self): 
         # copie standard  pour ne pas confirmer une commande sans ligne
 #         if self.order_line :
         super(SaleOrder, self)._action_confirm()
