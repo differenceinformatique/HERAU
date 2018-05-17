@@ -9,6 +9,7 @@ import ctypes
 # from addons import sale,account,stock,sale_stock 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
 from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
+
 from math import *
 
 
@@ -27,6 +28,7 @@ class SaleOrderLine(models.Model):
     di_poib         = fields.Float(string='Poids brut',store=True)
     di_tare         = fields.Float(string='Tare',store=True)
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
+
     di_flg_modif_uom = fields.Boolean(store=True)
 
     di_qte_un_saisie_liv = fields.Float(string='Quantité livrée en unité de saisie')
@@ -320,6 +322,7 @@ class SaleOrderLine(models.Model):
                     self.di_poib = self.di_poin + self.di_tare
                     
                 elif self.di_un_saisie == "KG":
+
                     self.di_poin = self.di_qte_un_saisie
                     self.di_poib = self.di_poin + self.di_tare
                     self.product_uom_qty = self.di_poin
@@ -384,6 +387,7 @@ class SaleOrderLine(models.Model):
                 self.di_poin = self.product_uom_qty * self.product_id.weight             
                   
             elif self.di_un_saisie == "KG":
+
                 self.di_poin = self.di_qte_un_saisie                        
                 if self.product_packaging.qty !=0.0:
                     self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
@@ -765,10 +769,14 @@ class SaleOrder(models.Model):
                     if self.env.context.get('search_default_di_cde') and vals.get('order_line'):                        
         #                 vals['state']='sale'
         #                 vals['confirmation_date']=fields.Datetime.now()    
+                        if self.env['ir.config_parameter'].sudo().get_param('sale.auto_done_setting'):
+                            state = 'done'
+                        else:
+                            state='sale'
                         order.update({                
-                                'state': 'sale',
+                                'state': state,
                                 'confirmation_date':fields.Datetime.now()
-                            })
+                            })                                        
                 
 #         if vals.get('state'):            
 #             self.state = vals['state']
@@ -803,24 +811,8 @@ class SaleOrder(models.Model):
     def _action_confirm(self):
         # copie standard  pour ne pas confirmer une commande sans ligne
         if self.order_line :
-            for order in self.filtered(lambda order: order.partner_id not in order.message_partner_ids):
-                order.message_subscribe([order.partner_id.id])
+            super(SaleOrder, self)._action_confirm()
         
-            self.write({
-                'state': 'sale',
-                'confirmation_date': fields.Datetime.now()
-            })
-            if self.env.context.get('send_email'):
-                self.force_quotation_send()
-    
-            # create an analytic account if at least an expense product
-            if any([expense_policy != 'no' for expense_policy in self.order_line.mapped('product_id.expense_policy')]):
-                if not self.analytic_account_id:
-                    self._create_analytic_account()
-            retour = True
-        else:
-            retour = False
-
-        return retour
+        return True
 
    
