@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="di_report_purchasequotation_document" inherit_id="purchase.report_purchasequotation_document">
+		<!-- on ne touche pas pour l'instant -->
+	</template>
+</odoo>

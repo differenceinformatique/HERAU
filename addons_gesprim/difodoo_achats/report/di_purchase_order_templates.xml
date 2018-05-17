@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="di_report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+		<!-- Modification sur entêtes de colonnes -->
+		<xpath expr="//table/thead/tr/th[5]" position="after">
+			<th>Unité Prix</th>
+		</xpath>
+		<xpath expr="//table/thead/tr/th[3]" position="replace">
+		</xpath>
+		<xpath expr="//table/thead/tr/th[2]" position="replace">
+		</xpath>
+		<xpath expr="//table/thead/tr/th[1]" position="after">
+			<th>Nb Pièces</th>
+			<th>Nb Colis</th>
+			<th>Type Colis</th>
+			<th>Poids Net</th>
+		</xpath>
+		<!-- Modification sur le contenu des colonnes -->
+		<xpath expr="//table/tbody/tr/td[5]" position="after">
+			<td>
+				<span t-field="line.di_un_prix" />
+			</td>
+		</xpath>
+		<xpath expr="//table/tbody/tr/td[3]" position="replace">
+		</xpath>
+		<xpath expr="//table/tbody/tr/td[2]" position="replace">
+		</xpath>
+		<xpath expr="//table/tbody/tr/td[1]" position="after">
+			<td class="text-right">
+				<span t-field="line.di_nb_pieces" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_nb_colis" />
+			</td>
+			<td>
+				<span t-field="line.product_packaging" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_poin" />
+			</td>
+		</xpath>
+	</template>
+</odoo>
