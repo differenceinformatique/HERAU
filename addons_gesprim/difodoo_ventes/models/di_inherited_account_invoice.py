@@ -6,7 +6,7 @@ import datetime
 from math import * 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
 # from difodoo_ventes import di_outils
-from difodoo.outils import di_outils
+# from difodoo.outils import di_outils
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
@@ -139,6 +139,12 @@ class AccountInvoiceLine(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
+    def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date):    
+        prixFinal = 0.0       
+        prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date)
+        if prixFinal == 0.0:
+            prixFinal = prixOrig
+        return prixFinal 
     @api.one
     @api.depends('product_id.di_spe_saisissable')
     def _di_compute_spe_saisissable(self):        
@@ -239,7 +245,7 @@ class AccountInvoiceLine(models.Model):
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.quantity             
             if line.product_id.id != False and line.di_un_prix:       
-                line.price_unit = di_outils.di_recherche_prix_unitaire(self,line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date)            
+                line.price_unit = self.di_recherche_prix_unitaire(line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date)            
      
     @api.multi            
     @api.onchange('product_id')

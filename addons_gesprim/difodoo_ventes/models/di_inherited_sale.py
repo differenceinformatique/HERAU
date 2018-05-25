@@ -9,7 +9,7 @@ import ctypes
 # from addons import sale,account,stock,sale_stock 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
-from difodoo.outils import di_outils 
+# from outils import di_outils 
 
 from math import *
 
@@ -67,7 +67,13 @@ class SaleOrderLine(models.Model):
 #             line = super(SaleOrderLine, self).create(vals)                                
 #         return line
     
-                                   
+              
+    def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date):    
+        prixFinal = 0.0       
+        prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date)
+        if prixFinal == 0.0:
+            prixFinal = prixOrig
+        return prixFinal                     
     @api.one
     @api.depends('product_id.di_spe_saisissable','product_id','di_qte_un_saisie')
     def _di_compute_spe_saisissable(self):        
@@ -208,7 +214,7 @@ class SaleOrderLine(models.Model):
             elif self.di_un_prix == False or self.di_un_prix == '':
                 di_qte_prix = self.product_uom_qty
                 
-            vals['price_unit'] = di_outils.di_recherche_prix_unitaire(self,self.price_unit,self.order_id.partner_id,self.product_id,self.di_un_prix,di_qte_prix,self.order_id.date_order)
+            vals['price_unit'] = self.di_recherche_prix_unitaire(self.price_unit,self.order_id.partner_id,self.product_id,self.di_un_prix,di_qte_prix,self.order_id.date_order)
             self.update(vals)       
         return result
     
@@ -228,7 +234,7 @@ class SaleOrderLine(models.Model):
                 di_qte_prix = self.di_poin
             elif self.di_un_prix == False or self.di_un_prix == '':
                 di_qte_prix = self.product_uom_qty
-            self.price_unit = di_outils.di_recherche_prix_unitaire(self,self.price_unit,self.order_id.partner_id,self.product_id,self.di_un_prix,di_qte_prix,self.order_id.date_order)       
+            self.price_unit = self.di_recherche_prix_unitaire(self.price_unit,self.order_id.partner_id,self.product_id,self.di_un_prix,di_qte_prix,self.order_id.date_order)       
                 
     @api.multi
     @api.onchange('product_id','order_id.partner_id','order_id.date_order','di_un_prix','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','product_uom_qty')
@@ -246,7 +252,7 @@ class SaleOrderLine(models.Model):
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.product_uom_qty             
             if line.product_id.id != False and line.di_un_prix:       
-                line.price_unit = di_outils.di_recherche_prix_unitaire(self,line.price_unit,line.order_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.order_id.date_order)
+                line.price_unit = self.di_recherche_prix_unitaire(line.price_unit,line.order_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.order_id.date_order)
     @api.multi 
     @api.onchange('di_poib')
     def _di_recalcule_tare(self):
