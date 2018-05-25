@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
-from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
 from math import *
 from datetime import  datetime
  
