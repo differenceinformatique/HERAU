@@ -3,49 +3,57 @@
 	<template id="di_report_saleorder_document" inherit_id="sale.report_saleorder_document">
 		<!-- Modification sur entêtes de colonnes -->
 		<!-- ajout de l'unité de prix après le prix -->
-		<xpath expr="//th[3]" position="after">
-			<th>Unité Prix</th>	
+		<xpath expr="//table[1]/thead/tr/th[3]" position="after">
+			<th>Unité Prix</th>
 		</xpath>
-		<!-- suppression quantité en unité de mesure-->
-<!-- 		<xpath expr="//th[2]" position="replace"/> -->
+		<!-- suppression quantité en unité de mesure -->
+		<!-- <xpath expr="//th[2]" position="replace"/> -->
 		<!-- ajout colonnes pièces, colis, palettes, poids -->
-		<xpath expr="//th[1]" position="after">
-			<th>Nb Pièces</th>
-			<th>Nb Colis</th>
-			<th>Type Colis</th>
-<!-- 			<th>Nb Pal.</th>
-			<th>Type Pal.</th> -->
-			<th>Poids Net</th>
+		<xpath expr="//table[1]/thead/tr/th[1]" position="after">
+			<th>
+				<div>Nb Pièces/</div>
+				<div>Catégorie</div>
+			</th>
+			<th>
+				<div>Nb Colis/</div>
+				<div>Origine</div>
+			</th>
+			<th>
+				<div>Type Colis/</div>
+				<div>Marque</div>
+			</th>
+			<th>
+				<div>Poids Net/</div>
+				<div>Calibre</div>
+			</th>
 		</xpath>
 		<!-- Modification sur le contenu des colonnes -->
 		<!-- ajout de l'unité de prix après le prix -->
-		<xpath expr="//td[3]" position="after">
+		<xpath expr="//table[1]/tbody/t/t[2]/tr/td[3]" position="after">
 			<td>
-                <span t-field="l.di_un_prix"/>
-            </td>
+				<span t-field="l.di_un_prix" />
+			</td>
 		</xpath>
-		<!-- ajout colonnes pièces, colis, palettes, poids -->	
-		<xpath expr="//td[3]" position="before">
+		<!-- ajout colonnes pièces, colis, palettes, poids -->
+		<xpath expr="//table[1]/tbody/t/t[2]/tr/td[1]" position="after">
 			<td class="text-right">
-				<span t-field="l.di_nb_pieces" />
+				<div t-field="l.di_nb_pieces" />
+				<div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
 			</td>
 			<td class="text-right">
-            	<span t-field="l.di_nb_colis"/>
-            </td>
+				<div t-field="l.di_nb_colis" />
+				<div t-field="l.product_id.product_tmpl_id.di_origine_id" />
+			</td>
 			<td>
-                <span t-field="l.product_packaging"/>
-            </td>
-<!-- 			<td class="text-right">
-                <span t-field="l.di_nb_palette"/>
-            </td>                
-			<td>
-                <span t-field="l.di_type_palette_id"/>
-            </td> -->
+				<span t-field="l.product_packaging" />
+			</td>
+			<!-- <td class="text-right"> <span t-field="l.di_nb_palette"/> </td> <td> <span t-field="l.di_type_palette_id"/> 
+				</td> -->
 			<td class="text-right">
-                <span t-field="l.di_poin"/>
-            </td>            
+				<span t-field="l.di_poin" />
+			</td>
 		</xpath>
-		<!-- suppression quantité en unité de mesure-->
+		<!-- suppression quantité en unité de mesure -->
 		<!-- <xpath expr="//td[2]" position="replace"/> -->
 	</template>
 </odoo>
