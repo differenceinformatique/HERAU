@@ -45,12 +45,14 @@
 				<div t-field="l.product_id.product_tmpl_id.di_origine_id" />
 			</td>
 			<td>
-				<span t-field="l.product_packaging" />
+				<div t-field="l.product_packaging" />
+				<div t-field="l.product_id.product_tmpl_id.di_marque_id" />
 			</td>
 			<!-- <td class="text-right"> <span t-field="l.di_nb_palette"/> </td> <td> <span t-field="l.di_type_palette_id"/> 
 				</td> -->
 			<td class="text-right">
-				<span t-field="l.di_poin" />
+				<div t-field="l.di_poin" />
+				<div t-field="l.product_id.product_tmpl_id.di_calibre_id" />
 			</td>
 		</xpath>
 		<!-- suppression quantité en unité de mesure -->

@@ -10,10 +10,22 @@
 		<xpath expr="//table/thead/tr/th[2]" position="replace">
 		</xpath>
 		<xpath expr="//table/thead/tr/th[1]" position="after">
-			<th>Nb Pièces</th>
-			<th>Nb Colis</th>
-			<th>Type Colis</th>
-			<th>Poids Net</th>
+			<th>
+				<div>Nb Pièces/</div>
+				<div>Catégorie</div>
+			</th>
+			<th>
+				<div>Nb Colis/</div>
+				<div>Origine</div>
+			</th>
+			<th>
+				<div>Type Colis/</div>
+				<div>Marque</div>
+			</th>
+			<th>
+				<div>Poids Net/</div>
+				<div>Calibre</div>
+			</th>
 		</xpath>
 		<!-- Modification sur le contenu des colonnes -->
 		<xpath expr="//table/tbody/tr/td[5]" position="after">
@@ -27,16 +39,20 @@
 		</xpath>
 		<xpath expr="//table/tbody/tr/td[1]" position="after">
 			<td class="text-right">
-				<span t-field="line.di_nb_pieces" />
+				<div t-field="line.di_nb_pieces" />
+				<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
 			</td>
 			<td class="text-right">
-				<span t-field="line.di_nb_colis" />
+				<div t-field="line.di_nb_colis" />
+				<div t-field="line.product_id.product_tmpl_id.di_origine_id" />
 			</td>
 			<td>
-				<span t-field="line.product_packaging" />
+				<div t-field="line.product_packaging" />
+				<div t-field="line.product_id.product_tmpl_id.di_marque_id" />
 			</td>
 			<td class="text-right">
-				<span t-field="line.di_poin" />
+				<div t-field="line.di_poin" />
+				<div t-field="line.product_id.product_tmpl_id.di_calibre_id" />
 			</td>
 		</xpath>
 	</template>
