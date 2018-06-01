@@ -4,6 +4,7 @@
 from odoo import api, fields, models
 from datetime import date, timedelta, datetime
 from odoo.exceptions import ValidationError
+from odoo.exceptions import Warning
 
 
 class DiGenTarWiz(models.TransientModel):
@@ -49,7 +50,10 @@ class DiGenTarWiz(models.TransientModel):
                         tarif_existant.update(data)     
                     else:
                         #sinon on le créé
-                        self.env["di.tarifs"].create(data)                                                        
+                        self.env["di.tarifs"].create(data)  
+       # raise Warning("Traitement terminé")  
+        return self.env['di.popup.wiz'].afficher_message("Traitement terminé.",True,False,False,False)  
+                                                           
             
     @api.model
     def default_get(self, fields):

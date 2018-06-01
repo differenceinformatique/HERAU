@@ -34,6 +34,7 @@
         "wizard/di_saisie_code_wizard.xml",
         "wizard/di_generer_tarifs_wizard.xml",
         "wizard/di_generer_couts_wizard.xml",
+        "wizard/di_popup_wizard.xml",
         "security/ir.model.access.csv"
       
     ],

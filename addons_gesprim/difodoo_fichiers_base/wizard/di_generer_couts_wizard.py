@@ -4,6 +4,7 @@
 from odoo import api, fields, models
 from datetime import date, timedelta, datetime
 from odoo.exceptions import ValidationError
+from odoo.exceptions import Warning
 
 
 class DiGenCoutsWiz(models.TransientModel):
@@ -12,7 +13,9 @@ class DiGenCoutsWiz(models.TransientModel):
     
     di_generer_tous_tar = fields.Boolean(string="Générer tous les tarifs ?",default=False)
    
-    
+#     def afficher_message_fin(self):
+#         return self.env['di.popup.wiz'].afficher_message("Traitement terminé.",True,False,False,False)
+        
     def di_generer_cmp(self,di_product_id,di_date):
         
         cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
@@ -293,9 +296,23 @@ class DiGenCoutsWiz(models.TransientModel):
                         #sinon on le créé
                         self.env["di.tarifs"].create(data)
                 
+        #raise Warning("Traitement terminé")  
+#         self.afficher_message_fin()
+        return self.env['di.popup.wiz'].afficher_message("Traitement terminé.",True,False,False,False) 
+#         return {                    
+#             'name':'Traitement terminé',            
+#             'button_ok':True,
+#             'button_yes':False,
+#             'button_no':False,
+#             'button_cancel':False,
+#             'type': 'ir.actions.act_window',
+#             'view_type': 'form',
+#             'view_mode': 'form',
+#             'res_model': 'di.popup.wiz',
+#             'target':'new'                    
+#             }     
             
-            
-            
+        
     @api.model
     def default_get(self, fields):
         res = super(DiGenCoutsWiz, self).default_get(fields)                                     

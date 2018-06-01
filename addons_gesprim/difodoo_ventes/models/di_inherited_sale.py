@@ -5,6 +5,9 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError
 import ctypes
+# import tkinter
+# from tkinter import messagebox
+# import pymsgbox
 
 # from addons import sale,account,stock,sale_stock 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
@@ -654,8 +657,14 @@ class SaleOrder(models.Model):
                                 break               
                                  
             if lignes_a_zero == True:
+#                 retour_box=messagebox.askyesno("Lignes à 0","Voulez-vous supprimer les lignes à 0 ?")
+#                 retour_box=pymsgbox.confirm(text='Voulez-vous supprimer les lignes à 0 ?', title='Lignes à 0', buttons=['Oui', 'Non'])
+#                 retour_box = self.env['di.popup.wiz'].afficher_message("Voulez-vous supprimer les lignes à 0 ?",False,True,True,False)
                 retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)
                 if retour_box == 6:
+#                 if retour_box == "oui":
+#                 if retour_box == "yes":
+#                 if retour_box == "Oui":
                     #Suppression des lignes à 0
                     if vals.get('order_line'):
                         for index,element in enumerate(vals['order_line']):
@@ -727,8 +736,14 @@ class SaleOrder(models.Model):
 #                             lignes_a_zero = True
 #                             break
             if lignes_a_zero == True:
+#                 retour_box=messagebox.askyesno("Lignes à 0","Voulez-vous supprimer les lignes à 0 ?")
+#                 retour_box=pymsgbox.confirm(text='Voulez-vous supprimer les lignes à 0 ?', title='Lignes à 0', buttons=['Oui', 'Non'])
+#                 retour_box = self.env['di.popup.wiz'].afficher_message("Voulez-vous supprimer les lignes à 0 ?",False,True,True,False)
                 retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)
                 if retour_box == 6:
+#                 if retour_box == "oui":
+#                 if retour_box == "yes":
+#                 if retour_box == "Oui":
                     #Suppression des lignes à 0
                     if vals.get('order_line'):
                         for index,element in enumerate(vals['order_line']):
