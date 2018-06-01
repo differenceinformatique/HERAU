@@ -38,13 +38,11 @@
     </record>    		
 	<!-- Top Menu -->
 	<menuitem id="menu_gesprim" name="Gesprim" sequence="309"/>
-	<!-- *Menu Titre -->
-	<menuitem id="menu_gesprim_titre" name="Gesprim" sequence="10" parent="menu_gesprim" />
 	<!-- **Menu Gesprim -->
-	<menuitem id="menu_gesprim_fichiers" name="Fichiers" sequence="10" parent="menu_gesprim_titre" />
-	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim_titre" />
-	<menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim_titre" />
-	<!-- <menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim_titre" /> -->
+	<menuitem id="menu_gesprim_fichiers" name="Fichiers" sequence="10" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim" />
+	<!-- <menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim" /> -->
 	<!-- ***Menu Fichiers -->	
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
