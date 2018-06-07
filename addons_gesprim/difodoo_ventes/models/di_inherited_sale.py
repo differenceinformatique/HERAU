@@ -509,6 +509,7 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
     di_period_fact = fields.Selection(string="Périodicité de Facturation", related='partner_id.di_period_fact')#,store=True)
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", related='partner_id.di_regr_fact')#,store=True)
+    di_ref = fields.Char(string='Code Tiers', related='partner_id.ref')#,store=True)
     di_livdt = fields.Date(string='Date de livraison', copy=False, help="Date de livraison souhaitée",
                            default=lambda wdate : datetime.today().date()+timedelta(days=1))
     di_prepdt = fields.Date(string='Date de préparation', copy=False, help="Date de préparation",

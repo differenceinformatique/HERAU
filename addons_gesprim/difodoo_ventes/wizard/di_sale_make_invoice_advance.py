@@ -11,12 +11,13 @@ from odoo.exceptions import UserError
 class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = "sale.advance.payment.inv"
     
-    di_date_fact = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date de facturation")
-    di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
+    date_fact = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date de facturation")
+    period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
-    di_date_debut = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
-    di_date_fin = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
-
+    date_debut = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
+    date_fin = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
+    ref_debut = fields.Char(required=True, default="C", string="Code Tiers Début")
+    ref_fin = fields.Char(required=True, default="Czzzzzzz", string="Code Tiers Fin")
          
     @api.multi
     def create_invoices(self):
@@ -24,18 +25,21 @@ class SaleAdvancePaymentInv(models.TransientModel):
         if self.advance_payment_method == 'delivered':
             # le regroupement n'est pertinent que dans le cas où il y a plusieurs commandes, donc uniquement méthode "delivered"     
             # on récupère les commandes cochées
-            sale_orders_av = self.env['sale.order'].browse(self._context.get('active_ids', []))
-            if len(sale_orders_av)<=1:
-                self.di_period_fact = sale_orders_av.partner_id.di_period_fact
-                self.di_date_debut = sale_orders_av.di_livdt
-                self.di_date_fin = sale_orders_av.di_livdt
-            sale_orders = sale_orders_av.filtered(lambda so: so.di_livdt >= self.di_date_debut and so.di_livdt <= self.di_date_fin)
+            sale_orders_1 = self.env['sale.order'].browse(self._context.get('active_ids', []))
+            if len(sale_orders_1)<=1:
+                self.period_fact = sale_orders_1.partner_id.di_period_fact
+                self.date_debut = sale_orders_1.di_livdt
+                self.date_fin = sale_orders_1.di_livdt
+                self.ref_debut = sale_orders_1.partner_id.ref
+                self.ref_fin = sale_orders_1.partner_id.ref
+            sale_orders_2 = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin)
+            sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.di_livdt <= self.ref_fin)
             wPartnerId = 0
             wRegr = True
             # on les parcourt triées par partner_id
             for order in sale_orders.sorted(key=lambda so: so.partner_id.id):
                 # on vérifie que la commande correspond à la périodicité et aux dates de selection
-                if order.partner_id.di_period_fact == self.di_period_fact:
+                if order.partner_id.di_period_fact == self.period_fact:
                     # à chaque rupture de partner_id on lance une facturation
                     if wPartnerId != order.partner_id.id:
                         if wPartnerId != 0:
@@ -50,7 +54,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
             # on met à jour la date de facture    
             invoices = sale_orders.mapped('invoice_ids')
             for invoice in invoices:
-                invoice.date_invoice=self.di_date_fact
+                invoice.date_invoice=self.date_fact
                 
             # comme en standard, on lance l'affichage des factures si demandé  
             if self._context.get('open_invoices', False):

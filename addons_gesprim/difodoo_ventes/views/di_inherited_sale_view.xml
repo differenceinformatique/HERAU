@@ -184,7 +184,10 @@
 				<xpath expr="//tree/field[4]" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-				<!-- Ajout périodicité de facturation + regroupement de facture -->
+				<!-- Ajout code client + périodicité de facturation + regroupement de facture -->
+				<xpath expr="//field[@name='partner_id']" position="before">
+					<field name="di_ref"/>					
+				</xpath>
 				<xpath expr="//field[@name='invoice_status']" position="after">
 					<field name="client_order_ref"/>
 					<field name="di_livdt"/>
@@ -204,12 +207,14 @@
 				<xpath expr="//group" position="before">
 					<group>
 						<group>
-							<field name="di_date_debut" attrs="{'invisible': [('count','==',1)]}" />
-							<field name="di_date_fin" attrs="{'invisible': [('count','==',1)]}" />
-							<field name="di_period_fact" attrs="{'invisible': [('count','==',1)]}" />
+							<field name="date_debut" attrs="{'invisible': [('count','==',1)]}" />
+							<field name="date_fin" attrs="{'invisible': [('count','==',1)]}" />
+							<field name="period_fact" attrs="{'invisible': [('count','==',1)]}" />
 						</group>
 						<group>
-							<field name="di_date_fact" />
+							<field name="date_fact" />
+							<field name="ref_debut" attrs="{'invisible': [('count','==',1)]}" />
+							<field name="ref_fin" attrs="{'invisible': [('count','==',1)]}" />
 						</group>
 					</group>
 				</xpath>
