@@ -631,26 +631,25 @@ class SaleOrder(models.Model):
                 status='draft'
             else:
                 status = 'autre'   
-        if ((self.state == 'draft' or  not self.state) and status == 'aucun')or(status == 'draft') :
-            # TODO : Question pour savoir si on doit supprimer les lignes à 0
+        if ((self.state == 'draft' or  not self.state) and status == 'aucun')or(status == 'draft') :            
             lignes_a_zero = False
             if vals.get('order_line'):
                 for index,element in enumerate(vals['order_line']):                    
-                    dict_line = element[2]
+                    dict_line = element[2] # dans element : 0 = action à effectuer , 1=id , 2 = dictionnaire contenant les infos de la ligne
                     
                     di_avec_product_uom_qty = False  # initialisation d'une variable       
-                    
-                    for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                        if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
-                            di_avec_product_uom_qty = True
-                            break
+                    if dict_line != False:
+                        for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+                            if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
+                                di_avec_product_uom_qty = True
+                                break
                                                 
                     if di_avec_product_uom_qty:
                         if dict_line['product_uom_qty']==0.0:
                             lignes_a_zero = True
                             break                            
                     else:
-                        if element[1]:
+                        if element[1]: # si on a un id, on recherche la ligne correspondante. On ne doit pas passer ici en create normalement
                             line = self.env['sale.order.line'].browse(element[1])
                             if line.product_uom_qty ==0.0:
                                 lignes_a_zero = True
@@ -660,31 +659,31 @@ class SaleOrder(models.Model):
 #                 retour_box=messagebox.askyesno("Lignes à 0","Voulez-vous supprimer les lignes à 0 ?")
 #                 retour_box=pymsgbox.confirm(text='Voulez-vous supprimer les lignes à 0 ?', title='Lignes à 0', buttons=['Oui', 'Non'])
 #                 retour_box = self.env['di.popup.wiz'].afficher_message("Voulez-vous supprimer les lignes à 0 ?",False,True,True,False)
-                retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)
-                if retour_box == 6:
+#                 retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4) #TODO : a modifier
+#                 if retour_box == 6:
 #                 if retour_box == "oui":
 #                 if retour_box == "yes":
 #                 if retour_box == "Oui":
                     #Suppression des lignes à 0
-                    if vals.get('order_line'):
-                        for index,element in enumerate(vals['order_line']):
-                            dict_line = element[2]
-                            
-                            di_avec_product_uom_qty = False  # initialisation d'une variable       
-                    
+                if vals.get('order_line'):
+                    for index,element in enumerate(vals['order_line']):
+                        dict_line = element[2]
+                        
+                        di_avec_product_uom_qty = False  # initialisation d'une variable       
+                        if dict_line != False:
                             for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                                if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
+                                if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
                                     di_avec_product_uom_qty = True
                                     break
-                                
-                            if di_avec_product_uom_qty == True:
-                                if dict_line['product_uom_qty']==0.0:         
+                            
+                        if di_avec_product_uom_qty == True:
+                            if dict_line['product_uom_qty']==0.0:         
 #                                     element[0]=3                                                                   
-                                    del vals['order_line'][index]                                                                            
-                            else:
-                                line=self.env['sale.order.line'].browse(element[1])
-                                if line.product_uom_qty==0.0:
-                                    del vals['order_line'][index]
+                                del vals['order_line'][index]       # on retire la ligne de la liste des lignes à enregistrer                                                                     
+                        else:
+                            line=self.env['sale.order.line'].browse(element[1])
+                            if line.product_uom_qty==0.0:
+                                del vals['order_line'][index]
 #                                     element[0]=3
 
                                                   
@@ -704,19 +703,18 @@ class SaleOrder(models.Model):
             else:
                 status = 'autre'        
             
-        if (self.state == 'draft' and status == 'aucun')or(status == 'draft') :
-            # TODO : Question pour savoir si on doit supprimer les lignes à 0
+        if (self.state == 'draft' and status == 'aucun')or(status == 'draft') :            
             lignes_a_zero = False
             if vals.get('order_line'):
                 for index,element in enumerate(vals['order_line']):                    
                     dict_line = element[2]
                     
                     di_avec_product_uom_qty = False  # initialisation d'une variable       
-                    
-                    for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                        if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
-                            di_avec_product_uom_qty = True
-                            break
+                    if dict_line != False:
+                        for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+                            if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
+                                di_avec_product_uom_qty = True
+                                break
                                                 
                     if di_avec_product_uom_qty:
                         if dict_line['product_uom_qty']==0.0:
@@ -739,29 +737,36 @@ class SaleOrder(models.Model):
 #                 retour_box=messagebox.askyesno("Lignes à 0","Voulez-vous supprimer les lignes à 0 ?")
 #                 retour_box=pymsgbox.confirm(text='Voulez-vous supprimer les lignes à 0 ?', title='Lignes à 0', buttons=['Oui', 'Non'])
 #                 retour_box = self.env['di.popup.wiz'].afficher_message("Voulez-vous supprimer les lignes à 0 ?",False,True,True,False)
-                retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)
-                if retour_box == 6:
+#                 retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)#TODO : a modifier
+#                 if retour_box == 6:
 #                 if retour_box == "oui":
 #                 if retour_box == "yes":
 #                 if retour_box == "Oui":
                     #Suppression des lignes à 0
-                    if vals.get('order_line'):
-                        for index,element in enumerate(vals['order_line']):
-                            di_avec_product_uom_qty = False  # initialisation d'une variable       
-                    
+                if vals.get('order_line'):
+                    for index,element in enumerate(vals['order_line']):
+                        di_avec_product_uom_qty = False  # initialisation d'une variable
+                        dict_line = element[2]       
+                        if dict_line!=False:
                             for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                                if key[0] == "product_uom_qty":  # si on a modifié sale_line_id
+                                if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
                                     di_avec_product_uom_qty = True
                                     break
-                                
-                            if di_avec_product_uom_qty == True:
-                                if dict_line['product_uom_qty']==0.0:         
-                                    element[0]=3                                                                   
-#                                     del vals['order_line'][index]                                                                            
-                            else:
-                                line=self.env['sale.order.line'].browse(element[1])
-                                if line.product_uom_qty==0.0:
-                                    element[0]=3
+                            
+                        if di_avec_product_uom_qty == True:
+                            if dict_line['product_uom_qty']==0.0:  
+                                line=self.env['sale.order.line'].browse(element[1]) # recherche de la ligne dans la BDD
+                                try: # si on ne peut pas faire .isdigit() c'est que l'id est un entier, donc la ligne est bien dans la BDD alors on passe dans except
+                                    line.id.isdigit() # si on peut faire isdigit() alors l'id est un string (ex:virtual_XXX) alors la ligne n'existe pas dans la BDD
+                                    # on passe dans le else
+                                except:                                                                                                                        
+                                    element[0]=3 # change l'action à effectuer : 3=suppression
+                                else:                                                                                                                                                                        
+                                    del vals['order_line'][index]                                                                            
+                        else:
+                            line=self.env['sale.order.line'].browse(element[1])
+                            if line.product_uom_qty==0.0:
+                                element[0]=3
 #                                 del vals['order_line'][index]                                                                            
 #                     if self.order_line:
 #                         for line in self.order_line:
