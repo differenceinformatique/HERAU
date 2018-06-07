@@ -35,8 +35,8 @@ class ProductTemplate(models.Model):
 
     di_un_saisie        = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Type unité saisie",
                                            help="Si vide, saisie dans la colonne quantité commandée")
-    di_type_palette_id     = fields.Many2one('product.packaging', string='Palette par défaut')   
-    di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut')
+    di_type_palette_id     = fields.Many2one('product.packaging', string='Palette par défaut', copy=False)   
+    di_type_colis_id       = fields.Many2one('product.packaging', string='Colis par défaut', copy=False)
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Type unité prix",
                                        help="Si vide, prix unitaire en unité de mesure")
     

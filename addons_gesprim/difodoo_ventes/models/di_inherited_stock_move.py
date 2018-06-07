@@ -587,3 +587,20 @@ class StockMoveLine(models.Model):
                 poids = poids - mouv.di_poin                       
                 
         return (nbcol,nbpal,nbpiece,poids)
+    
+    
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+    
+    di_nbpal = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)
+    di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)
+    
+    @api.depends('move_lines')
+    def _compute_di_nbpal_nbcol(self):
+        wnbpal=0.0
+        wnbcol=0.0
+        for picking in self:
+            wnbpal = sum(move.di_nb_palette for move in picking.move_lines if move.state != 'cancel')
+            wnbcol = sum(move.di_nb_colis for move in picking.move_lines if move.state != 'cancel')
+        picking.di_nbpal = ceil(wnbpal)
+        picking.di_nbcol = ceil(wnbcol)

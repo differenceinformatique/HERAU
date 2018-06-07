@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<template id="di_report_delivery_document" inherit_id="stock.report_delivery_document">
-		<!-- Modification colonnes si pas mouvements de stock -->
+		<!-- ajout totaux en début de document  -->
+         <xpath expr="//th[@name='td_sched_date_h']" position="after">
+            <th><strong>Nb Colis</strong></th>
+            <th><strong>Nb Pal.</strong></th>
+        </xpath>
+        <xpath expr="//td[@name='td_sched_date']" position="after">
+            <td><span t-field="o.di_nbcol"/></td>
+            <td><span t-field="o.di_nbpal"/></td>
+        </xpath>
+        <!-- Modification colonnes si pas mouvements de stock -->
 		<xpath expr="//div" position="before">
 			<t t-if="o.partner_id.parent_id">
 				<t t-set="di_pres_bl" t-value="o.partner_id.parent_id.di_pres_bl" />
