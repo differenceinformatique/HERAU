@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import time
+import calendar
+import datetime
 
 from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
@@ -10,9 +11,12 @@ from odoo.exceptions import UserError
 class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = "sale.advance.payment.inv"
     
-    di_date_fact = fields.Date(required=True, default=lambda self: self._context.get('date', fields.Date.context_today(self)), string="Date de facturation")
+    di_date_fact = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date de facturation")
     di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
+    di_date_debut = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
+    di_date_fin = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
+
          
     @api.multi
     def create_invoices(self):
@@ -20,13 +24,17 @@ class SaleAdvancePaymentInv(models.TransientModel):
         if self.advance_payment_method == 'delivered':
             # le regroupement n'est pertinent que dans le cas où il y a plusieurs commandes, donc uniquement méthode "delivered"     
             # on récupère les commandes cochées
-            sale_orders = self.env['sale.order'].browse(self._context.get('active_ids', []))
-            if len(sale_orders)<=1:
-                self.di_period_fact=sale_orders.partner_id.di_period_fact
+            sale_orders_av = self.env['sale.order'].browse(self._context.get('active_ids', []))
+            if len(sale_orders_av)<=1:
+                self.di_period_fact = sale_orders_av.partner_id.di_period_fact
+                self.di_date_debut = sale_orders_av.di_livdt
+                self.di_date_fin = sale_orders_av.di_livdt
+            sale_orders = sale_orders_av.filtered(lambda so: so.di_livdt >= self.di_date_debut and so.di_livdt <= self.di_date_fin)
             wPartnerId = 0
             wRegr = True
             # on les parcourt triées par partner_id
             for order in sale_orders.sorted(key=lambda so: so.partner_id.id):
+                # on vérifie que la commande correspond à la périodicité et aux dates de selection
                 if order.partner_id.di_period_fact == self.di_period_fact:
                     # à chaque rupture de partner_id on lance une facturation
                     if wPartnerId != order.partner_id.id:

@@ -170,18 +170,26 @@
 				</xpath>
 			</field>
 		</record>
-		<!-- surcharge vue liste commandes -->
+	<!-- surcharge vue liste commandes -->
 		<record id="di_view_order_tree" model="ir.ui.view">
 			<field name="name">di.sale.order.tree</field>
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_tree" />
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
+				<!-- Masquage Date d'engagement + Date demandée - Ne fonctionne pas avec un xpath sur le nom-->
+				<xpath expr="//tree/field[5]" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//tree/field[4]" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
 				<!-- Ajout périodicité de facturation + regroupement de facture -->
 				<xpath expr="//field[@name='invoice_status']" position="after">
 					<field name="client_order_ref"/>
-					<field name="di_period_fact" />
-					<field name="di_regr_fact" />					
+					<field name="di_livdt"/>
+					<field name="di_period_fact" string="Period. Facture" />
+					<field name="di_regr_fact" string="Regroup. Facture"/>					
 				</xpath>
 			</field>
 		</record>
@@ -196,6 +204,8 @@
 				<xpath expr="//group" position="before">
 					<group>
 						<group>
+							<field name="di_date_debut" attrs="{'invisible': [('count','==',1)]}" />
+							<field name="di_date_fin" attrs="{'invisible': [('count','==',1)]}" />
 							<field name="di_period_fact" attrs="{'invisible': [('count','==',1)]}" />
 						</group>
 						<group>
