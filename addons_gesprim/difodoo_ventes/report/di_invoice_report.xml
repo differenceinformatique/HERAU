@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <record id="di_view_invoice_report_pivot" model="ir.ui.view">
+         <field name="name">di.invoice.report.pivot</field>
+         <field name="model">di.invoice.report</field>
+         <field name="arch" type="xml">
+             <pivot string="Analyse des factures" disable_linking="True">
+                 <field name="categ_id" type="row"/>
+                 <field name="date" type="col"/>
+                 <field name="di_qte_achat" type="measure"/>
+                 <field name="di_qte_vente" type="measure"/>
+                 <field name="di_mt_achat" type="measure"/>
+                 <field name="di_mt_vente" type="measure"/>
+                 <!-- <field name="di_prix_achat" type="measure"/>
+                 <field name="di_prix_vente" type="measure"/> -->
+                 <field name="di_marge_mt" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+
+    <record id="di_view_account_invoice_report_graph" model="ir.ui.view">
+         <field name="name">di.invoice.report.graph</field>
+         <field name="model">di.invoice.report</field>
+         <field name="arch" type="xml">
+             <graph string="Analyse des factures">
+                 <field name="categ_id"/>
+                 <field name="di_qte_achat" type="measure"/>
+                 <field name="di_qte_vente" type="measure"/>
+                 <field name="di_mt_achat" type="measure"/>
+                 <field name="di_mt_vente" type="measure"/>
+                <!--  <field name="di_prix_achat" type="measure"/>
+                 <field name="di_prix_vente" type="measure"/> -->
+                 <field name="di_marge_mt" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <!-- Custom reports (aka filters) -->
+    <record id="di_filter_invoice_product" model="ir.filters">
+        <field name="name">Par article</field>
+        <field name="model_id">di.invoice.report</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'product_id'], 'set_visible':True}</field>
+    </record>
+    <record id="di_filter_invoice_product_category" model="ir.filters">
+        <field name="name">Par catégorie produit</field>
+        <field name="model_id">di.invoice.report</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'categ_id']}</field>
+    </record>
+
+    <record id="di_view_account_invoice_report_search" model="ir.ui.view">
+        <field name="name">di.invoice.report.search</field>
+        <field name="model">di.invoice.report</field>
+        <field name="arch" type="xml">
+            <search string="Analyse des factures">
+                <field name="date"/>
+                <filter string="Cette année" name="thisyear" domain="['|', ('date', '=', False), '&amp;',('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]" help="Journal invoices with period in current year"/>
+                <separator/>
+                <filter string="A facturer" domain="[('state','=','draft')]" help = "Draft Invoices"/>
+                <filter string="Facturé" name="current" domain="[('state','not in', ('draft','cancel'))]"/>
+                <separator/>
+                <filter string="Ce mois" name="this_month" domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mois dernier" name="last_month" domain="['&amp;', ('date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date', '&lt;', context_today().strftime('%%Y-%%m-01'))]"/>
+                <separator/>
+                <filter string="Facture" domain="['|', ('type','=','out_invoice'),('type','=','in_invoice')]"/>
+                <filter string="Avoir" domain="['|', ('type','=','out_refund'),('type','=','in_refund')]"/>
+                <field name="partner_id" operator="child_of"/>
+                <field name="categ_id" filter_domain="[('categ_id', 'child_of', self)]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Tiers" name="partner_id" context="{'group_by':'partner_id','residual_visible':True}"/>
+                    <filter string="Catégorie produit" name="category_product" context="{'group_by':'categ_id','residual_invisible':True}"/>
+                    <filter string="Status" context="{'group_by':'state'}"/>
+                    <filter string="Société" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                    <separator orientation="vertical" />
+                    <filter string="Date" context="{'group_by':'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="di_action_invoice_report_all" model="ir.actions.act_window">
+        <field name="name">Analyse des factures</field>
+        <field name="res_model">di.invoice.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="context">{'group_by':[], 'group_by_no_leaf':1, 'search_default_year': 1}</field>
+        <field name="search_view_id" ref="di_view_account_invoice_report_search"/>
+        <field name="help">From this report, you can have an overview of the amount invoiced from your vendors. The search tool can also be used to personalise your Invoices reports and so, match this analysis to your needs.</field>
+    </record>
+
+
+</data>
+</odoo>
