@@ -534,9 +534,7 @@ class SaleOrder(models.Model):
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.product_uom_qty 
             base_tax = 0
-            
-            # J'enlève un morceau du standard pour le remplacer afin de pouvoir afficher les taxes spé sur les impressions de commande
-            
+#   J'enlève un morceau du standard pour le remplacer afin de pouvoir afficher les taxes spé sur les impressions de commande           
 #             for tax in line.tax_id:
 #                 group = tax.tax_group_id
 #                 res.setdefault(group, {'amount': 0.0, 'base': 0.0})
@@ -552,7 +550,6 @@ class SaleOrder(models.Model):
 #                                                 partner=self.partner_shipping_id)['taxes'][0]['amount']
 #         res = sorted(res.items(), key=lambda l: l[0].sequence)
 #         res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]
- 
             price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
             # Lecture de toutes  les taxes  de la ligne, y compris les taxes spé 
             taxes = line.tax_id.compute_all(price_reduce + base_tax, quantity=di_qte_prix,product=line.product_id, partner=self.partner_shipping_id)['taxes']
@@ -564,12 +561,9 @@ class SaleOrder(models.Model):
                 res[group]['amount'] += tax['amount']
                 res[group]['base'] += tax['base']
                 if di_taxe.include_base_amount:
-                    base_tax += di_taxe.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,partner=self.partner_shipping_id)['taxes'][0]['amount']
-                                            
-            res = sorted(res.items(), key=lambda l: l[0].sequence)
-            res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]                                            
-                
-                
+                    base_tax += di_taxe.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,partner=self.partner_shipping_id)['taxes'][0]['amount']                                            
+        res = sorted(res.items(), key=lambda l: l[0].sequence)
+        res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]   
         return res                         
     
     @api.multi

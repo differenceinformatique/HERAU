@@ -11,13 +11,19 @@
 				<!-- suppression du code interne à l'emplacement initial -->
 				<xpath expr="/form/sheet/notebook/page/group/group/field[@name='ref']" position="replace">
 				</xpath>
-				<!-- ajout du code interne juste avant le nom -->
+				<!-- ajout du code interne juste avant le nom - obligatoire pour les clients/fournisseurs-->
 				<xpath expr="//field[@name='name']" position="before">
 					<h1>
-						<field name="ref" placeholder="Code tiers" required="True" />
+						<field name="ref" placeholder="Code tiers"
+						attrs="{'required':['|',('customer', '=', True),('supplier', '=', True)]}" />						
 					</h1>
 				</xpath>
-				<!-- ajout onglet spécifique -->
+				<xpath expr="//group[@name='purchase']" position="attributes">
+					<attribute name="attrs">{'invisible':[('customer', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//group[@name='sale']" position="attributes">
+					<attribute name="attrs">{'invisible':[('supplier', '=', True)]}</attribute>
+				</xpath>				<!-- ajout onglet spécifique -->
 				<xpath expr="//page[@name='accounting']" position="after">
 					<page name="specifs" string="Spécifiques" style="font-style: oblique;" col="4">
 						<group>

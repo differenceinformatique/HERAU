@@ -38,9 +38,16 @@
 		<xpath expr="//table/tbody/tr/td[2]" position="replace">
 		</xpath>
 		<xpath expr="//table/tbody/tr/td[1]" position="after">
-			<td class="text-right">
-				<div t-field="line.di_nb_pieces" />
-				<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
+			<td class="text-right">				
+				<!-- on masque le nb pièces si prix au kg -->
+				<t t-if="line.di_un_prix != 'KG'">
+					<div t-field="line.di_nb_pieces" />
+					<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
+				</t>
+				<t t-if="line.di_un_prix == 'KG'">
+					<div>.</div>
+					<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
+				</t>
 			</td>
 			<td class="text-right">
 				<div t-field="line.di_nb_colis" />

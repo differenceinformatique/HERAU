@@ -13,5 +13,6 @@ from . import di_station
 from . import di_tarifs
 from . import di_cout
 from . import di_param
+from . import di_inh_users
 
 
