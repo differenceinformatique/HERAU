@@ -336,3 +336,16 @@ class PurchaseOrderLine(models.Model):
 #         for mouv in mouvs:
 #             mont = mont + mouv.price_total 
 #         return mont
+
+class PurchaseOrder(models.Model):
+    _inherit = "purchase.order"
+    di_demdt = fields.Date(string='Date demandée', copy=False, help="Date de réception souhaitée",
+                           default=lambda wdate : datetime.today().date()+timedelta(days=1))
+    
+    @api.multi
+    @api.onchange('di_demdt')
+    def modif_demdt(self):
+        if datetime.strptime(self.di_demdt,'%Y-%m-%d').date()<datetime.today().date():
+            return {'warning': {'Erreur date demandée': _('Error'), 'message': _('La date de reception souhaitée ne peut être inférieure à la date du jour !'),},}       
+        self.date_planned = datetime.strptime(self.di_demdt,'%Y-%m-%d')
+   
