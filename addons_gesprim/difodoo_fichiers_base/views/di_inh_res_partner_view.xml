@@ -47,6 +47,13 @@
 					<field name="city" placeholder="City"
 						attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" />
 				</xpath>
+				<!-- modification affichage contacts/adresses -->
+				<xpath expr="//field[@name='child_ids']/kanban/field[@name='name']" position="after">
+					<field name="di_defaut_adr"/>
+				</xpath>
+				<xpath expr="//field[@name='child_ids']/kanban/templates/t/div/div[2]" position="after">
+					<t t-if="record.di_defaut_adr.raw_value "><i class='fa fa-check'></i></t>
+				</xpath>
 				<!-- masquage champ état + modif place ville/code postal dans le formulaire contact/adresse -->
 				<xpath expr="//notebook/page/field/form/sheet/group/group/div/div/field[@name='city']"
 					position="replace">
@@ -59,6 +66,12 @@
 					position="replace">
 					<field name="zip" placeholder="ZIP" />
 					<field name="city" placeholder="City" />
+				</xpath>
+				<!-- ajout coche adresse par défaut-->
+				<xpath expr="//notebook/page/field/form/sheet/field[@name='type']" position="after">
+					<p/>
+					<label for="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
+					<field name="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
 				</xpath>
 				<!-- Ajout dans l'onglet Ventes & achats -->
 				<xpath expr="//group[@name='sale']/field[@name='user_id']" position="after">
@@ -113,6 +126,19 @@
 		<!-- modification vue kanban par défaut, on préfère le mode liste - Fournisseurs -->
 		<record model="ir.actions.act_window.view" id="base.action_partner_vendor_form_view1">
 			<field eval="4" name="sequence" />
+		</record>
+		<!-- modification formulaire adresse -->
+		<record id="di_view_partner_address_form" model="ir.ui.view">
+			<field name="name">di.res.partner.form.address</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_partner_address_form" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<!-- ajout coche adresse par défaut-->
+				<xpath expr="//group/group[2]" position="inside">
+					<field name="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
+				</xpath>
+			</field>
 		</record>
 	</data>
 </odoo>

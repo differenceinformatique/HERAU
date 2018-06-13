@@ -27,16 +27,19 @@ class SaleAdvancePaymentInv(models.TransientModel):
             # on récupère les commandes cochées
             sale_orders_1 = self.env['sale.order'].browse(self._context.get('active_ids', []))
             if len(sale_orders_1)<=1:
+                # si une seule commande, les filtres ne seront pas affichés, on les renseigne en fonction de la commande                 
                 self.period_fact = sale_orders_1.partner_id.di_period_fact
                 self.date_debut = sale_orders_1.di_livdt
                 self.date_fin = sale_orders_1.di_livdt
                 self.ref_debut = sale_orders_1.partner_id.ref
                 self.ref_fin = sale_orders_1.partner_id.ref
+            # on filtre sur la date
             sale_orders_2 = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin)
+            # on filtre sur le code client
             sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.di_livdt <= self.ref_fin)
             wPartnerId = 0
             wRegr = True
-            # on les parcourt triées par partner_id
+            # on les parcourt, triées par partner_id
             for order in sale_orders.sorted(key=lambda so: so.partner_id.id):
                 # on vérifie que la commande correspond à la périodicité et aux dates de selection
                 if order.partner_id.di_period_fact == self.period_fact:
