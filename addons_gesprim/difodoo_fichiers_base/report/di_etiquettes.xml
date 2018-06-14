@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="di_report_simple_label" inherit_id="product.report_simple_label">
+		<!-- ajout entêtes -->
+		<xpath expr="//div[1]" position="replace">
+			<div t-if="product.barcode">
+				<table style="border-spacing:0;margin-bottom:0;height:122px;" class="table">
+					<thead>
+						<tr>
+							<td style="border: 2px solid black;" colspan="2" class="col-xs-8 danger">
+								<t t-if="product.default_code">									
+									[<strong t-field="product.default_code" />]
+								</t>
+								<strong t-field="product.name" />
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td style="border: 2px solid black;text-align: center; vertical-align: middle;" class="col-xs-5">
+								<img t-if="product.barcode"
+									t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', product.barcode, 600, 150)"
+									style="width:100%;height:80%;" />
+								<span t-field="product.barcode" />
+							</td>
+							<td style="border: 2px solid black; text-align: center;" class="col-xs-3">
+								<h4>
+									<strong t-field="product.company_id.currency_id.symbol" />
+									<strong t-field="product.list_price" />
+								</h4>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</xpath>S
+	</template>
+	
+	<template id="di_report_lot_label">
+    <t t-call="web.basic_layout">
+        <div class="page">
+            <t t-foreach="docs" t-as="
+            product">
+                <t t-call="product.report_simple_label">
+                    <t t-set="product" t-value="product"/>
+                </t>
+            </t>
+        </div>
+    </t>
+</template>
+</odoo>

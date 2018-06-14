@@ -28,6 +28,7 @@
         "views/di_tables_view.xml",
         "report/di_impression_tarifs.xml",
         "report/di_tarifs_report.xml",
+        "report/di_etiquettes.xml",
         "wizard/di_wiz_referencer_article.xml",
         "wizard/di_product_pack_wizard.xml",
         "wizard/di_imprim_tar_wizard.xml",
