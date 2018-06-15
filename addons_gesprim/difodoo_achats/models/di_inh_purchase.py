@@ -3,6 +3,7 @@ from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError
+from ...difodoo_fichiers_base.controllers import di_ctrl_print
 
 # from difodoo.addons_gesprim.difodoo_ventes.models import di_inherited_stock_move 
 
@@ -313,29 +314,7 @@ class PurchaseOrderLine(models.Model):
             line.di_poin = poin
                     
         super(PurchaseOrderLine, self)._compute_qty_invoiced()
-        
-#     def di_somme_quantites(self,product_id,date =False):
-#         qte =0.0
-#         if date:
-#             mouvs=self.env['purchase.order.line'].search(['&',('product_id','=',product_id),('order_id.date_order','=',date),('qty_received','!=',0.0)])
-#         else:
-#             mouvs=self.env['purchase.order.line'].search([('product_id','=',product_id),('qty_received','!=',0.0)])
-#             
-#         for mouv in mouvs:
-#             qte = qte + mouv.qty_received
-#         return qte
-#         
-#         
-#     def di_somme_montants(self,product_id,date =False):
-#         mont =0.0
-#         if date:
-#             mouvs=self.env['purchase.order.line'].search(['&',('product_id','=',product_id),('order_id.date_order','=',date),('qty_received','!=',0.0)])
-#         else:
-#             mouvs=self.env['purchase.order.line'].search([('product_id','=',product_id),('qty_received','!=',0.0)])
-#             
-#         for mouv in mouvs:
-#             mont = mont + mouv.price_total 
-#         return mont
+
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
@@ -348,4 +327,68 @@ class PurchaseOrder(models.Model):
         if datetime.strptime(self.di_demdt,'%Y-%m-%d').date()<datetime.today().date():
             return {'warning': {'Erreur date demandée': _('Error'), 'message': _('La date de reception souhaitée ne peut être inférieure à la date du jour !'),},}       
         self.date_planned = datetime.strptime(self.di_demdt,'%Y-%m-%d')
-   
+
+    
+    @api.multi
+    def imprimer_etiquettes(self):         
+        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+        if param.di_label_ach_id and param.di_label_ach_id.file is not None and param.di_label_ach_id.file != "":
+            if param.di_printer_ach_id : #and param.di_printer_id.adressip is not None and param.di_printer_id.adressip != "":
+                if param.di_printer_ach_id.realname is not None and param.di_printer_ach_id.realname != "":
+                    printer = param.di_printer_ach_id.realname
+                    label = param.di_label_ach_id.file
+                    for po in self:
+                        for pol in po.order_line:
+                            if pol.move_ids:
+                                for sm in pol.move_ids: 
+                                    if sm.move_line_ids:
+                                        for sml in sm.move_line_ids:
+                                            qteform = "000000"
+                                            qteform =str(int(sml.qty_done*100)) 
+                                            qteform=qteform.rjust(6,'0')            
+                                            if sml.lot_id:
+                                                informations=[
+                                                    ("codeart",pol.product_id.default_code),
+                                                    ("des",pol.product_id.product_tmpl_id.name),
+                                                    ("qte",sml.qty_done),                                       
+                                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform+">810"+">6"+sml.lot_id.name),
+                                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform+"(10)"+sml.lot_id.name),
+                                                    ("lot",sml.lot_id.name)
+                                                    ]
+                                            else:
+                                                informations=[
+                                                    ("codeart",pol.product_id.default_code),
+                                                    ("des",pol.product_id.product_tmpl_id.name),
+                                                    ("qte",sml.qty_done),                                        
+                                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform),
+                                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform),
+                                                    ("lot"," ")                                                                                                                                   
+                                                    ]                                                
+                                            di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
+                                    else:
+                                        qteform = "000000"
+                                        qteform =str(int(sm.product_qty*100)) 
+                                        qteform=qteform.rjust(6,'0')
+                                        informations=[
+                                                    ("codeart",pol.product_id.default_code),
+                                                    ("des",pol.product_id.product_tmpl_id.name),
+                                                    ("qte",sm.product_qty),                                                                                
+                                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform),
+                                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform),
+                                                    ("lot"," ")                                                                                                                                                      
+                                                    ]                                                
+                                        di_ctrl_print.printlabelonwindows(printer,label,'[',informations)                                            
+                            else:
+                                qteform = "000000"
+                                qteform =str(int(pol.product_uom_qty*100))
+                                qteform=qteform.rjust(6,'0')
+                                informations=[
+                                    ("codeart",pol.product_id.default_code),
+                                    ("des",pol.product_id.product_tmpl_id.name),
+                                    ("qte",pol.product_uom_qty),
+                                    #("codebarre",sol.product_id.barcode),                                            
+                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform),
+                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform),
+                                    ("lot"," ")                                                                                                                          
+                                    ]
+                                di_ctrl_print.printlabelonwindows(printer,label,'[',informations)

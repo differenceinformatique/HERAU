@@ -3,3 +3,4 @@
 
 from . import di_inh_account_invoice_report
 from . import di_invoice_report
+from . import di_stock_report

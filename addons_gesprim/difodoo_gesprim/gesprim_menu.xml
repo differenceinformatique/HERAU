@@ -51,6 +51,11 @@
 	<menuitem id="menu_gesprim_param" name="Paramétrage" sequence="40" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_param" />
 	<menuitem id="menu_gesprim_tar" name="Tarifs" sequence="100" parent="menu_gesprim_fichiers" />
 	<menuitem id="menu_gesprim_tables" name="Tables" sequence="200" parent="menu_gesprim_fichiers" />
+	<menuitem id="menu_gesprim_imp" name="Impressions" sequence="300" parent="menu_gesprim_fichiers" />
+	<!-- ***Menu impressions -->	
+	<menuitem id="menu_gesprim_imprimantes" sequence="10" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_printer" />
+	<menuitem id="menu_gesprim_etiquettes" sequence="20" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_labelmodel" />
+	  
 	<!-- ****Menu Tarifs -->
 	<menuitem id="menu_gesprim_codes_tarifs" sequence="10" parent="menu_gesprim_tar" action="difodoo_fichiers_base.di_action_code_tarif" />
 	<menuitem id="menu_gesprim_tarifs" sequence="20" parent="menu_gesprim_tar" action="difodoo_fichiers_base.di_action_tarifs" />

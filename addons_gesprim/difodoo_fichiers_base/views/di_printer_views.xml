@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_view_etiquette_printer_tree" model="ir.ui.view" >
+            <field name="name">di_etiquette.printer.tree</field>
+            <field name="priority">1</field>
+            <field name="model">di.printer</field>        
+            <field name="arch" type="xml">
+                <tree string="Imprimantes" default_order = "name"  import="false" create="true">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="realname"/>
+                    <field name="adressip"/>
+                    <field name="port"/>
+                    <field name="isimpetiq"/>
+                </tree>
+            </field>
+    </record>
+    
+    <record id="di_etiquette_printer_form" model="ir.ui.view">
+        <field name="name">di_etiquette.printer.form</field>
+        <field name="model">di.printer</field>
+        <field name="arch" type="xml">
+            <form string="Imprimante">
+                <header>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <H1>
+                            <field name="name" default_focus="1" placeholder="Nom de l'imprimante"/>                             
+                        </H1>
+                    </div> 
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="realname"/>
+                            <field name="adressip"/>
+                            <field name="port"/>
+                            <field name="isimpetiq"/>
+                        </group>
+                    </group>
+                </sheet>         
+            </form>
+        </field>
+    </record>
+    
+    <record id="di_action_etiquette_printer" model="ir.actions.act_window">
+        <field name="name">Imprimante</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.printer</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="di_view_etiquette_printer_tree"/>              
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Help
+            </p>
+            <p>
+                Liste des imprimantes.
+            </p>
+        </field>
+    </record>
+</odoo>

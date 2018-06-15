@@ -31,8 +31,8 @@
         'difodoo_ventes',
         'difodoo_achats',
         'web_sheet_full_width'
-        ,'report_intrastat'
-        ,'l10n_fr_sale_closing',
+        , 'report_intrastat'
+        , 'l10n_fr_sale_closing',
         'base_optional_quick_create',
         'eradicate_quick_create',
         ],
@@ -40,6 +40,7 @@
     # always loaded
     'data': [
         "gesprim_menu.xml",
+        
        
         # 'security/ir.model.access.csv',
       

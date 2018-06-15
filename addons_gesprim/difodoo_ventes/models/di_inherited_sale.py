@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError
+from ...difodoo_fichiers_base.controllers import di_ctrl_print
 import ctypes
 # import tkinter
 # from tkinter import messagebox
@@ -515,6 +516,71 @@ class SaleOrder(models.Model):
     di_prepdt = fields.Date(string='Date de préparation', copy=False, help="Date de préparation",
                            default=lambda wdate : datetime.today().date())
      
+     
+    @api.multi
+    def imprimer_etiquettes(self):         
+        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+        if param.di_label_id and param.di_label_id.file is not None and param.di_label_id.file != "":
+            if param.di_printer_id : #and param.di_printer_id.adressip is not None and param.di_printer_id.adressip != "":
+                if param.di_printer_id.realname is not None and param.di_printer_id.realname != "":
+                    printer = param.di_printer_id.realname
+                    label = param.di_label_id.file
+                    for so in self:
+                        for sol in so.order_line:
+                            if sol.move_ids:
+                                for sm in sol.move_ids: 
+                                    if sm.move_line_ids:
+                                        for sml in sm.move_line_ids:
+                                            qteform = "000000"
+                                            qteform =str(int(sml.qty_done*100)) 
+                                            qteform=qteform.rjust(6,'0')            
+                                            if sml.lot_id:
+                                                informations=[
+                                                    ("codeart",sol.product_id.default_code),
+                                                    ("des",sol.product_id.product_tmpl_id.name),
+                                                    ("qte",sml.qty_done),                                       
+                                                    ("codebarre",">802"+sol.product_id.barcode+">83102"+qteform+">810"+">6"+sml.lot_id.name),
+                                                    ("txtcb","(02)"+sol.product_id.barcode+"(3102)"+qteform+"(10)"+sml.lot_id.name),
+                                                    ("lot",sml.lot_id.name)
+                                                    ]
+                                            else:
+                                                informations=[
+                                                    ("codeart",sol.product_id.default_code),
+                                                    ("des",sol.product_id.product_tmpl_id.name),
+                                                    ("qte",sml.qty_done),                                        
+                                                    ("codebarre",">802"+sol.product_id.barcode+">83102"+qteform),
+                                                    ("txtcb","(02)"+sol.product_id.barcode+"(3102)"+qteform),
+                                                    ("lot"," ")                                                                                                                                   
+                                                    ]                                                
+                                            di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
+                                    else:
+                                        qteform = "000000"
+                                        qteform =str(int(sm.product_qty*100)) 
+                                        qteform=qteform.rjust(6,'0')
+                                        informations=[
+                                                    ("codeart",sol.product_id.default_code),
+                                                    ("des",sol.product_id.product_tmpl_id.name),
+                                                    ("qte",sm.product_qty),                                                                                
+                                                    ("codebarre",">802"+sol.product_id.barcode+">83102"+qteform),
+                                                    ("txtcb","(02)"+sol.product_id.barcode+"(3102)"+qteform),
+                                                    ("lot"," ")                                                                                                                                                      
+                                                    ]                                                
+                                        di_ctrl_print.printlabelonwindows(printer,label,'[',informations)                                            
+                            else:
+                                qteform = "000000"
+                                qteform =str(int(sol.product_uom_qty*100))
+                                qteform=qteform.rjust(6,'0')
+                                informations=[
+                                    ("codeart",sol.product_id.default_code),
+                                    ("des",sol.product_id.product_tmpl_id.name),
+                                    ("qte",sol.product_uom_qty),
+                                    #("codebarre",sol.product_id.barcode),                                            
+                                    ("codebarre",">802"+sol.product_id.barcode+">83102"+qteform),
+                                    ("txtcb","(02)"+sol.product_id.barcode+"(3102)"+qteform),
+                                    ("lot"," ")                                                                                                                          
+                                    ]
+                                di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
+
     @api.multi
     def _get_tax_amount_by_group(self):
         # copie standard

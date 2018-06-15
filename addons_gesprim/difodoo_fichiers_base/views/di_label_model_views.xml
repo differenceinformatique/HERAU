@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_view_etiquette_labelmodel_tree" model="ir.ui.view" >
+            <field name="name">di_etiquette.labelmodel.tree</field>
+            <field name="priority">1</field>
+            <field name="model">di.labelmodel</field>        
+            <field name="arch" type="xml">
+                <tree string="Modèles d'étiquettes" default_order="name"  import="false" create="true">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="file"/>
+                </tree>
+            </field>
+    </record>
+    
+    <record id="di_etiquette_labelmodel_form" model="ir.ui.view">
+        <field name="name">di_etiquette.labelmodel.form</field>
+        <field name="model">di.labelmodel</field>
+        <field name="arch" type="xml">
+            <form string="Modèle d'étiquette">
+                <header>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <H1>
+                            <field name="name" default_focus="1" placeholder="Nom du modèle d'étiquette"/>                             
+                        </H1>
+                    </div> 
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="file"/>
+                        </group>
+                    </group>
+                </sheet>         
+            </form>
+        </field>
+    </record>
+    
+    <record id="di_action_etiquette_labelmodel" model="ir.actions.act_window">
+        <field name="name">Modele etiquette</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.labelmodel</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="di_view_etiquette_labelmodel_tree"/>              
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Help
+            </p>
+            <p>
+                Liste des modèles d'étiquettes.
+            </p>
+        </field>
+    </record>
+    
+    <!-- <act_window
+        id="action_wiz_print_label"
+        name="Print label"
+        res_model="wiz_print_label"
+        src_model="di.labelmodel"
+        view_mode="form"
+        view_type="form"
+        target="new"
+        view_id="wiz_print_label_view">    
+    </act_window> -->
+</odoo>

@@ -7,9 +7,12 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-            	<xpath expr="//sheet/group/group[2]/field[@name='date_order'] " position="after">
-            		<field name="di_demdt"/>
-            	</xpath>
+                <xpath expr="//header/field[@name='state']" position="before">                                                           
+                    <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>                                        
+                </xpath>
+                <xpath expr="//sheet/group/group[2]/field[@name='date_order'] " position="after">
+                    <field name="di_demdt"/>
+                </xpath>
                 <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/label[@for='product_qty'] " position="before">
                     <field name="di_spe_saisissable" invisible="1"/>
                     <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
