@@ -11,8 +11,7 @@
 			     <!-- Header -->
 			     <xpath expr="//header/field[@name='state']" position="before">                                       
                     <button class="di_class_grille_vente" name="di_action_grille_vente" type="object" string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client."/>
-                    <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>
-                                          
+                    <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>                                          
                 </xpath>
 				<!-- on enlève les adresses du choix du tiers -->
 				<xpath expr="//sheet/group/group/field[@name='partner_id']" position="replace">
@@ -27,16 +26,16 @@
 				<xpath expr="//sheet/group/group/field[@name='partner_shipping_id']" position="replace">
 					<field name="partner_shipping_id" domain="['|',('id','=',partner_id),('parent_id','=',partner_id)]"
 						groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}" options='{"always_reload": True}' />
-					<field name="di_livdt"/>
-					<field name="di_prepdt"/>
+					<field name="di_livdt" />
+					<field name="di_prepdt" />
 				</xpath>
 				<xpath expr="//field[@name='payment_term_id']" position="after">
-					<field name="client_order_ref"/>
+					<field name="client_order_ref" />
 				</xpath>
 				<!-- lignes en mode fiche -->
 				<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty']"
 					position="before">
-					<field name="di_spe_saisissable" invisible="1" force_save="1"/>
+					<field name="di_spe_saisissable" invisible="1" force_save="1" />
 					<field name="di_qte_un_saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
 					<field name="di_un_saisie"
 						attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
@@ -105,14 +104,13 @@
 					<field name="di_qte_un_saisie_fac" readonly="1" invisible="1" />
 					<field name="purchase_price" groups="base.group_user" />
 				</xpath>
-				<!-- lignes en mode liste -->							
-<!-- 				<xpath expr="//field[@name='order_line']/tree" position="attributes">
-					<attribute name="editable">bottom</attribute>
-				</xpath> -->
+				<!-- lignes en mode liste -->
+				<!-- <xpath expr="//field[@name='order_line']/tree" position="attributes"> <attribute name="editable">bottom</attribute> 
+					</xpath> -->
 				<!-- <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="replace" /> -->
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>  
+					<attribute name="invisible">1</attribute>
+				</xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='tax_id']" position="replace" />
 				<!-- suppression champs pour déplacement -->
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_delivered']" position="replace" />
@@ -130,7 +128,7 @@
 					<field name="purchase_price" groups="base.group_user" />
 				</xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
-					<field name="di_spe_saisissable" invisible="1" force_save="1"/>
+					<field name="di_spe_saisissable" invisible="1" force_save="1" />
 					<field name="di_qte_un_saisie" string="Qté unité saisie"
 						attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
 					<field name="di_un_saisie"
@@ -172,14 +170,14 @@
 				</xpath>
 			</field>
 		</record>
-	<!-- surcharge vue liste commandes -->
+		<!-- surcharge vue liste commandes -->
 		<record id="di_view_order_tree" model="ir.ui.view">
 			<field name="name">di.sale.order.tree</field>
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_tree" />
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
-				<!-- Masquage Date d'engagement + Date demandée - Ne fonctionne pas avec un xpath sur le nom-->
+				<!-- Masquage Date d'engagement + Date demandée - Ne fonctionne pas avec un xpath sur le nom -->
 				<xpath expr="//tree/field[5]" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
@@ -188,13 +186,13 @@
 				</xpath>
 				<!-- Ajout code client + périodicité de facturation + regroupement de facture -->
 				<xpath expr="//field[@name='partner_id']" position="before">
-					<field name="di_ref"/>					
+					<field name="di_ref" />
 				</xpath>
 				<xpath expr="//field[@name='invoice_status']" position="after">
-					<field name="client_order_ref"/>
-					<field name="di_livdt"/>
+					<field name="client_order_ref" />
+					<field name="di_livdt" />
 					<field name="di_period_fact" string="Period. Facture" />
-					<field name="di_regr_fact" string="Regroup. Facture"/>					
+					<field name="di_regr_fact" string="Regroup. Facture" />
 				</xpath>
 			</field>
 		</record>
@@ -236,12 +234,12 @@
 			</field>
 		</record>
 		<!-- surcharge recherche action commandes -->
-        <record id="di_sale_order_view_search_inherit_sale" model="ir.ui.view">
-            <field name="name">di.sale.order.search.inherit.sale</field>
-            <field name="model">sale.order</field>
-            <field name="mode">primary</field>
-            <field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale"/>
-   			<field name="arch" type="xml">
+		<record id="di_sale_order_view_search_inherit_sale" model="ir.ui.view">
+			<field name="name">di.sale.order.search.inherit.sale</field>
+			<field name="model">sale.order</field>
+			<field name="mode">primary</field>
+			<field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale" />
+			<field name="arch" type="xml">
 				<xpath expr="//filter[@name='my_sale_orders_filter']" position="after">
 					<separator />
 					<filter string="Non facturées" name="di_NonFact" domain="[('invoice_status','=',('no'))]" />
@@ -258,7 +256,7 @@
 			<field name="res_model">sale.order</field>
 			<field name="view_type">form</field>
 			<field name="res_model">sale.order</field>
-			<field name="search_view_id" ref="di_sale_order_view_search_inherit_sale"/>
+			<field name="search_view_id" ref="di_sale_order_view_search_inherit_sale" />
 			<field name="inherit_id" ref="sale.action_orders" />
 			<field eval="99" name="priority" />
 			<field name="context">{'search_default_di_NonFact': 1,'search_default_di_cde': 1}</field>
