@@ -18,14 +18,28 @@
 						attrs="{'required':['|',('customer', '=', True),('supplier', '=', True)]}" />						
 					</h1>
 				</xpath>
+				<!-- masquage des éléments client en fournisseur et inversement -->
 				<xpath expr="//group[@name='purchase']" position="attributes">
+					<attribute name="attrs">{'invisible':[('customer', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//group[@name='acc_purchase']" position="attributes">
+					<attribute name="attrs">{'invisible':[('customer', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='property_account_payable_id']" position="attributes">
 					<attribute name="attrs">{'invisible':[('customer', '=', True)]}</attribute>
 				</xpath>
 				<xpath expr="//group[@name='sale']" position="attributes">
 					<attribute name="attrs">{'invisible':[('supplier', '=', True)]}</attribute>
-				</xpath>				<!-- ajout onglet spécifique -->
+				</xpath>
+				<xpath expr="//group[@name='acc_sale']" position="attributes">
+					<attribute name="attrs">{'invisible':[('supplier', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='property_account_receivable_id']" position="attributes">
+					<attribute name="attrs">{'invisible':[('supplier', '=', True)]}</attribute>
+				</xpath>
+				<!-- ajout onglet spécifique -->
 				<xpath expr="//page[@name='accounting']" position="after">
-					<page name="specifs" string="Spécifiques" style="font-style: oblique;" col="4">
+					<page name="specifs" string="Compléments" style="font-style: oblique;" col="4">
 						<group>
 							<group name="editions" string="Editions">
 								<field name="di_pres_bl"/>
