@@ -339,6 +339,10 @@ class PurchaseOrder(models.Model):
                     label = param.di_label_ach_id.file
                     for po in self:
                         for pol in po.order_line:
+                            if pol.product_id.barcode : 
+                                barcode = pol.product_id.barcode
+                            else:
+                                barcode="0000000000000"
                             if pol.move_ids:
                                 for sm in pol.move_ids: 
                                     if sm.move_line_ids:
@@ -351,8 +355,8 @@ class PurchaseOrder(models.Model):
                                                     ("codeart",pol.product_id.default_code),
                                                     ("des",pol.product_id.product_tmpl_id.name),
                                                     ("qte",sml.qty_done),                                       
-                                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform+">810"+">6"+sml.lot_id.name),
-                                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform+"(10)"+sml.lot_id.name),
+                                                    ("codebarre",">802"+barcode+">83102"+qteform+">810"+">6"+sml.lot_id.name),
+                                                    ("txtcb","(02)"+barcode+"(3102)"+qteform+"(10)"+sml.lot_id.name),
                                                     ("lot",sml.lot_id.name)
                                                     ]
                                             else:
@@ -360,8 +364,8 @@ class PurchaseOrder(models.Model):
                                                     ("codeart",pol.product_id.default_code),
                                                     ("des",pol.product_id.product_tmpl_id.name),
                                                     ("qte",sml.qty_done),                                        
-                                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform),
-                                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform),
+                                                    ("codebarre",">802"+barcode+">83102"+qteform),
+                                                    ("txtcb","(02)"+barcode+"(3102)"+qteform),
                                                     ("lot"," ")                                                                                                                                   
                                                     ]                                                
                                             di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
@@ -373,8 +377,8 @@ class PurchaseOrder(models.Model):
                                                     ("codeart",pol.product_id.default_code),
                                                     ("des",pol.product_id.product_tmpl_id.name),
                                                     ("qte",sm.product_qty),                                                                                
-                                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform),
-                                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform),
+                                                    ("codebarre",">802"+barcode+">83102"+qteform),
+                                                    ("txtcb","(02)"+barcode+"(3102)"+qteform),
                                                     ("lot"," ")                                                                                                                                                      
                                                     ]                                                
                                         di_ctrl_print.printlabelonwindows(printer,label,'[',informations)                                            
@@ -387,8 +391,8 @@ class PurchaseOrder(models.Model):
                                     ("des",pol.product_id.product_tmpl_id.name),
                                     ("qte",pol.product_uom_qty),
                                     #("codebarre",sol.product_id.barcode),                                            
-                                    ("codebarre",">802"+pol.product_id.barcode+">83102"+qteform),
-                                    ("txtcb","(02)"+pol.product_id.barcode+"(3102)"+qteform),
+                                    ("codebarre",">802"+barcode+">83102"+qteform),
+                                    ("txtcb","(02)"+barcode+"(3102)"+qteform),
                                     ("lot"," ")                                                                                                                          
                                     ]
                                 di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
