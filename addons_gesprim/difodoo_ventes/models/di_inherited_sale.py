@@ -525,6 +525,7 @@ class SaleOrder(models.Model):
                 if param.di_printer_id.realname is not None and param.di_printer_id.realname != "":
                     printer = param.di_printer_id.realname
                     label = param.di_label_id.file
+                    data=''
                     for so in self:
                         for sol in so.order_line:
                             if sol.product_id.barcode : 
@@ -556,7 +557,8 @@ class SaleOrder(models.Model):
                                                     ("txtcb","(02)"+barcode+"(3102)"+qteform),
                                                     ("lot"," ")                                                                                                                                   
                                                     ]                                                
-                                            di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
+                                            data =data+ di_ctrl_print.format_data(label, '[', informations)    
+#                                             di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
                                     else:
                                         qteform = "000000"
                                         qteform =str(int(sm.product_qty*100)) 
@@ -568,8 +570,9 @@ class SaleOrder(models.Model):
                                                     ("codebarre",">802"+barcode+">83102"+qteform),
                                                     ("txtcb","(02)"+barcode+"(3102)"+qteform),
                                                     ("lot"," ")                                                                                                                                                      
-                                                    ]                                                
-                                        di_ctrl_print.printlabelonwindows(printer,label,'[',informations)                                            
+                                                    ]   
+                                        data =data+ di_ctrl_print.format_data(label, '[', informations)                                             
+#                                         di_ctrl_print.printlabelonwindows(printer,label,'[',informations)                                            
                             else:
                                 qteform = "000000"
                                 qteform =str(int(sol.product_uom_qty*100))
@@ -583,8 +586,9 @@ class SaleOrder(models.Model):
                                     ("txtcb","(02)"+barcode+"(3102)"+qteform),
                                     ("lot"," ")                                                                                                                          
                                     ]
-                                di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
-
+                                data =data+ di_ctrl_print.format_data(label, '[', informations)
+#                                 di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
+                    di_ctrl_print.printlabelonwindows(printer,data)
     @api.multi
     def _get_tax_amount_by_group(self):
         # copie standard

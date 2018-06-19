@@ -9,7 +9,7 @@ class DiTarifs(models.Model):
     _description = "Tarifs"
     _order = "di_date_effet desc"
     
-    name = fields.Char(string="Code",compute='_changer_nom')
+    name = fields.Char(string="Code",compute='_changer_nom',store=True)
     di_company_id = fields.Many2one('res.company', string='Société', readonly=True,  default=lambda self: self.env.user.company_id)             
     di_product_id = fields.Many2one('product.product', string='Article', required=True)    
     di_code_tarif_id = fields.Many2one('di.code.tarif', string='Code tarif', required=True)
@@ -21,8 +21,12 @@ class DiTarifs(models.Model):
     di_date_fin = fields.Date(string="Date de fin")
 
     @api.depends('di_company_id','di_product_id','di_code_tarif_id','di_partner_id','di_un_prix','di_qte_seuil','di_date_effet')
-    def _changer_nom(self):        
-        self.name=self.di_product_id.default_code+' - '+self.di_code_tarif_id.name+' - '+self.di_un_prix+' - '+str(self.di_qte_seuil)+' - '+self.di_date_effet#+' - '+str(self.di_partner_id.ref)
+    def _changer_nom(self):    
+        for tar in self:  
+            if tar.di_un_prix:  
+                tar.name=tar.di_product_id.default_code+' - '+tar.di_code_tarif_id.name+' - '+tar.di_un_prix +' - '+str(tar.di_qte_seuil)+' - '+tar.di_date_effet#+' - '+str(self.di_partner_id.ref)
+            else:
+                tar.name=tar.di_product_id.default_code+' - '+tar.di_code_tarif_id.name+' - '+str(tar.di_qte_seuil)+' - '+tar.di_date_effet#+' - '+str(self.di_partner_id.ref)
                 
     def _di_get_prix(self, tiers, article, di_un_prix , qte, date):            
         prix=0.0

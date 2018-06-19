@@ -5,11 +5,7 @@ from odoo import models,fields,api
 import os, sys
 import win32print
 
-
-def printlabelonwindows(printer,labelmodelfile,charSep,parameters):
-    
-    
-    
+def format_data(labelmodelfile,charSep,parameters):
     contenu = "";
     with open(labelmodelfile) as fichierEtiq:
         for line in fichierEtiq:
@@ -22,13 +18,17 @@ def printlabelonwindows(printer,labelmodelfile,charSep,parameters):
                 contenu = contenu.replace(charSep + paramName.lower() + charSep, str(value).replace("é", "\\82").replace("à", "\\85").replace("î","\\8C"))
             else:
                 contenu = contenu.replace(charSep + paramName.lower() + charSep, "")
-    #print(sys.version_info)    
-      
+    #print(sys.version_info)              
+    
+    return contenu 
+        
+
+def printlabelonwindows(printer,contenu):
     if sys.version_info >= (3,):
         raw_data = bytes(contenu,"utf-8")
     else:
-        raw_data = contenu
-      
+        raw_data = contenu 
+               
 #     printer_name = win32print.GetDefaultPrinter ()  
     hPrinter = win32print.OpenPrinter (printer)
 #    hPrinter = win32print.OpenPrinter (printer_name)
