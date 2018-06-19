@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from . import di_printer
+from . import di_labelmodel
 from . import di_categorie
 from . import di_calibre
 from . import di_code_tarif
@@ -14,7 +16,6 @@ from . import di_tarifs
 from . import di_cout
 from . import di_param
 from . import di_inh_users
-from . import di_printer
-from . import di_labelmodel
+
 
 
