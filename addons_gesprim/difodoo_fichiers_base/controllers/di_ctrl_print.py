@@ -4,7 +4,7 @@ from odoo import models,fields,api,http
 #from . import models,wizards
 import os, sys
 import win32print
-from Naked.toolshed.shell import execute_js, muterun_js
+
 # class MyController(http.Controller):
 #     @http.route(type='json', website=True)
 #     def imp_javascript(self,data, **kw):
