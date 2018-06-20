@@ -129,6 +129,7 @@
 						</group>
 					</page>
 				</xpath>
+				<xpath expr="//div[@class='oe_chatter']" position="replace"/>
 			</field>
 		</record>
 		<!-- -->
@@ -226,6 +227,7 @@
 							attrs="{'required':[('di_type_cond','!=','PIECE')],'readonly':[('di_type_cond','=','PIECE')]}" />
 					</group>
 				</xpath>
+				<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
 			</field>
 		</record>
 		<!-- Liste conditionnement -->

@@ -108,6 +108,7 @@
 					<label string="Conditions paiement" />
 					<field name="property_supplier_payment_term_id" widget="selection" nolabel="1" />
 				</xpath>
+				<xpath expr="//div[@class='oe_chatter']" position="replace"/>
 			</field>
 		</record>
 		<!-- modification vue kanban par défaut, on préfère le mode liste - Clients -->
@@ -152,6 +153,7 @@
 				<xpath expr="//group/group[2]" position="inside">
 					<field name="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
 				</xpath>
+				<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
 			</field>
 		</record>
 	</data>

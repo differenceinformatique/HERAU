@@ -85,7 +85,9 @@
                 </xpath>  
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit'] " position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
-                </xpath>         
+                </xpath>  
+                <xpath expr="//div[@class='oe_chatter']" position="replace"/>                                    
+                
             </field>                                    
         </record>        
         <!-- <record id="di_view_order_form_inherit_sale_stock" model="ir.ui.view">

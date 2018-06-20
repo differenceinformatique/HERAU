@@ -172,6 +172,7 @@
 				<field name="di_tare" readonly="1" string="Tare" />
 				<field name="di_poib" readonly="1" string="Poids brut" />
 			</xpath>
+			<xpath expr="//div[@class='oe_chatter']" position="replace"/>
 		</field>
 	</record>
 	<!-- surcharge stock.view_move_form -->
@@ -211,6 +212,7 @@
 					</group>
 				</group>
 			</xpath>
+			<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
 		</field>
 	</record>
 	<!-- surcharge view_stock_move_operations -->
@@ -239,6 +241,7 @@
 				<field name="di_poib" invisible="1" />
 				<field name="di_tare" invisible="1" />
 			</xpath>
+			<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
 		</field>
 	</record>
 	<!-- surcharge view_stock_move_line_operation_tree -->

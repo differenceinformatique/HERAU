@@ -20,7 +20,7 @@
                     <field name="di_nb_colis" />
                     <field name="di_nb_palette" />                    
                 </xpath>                    
-                                  
+                <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/>   -->                
             </field>                                    
         </record>                
     </data>
