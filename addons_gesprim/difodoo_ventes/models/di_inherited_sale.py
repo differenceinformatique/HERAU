@@ -6,16 +6,9 @@ from datetime import datetime, timedelta
 from odoo.exceptions import UserError
 from ...difodoo_fichiers_base.controllers import di_ctrl_print
 import ctypes
-# import tkinter
-# from tkinter import messagebox
-# import pymsgbox
-
-# from addons import sale,account,stock,sale_stock 
-# from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import * 
-# from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
-# from outils import di_outils 
-
-from math import *
+from math import ceil
+from odoo.addons import decimal_precision as dp
+from difodoo.addons_gesprim.difodoo_fichiers_base.models import di_param
 
 
 class SaleOrderLine(models.Model):
@@ -63,7 +56,50 @@ class SaleOrderLine(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=True,compute='_di_compute_spe_saisissable',store=True)
           
-          
+    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)
+    
+    di_marge_prc = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)
+    
+    di_marge_inf_seuil = fields.Boolean(string='Marge inférieure au seuil',default = False, compute='_di_compute_marge_seuil',store=True)
+    
+#     di_marge_param = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)
+#         
+#     def di_get_param_by_company_id(self,company_id):    
+#         return self.env['di.param'].search(['di_company_id','=',company_id],limit=1) 
+    @api.one
+    @api.depends('di_marge_prc','company_id.di_param_id.di_seuil_marge_prc')#,'di_param_id.di_seuil_marge_prc')
+    def _di_compute_marge_seuil(self):   
+        if self.di_marge_prc < self.company_id.di_param_id.di_seuil_marge_prc:     
+            self.di_marge_inf_seuil = True
+        else:
+            self.di_marge_inf_seuil = False
+            
+    
+    @api.one
+    @api.depends('price_subtotal','product_uom_qty','purchase_price')
+    def _di_calul_marge_prc(self):
+        if self.product_uom_qty and self.product_uom_qty != 0.0:
+            qte = self.product_uom_qty
+        else:
+            qte = 1.0
+        if self.purchase_price and self.purchase_price !=0.0:
+            self.di_marge_prc = (self.price_subtotal/qte - self.purchase_price )*100/self.purchase_price            
+        else:
+            self.di_marge_prc = self.price_subtotal/qte*100
+        
+        
+    def _get_dernier_prix(self):
+        prix = 0.0
+        l = self.search(['&', ('product_id', '=', self.product_id.id), ('order_partner_id', '=', self.order_partner_id.id),('order_id.date_order','<',self.order_id.date_order)], limit=1).sorted(key=lambda t: t.order_id.date_order,reverse=True)
+        if l.price_unit:
+            prix = l.price_unit            
+        return prix
+    
+    @api.one
+    @api.depends('product_id','order_partner_id','order_id.date_order')
+    def _di_compute_dernier_prix(self):        
+        self.di_dern_prix =self._get_dernier_prix()
+            
 #     @api.model
 #     def create(self, vals):         
 #         line = False              

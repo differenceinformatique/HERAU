@@ -34,10 +34,15 @@ class StockMove(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
+    
+    
     @api.one
-    @api.depends('product_id.di_spe_saisissable')
-    def _di_compute_spe_saisissable(self):        
-        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+    @api.depends('product_id.di_spe_saisissable','sale_line_id','product_id.product_tmpl_id.tracking')
+    def _di_compute_spe_saisissable(self):       
+        if self.sale_line_id and self.product_id.product_tmpl_id.tracking != 'none':
+            self.di_spe_saisissable = False
+        else :                        
+            self.di_spe_saisissable =self.product_id.di_spe_saisissable
      
         
     def action_show_details(self):

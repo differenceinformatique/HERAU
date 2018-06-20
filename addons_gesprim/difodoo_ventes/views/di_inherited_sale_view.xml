@@ -102,10 +102,13 @@
 						<field name="qty_invoiced" attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}" />
 					</div>
 					<field name="di_qte_un_saisie_fac" readonly="1" invisible="1" />
-					<field name="purchase_price" groups="base.group_user" />
+					<field name="di_marge_prc" groups="base.group_user" />
+					<field name="purchase_price" invisible="1" groups="base.group_user" />
 				</xpath>
 				<!-- lignes en mode liste -->
-				<xpath expr="//field[@name='order_line']/tree" position="attributes"> <attribute name="editable">bottom</attribute> 
+				<xpath expr="//field[@name='order_line']/tree" position="attributes"> 
+				    <attribute name="editable">bottom</attribute>
+				    <attribute name="decoration-danger">di_marge_inf_seuil</attribute>  
 				</xpath>
 				<!-- <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="replace" /> -->
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="attributes">
@@ -125,9 +128,11 @@
 					<field name="di_qte_un_saisie_liv" readonly="1" invisible="1" />
 					<field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}" />
 					<field name="di_qte_un_saisie_fac" readonly="1" invisible="1" />
-					<field name="purchase_price" groups="base.group_user" />
+					<field name="di_marge_prc" groups="base.group_user" />
+					<field name="purchase_price" invisible="1" groups="base.group_user" />
 				</xpath>
-				<xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
+				<xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="after">				
+				    <field name="di_marge_inf_seuil" invisible="1" force_save="1" />
 					<field name="di_spe_saisissable" invisible="1" force_save="1" />
 					<field name="di_qte_un_saisie" string="Qté unité saisie"
 						attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
@@ -148,6 +153,9 @@
 					<field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
 					<field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
 				</xpath>
+				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
+                </xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
 					<field name="di_un_prix" string="Unité de prix"
 						attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />

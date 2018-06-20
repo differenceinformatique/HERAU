@@ -4,6 +4,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError
 from ...difodoo_fichiers_base.controllers import di_ctrl_print
+from odoo.addons import decimal_precision as dp
 
 # from difodoo.addons_gesprim.difodoo_ventes.models import di_inherited_stock_move 
 
@@ -48,6 +49,20 @@ class PurchaseOrderLine(models.Model):
     di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix facturé",store=True)
  
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    
+    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)
+    
+    def _get_dernier_prix(self):
+        prix = 0.0
+        l = self.search(['&', ('product_id', '=', self.product_id.id), ('partner_id', '=', self.partner_id.id),('date_order','<',self.date_order)], limit=1).sorted(key=lambda t: t.date_order,reverse=True)
+        if l.price_unit:
+            prix = l.price_unit            
+        return prix
+    
+    @api.one
+    @api.depends('product_id','partner_id','date_order')
+    def _di_compute_dernier_prix(self):        
+        self.di_dern_prix =self._get_dernier_prix()
     
     @api.one
     @api.depends('product_id.di_spe_saisissable')

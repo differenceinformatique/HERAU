@@ -436,7 +436,8 @@
                         <field name="di_printer_id" />
                         <field name="di_label_id" /> 
                         <field name="di_printer_ach_id" />
-                        <field name="di_label_ach_id" />                      
+                        <field name="di_label_ach_id" />
+                        <field name="di_seuil_marge_prc" />                                              
                     </group>
                 </sheet>
             </form>

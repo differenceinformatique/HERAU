@@ -7,8 +7,7 @@ class DiParam(models.Model):
     _name = "di.param"
     _description = "Parametres"
     _order = "name"
-    
-    
+        
     di_company_id = fields.Many2one('res.company', string='Société', readonly=True,  default=lambda self: self.env.user.company_id)
     name = fields.Char(string='Name',readonly=True,default=lambda self: self.env.user.company_id.name)
 #     di_act_grille_vente = fields.Boolean(string="Activer la grille de vente",help="""Permet l'activation de la grille de vente pour 
@@ -18,7 +17,9 @@ class DiParam(models.Model):
     di_label_id = fields.Many2one('di.labelmodel',string="Modèle étiquette")
     di_printer_ach_id = fields.Many2one('di.printer',string="Imprimante étiquette achats")
     di_label_ach_id = fields.Many2one('di.labelmodel',string="Modèle étiquette achats")
-                             
+    di_seuil_marge_prc = fields.Float(string='Taux de marge minimal',help="""Taux de marge en vente, en dessous duquel vous serez averti. """, default=0.0)
+     
+                       
     #unicité 
     @api.one
     @api.constrains('di_company_id')
