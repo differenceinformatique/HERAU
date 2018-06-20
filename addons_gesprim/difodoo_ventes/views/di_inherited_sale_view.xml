@@ -8,11 +8,15 @@
 			<field name="inherit_id" ref="sale.view_order_form" />
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
-			     <!-- Header -->
-			     <xpath expr="//header/field[@name='state']" position="before">                                       
+<!-- 			     <xpath expr="//header/field[@name='state']" position="before">                                       
                     <button class="di_class_grille_vente" name="di_action_grille_vente" type="object" string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client."/>
                     <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>                                          
-                </xpath>
+                </xpath> -->
+				<xpath expr="//header/field[@name='state']" position="before">
+					<button class="di_class_grille_vente" name="di_action_grille_vente" type="object"
+						string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client." />
+				</xpath>
+
 				<!-- on enlève les adresses du choix du tiers -->
 				<xpath expr="//sheet/group/group/field[@name='partner_id']" position="replace">
 					<field name="partner_id" domain="[('customer','=',True),('parent_id','=',False)]"
@@ -105,8 +109,8 @@
 					<field name="purchase_price" groups="base.group_user" />
 				</xpath>
 				<!-- lignes en mode liste -->
-				<!-- <xpath expr="//field[@name='order_line']/tree" position="attributes"> <attribute name="editable">bottom</attribute> 
-					</xpath> -->
+				<xpath expr="//field[@name='order_line']/tree" position="attributes"> <attribute name="editable">bottom</attribute> 
+				</xpath>
 				<!-- <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="replace" /> -->
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="attributes">
 					<attribute name="invisible">1</attribute>
