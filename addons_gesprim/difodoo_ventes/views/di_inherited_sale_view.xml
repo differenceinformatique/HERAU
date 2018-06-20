@@ -8,15 +8,12 @@
 			<field name="inherit_id" ref="sale.view_order_form" />
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
-<!-- 			     <xpath expr="//header/field[@name='state']" position="before">                                       
-                    <button class="di_class_grille_vente" name="di_action_grille_vente" type="object" string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client."/>
-                    <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>                                          
-                </xpath> -->
 				<xpath expr="//header/field[@name='state']" position="before">
 					<button class="di_class_grille_vente" name="di_action_grille_vente" type="object"
 						string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client." />
+						<!-- <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/> -->
 				</xpath>
-
+                                                                            
 				<!-- on enlève les adresses du choix du tiers -->
 				<xpath expr="//sheet/group/group/field[@name='partner_id']" position="replace">
 					<field name="partner_id" domain="[('customer','=',True),('parent_id','=',False)]"
