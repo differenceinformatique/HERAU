@@ -42,7 +42,8 @@
 	<menuitem id="menu_gesprim_fichiers" name="Fichiers" sequence="10" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim" />
-	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="40" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_stock" name="Stocks" sequence="40" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="50" parent="menu_gesprim" />
 	<!-- <menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim" /> -->
 	<!-- ***Menu Fichiers -->	
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
@@ -103,7 +104,10 @@
     <menuitem id="menu_gesprim_achats_avoirs" name="Avoirs clients" sequence="30" parent="menu_gesprim_achats_fact" action="account.action_invoice_out_refund"/> -->
     <!-- ****Menu Statistiques -->
     <menuitem id="menu_gesprim_stats_factures" name="Factures" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
-    
+    <!-- ****Menu Stock -->    
+    <menuitem id="menu_gesprim_stock_inv" name="Resserre" sequence="10" parent="menu_gesprim_stock" action="stock.action_inventory_form"/>
+    <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="12" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
+ 
     
     
 </odoo>
