@@ -43,6 +43,57 @@
 	<template id="di_report_lot_label">
 		<div t-if="l.product_id.barcode">
 			<t t-foreach="range(l.di_nb_colis)" t-as="k">
+				<!-- <table style="border-spacing:0;margin-bottom:0;height:122px;" class="table"> -->
+				<table style="border: 1px solid black;height:350px">
+					<tr>
+						<td style="text-align: center;" class="col-xs-8" colspan="4">
+							<h2 t-field="doc.company_id.name" />
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: center;font-size:1.2em;" colspan="4">
+							<span t-field="doc.company_id.street" />
+							<span> - </span>
+							<span t-field="doc.company_id.zip" />
+							<span> - </span>
+							<span t-field="doc.company_id.city" />
+						</td>
+					</tr>
+					<tr><td style="height:20px;border-left:1px solid black;" colspan="4"></td></tr>	
+					<tr style="border: 1px solid black;">
+						<td class="col-xs-2">Calibre</td>
+						<td class="col-xs-2"><span t-field="l.product_id.di_calibre_id"/></td>
+						<td style="border-left: 1px solid black;" class="col-xs-2">Origine</td>
+						<td class="col-xs-2"><span t-field="l.product_id.di_origine_id"/></td>
+					</tr>
+					<tr style="border: 1px solid black;">
+						<td class="col-xs-2">Catégorie</td>
+						<td class="col-xs-2"><span t-field="l.product_id.di_categorie_id"/></td>
+						<td style="border-left: 1px solid black;" class="col-xs-2">Poids net</td>
+						<td class="col-xs-2"><span t-field="l.product_id.weight"/><span> kg</span></td>
+					</tr>
+					<tr><td style="height:20px;border-left:1px solid black;" colspan="4"></td></tr>					
+					<tr>					
+						<!-- <td style="border: 2px solid black;text-align: center; vertical-align: middle;" class="col-xs-8"> -->
+						<td style="text-align: center;height:180px;" colspan="4" class="col-xs-8">
+							<t t-set="barcode"
+								t-value="chr(29) + '020' +  l.product_id.barcode + chr(29) + '3102' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + chr(29) + '10' + l.order_id.name " />
+							<t t-set="barcode_txt"
+								t-value="'(02)0' +  l.product_id.barcode + '(3102)' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + '(10)' + l.order_id.name " />
+							<img t-if="l.product_id.barcode"
+								t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', barcode, 600, 150)"
+								style="width:100%;height:80%;" />
+							<span t-esc="barcode_txt" />
+						</td>
+					</tr>		
+				</table>
+				<p/>
+			</t>
+		</div>
+	</template>
+<!-- 	<template id="di_report_lot_label">
+		<div t-if="l.product_id.barcode">
+			<t t-foreach="range(l.di_nb_colis)" t-as="k">
 				<table style="border-spacing:0;margin-bottom:0;height:122px;" class="table">
 					<thead>
 						<tr>
@@ -59,8 +110,8 @@
 					<tbody>
 						<tr>
 							<td style="border: 2px solid black;text-align: center; vertical-align: middle;" class="col-xs-8">
-								<t t-set="barcode" t-value="chr(29) + '020' +  l.product_id.barcode + chr(29) + '3102' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + chr(29) + '21' + l.order_id.name " />
-								<t t-set="barcode_txt" t-value="'(02)0' +  l.product_id.barcode + '(3102)' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + '(21)' + l.order_id.name " />
+								<t t-set="barcode" t-value="chr(29) + '020' +  l.product_id.barcode + chr(29) + '3102' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + chr(29) + '10' + l.order_id.name " />
+								<t t-set="barcode_txt" t-value="'(02)0' +  l.product_id.barcode + '(3102)' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + '(10)' + l.order_id.name " />
 								<img t-if="l.product_id.barcode"															
 									t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', barcode, 600, 150)"
 									style="width:100%;height:80%;" />
@@ -71,7 +122,7 @@
 				</table>
 			</t>
 		</div>
-	</template>
+	</template> -->
 	<!-- Edition des étiquettes achat depuis la commande d'achat-->
 	<template id="di_order_report_lot_label">
 		<t t-call="web.basic_layout">
@@ -79,20 +130,36 @@
 				<div class="page">
 					<t t-foreach="doc.order_line" t-as="l">
 						<t t-call="difodoo_fichiers_base.di_report_lot_label">
-							<t t-set="l" t-value="l" />
+							<t t-set="l" t-value="l"/>
+							<t t-set="doc" t-value="doc"/>
 						</t>
 					</t>
 				</div>
 			</t>
 		</t>
 	</template>
-	<!-- Création du format de papier étiquette-->
+	<!-- Création du formats de papier étiquette-->
 	<record id="di_etiq_11_5" model="report.paperformat">
-		<field name="name">Etiquette 11x15</field>
+		<field name="name">Etiquette 11x5</field>
 		<field name="default" eval="True" />
 		<field name="format">custom</field>
 		<field name="page_height">50</field>
 		<field name="page_width">110</field>
+		<field name="orientation">Portrait</field>
+		<field name="margin_top">2</field>
+		<field name="margin_bottom">2</field>
+		<field name="margin_left">2</field>
+		<field name="margin_right">2</field>
+		<field name="header_line" eval="False" />
+		<field name="header_spacing">0</field>
+		<field name="dpi">200</field>
+	</record>
+	<record id="di_etiq_10_8" model="report.paperformat">
+		<field name="name">Etiquette 10x8</field>
+		<field name="default" eval="True" />
+		<field name="format">custom</field>
+		<field name="page_height">80</field>
+		<field name="page_width">100</field>
 		<field name="orientation">Portrait</field>
 		<field name="margin_top">2</field>
 		<field name="margin_bottom">2</field>
@@ -111,7 +178,7 @@
 		name="product.report_productlabel"
 		file="product.report_productlabel"
 		print_report_name="'Products Labels - %s' % (object.name)"
-		paperformat="difodoo_fichiers_base.di_etiq_11_5"
+		paperformat="difodoo_fichiers_base.di_etiq_10_8"
 	/>
 	<report
 		id="product.report_product_template_label"
@@ -121,6 +188,6 @@
 		name="product.report_producttemplatelabel"
 		file="product.report_producttemplatelabel"
 		print_report_name="'Products Labels - %s' % (object.name)"
-		paperformat="difodoo_fichiers_base.di_etiq_11_5"
+		paperformat="difodoo_fichiers_base.di_etiq_10_8"
 	/>
 </odoo>

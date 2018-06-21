@@ -78,7 +78,7 @@
 		file="difodoo_fichiers_base.di_order_report_lot_label"
 		name="difodoo_fichiers_base.di_order_report_lot_label"
 		print_report_name="'Etiquettes - %s' % (object.name)"
-		paperformat="difodoo_fichiers_base.di_etiq_11_5"
+		paperformat="difodoo_fichiers_base.di_etiq_10_8"
 	/>
 	<!-- rapport permettant de lancer l'impression du bon de réception depuis la commande fournisseur -->
 	<template id="di_report_po_br">
