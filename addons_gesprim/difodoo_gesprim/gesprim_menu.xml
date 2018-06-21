@@ -37,7 +37,7 @@
         <field name="groups_id" eval="[(3,ref('account.group_account_invoice'))]"/>
     </record>    		
 	<!-- Top Menu -->
-	<menuitem id="menu_gesprim" name="Gesprim" sequence="309"/>
+	<menuitem id="menu_gesprim" name="Gesprim" sequence="309" action="difodoo_ventes.di_action_invoice_report_all"/>
 	<!-- **Menu Gesprim -->
 	<menuitem id="menu_gesprim_fichiers" name="Fichiers" sequence="10" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim" />
