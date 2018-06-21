@@ -88,6 +88,7 @@ class DiGenCoutsWiz(models.TransientModel):
             if qte !=0.0:
                 cmp=mont/qte
             else:
+                mont = 0
                 cmp=mont
                 
 #             if  qte !=0.0 or mont != 0.0 or nbcol!=0.0 or nbpal!=0.0 or nbpiece!=0.0 or poids!=0.0:   
@@ -117,7 +118,9 @@ class DiGenCoutsWiz(models.TransientModel):
 #         date_lancement=date_lancement.replace(day=19)
         
         
-        for article in articles:   
+        for article in articles:  
+            if article.id ==5986:
+                article.id 
             move = self.env['stock.move'].search([ ('product_id', '=', article.id)], limit=1)
             if move:            
                 self.di_generer_cmp(article.id, date_lancement)

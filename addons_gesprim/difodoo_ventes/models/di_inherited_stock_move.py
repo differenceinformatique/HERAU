@@ -327,7 +327,8 @@ class StockMove(models.Model):
             mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','=',False)])
              
         for mouv in mouvs:
-            if mouv.remaining_qty:
+#             if mouv.remaining_qty:
+            if mouv.location_dest_id.usage == 'internal':
                 qte = qte + mouv.product_uom_qty
                 nbcol = nbcol + mouv.di_nb_colis
                 nbpal = nbpal + mouv.di_nb_palette
