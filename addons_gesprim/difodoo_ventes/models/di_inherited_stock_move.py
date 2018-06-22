@@ -306,7 +306,7 @@ class StockMove(models.Model):
                 nbpiece = nbpiece + mouv.di_nb_pieces
                 poids = poids + mouv.di_poin
                 if mouv.purchase_line_id:
-                    mont = mont + mouv.purchase_line_id.price_total
+                    mont = mont + mouv.purchase_line_id.price_subtotal
                 elif mouv.sale_line_id:
                     mont = mont + (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
             else:
@@ -316,7 +316,7 @@ class StockMove(models.Model):
                 nbpiece = nbpiece - mouv.di_nb_pieces
                 poids = poids - mouv.di_poin
                 if mouv.purchase_line_id:
-                    mont = mont - mouv.purchase_line_id.price_total
+                    mont = mont - mouv.purchase_line_id.price_subtotal
                 elif mouv.sale_line_id:
                     mont = mont - (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
              
