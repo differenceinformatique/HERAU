@@ -42,7 +42,7 @@ class StockMove(models.Model):
         if (self.sale_line_id or self.purchase_line_id)and self.product_id.product_tmpl_id.tracking != 'none':
             self.di_spe_saisissable = False
         else :                        
-            self.di_spe_saisissable =self.product_id.di_spe_saisissable
+            self.di_spe_saisissable = self.product_id.di_spe_saisissable
      
         
     def action_show_details(self):
@@ -610,3 +610,34 @@ class StockPicking(models.Model):
             wnbcol = sum(move.di_nb_colis for move in picking.move_lines if move.state != 'cancel')
         picking.di_nbpal = ceil(wnbpal)
         picking.di_nbcol = ceil(wnbcol)
+
+class StockQuant(models.Model):
+    _inherit = 'stock.quant'
+    
+    di_cmp = fields.Float(string="Coût moyen",related="product_id.standard_price",group_operator='avg',store=True)
+    di_valstock = fields.Float(string='Valeur Stock',compute='_compute_valstock',group_operator='sum',store=True)
+    di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute="_compute_qte_spe",group_operator='sum',store=True)
+    di_nb_colis     = fields.Integer(string='Nb colis',compute="_compute_qte_spe",group_operator='sum',store=True)
+    di_poin         = fields.Float(string='Poids net',compute="_compute_qte_spe",group_operator='sum',store=True)
+    currency_id = fields.Many2one("res.currency", related='company_id.currency_id', string="Currency")   # pour avoir le widget euro
+    
+    @api.one
+    @api.depends('di_cmp','quantity')
+    def _compute_valstock(self):
+        self.di_valstock = self.quantity*self.di_cmp
+        
+    @api.one
+    @api.depends('quantity')
+    def _compute_qte_spe(self):
+        self.di_poin = self.quantity*self.product_id.weight                        
+        if self.product_id.di_type_colis_id.qty != 0.0:
+            self.di_nb_colis = ceil(self.quantity / self.product_id.di_type_colis_id.qty)
+        else:
+            self.di_nb_colis = ceil(self.quantity)
+        if self.product_id.di_type_palette_id.di_qte_cond_inf !=0.0:    
+            self.di_nb_palette = self.di_nb_colis / self.product_id.di_type_palette_id.di_qte_cond_inf
+        else:  
+            self.di_nb_palette = self.di_nb_colis
+        self.di_nb_pieces = ceil(self.product_id.di_type_colis_id.di_qte_cond_inf * self.di_nb_colis)
+                  
+            

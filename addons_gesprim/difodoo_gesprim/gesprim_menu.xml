@@ -87,7 +87,6 @@
 	<menuitem id="menu_gesprim_ventes_cde_fact" name="Commandes à facturer" sequence="10" parent="menu_gesprim_ventes_fact" action="sale.action_orders_to_invoice"/>
 	<menuitem id="menu_gesprim_ventes_factures" name="Factures clients" sequence="20" parent="menu_gesprim_ventes_fact" action="account.action_invoice_tree1"/>    
 	<menuitem id="menu_gesprim_ventes_avoirs" name="Avoirs clients" sequence="30" parent="menu_gesprim_ventes_fact" action="account.action_invoice_out_refund"/>	
-	
 	<!-- ***Menu Achats -->    
     <menuitem id="menu_gesprim_achats_devis" name="Demandes de Prix" sequence="10" parent="menu_gesprim_achats" action="purchase.purchase_rfq"/>
     <menuitem id="menu_gesprim_achats_commandes" name="Commandes" sequence="20" parent="menu_gesprim_achats" action="purchase.purchase_form_action" />  
@@ -103,13 +102,9 @@
     <menuitem id="menu_gesprim_achats_factures" name="Factures fournisseur" sequence="10" parent="menu_gesprim_achats_fact" action="account.action_invoice_tree2"/>    
     <menuitem id="menu_gesprim_achats_avoirs" name="Avoirs fournisseur" sequence="20" parent="menu_gesprim_achats_fact" action="account.action_invoice_in_refund"/> -->
     <!-- ****Menu Statistiques -->
-    <menuitem id="menu_gesprim_stats_factures" name="Factures" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
+    <menuitem id="menu_gesprim_stats_factures" name="Analyse CA" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
     <!-- ****Menu Stock -->    
     <menuitem id="menu_gesprim_stock_inv" name="Resserre" sequence="10" parent="menu_gesprim_stock" action="stock.action_inventory_form"/>
     <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="20" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
     <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
-    
- 
-    
-    
 </odoo>

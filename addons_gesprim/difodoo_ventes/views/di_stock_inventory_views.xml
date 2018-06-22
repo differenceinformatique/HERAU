@@ -6,8 +6,7 @@
             <field name="model">stock.inventory</field>
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-              
+            <field name="arch" type="xml">              
                 <xpath expr="//page/field[@name='line_ids']/tree/field[@name='theoretical_qty']" position="after">
                     <field name="di_poin_theo" readonly="1"/>
                     <field name="di_nb_pieces_theo" readonly="1"/>
@@ -21,8 +20,25 @@
                     <field name="di_nb_palette" />                    
                 </xpath>                    
                 <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/>   -->                
-            </field>                                    
-        </record>                
+            </field>
+        <!-- visualisation des stocks -->                                    
+		</record>
+		<record id="di_view_stock_quant_tree" model="ir.ui.view">
+			<field name="name">di.stock.quant.tree</field>
+			<field name="model">stock.quant</field>
+			<field name="inherit_id" ref="stock.view_stock_quant_tree" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='product_uom_id']" position="after">
+					<field name="di_nb_pieces"/>
+					<field name="di_nb_colis"/>
+					<field name="di_poin"/>
+					<field name="di_cmp" widget="monetary"/>
+					<field name="di_valstock" widget="monetary"/>
+					<field name="currency_id" invisible="1"/>
+				</xpath>
+			</field>
+		</record>                
     </data>
 </odoo>
    
