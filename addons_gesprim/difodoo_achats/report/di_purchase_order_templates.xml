@@ -51,7 +51,7 @@
 					<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
 				</t>
 				<t t-if="line.di_un_prix == 'KG'">
-					<div>.</div>
+					<div>&amp;nbsp;</div>
 					<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
 				</t>
 			</td>

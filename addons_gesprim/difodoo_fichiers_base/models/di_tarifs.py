@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
-import datetime
+from datetime import datetime
     
 class DiTarifs(models.Model):
     _name = "di.tarifs"
@@ -24,9 +24,9 @@ class DiTarifs(models.Model):
     def _changer_nom(self):    
         for tar in self:  
             if tar.di_un_prix:  
-                tar.name=tar.di_product_id.default_code+' - '+tar.di_code_tarif_id.name+' - '+tar.di_un_prix +' - '+str(tar.di_qte_seuil)+' - '+tar.di_date_effet#+' - '+str(self.di_partner_id.ref)
+                tar.name=tar.di_product_id.default_code+' - '+tar.di_code_tarif_id.name+' - '+tar.di_un_prix +' - '+str(tar.di_qte_seuil)+' - '+ datetime.strptime(tar.di_date_effet,'%Y-%m-%d').strftime('%d/%m/%Y')#+' - '+str(self.di_partner_id.ref)
             else:
-                tar.name=tar.di_product_id.default_code+' - '+tar.di_code_tarif_id.name+' - '+str(tar.di_qte_seuil)+' - '+tar.di_date_effet#+' - '+str(self.di_partner_id.ref)
+                tar.name=tar.di_product_id.default_code+' - '+tar.di_code_tarif_id.name+' - '+str(tar.di_qte_seuil)+' - '+ datetime.strptime(tar.di_date_effet,'%Y-%m-%d').strftime('%d/%m/%Y')#+' - '+str(self.di_partner_id.ref)
                 
     def _di_get_prix(self, tiers, article, di_un_prix , qte, date):            
         prix=0.0

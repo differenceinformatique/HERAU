@@ -23,7 +23,7 @@ class DiCout(models.Model):
     @api.one
     @api.depends('di_product_id', 'di_date')
     def _compute_name(self):
-        self.name = self.di_product_id.display_name + ' ' + self.di_date
+        self.name = self.di_product_id.display_name + ' ' + datetime.strptime(self.di_date,'%Y-%m-%d').strftime('%d/%m/%Y')
         
     def di_get_cout_uom(self, product_id, date):        
         dernier_mouv_achat = self.env['purchase.order.line'].new()

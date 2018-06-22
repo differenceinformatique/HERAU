@@ -50,7 +50,7 @@
 			</t>			
 			<t t-foreach="range(l.di_nb_colis)" t-as="k">
 				<!-- <table style="border-spacing:0;margin-bottom:0;height:122px;" class="table"> -->
-				<table style="border: 1px solid black;height:350px">
+				<table style="border: 1px solid black;height:350px;">
 					<tr>
 						<td style="text-align: center;" class="col-xs-8" colspan="4">
 							<h2 t-field="doc.company_id.name" />
@@ -101,8 +101,8 @@
 							<t t-set="barcode_txt"
 								t-value="'(02)0' +  l.product_id.barcode + '(3102)' + str(int(round(poids*100))).rjust(6,'0') + '(10)' + l.order_id.name " />
 							<img t-if="l.product_id.barcode"
-								t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', barcode, 600, 150)"
-								style="width:100%;height:80%;" />
+								t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', barcode, 375, 100)"/>
+								<!-- style="width:100%;height:80%;" /> -->
 							<span t-esc="barcode_txt" />
 						</td>
 					</tr>		

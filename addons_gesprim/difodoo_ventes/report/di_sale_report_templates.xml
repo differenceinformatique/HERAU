@@ -43,7 +43,7 @@
 					<div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
 				</t>
 				<t t-if="l.di_un_prix == 'KG'">
-					<div>.</div>
+					<div>&amp;nbsp;</div>
 					<div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
 				</t>
 			</td>
