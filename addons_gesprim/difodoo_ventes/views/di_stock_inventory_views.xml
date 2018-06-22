@@ -23,7 +23,7 @@
                     <field name="di_nb_pieces" />
                     <field name="di_nb_colis" />
                     <field name="di_nb_palette" />
-                    <field name="di_ecart_qte" readonly="1"/>                      
+                    <field name="di_ecart_qte" string="Ecart unité de stock" readonly="1"/>                      
                 </xpath>                    
                 <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/>   -->                
             </field>
