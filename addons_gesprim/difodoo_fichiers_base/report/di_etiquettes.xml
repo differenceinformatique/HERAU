@@ -42,6 +42,12 @@
 	<!-- Etiquette ligne achat -->
 	<template id="di_report_lot_label">
 		<div t-if="l.product_id.barcode">
+			<t t-if="l.di_nb_colis">
+				<t t-set="poids" t-value="l.di_poin/l.di_nb_colis"/>
+			</t>
+			<t t-else="">
+				<t t-set="poids" t-value="l.di_poin"/>
+			</t>			
 			<t t-foreach="range(l.di_nb_colis)" t-as="k">
 				<!-- <table style="border-spacing:0;margin-bottom:0;height:122px;" class="table"> -->
 				<table style="border: 1px solid black;height:350px">
@@ -68,6 +74,12 @@
 							</t>
 							<strong t-field="l.product_id.name" />
 						</td>
+					</tr>
+					<tr style="border: 1px solid black;">
+						<td class="col-xs-2">Lot</td>
+						<td class="col-xs-2"><span t-field="l.order_id.name"/></td>
+						<td style="border-left: 1px solid black;" class="col-xs-2">&amp;nbsp;</td>
+						<td class="col-xs-2">&amp;nbsp;</td>
 					</tr>		
 					<tr style="border: 1px solid black;">
 						<td class="col-xs-2">Calibre</td>
@@ -79,15 +91,15 @@
 						<td class="col-xs-2">Catégorie</td>
 						<td class="col-xs-2"><span t-field="l.product_id.di_categorie_id"/></td>
 						<td style="border-left: 1px solid black;" class="col-xs-2">Poids net</td>
-						<td class="col-xs-2"><span t-field="l.product_id.weight"/><span> kg</span></td>
+						<td class="col-xs-2"><span t-esc="poids"/><span> kg</span></td>
 					</tr>
 					<tr><td style="height:20px;border-left:1px solid black;" colspan="4"></td></tr>					
 					<tr>					
-						<td style="text-align: center;height:160px;" colspan="4" class="col-xs-8">
+						<td style="text-align: center;height:140px;" colspan="4" class="col-xs-8">
 							<t t-set="barcode"
-								t-value="chr(29) + '020' +  l.product_id.barcode + chr(29) + '3102' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + chr(29) + '10' + l.order_id.name " />
+								t-value="chr(29) + '020' +  l.product_id.barcode + chr(29) + '3102' + str(int(round(poids*100))).rjust(6,'0') + chr(29) + '10' + l.order_id.name" />
 							<t t-set="barcode_txt"
-								t-value="'(02)0' +  l.product_id.barcode + '(3102)' + str(int(round(l.product_id.weight*100))).rjust(6,'0') + '(10)' + l.order_id.name " />
+								t-value="'(02)0' +  l.product_id.barcode + '(3102)' + str(int(round(poids*100))).rjust(6,'0') + '(10)' + l.order_id.name " />
 							<img t-if="l.product_id.barcode"
 								t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', barcode, 600, 150)"
 								style="width:100%;height:80%;" />
