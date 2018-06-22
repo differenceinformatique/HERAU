@@ -127,8 +127,15 @@ class InventoryLine(models.Model):
     di_nb_pieces_theo = fields.Integer(string='Nb pièces théorique', store=True, compute='_compute_theoretical_qty')
     di_nb_colis_theo = fields.Integer(string='Nb colis théorique' , store=True, compute='_compute_theoretical_qty')
     di_nb_palette_theo = fields.Float(string='Nb palettes théorique' , store=True, compute='_compute_theoretical_qty')
-    di_poin_theo = fields.Float(string='Poids théorique' , store=True, compute='_compute_theoretical_qty')           
-        
+    di_poin_theo = fields.Float(string='Poids théorique' , store=True, compute='_compute_theoretical_qty')   
+    
+    di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')       
+    
+    @api.one
+    @api.depends('product_qty', 'theoretical_qty')
+    def _compute_ecart(self):                    
+        self.di_ecart_qte = self.product_qty - self.theoretical_qty                                        
+         
         
     @api.one
     @api.depends('location_id', 'product_id', 'package_id', 'product_uom_id', 'company_id', 'prod_lot_id', 'partner_id')

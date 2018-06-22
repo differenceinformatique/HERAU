@@ -581,7 +581,8 @@ class StockMoveLine(models.Model):
             mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)])
              
         for mouv in mouvs:
-            if mouv.move_id.remaining_qty:                
+#             if mouv.move_id.remaining_qty:
+            if mouv.location_dest_id.usage == 'internal':                
                 nbcol = nbcol + mouv.di_nb_colis
                 nbpal = nbpal + mouv.di_nb_palette
                 nbpiece = nbpiece + mouv.di_nb_pieces

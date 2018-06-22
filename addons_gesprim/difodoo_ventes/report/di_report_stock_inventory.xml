@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="di_report_inventory" inherit_id="stock.report_inventory">
+		<xpath expr="//table[2]/thead/tr/th[5]" position="after">
+			<th class="text-right">
+				<strong>Poids</strong>
+			</th>
+			<th class="text-right">
+				<strong>Pièces</strong>
+			</th>
+			<th class="text-right">
+				<strong>Colis</strong>
+			</th>
+			<th class="text-right">
+				<strong>Palettes</strong>
+			</th>
+			<th class="text-right">
+                <strong>Ecart</strong>
+            </th>
+		</xpath>
+		<xpath expr="//table[2]/thead/tr/th[5]" position="before">
+			<th class="text-right">
+				<strong>Qté th.</strong>
+			</th>
+			<th class="text-right">
+				<strong>Pds th.</strong>
+			</th>
+			<th class="text-right">
+				<strong>Pièces th.</strong>
+			</th>
+			<th class="text-right">
+				<strong>Col. th.</strong>
+			</th>
+			<th class="text-right">
+				<strong>Pal. th.</strong>
+			</th>
+		</xpath>
+
+
+		<xpath expr="//table[2]/tbody/t/tr[2]/td[5]" position="after">
+			<td class="text-right">
+				<span t-field="line.di_poin" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_nb_pieces" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_nb_colis" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_nb_palette" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_ecart_qte" />
+			</td>
+		</xpath>
+		<xpath expr="//table[2]/tbody/t/tr[2]/td[5]" position="before">
+			<td class="text-right">
+				<span t-field="line.theoretical_qty" />
+				<span t-field="line.product_uom_id" groups="product.group_uom" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_poin_theo" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_nb_pieces_theo" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_nb_colis_theo" />
+			</td>
+			<td class="text-right">
+				<span t-field="line.di_nb_palette_theo" />
+			</td>
+		</xpath>
+
+
+	</template>
+</odoo>

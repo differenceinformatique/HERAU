@@ -161,4 +161,19 @@ class ProductPackaging(models.Model):
             raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements avec le même nom pour un même article.") 
         
 
-
+# 
+# class ProductCategory(models.Model):
+#     _inherit = "product.category"
+#     
+#     @api.one
+#     def di_enfants_et_courant(self):
+#         childs = self.env['product.category'].new()
+#         childs = self.child_id + self                                                                     
+#         return childs
+#         
+#         
+#         
+#     def di_parents_et_courant(self):
+#         parents = self.env['product.category'].new()
+#         parents = self.parent_id + self                                                                        
+#         return parents

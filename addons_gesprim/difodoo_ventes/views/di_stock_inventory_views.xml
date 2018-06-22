@@ -6,7 +6,12 @@
             <field name="model">stock.inventory</field>
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field eval="99" name="priority"/>
-            <field name="arch" type="xml">              
+            <field name="arch" type="xml">
+                <xpath expr="//page/field[@name='line_ids']/tree" position="attributes">                                  
+                    <attribute name="decoration-danger">di_ecart_qte &lt; 0</attribute>
+                    <attribute name="decoration-success">di_ecart_qte &gt; 0</attribute>
+                    <attribute name="decoration-info">1 &lt; 0</attribute>                          
+                </xpath>              
                 <xpath expr="//page/field[@name='line_ids']/tree/field[@name='theoretical_qty']" position="after">
                     <field name="di_poin_theo" readonly="1"/>
                     <field name="di_nb_pieces_theo" readonly="1"/>
@@ -17,7 +22,8 @@
                     <field name="di_poin" />
                     <field name="di_nb_pieces" />
                     <field name="di_nb_colis" />
-                    <field name="di_nb_palette" />                    
+                    <field name="di_nb_palette" />
+                    <field name="di_ecart_qte" readonly="1"/>                      
                 </xpath>                    
                 <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/>   -->                
             </field>

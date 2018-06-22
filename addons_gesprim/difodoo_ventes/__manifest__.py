@@ -31,6 +31,7 @@
         "static/di_webclient_templates.xml",
         "report/di_sale_report_templates.xml",
         "report/di_report_deliveryslip.xml",
+        "report/di_report_stock_inventory.xml",
         "report/di_report_invoice.xml",
         "report/di_invoice_report.xml"
         # 'security/ir.model.access.csv',

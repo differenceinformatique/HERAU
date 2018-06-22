@@ -5,9 +5,15 @@
         <field name="model">di.imp.tar.wiz</field>
         <field name="arch" type="xml">
             <form string="Impression Tarifs de vente">                
-                <div>           
-                    <label for="di_date_effet" string="Date d'application" />                                                
-                    <field name="di_date_effet" string="Date d'application"/>                    
+                <div>        
+                    <group>
+                        <group>                                                                       
+                            <field name="di_date_effet" string="Date d'application"/>
+                        </group>
+                        <group>                                                                    
+                            <field name="di_category" string="Famille article"/>
+                        </group>        
+                    </group>              
                 </div>                                   
                 <separator />
                 <label for="di_codes_tarifs_ids" string="Code tarifs à imprimer" />
