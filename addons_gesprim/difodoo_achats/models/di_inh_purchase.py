@@ -12,10 +12,10 @@ from odoo.addons import decimal_precision as dp
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"    
     
-    product_packaging = fields.Many2one('product.packaging', string='Package', default=False)
+    product_packaging = fields.Many2one('product.packaging', string='Package', default=False,store=True)
     di_qte_un_saisie= fields.Float(string='Quantité en unité de saisie',store=True)
     di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie",store=True)
-    di_type_palette_id  = fields.Many2one('product.packaging', string='Palette') 
+    di_type_palette_id  = fields.Many2one('product.packaging', string='Palette',store=True) 
     di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute="_compute_qte_aff",store=True)
     di_nb_colis     = fields.Integer(string='Nb colis',compute="_compute_qte_aff",store=True)
     di_nb_palette   = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True)
