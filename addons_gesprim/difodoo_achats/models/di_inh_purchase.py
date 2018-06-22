@@ -68,7 +68,7 @@ class PurchaseOrderLine(models.Model):
     def _di_compute_spe_saisissable(self):        
         self.di_spe_saisissable =self.product_id.di_spe_saisissable
        
-
+    @api.multi
     @api.depends('product_qty', 'price_unit', 'taxes_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
     def _compute_amount(self):
         # copie standard 
