@@ -44,24 +44,21 @@
 	<menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_stock" name="Stocks" sequence="40" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="50" parent="menu_gesprim" />
-	<!-- <menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim" /> -->
+	<menuitem id="menu_gesprim_uti" name="Utilitaires" sequence="60" parent="menu_gesprim" />
 	<!-- ***Menu Fichiers -->	
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
 	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="30" parent="menu_gesprim_fichiers" action="base.action_partner_supplier_form" />
 	<menuitem id="menu_gesprim_param" name="Paramétrage" sequence="40" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_param" />
 	<menuitem id="menu_gesprim_tar" name="Tarifs" sequence="100" parent="menu_gesprim_fichiers" />
-	<menuitem id="menu_gesprim_tables" name="Tables" sequence="200" parent="menu_gesprim_fichiers" />
-	<menuitem id="menu_gesprim_imp" name="Impressions" sequence="300" parent="menu_gesprim_fichiers" />
-	<!-- ***Menu impressions -->	
-	<menuitem id="menu_gesprim_imprimantes" sequence="10" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_printer" />
-	<menuitem id="menu_gesprim_etiquettes" sequence="20" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_labelmodel" />
-	  
+	<menuitem id="menu_gesprim_tables" name="Tables" sequence="200" parent="menu_gesprim_fichiers" />	 
 	<!-- ****Menu Tarifs -->
 	<menuitem id="menu_gesprim_codes_tarifs" sequence="10" parent="menu_gesprim_tar" action="difodoo_fichiers_base.di_action_code_tarif" />
 	<menuitem id="menu_gesprim_tarifs" sequence="20" parent="menu_gesprim_tar" action="difodoo_fichiers_base.di_action_tarifs" />
 	<menuitem id="menu_gesprim_gen_tarifs" sequence="30" parent="menu_gesprim_tar" action="difodoo_fichiers_base.action_di_generer_tarifs_menu_wiz" />
-	<menuitem id="menu_gesprim_imp_tarifs" sequence="40" parent="menu_gesprim_tar" action="difodoo_fichiers_base.action_di_imprimer_tarifs_menu_wiz" />
+	<menuitem id="menu_gesprim_imp_tarifs" sequence="40" parent="menu_gesprim_tar" action="difodoo_fichiers_base.action_di_imprimer_tarifs_menu_wiz" />	
+	<menuitem id="menu_gesprim_couts" name="Prix d'achat"  sequence="50" parent="menu_gesprim_tar" action="difodoo_fichiers_base.di_action_couts" />
+	<menuitem id="menu_gesprim_couts_gen" name="Génération Prix d'achat" sequence="60" parent="menu_gesprim_tar" action="difodoo_fichiers_base.action_di_generer_couts_menu_wiz" /> 
 	<!-- ****Menu Tables -->
 	<menuitem id="menu_gesprim_taxes" sequence="10" parent="menu_gesprim_tables" action="account.action_tax_form" />
 	<menuitem id="menu_gesprim_categories" sequence="20" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_categorie" />
@@ -70,8 +67,6 @@
 	<menuitem id="menu_gesprim_calibres" sequence="50" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_calibre" />
 	<!-- <menuitem id="menu_gesprim_stations" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" /> -->	
 	<menuitem id="menu_gesprim_conditionnement_defaut" name="Conditionnements" sequence="70" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_cond_defaut" />
-	<menuitem id="menu_gesprim_couts" sequence="80" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_couts" />
-	<menuitem id="menu_gesprim_couts_gen" sequence="90" parent="menu_gesprim_tables" action="difodoo_fichiers_base.action_di_generer_couts_menu_wiz" /> 
 	<!-- ***Menu Ventes -->	
 	<menuitem id="menu_gesprim_ventes_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
 	<menuitem id="menu_gesprim_ventes_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />  
@@ -101,10 +96,15 @@
     <!-- ****Menu Facturation Achats -->     
     <menuitem id="menu_gesprim_achats_factures" name="Factures fournisseur" sequence="10" parent="menu_gesprim_achats_fact" action="account.action_invoice_tree2"/>    
     <menuitem id="menu_gesprim_achats_avoirs" name="Avoirs fournisseur" sequence="20" parent="menu_gesprim_achats_fact" action="account.action_invoice_in_refund"/> -->
-    <!-- ****Menu Statistiques -->
-    <menuitem id="menu_gesprim_stats_factures" name="Analyse CA" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
-    <!-- ****Menu Stock -->    
+    <!-- ***Menu Stock -->    
     <menuitem id="menu_gesprim_stock_inv" name="Resserre" sequence="10" parent="menu_gesprim_stock" action="stock.action_inventory_form"/>
     <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="20" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
     <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
+    <!-- ***Menu Statistiques -->
+    <menuitem id="menu_gesprim_stats_factures" name="Analyse CA" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
+    <!-- ***Menu Utilitaires -->
+    <menuitem id="menu_gesprim_imp" name="Impressions" sequence="10" parent="menu_gesprim_uti" />
+    <!-- ****Menu impressions -->	
+	<menuitem id="menu_gesprim_imprimantes" sequence="10" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_printer" />
+	<menuitem id="menu_gesprim_etiquettes" sequence="20" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_labelmodel" />
 </odoo>

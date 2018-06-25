@@ -49,6 +49,10 @@
 						</group>
 					</page>
 				</xpath>
+				<!-- modif libellé tags -->
+				<xpath expr="//field[@name='category_id']" position="replace">
+					<field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Famille..." string="Famille"/>
+				</xpath>
 				<!-- masquage champ état + modif place ville/code postal sur la 1ère page du formulaire -->
 				<xpath expr="//field[@name='city']" position="replace">
 				</xpath>
