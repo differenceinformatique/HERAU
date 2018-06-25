@@ -101,7 +101,7 @@
 							<t t-set="barcode_txt"
 								t-value="'(02)0' +  l.product_id.barcode + '(3102)' + str(int(round(poids*100))).rjust(6,'0') + '(10)' + l.order_id.name " />
 							<img t-if="l.product_id.barcode"
-								t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', barcode, 375, 100)"/>
+								t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', barcode, 600, 100)" style="width:100%"/>
 								<!-- style="width:100%;height:80%;" /> -->
 							<span t-esc="barcode_txt" />
 						</td>
