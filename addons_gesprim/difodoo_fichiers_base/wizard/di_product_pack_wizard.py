@@ -23,8 +23,8 @@ class DiProdPackWiz(models.TransientModel):
         res["weight"] = Product.weight
         # récupération des conditionnements par défaut
         res["cond_ids"] = self.env['di.conddefaut'].search([]).ids
-        if not self.env.context["active_id"]:
-            raise ValidationError("Pas d'enregistrement selectionné")
+#         if not self.env.context["active_id"]:
+#             raise ValidationError("Pas d'enregistrement selectionné")
         return res
 
     @api.multi
