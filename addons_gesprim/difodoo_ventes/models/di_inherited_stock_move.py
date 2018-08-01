@@ -8,36 +8,112 @@ class StockMove(models.Model):
     
     modifparprg = False
      
-    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True,compute='_compute_quantites')
+    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True, compute='_compute_quantites')
     di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("KG", "Kg")], string="Unité de saisie", store=True)
     di_type_palette_id = fields.Many2one('product.packaging', string='Palette', store=True) 
-    di_nb_pieces = fields.Integer(string='Nb pièces', store=True,compute='_compute_quantites')
-    di_nb_colis = fields.Integer(string='Nb colis' , store=True,compute='_compute_quantites')
-    di_nb_palette = fields.Float(string='Nb palettes' , store=True,compute='_compute_quantites')
-    di_poin = fields.Float(string='Poids net' , store=True,compute='_compute_quantites')
-    di_poib = fields.Float(string='Poids brut', store=True,compute='_compute_quantites')
-    di_tare = fields.Float(string='Tare', store=True,compute='_compute_quantites')
+    di_nb_pieces = fields.Integer(string='Nb pièces', store=True, compute='_compute_quantites')
+    di_nb_colis = fields.Integer(string='Nb colis' , store=True, compute='_compute_quantites')
+    di_nb_palette = fields.Float(string='Nb palettes' , store=True, compute='_compute_quantites')
+    di_poin = fields.Float(string='Poids net' , store=True, compute='_compute_quantites')
+    di_poib = fields.Float(string='Poids brut', store=True, compute='_compute_quantites')
+    di_tare = fields.Float(string='Tare', store=True, compute='_compute_quantites')
     di_product_packaging_id = fields.Many2one('product.packaging', string='Package', default=False, store=True)
     di_flg_modif_uom = fields.Boolean(default=False)
+    
+    di_categorie_id = fields.Many2one("di.categorie", string="Catégorie", compute='_di_compute_champs_art_init')    
+    di_categorie_di_des = fields.Char(related='di_categorie_id.di_des')  # , store='False')
+    
+    di_origine_id = fields.Many2one("di.origine", string="Origine", compute='_di_compute_champs_art_init')
+    di_origine_di_des = fields.Char(related='di_origine_id.di_des')  # , store='False')
+    
+    di_marque_id = fields.Many2one("di.marque", string="Marque", compute='_di_compute_champs_art_init')
+    di_marque_di_des = fields.Char(related='di_marque_id.di_des')  # , store='False')
+    
+    di_calibre_id = fields.Many2one("di.calibre", string="Calibre", compute='_di_compute_champs_art_init')
+    di_calibre_di_des = fields.Char(related='di_calibre_id.di_des')
+    
+    di_station_id = fields.Many2one("stock.location", string="Station", compute='_di_compute_champs_art_init')
+    di_station_di_des = fields.Char(related='di_station_id.name')  # , store='False')     
      
-     
-    di_qte_un_saisie_init = fields.Float(related="sale_line_id.di_qte_un_saisie")
-    di_un_saisie_init = fields.Selection(related="sale_line_id.di_un_saisie")
-    di_type_palette_init_id = fields.Many2one(related="sale_line_id.di_type_palette_id") 
-    di_nb_pieces_init = fields.Integer(related="sale_line_id.di_nb_pieces")
-    di_nb_colis_init = fields.Integer(related="sale_line_id.di_nb_colis")
-    di_nb_palette_init = fields.Float(related="sale_line_id.di_nb_palette")
-    di_poin_init = fields.Float(related="sale_line_id.di_poin")
-    di_poib_init = fields.Float(related="sale_line_id.di_poib")
-    di_tare_init = fields.Float(related="sale_line_id.di_tare")
-    di_product_packaging_init_id = fields.Many2one(related="sale_line_id.product_packaging")    
+    di_qte_un_saisie_init = fields.Float(string='Quantité en unité de saisie initiale', store=True, compute='_di_compute_champs_cde_init')
+    di_un_saisie_init = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("KG", "Kg")], string="Unité de saisie initiale", store=True, compute='_di_compute_champs_cde_init')
+    di_type_palette_init_id = fields.Many2one('product.packaging', string='Palette initiale', store=True, compute='_di_compute_champs_cde_init') 
+    di_nb_pieces_init = fields.Integer(string='Nb pièces initial', store=True, compute='_di_compute_champs_cde_init')
+    di_nb_colis_init = fields.Integer(string='Nb colis initial' , store=True, compute='_di_compute_champs_cde_init')
+    di_nb_palette_init = fields.Float(string='Nb palettes initial' , store=True, compute='_di_compute_champs_cde_init')
+    di_poin_init = fields.Float(string='Poids net initial' , store=True, compute='_di_compute_champs_cde_init')
+    di_poib_init = fields.Float(string='Poids brut initial', store=True, compute='_di_compute_champs_cde_init')
+    di_tare_init = fields.Float(string='Tare initiale', store=True, compute='_di_compute_champs_cde_init')
+    di_product_packaging_init_id = fields.Many2one('product.packaging', string='Colis initial', default=False, store=True, compute='_di_compute_champs_cde_init')
     
-    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    #     di_qte_un_saisie_init = fields.Float(related="sale_line_id.di_qte_un_saisie")
+#     di_un_saisie_init = fields.Selection(related="sale_line_id.di_un_saisie")
+#     di_type_palette_init = fields.Many2one(related="sale_line_id.di_type_palette_id") 
+#     di_nb_pieces_init = fields.Integer(related="sale_line_id.di_nb_pieces")
+#     di_nb_colis_init = fields.Integer(related="sale_line_id.di_nb_colis")
+#     di_nb_palette_init = fields.Float(related="sale_line_id.di_nb_palette")
+#     di_poin_init = fields.Float(related="sale_line_id.di_poin")
+#     di_poib_init = fields.Float(related="sale_line_id.di_poib")
+#     di_tare_init = fields.Float(related="sale_line_id.di_tare")
+#     product_packaging_init = fields.Many2one(related="sale_line_id.product_packaging")    
+        
     
-    
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables', default=False, compute='_di_compute_spe_saisissable', store=True)
     
     @api.one
-    @api.depends('product_id.di_spe_saisissable','sale_line_id','product_id.product_tmpl_id.tracking')
+#     @api.depends('sale_line_id.di_qte_un_saisie', 'sale_line_id.di_un_saisie', 'sale_line_id.di_type_palette_id', 
+#                  'sale_line_id.di_nb_pieces', 'sale_line_id.di_nb_colis', 'sale_line_id.di_nb_palette', 
+#                  'sale_line_id.di_poin', 'sale_line_id.di_poib', 'sale_line_id.di_tare','sale_line_id.product_packaging',                  
+#                  'purchase_line_id.di_qte_un_saisie', 'purchase_line_id.di_un_saisie', 'purchase_line_id.di_type_palette_id', 
+#                  'purchase_line_id.di_nb_pieces', 'purchase_line_id.di_nb_colis', 'purchase_line_id.di_nb_palette', 
+#                  'purchase_line_id.di_poin', 'purchase_line_id.di_poib', 'purchase_line_id.di_tare','purchase_line_id.product_packaging')
+    @api.depends('sale_line_id','purchase_line_id')
+    def _di_compute_champs_cde_init(self):         
+        if self.sale_line_id :              
+            self.di_qte_un_saisie_init = self.sale_line_id.di_qte_un_saisie
+            self.di_un_saisie_init = self.sale_line_id.di_un_saisie
+            self.di_type_palette_init_id = self.sale_line_id.di_type_palette_id
+            self.di_nb_pieces_init = self.sale_line_id.di_nb_pieces
+            self.di_nb_colis_init = self.sale_line_id.di_nb_colis
+            self.di_nb_palette_init = self.sale_line_id.di_nb_palette
+            self.di_poin_init = self.sale_line_id.di_poin
+            self.di_poib_init = self.sale_line_id.di_poib
+            self.di_tare_init = self.sale_line_id.di_tare
+            self.di_product_packaging_init_id = self.sale_line_id.product_packaging 
+        elif self.purchase_line_id:
+            self.di_qte_un_saisie_init = self.purchase_line_id.di_qte_un_saisie
+            self.di_un_saisie_init = self.purchase_line_id.di_un_saisie
+            self.di_type_palette_init_id = self.purchase_line_id.di_type_palette_id
+            self.di_nb_pieces_init = self.purchase_line_id.di_nb_pieces
+            self.di_nb_colis_init = self.purchase_line_id.di_nb_colis
+            self.di_nb_palette_init = self.purchase_line_id.di_nb_palette
+            self.di_poin_init = self.purchase_line_id.di_poin
+            self.di_poib_init = self.purchase_line_id.di_poib
+            self.di_tare_init = self.purchase_line_id.di_tare
+            self.di_product_packaging_init_id = self.purchase_line_id.product_packaging
+            
+    
+    @api.one
+#     @api.depends('sale_line_id.di_categorie_id', 'sale_line_id.di_origine_id', 'sale_line_id.di_marque_id', 'sale_line_id.di_calibre_id', 
+#                  'sale_line_id.di_station_id', 'purchase_line_id.di_categorie_id', 'purchase_line_id.di_origine_id', 'purchase_line_id.di_marque_id', 
+#                  'purchase_line_id.di_calibre_id')
+    @api.depends('sale_line_id','purchase_line_id')
+    def _di_compute_champs_art_init(self): 
+        
+        if self.sale_line_id :
+            self.di_categorie_id = self.sale_line_id.di_categorie_id
+            self.di_origine_id = self.sale_line_id.di_origine_id
+            self.di_marque_id = self.sale_line_id.di_marque_id
+            self.di_calibre_id = self.sale_line_id.di_calibre_id
+            self.di_station_id = self.sale_line_id.di_station_id 
+        elif self.purchase_line_id:
+            self.di_categorie_id = self.purchase_line_id.di_categorie_id
+            self.di_origine_id = self.purchase_line_id.di_origine_id
+            self.di_marque_id = self.purchase_line_id.di_marque_id
+            self.di_calibre_id = self.purchase_line_id.di_calibre_id            
+    
+    @api.one
+    @api.depends('product_id.di_spe_saisissable', 'sale_line_id', 'product_id.product_tmpl_id.tracking')
     def _di_compute_spe_saisissable(self):       
         if (self.sale_line_id or self.purchase_line_id)and self.product_id.product_tmpl_id.tracking != 'none':
             self.di_spe_saisissable = False
@@ -81,29 +157,29 @@ class StockMove(models.Model):
                 show_destination_location=self.location_dest_id.child_ids,
                 show_package=not self.location_id.usage == 'supplier',
                 show_reserved_quantity=self.state != 'done',
-                #Ajout de l'id du move pour pouvoir le récupérer dans le contexte en saisie des lots
+                # Ajout de l'id du move pour pouvoir le récupérer dans le contexte en saisie des lots
                 di_move_id=self.id
                 
             ),
         }
     def _action_done(self):
-        #standard de validadtion de livraison        
+        # standard de validadtion de livraison        
         result = super(StockMove, self)._action_done()
-        #ajout des calculs sur les champs spé
+        # ajout des calculs sur les champs spé
         for line in self.mapped('sale_line_id'):
             line.qty_delivered = line._get_delivered_qty()
             line.di_qte_un_saisie_liv = line._get_qte_un_saisie_liv()
-            line.di_nb_pieces_liv     = line._get_nb_pieces_liv()
-            line.di_nb_colis_liv      = line._get_nb_colis_liv()
-            line.di_nb_palette_liv    = line._get_nb_palettes_liv()
-            line.di_poin_liv          = line._get_poin_liv()
-            line.di_poib_liv          = line._get_poib_liv()
+            line.di_nb_pieces_liv = line._get_nb_pieces_liv()
+            line.di_nb_colis_liv = line._get_nb_colis_liv()
+            line.di_nb_palette_liv = line._get_nb_palettes_liv()
+            line.di_poin_liv = line._get_poin_liv()
+            line.di_poib_liv = line._get_poib_liv()
             dimoves = self.env['stock.move'].search([('sale_line_id', '=', line.id)])
             for dimove in dimoves:                                                    
-                line.di_type_palette_liv_id  = dimove.di_type_palette_id
-                line.di_un_saisie_liv     = dimove.di_un_saisie
+                line.di_type_palette_liv_id = dimove.di_type_palette_id
+                line.di_un_saisie_liv = dimove.di_un_saisie
                 line.di_product_packaging_liv_id = dimove.di_product_packaging_id
-                line.di_tare_liv          = dimove.di_tare
+                line.di_tare_liv = dimove.di_tare
            
      
         return result
@@ -120,7 +196,7 @@ class StockMove(models.Model):
             for line in move.move_line_ids:
                 line.di_tare = move.di_tare
                 line.qty_done = line.product_uom_qty
-                if move.di_un_saisie =="PIECE":
+                if move.di_un_saisie == "PIECE":
                     
                     if move.product_id.di_get_type_piece().qty != 0.0:
                         line.di_qte_un_saisie = line.qty_done / move.product_id.di_get_type_piece().qty
@@ -139,10 +215,10 @@ class StockMove(models.Model):
                     line.di_poin = line.qty_done * move.product_id.weight 
                     line.di_poib = line.di_poin + line.di_tare 
                       
-                elif move.di_un_saisie =="COLIS":
+                elif move.di_un_saisie == "COLIS":
                     
                     
-                    if move.di_product_packaging_id.qty!=0.0:
+                    if move.di_product_packaging_id.qty != 0.0:
                         line.di_qte_un_saisie = line.qty_done / move.di_product_packaging_id.qty
                     else:
                         line.di_qte_un_saisie = line.qty_done 
@@ -157,8 +233,8 @@ class StockMove(models.Model):
                     line.di_poin = line.qty_done * move.product_id.weight 
                     line.di_poib = line.di_poin + line.di_tare
                                         
-                elif move.di_un_saisie =="PALETTE":
-                    if move.di_type_palette_id.qty!=0.0:
+                elif move.di_un_saisie == "PALETTE":
+                    if move.di_type_palette_id.qty != 0.0:
                         line.di_qte_un_saisie = line.qty_done / move.di_type_palette_id.qty
                     else:
                         line.di_qte_un_saisie = line.qty_done 
@@ -175,8 +251,8 @@ class StockMove(models.Model):
                     line.di_poib = line.di_poin + line.di_tare
                     
                     
-                elif move.di_un_saisie =="KG":
-                    if move.product_id.weight !=0.0:
+                elif move.di_un_saisie == "KG":
+                    if move.product_id.weight != 0.0:
                         line.di_qte_un_saisie = line.qty_done / move.product_id.weight 
                     else:
                         line.di_qte_un_saisie = line.qty_done
@@ -195,7 +271,7 @@ class StockMove(models.Model):
                     line.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * line.di_nb_colis)
                     
                 else :
-                    if move.product_id.weight !=0.0:
+                    if move.product_id.weight != 0.0:
                         line.di_qte_un_saisie = line.qty_done / move.product_id.weight 
                     else:
                         line.di_qte_un_saisie = line.qty_done
@@ -213,9 +289,9 @@ class StockMove(models.Model):
                         line.di_nb_palette = line.di_nb_colis
                     line.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * line.di_nb_colis)
                     
-    @api.depends('move_line_ids.di_qte_un_saisie','move_line_ids.di_poin','move_line_ids.di_poib','move_line_ids.di_tare','move_line_ids.di_nb_colis','move_line_ids.di_nb_pieces','move_line_ids.di_nb_palette')
+    @api.depends('move_line_ids.di_qte_un_saisie', 'move_line_ids.di_poin', 'move_line_ids.di_poib', 'move_line_ids.di_tare', 'move_line_ids.di_nb_colis', 'move_line_ids.di_nb_pieces', 'move_line_ids.di_nb_palette')
     def _compute_quantites(self):
-        #recalcule la quantité en unité de saisie en fonction des ventils
+        # recalcule la quantité en unité de saisie en fonction des ventils
         for move in self:
             for move_line in move._get_move_lines():                
                 move.di_qte_un_saisie += move_line.di_qte_un_saisie
@@ -234,6 +310,11 @@ class StockMove(models.Model):
                 self.di_un_saisie = self.product_id.di_un_saisie
                 self.di_type_palette_id = self.product_id.di_type_palette_id
                 self.di_product_packaging_id = self.product_id.di_type_colis_id
+                self.di_categorie_id = self.product_id.di_categorie_id 
+                self.di_origine_id = self.product_id.di_origine_id 
+                self.di_marque_id = self.product_id.di_marque_id 
+                self.di_calibre_id = self.product_id.di_calibre_id 
+                self.di_station_id = self.product_id.di_station_id
 
             
     @api.model
@@ -248,13 +329,18 @@ class StockMove(models.Model):
                 # recherche de l'enregistrement sale order line avec un sale_line_id = sale_line_id
                 Disaleorderline = self.env['sale.order.line'].search([('id', '=', vals["sale_line_id"])], limit=1)            
                 if Disaleorderline.id != False:               
-                    #on attribue par défaut les valeurs de la ligne de commande   
+                    # on attribue par défaut les valeurs de la ligne de commande   
                     vals["di_tare"] = Disaleorderline.di_tare   
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id                                                         
-                    vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom
-        
+                    vals["di_flg_modif_uom"] = Disaleorderline.di_flg_modif_uom                    
+                    vals["di_categorie_id"] = Disaleorderline.di_categorie_id.id
+                    vals["di_origine_id"] = Disaleorderline.di_origine_id.id
+                    vals["di_marque_id"] = Disaleorderline.di_marque_id.id
+                    vals["di_calibre_id"] = Disaleorderline.di_calibre_id.id
+                    vals["di_station_id"] = Disaleorderline.di_station_id.id
+                                                            
         
         if vals.get('purchase_line_id'):    
             purchaseline = self.env['purchase.order.line'].search([('id', '=', vals["purchase_line_id"])], limit=1)            
@@ -263,16 +349,20 @@ class StockMove(models.Model):
                 vals["di_un_saisie"] = purchaseline.di_un_saisie
                 vals["di_type_palette_id"] = purchaseline.di_type_palette_id.id
                 vals["di_product_packaging_id"] = purchaseline.product_packaging.id 
+                vals["di_categorie_id"] = purchaseline.di_categorie_id.id
+                vals["di_origine_id"] = purchaseline.di_origine_id.id
+                vals["di_marque_id"] = purchaseline.di_marque_id.id
+                vals["di_calibre_id"] = purchaseline.di_calibre_id.id
     
                  
                                                      
         res = super(StockMove, self).create(vals)    
         
                                
-        if res.picking_type_id.code=='incoming':#1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
-            #en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
-            if res.move_line_ids.id==False and  res.purchase_line_id.order_id.id ==False: # si on confirme une commande d'achat, la ligne est déjà créée
-                vals=res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability)
+        if res.picking_type_id.code == 'incoming':  # 1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
+            # en création directe de BL, cela ne génère par de "ventilation". Je la génère pour pouvoir attribuer le lot en auto sur les achats
+            if res.move_line_ids.id == False and  res.purchase_line_id.order_id.id == False:  # si on confirme une commande d'achat, la ligne est déjà créée
+                vals = res._prepare_move_line_vals(quantity=res.product_qty - res.reserved_availability)
 #                 if vals.get('purchase_line_id'):
 #                     Dipurchaseorderline = self.env['purchase.order.line'].search([('id', '=', vals["purchase_line_id"])], limit=1)
 #                     if Dipurchaseorderline:
@@ -285,21 +375,21 @@ class StockMove(models.Model):
 
         return res
     
-    def di_somme_quantites_montants(self,product_id,date =False):
-        qte =0.0
-        mont =0.0
-        nbcol =0.0
+    def di_somme_quantites_montants(self, product_id, date=False):
+        qte = 0.0
+        mont = 0.0
+        nbcol = 0.0
         nbpal = 0.0
-        nbpiece =0.0
+        nbpiece = 0.0
         poids = 0.0
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date)
+            mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '!=', False)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done, '%Y-%m-%d %H:%M:%S').date() == date)
         else:
-            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)])
+            mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '!=', False)])
              
         for mouv in mouvs:
-            if mouv.picking_type_id.code=='incoming':
+            if mouv.picking_type_id.code == 'incoming':
                 qte = qte + mouv.product_uom_qty
                 nbcol = nbcol + mouv.di_nb_colis
                 nbpal = nbpal + mouv.di_nb_palette
@@ -322,9 +412,9 @@ class StockMove(models.Model):
              
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
+            mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date, '%Y-%m-%d %H:%M:%S').date() == date)
         else:
-            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','=',False)])
+            mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)])
              
         for mouv in mouvs:
 #             if mouv.remaining_qty:
@@ -341,33 +431,45 @@ class StockMove(models.Model):
                 nbpiece = nbpiece - mouv.di_nb_pieces
                 poids = poids - mouv.di_poin                       
                 
-        return (qte,mont,nbcol,nbpal,nbpiece,poids)
+        return (qte, mont, nbcol, nbpal, nbpiece, poids)
                  
 class StockMoveLine(models.Model):
     _inherit = "stock.move.line"
       
-    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True,compute="_compute_qte_un_saisie")          
+    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True, compute="_compute_qte_un_saisie")          
     di_nb_pieces = fields.Integer(string='Nb pièces', store=True)
-    di_nb_colis = fields.Integer(string='Nb colis' ,store=True)
+    di_nb_colis = fields.Integer(string='Nb colis' , store=True)
     di_nb_palette = fields.Float(string='Nb palettes' , store=True)
     di_poin = fields.Float(string='Poids net' , store=True)
     di_poib = fields.Float(string='Poids brut', store=True)
     di_tare = fields.Float(string='Tare', store=True)    
     di_flg_modif_uom = fields.Boolean(default=False)
+    di_lot_prod = fields.Char(string="Lot producteur", store=True)
+    di_lot_cli = fields.Char(string="Lot client", store=True)  # certains client veulent un n° de lot particulier pour pouvoir le scanner
+    di_ES = fields.Char(string="Entrée ou sortie", store=True, compute="_compute_di_ES")
     
-    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables', default=False, compute='_di_compute_spe_saisissable', store=True)
     
     
     @api.one
     @api.depends('product_id.di_spe_saisissable')
     def _di_compute_spe_saisissable(self):        
-        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+        self.di_spe_saisissable = self.product_id.di_spe_saisissable
+        
+
+    @api.one
+    @api.depends('move_id.picking_type_id.code')
+    def _compute_di_ES(self):   
+        if self.move_id.picking_type_id.code == 'incoming':
+            self.di_ES = "entree"
+        else:
+            self.di_ES = "sortie"                  
      
         
     @api.one    
-    @api.depends('di_poib','di_tare','di_nb_colis','di_nb_pieces','di_nb_palette')
+    @api.depends('di_poib', 'di_tare', 'di_nb_colis', 'di_nb_pieces', 'di_nb_palette')
     def _compute_qte_un_saisie(self):
-        #recalcule la quantité en unité de saisie
+        # recalcule la quantité en unité de saisie
         if not self.move_id.inventory_id:
             if self._context.get('di_move_id'):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
@@ -496,9 +598,9 @@ class StockMoveLine(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('picking_id') :
-            if vals['picking_id']!=False:                  
+            if vals['picking_id'] != False:                  
                 picking = self.env['stock.picking'].browse(vals['picking_id'])
-                if picking.picking_type_id.code=='incoming': 
+                if picking.picking_type_id.code == 'incoming': 
                     
 #                     if vals.get('move_id') : # si on a une commande liée
 #                         if vals['move_id']!=False:            
@@ -510,31 +612,31 @@ class StockMoveLine(models.Model):
 #                                 vals["di_product_packaging_id"] = move.purchase_line_id.product_packaging.id                                                                                             
                             
                                        
-                    if not vals.get('lot_id'): #si pas de lot saisi
-                        if vals.get('move_id') : # si on a une commande liée
-                            if vals['move_id']!=False:            
+                    if not vals.get('lot_id'):  # si pas de lot saisi
+                        if vals.get('move_id') :  # si on a une commande liée
+                            if vals['move_id'] != False:            
                                 move = self.env['stock.move'].browse(vals['move_id'])
                                 if move.product_id.tracking != 'none':
-                                    if move.purchase_line_id.order_id.id !=False:
-                                        lotexist = self.env['stock.production.lot'].search(['&',('name','=',move.purchase_line_id.order_id.name),('product_id','=',move.product_id.id)])
+                                    if move.purchase_line_id.order_id.id != False:
+                                        lotexist = self.env['stock.production.lot'].search(['&', ('name', '=', move.purchase_line_id.order_id.name), ('product_id', '=', move.product_id.id)])
                                         if not lotexist:
                                             data = {
-                                            'name': move.purchase_line_id.order_id.name,  
+                                            'name': move.purchase_line_id.order_id.name,
                                             'product_id' : move.product_id.id                                      
                                             }            
                                             
-                                            lot = self.env['stock.production.lot'].create(data)       # création du lot
+                                            lot = self.env['stock.production.lot'].create(data)  # création du lot
                                             self.env.cr.commit()       
                                                                    
-                                            vals['lot_id']=lot.id 
-                                            vals['lot_name']=lot.name
+                                            vals['lot_id'] = lot.id 
+                                            vals['lot_name'] = lot.name
                                         else:
-                                            vals['lot_id']=lotexist.id 
-                                            vals['lot_name']=lotexist.name
+                                            vals['lot_id'] = lotexist.id 
+                                            vals['lot_name'] = lotexist.name
                             
                         if not vals.get('lot_id') and  move.product_id.tracking != 'none':            
                             picking = self.env['stock.picking'].browse(vals['picking_id'])
-                            lotexist = self.env['stock.production.lot'].search(['&',('name','=',picking.name),('product_id','=',move.product_id.id)])
+                            lotexist = self.env['stock.production.lot'].search(['&', ('name', '=', picking.name), ('product_id', '=', move.product_id.id)])
                             if not lotexist:
                                 data = {
                                 'name': picking.name,
@@ -542,29 +644,36 @@ class StockMoveLine(models.Model):
                                 } 
                                 lot = self.env['stock.production.lot'].create(data)
                                 self.env.cr.commit()
-                                vals['lot_id']=lot.id
-                                vals['lot_name']=lot.name
+                                vals['lot_id'] = lot.id
+                                vals['lot_name'] = lot.name
                             else:
-                                vals['lot_id']=lotexist.id
-                                vals['lot_name']=lotexist.name
+                                vals['lot_id'] = lotexist.id
+                                vals['lot_name'] = lotexist.name
                                 
-
+                elif picking.picking_type_id.code == 'outgoing':
+                    if vals.get('move_id') :  # si on a une commande liée
+                        if vals['move_id'] != False:            
+                            move = self.env['stock.move'].browse(vals['move_id'])
+                            if move.sale_line_id:
+                                if move.sale_line_id.di_station_id:
+                                    vals['location_id']=move.sale_line_id.di_station_id.id
+                    
         ml = super(StockMoveLine, self).create(vals)
         return ml
     
-    def di_qte_spe_en_stock(self,product_id,date,lot):            
-        nbcol =0.0
+    def di_qte_spe_en_stock(self, product_id, date, lot):            
+        nbcol = 0.0
         nbpal = 0.0
-        nbpiece =0.0
+        nbpiece = 0.0
         poids = 0.0
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.move_id.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() <= date)
+            mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done'), ('move_id.picking_id', '!=', False)]).filtered(lambda mv: datetime.strptime(mv.move_id.picking_id.date_done, '%Y-%m-%d %H:%M:%S').date() <= date)
         else:
-            mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('picking_id','!=',False)])
+            mouvs = self.env['stock.move.line'].search([('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done'), ('picking_id', '!=', False)])
              
         for mouv in mouvs:
-            if mouv.move_id.picking_type_id.code=='incoming':                
+            if mouv.move_id.picking_type_id.code == 'incoming':                
                 nbcol = nbcol + mouv.di_nb_colis
                 nbpal = nbpal + mouv.di_nb_palette
                 nbpiece = nbpiece + mouv.di_nb_pieces
@@ -576,9 +685,9 @@ class StockMoveLine(models.Model):
                 poids = poids - mouv.di_poin                             
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.move_id.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() <= date)
+            mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done'), ('move_id.picking_id', '=', False)]).filtered(lambda mv: datetime.strptime(mv.move_id.inventory_id.date, '%Y-%m-%d %H:%M:%S').date() <= date)
         else:
-            mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)])
+            mouvs = self.env['stock.move.line'].search([('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done'), ('move_id.picking_id', '=', False)])
              
         for mouv in mouvs:
 #             if mouv.move_id.remaining_qty:
@@ -593,7 +702,7 @@ class StockMoveLine(models.Model):
                 nbpiece = nbpiece - mouv.di_nb_pieces
                 poids = poids - mouv.di_poin                       
                 
-        return (nbcol,nbpal,nbpiece,poids)
+        return (nbcol, nbpal, nbpiece, poids)
     
     
 class StockPicking(models.Model):
@@ -604,8 +713,8 @@ class StockPicking(models.Model):
     
     @api.depends('move_lines')
     def _compute_di_nbpal_nbcol(self):
-        wnbpal=0.0
-        wnbcol=0.0
+        wnbpal = 0.0
+        wnbcol = 0.0
         for picking in self:
             wnbpal = sum(move.di_nb_palette for move in picking.move_lines if move.state != 'cancel')
             wnbcol = sum(move.di_nb_colis for move in picking.move_lines if move.state != 'cancel')
@@ -615,27 +724,27 @@ class StockPicking(models.Model):
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
     
-    di_cmp = fields.Float(string="Coût moyen",related="product_id.standard_price",group_operator='avg',store=True)
-    di_valstock = fields.Float(string='Valeur Stock',compute='_compute_valstock',group_operator='sum',store=True)
-    di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute="_compute_qte_spe",group_operator='sum',store=True)
-    di_nb_colis     = fields.Integer(string='Nb colis',compute="_compute_qte_spe",group_operator='sum',store=True)
-    di_poin         = fields.Float(string='Poids net',compute="_compute_qte_spe",group_operator='sum',store=True)
-    currency_id = fields.Many2one("res.currency", related='company_id.currency_id', string="Currency")   # pour avoir le widget euro
+    di_cmp = fields.Float(string="Coût moyen", related="product_id.standard_price", group_operator='avg', store=True)
+    di_valstock = fields.Float(string='Valeur Stock', compute='_compute_valstock', group_operator='sum', store=True)
+    di_nb_pieces = fields.Integer(string='Nb pièces' , compute="_compute_qte_spe", group_operator='sum', store=True)
+    di_nb_colis = fields.Integer(string='Nb colis', compute="_compute_qte_spe", group_operator='sum', store=True)
+    di_poin = fields.Float(string='Poids net', compute="_compute_qte_spe", group_operator='sum', store=True)
+    currency_id = fields.Many2one("res.currency", related='company_id.currency_id', string="Currency")  # pour avoir le widget euro
     
     @api.one
-    @api.depends('di_cmp','quantity')
+    @api.depends('di_cmp', 'quantity')
     def _compute_valstock(self):
-        self.di_valstock = self.quantity*self.di_cmp
+        self.di_valstock = self.quantity * self.di_cmp
         
     @api.one
     @api.depends('quantity')
     def _compute_qte_spe(self):
-        self.di_poin = self.quantity*self.product_id.weight                        
+        self.di_poin = self.quantity * self.product_id.weight                        
         if self.product_id.di_type_colis_id.qty != 0.0:
             self.di_nb_colis = ceil(self.quantity / self.product_id.di_type_colis_id.qty)
         else:
             self.di_nb_colis = ceil(self.quantity)
-        if self.product_id.di_type_palette_id.di_qte_cond_inf !=0.0:    
+        if self.product_id.di_type_palette_id.di_qte_cond_inf != 0.0:    
             self.di_nb_palette = self.di_nb_colis / self.product_id.di_type_palette_id.di_qte_cond_inf
         else:  
             self.di_nb_palette = self.di_nb_colis

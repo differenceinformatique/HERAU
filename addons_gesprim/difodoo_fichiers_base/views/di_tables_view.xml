@@ -415,8 +415,8 @@
         <field name="arch" type="xml">
             <tree string="Paramètres" default_order="di_company_id">
                 <field name="di_company_id" readonly="1" />
-                <field name="di_horizon" />
-                <!-- <field name="di_printer_id" />
+                <!--<field name="di_horizon" />
+                <field name="di_printer_id" />
                 <field name="di_label_id" />
                 <field name="di_printer_ach_id" />
                 <field name="di_label_ach_id" />  -->
@@ -437,7 +437,9 @@
                         <field name="di_label_id" /> 
                         <field name="di_printer_ach_id" />
                         <field name="di_label_ach_id" />
-                        <field name="di_seuil_marge_prc" />                                              
+                        <field name="di_seuil_marge_prc" />
+                        <field name="di_prc_com_avec_court" />
+                        <field name="di_prc_com_sans_court" />                                                                    
                     </group>
                 </sheet>
             </form>

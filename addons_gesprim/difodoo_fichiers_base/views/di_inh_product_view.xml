@@ -110,7 +110,7 @@
 								</div>
 								<label for="di_station_id" string="Station" />
 								<div>
-									<field class="oe_inline" name="di_station_id" />
+									<field class="oe_inline" name="di_station_id"  domain="[('usage','=','internal')]"/>
 									<field class="oe_inline" name="di_station_di_des"
 										nolabel="1" readonly="1" style="margin-left:40px" />
 								</div>

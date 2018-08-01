@@ -16,10 +16,10 @@ class PurchaseOrderLine(models.Model):
     di_qte_un_saisie= fields.Float(string='Quantité en unité de saisie',store=True)
     di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie",store=True)
     di_type_palette_id  = fields.Many2one('product.packaging', string='Palette',store=True) 
-    di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute="_compute_qte_aff",store=True)
-    di_nb_colis     = fields.Integer(string='Nb colis',compute="_compute_qte_aff",store=True)
-    di_nb_palette   = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True)
-    di_poin         = fields.Float(string='Poids net',compute="_compute_qte_aff",store=True)
+    di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute ="_compute_qte_aff",store=True)
+    di_nb_colis     = fields.Integer(string='Nb colis',compute ="_compute_qte_aff",store=True)
+    di_nb_palette   = fields.Float(string='Nb palettes',compute ="_compute_qte_aff",store=True)
+    di_poin         = fields.Float(string='Poids net',compute ="_compute_qte_aff",store=True)
     di_poib         = fields.Float(string='Poids brut',store=True)
     di_tare         = fields.Float(string='Tare',store=True)
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
@@ -50,6 +50,41 @@ class PurchaseOrderLine(models.Model):
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
     di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)
+    
+    di_categorie_id = fields.Many2one("di.categorie",string="Catégorie")    
+    di_categorie_di_des = fields.Char(related='di_categorie_id.di_des')#, store='False')
+    
+    di_origine_id = fields.Many2one("di.origine",string="Origine")
+    di_origine_di_des = fields.Char(related='di_origine_id.di_des')#, store='False')
+    
+    di_marque_id = fields.Many2one("di.marque",string="Marque")
+    di_marque_di_des = fields.Char(related='di_marque_id.di_des')#, store='False')
+    
+    di_calibre_id = fields.Many2one("di.calibre",string="Calibre")
+    di_calibre_di_des = fields.Char(related='di_calibre_id.di_des')#, store='False')
+    
+    @api.one
+    @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 
+                 'di_nb_pieces', 'di_nb_colis', 'di_nb_palette', 
+                 'di_poin', 'di_poib', 'di_tare','product_packaging','di_categorie_id', 
+                 'di_origine_id', 'di_marque_id', 'di_calibre_id')
+    def _di_modif_champs_bl(self):   
+        moves = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
+        for move in moves:  
+            move.di_qte_un_saisie_init = self.di_qte_un_saisie
+            move.di_un_saisie_init = self.di_un_saisie
+            move.di_type_palette_init_id = self.di_type_palette_id
+            move.di_nb_pieces_init = self.di_nb_pieces
+            move.di_nb_colis_init = self.di_nb_colis
+            move.di_nb_palette_init = self.di_nb_palette
+            move.di_poin_init = self.di_poin
+            move.di_poib_init = self.di_poib
+            move.di_tare_init = self.di_tare
+            move.di_product_packaging_init_id = self.product_packaging
+            move.di_categorie_id = self.di_categorie_id
+            move.di_origine_id = self.di_origine_id
+            move.di_marque_id = self.di_marque_id
+            move.di_calibre_id = self.di_calibre_id            
     
     def _get_dernier_prix(self):
         prix = 0.0
@@ -91,12 +126,11 @@ class PurchaseOrderLine(models.Model):
                 'price_total': taxes['total_included'],
                 'price_subtotal': taxes['total_excluded'],
             })    
-             
-        
+               
         
     @api.depends('order_id.state', 'move_ids.state', 'move_ids.product_uom_qty','move_ids.di_qte_un_saisie','move_ids.di_nb_pieces','move_ids.di_nb_colis','move_ids.di_nb_palette','move_ids.di_poin','move_ids.di_poib')
     def _compute_qty_received(self):
-        
+         
         for line in self:
             if line.order_id.state not in ['purchase', 'done']:
                 line.di_qte_un_saisie_liv = 0.0
@@ -137,12 +171,12 @@ class PurchaseOrderLine(models.Model):
                         total_nb_palette_liv += move.di_nb_palette
                         total_poin_liv += move.di_poin
                         total_poib_liv += move.di_poib
-                                          
+                                           
                 line.di_type_palette_liv_id  = move.di_type_palette_id
                 line.di_un_saisie_liv     = move.di_un_saisie
                 line.di_product_packaging_liv_id = move.di_product_packaging_id
                 line.di_tare_liv          = move.di_tare                
-                  
+                   
             line.di_qte_un_saisie_liv = total_qte_un_saisie_liv
             line.di_nb_pieces_liv = total_nb_pieces_liv
             line.di_nb_colis_liv = total_nb_colis_liv
@@ -153,9 +187,8 @@ class PurchaseOrderLine(models.Model):
             
            
     @api.one
-    @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_poib','di_tare','product_packaging')
+    @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_poib','di_tare','product_packaging','product_qty')
     def _compute_qte_aff(self):
-        #if self.ensure_one():
         if self.di_un_saisie == "PIECE":
             self.di_nb_pieces = self.di_qte_un_saisie            
             if self.product_packaging.qty != 0.0 :
@@ -167,7 +200,7 @@ class PurchaseOrderLine(models.Model):
             else:
                 self.di_nb_palette = self.di_nb_colis
             self.di_poin = self.product_qty * self.product_id.weight             
-                    
+                     
         elif self.di_un_saisie == "COLIS":
             self.di_nb_colis = self.di_qte_un_saisie            
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
@@ -176,7 +209,7 @@ class PurchaseOrderLine(models.Model):
             else:
                 self.di_nb_palette = self.di_nb_colis
             self.di_poin = self.product_qty * self.product_id.weight             
-                                   
+                                    
         elif self.di_un_saisie == "PALETTE":            
             self.di_nb_palette = self.di_qte_un_saisie
             if self.di_type_palette_id.di_qte_cond_inf!=0.0:
@@ -185,7 +218,7 @@ class PurchaseOrderLine(models.Model):
                 self.di_nb_colis = self.di_nb_palette
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis            
             self.di_poin = self.product_qty * self.product_id.weight             
-              
+               
         elif self.di_un_saisie == "KG":
             self.di_poin = self.di_qte_un_saisie                        
             if self.product_packaging.qty !=0.0:
@@ -197,7 +230,7 @@ class PurchaseOrderLine(models.Model):
             else:  
                 self.di_nb_palette = self.di_nb_colis
             self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
-              
+               
         else:
             self.di_poin = self.di_qte_un_saisie            
             self.product_qty = self.di_poin
@@ -219,7 +252,12 @@ class PurchaseOrderLine(models.Model):
                 self.di_un_saisie = self.product_id.di_un_saisie
                 self.di_type_palette_id = self.product_id.di_type_palette_id
                 self.product_packaging = self.product_id.di_type_colis_id    
-                self.di_un_prix = self.product_id.di_un_prix        
+                self.di_un_prix = self.product_id.di_un_prix     
+                self.di_categorie_id = self.product_id.di_categorie_id 
+                self.di_origine_id = self.product_id.di_origine_id 
+                self.di_marque_id = self.product_id.di_marque_id 
+                self.di_calibre_id = self.product_id.di_calibre_id 
+#                 self.di_station_id = self.product_id.di_station_id      
                 
 
     @api.multi    
@@ -239,7 +277,7 @@ class PurchaseOrderLine(models.Model):
                     self.di_nb_palette = self.di_nb_colis
                 self.di_poin = self.product_qty * self.product_id.weight 
                 self.di_poib = self.di_poin + self.di_tare
-                       
+                        
             elif self.di_un_saisie == "COLIS":
                 self.di_nb_colis = self.di_qte_un_saisie
                 self.product_qty = self.product_packaging.qty * self.di_nb_colis
@@ -250,7 +288,7 @@ class PurchaseOrderLine(models.Model):
                     self.di_nb_palette = self.di_nb_colis
                 self.di_poin = self.product_qty * self.product_id.weight 
                 self.di_poib = self.di_poin + self.di_tare
-                                      
+                                       
             elif self.di_un_saisie == "PALETTE":            
                 self.di_nb_palette = self.di_qte_un_saisie
                 if self.di_type_palette_id.di_qte_cond_inf!=0.0:
@@ -261,7 +299,7 @@ class PurchaseOrderLine(models.Model):
                 self.product_qty = self.product_packaging.qty * self.di_nb_colis
                 self.di_poin = self.product_qty * self.product_id.weight 
                 self.di_poib = self.di_poin + self.di_tare
-                 
+                  
             elif self.di_un_saisie == "KG":
                 self.di_poin = self.di_qte_un_saisie
                 self.di_poib = self.di_poin + self.di_tare
@@ -275,7 +313,7 @@ class PurchaseOrderLine(models.Model):
                 else:  
                     self.di_nb_palette = self.di_nb_colis
                 self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
-                 
+                  
             else:
                 self.di_poin = self.di_qte_un_saisie
                 self.di_poib = self.di_poin + self.di_tare
@@ -317,12 +355,12 @@ class PurchaseOrderLine(models.Model):
                         nbpal -= inv_line.di_nb_palette
                         poin -= inv_line.di_poin
             line.di_qte_un_saisie_fac = qty
-            line.di_poib = poib
-            line.di_nb_pieces = nbpieces
-            line.di_nb_colis = nbcol
-            line.di_nb_palette = nbpal
-            line.di_poin = poin
-                    
+            line.di_poib_fac = poib
+            line.di_nb_pieces_fac = nbpieces
+            line.di_nb_colis_fac = nbcol
+            line.di_nb_palette_fac = nbpal
+            line.di_poin_fac = poin
+                     
         super(PurchaseOrderLine, self)._compute_qty_invoiced()
 
 

@@ -7,11 +7,11 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-                <xpath expr="//header/field[@name='state']" position="before">                                                                        
-                    <!-- <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/> -->
-                    <!-- <button class="di_imprimer_etiquette_JS" type="button" string="Imprimer étiquettes JS" help="Imprime les étiquettes de la commande"/> -->                                        
-                    <!-- <button onclick="$window.alert('form')" >Imprimer étiquettes JS</button> -->                    
-                    <!-- <button class="di_imprimer_etiquette" onclick="openWin(^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR6,6~SD15^JUS^LRN^CI0^XZ
+                <!-- <xpath expr="//header/field[@name='state']" position="before">                                                                        
+                    <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>
+                    <button class="di_imprimer_etiquette_JS" type="button" string="Imprimer étiquettes JS" help="Imprime les étiquettes de la commande"/>                                        
+                    <button onclick="$window.alert('form')" >Imprimer étiquettes JS</button>                    
+                    <button class="di_imprimer_etiquette" onclick="openWin(^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR6,6~SD15^JUS^LRN^CI0^XZ
 ^XA
 ^MMT
 ^PW639
@@ -27,71 +27,124 @@
 ^FT247,476^A0B,28,28^FH\^FD[qte[^FS
 ^FT583,570^A0B,16,16^FH\^FD[txtcb[^FS
 ^PQ1,0,1,Y^XZ)"  string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>
-                </xpath> -->
-                <!-- <xpath expr="//header/field[@name='state']" position="after"> -->
+                </xpath>
+                <xpath expr="//header/field[@name='state']" position="after">
                          
-                </xpath> 
+                </xpath>  -->
                 <xpath expr="//sheet/group/group[2]/field[@name='date_order'] " position="after">
                     <field name="di_demdt"/>
                 </xpath>
-                <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/label[@for='product_qty'] " position="before">
-                    <field name="di_spe_saisissable" invisible="1"/>
-                    <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
-                    <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
-                    <field name="di_qte_un_saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-                    <field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
-                    <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                                                    
-                </xpath>                          
+               
+                <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/label[@for='product_qty'] " position="before">                    
+                    <field name="currency_id" invisible="1" force_save="1"/>
+                    <field name="state" invisible="1" force_save="1"/>
+                    <field name="sequence" widget="handle" invisible="1" force_save="1"/>
+                    <field name="move_dest_ids" invisible="1" force_save="1"/>
+                    <field name="di_spe_saisissable" invisible="1" force_save="1"/>
+                    <field name="name" force_save="1"/>
+                    <field name="di_qte_un_saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                    
+                    <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" force_save="1"/>                                                                                                                                
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/field[@name='price_unit'] " position="after">
+                    <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" force_save="1"/>
+                </xpath>                                                                                            
                 <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/field[@name='taxes_id'] " position="before">
-                    <field name="product_packaging" string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>                    
-                    <field name="di_type_palette_id"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>                                    
                     <field name="di_nb_pieces" readonly="1"  force_save="1"/>
-                    <field name="di_nb_colis" readonly="1"  force_save="1"/>
-                    <field name="di_nb_palette" readonly="1" force_save="1"/>
-                    <field name="di_poin" readonly="1" force_save="1"/>                                                            
+                    <label for="di_nb_colis" />
+                    <div>
+                        <field name="di_nb_colis" readonly="1" force_save="1" />
+                        <field name="product_packaging"
+                            attrs="{'invisible': [('product_id', '=', False)],'readonly': [('di_spe_saisissable', '=', False)]}"
+                            context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+                            domain="[('product_id','=',product_id)]" groups="product.group_stock_packaging" />
+                    </div>
+                    <label for="di_nb_palette" />
+                    <div>
+                        <field name="di_nb_palette" readonly="1" force_save="1" />
+                        <field name="di_type_palette_id"
+                            attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}"
+                            context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+                            domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging" />
+                    </div>                                                                                            
+                    <field name="di_poin" readonly="1" force_save="1"/>     
+                    <field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                
+                    <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                                                                            
+                </xpath> 
+                <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/field[@name='taxes_id'] " position="after">
+                    <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}" force_save="1"/>
+                    <field name="qty_received" invisible="not context.get('show_purchase', True)" force_save="1"/>
+                    <field name="qty_invoiced" invisible="not context.get('show_purchase', True)" force_save="1"/>
+                    <field name="price_subtotal" widget="monetary" force_save="1"/>                                                            
+                </xpath> 
+                <xpath expr="//page/field[@name='order_line']/form/sheet/group"
+                    position="after">
+                    <group>
+                        <field name="di_categorie_id" force_save="1"/>
+                        <field name="di_origine_id" force_save="1"/>
+                        <field name="di_marque_id" force_save="1"/>
+                        <field name="di_calibre_id" force_save="1"/>                        
+                    </group>
+                </xpath>
+                 <xpath expr="//page/field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable"></attribute>
                 </xpath> 
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='date_planned']" position="attributes">
                     <attribute name="invisible">1</attribute>
+                    <attribute name="force_save">1</attribute>
                 </xpath> 
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="attributes">
                     <attribute name="invisible">1</attribute>
+                    <attribute name="force_save">1</attribute>
                 </xpath> 
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
+                    <attribute name="force_save">1</attribute>
                 </xpath>
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="replace">
                     <field name="price_subtotal" widget="monetary" force_save="1" readonly="1" />
                 </xpath>
                                 
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_qty'] " position="before">
-                    <field name="di_spe_saisissable" invisible="1"/>
-                    <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-                    <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
+                    <!-- <field name="di_spe_saisissable" invisible="1" force_save="1"/>
+                    <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
+                    <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" force_save="1"/>
                     <field name="di_nb_pieces" readonly="1" force_save="1" />
                     <field name="di_nb_colis" readonly="1" force_save="1"/>
-                    <field name="product_packaging" string="Colis"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>
+                    <field name="product_packaging" string="Colis"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging" force_save="1"/>
                     <field name="di_nb_palette" readonly="1" force_save="1"/>
-                    <field name="di_type_palette_id" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>
+                    <field name="di_type_palette_id" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging" force_save="1"/>
                     <field name="di_poin" readonly="1" /><field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
-                    <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                                                    
+                    <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                                                     -->
+                    <field name="di_spe_saisissable" invisible="1" force_save="1"/>
+                    <field name="di_qte_un_saisie" string="Qté unité saisie" force_save="1"/>
+                    <field name="di_un_saisie"  force_save="1"/>
+                    <field name="di_nb_pieces" force_save="1" />
+                    <field name="di_nb_colis"  force_save="1"/>
+                    <field name="product_packaging" string="Colis"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging" force_save="1"/>
+                    <field name="di_nb_palette"  force_save="1"/>
+                    <field name="di_type_palette_id" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging" force_save="1"/>
+                    <field name="di_poin"  /><field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
+                    <field name="di_poib"  force_save="1"/>
                 </xpath>   
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_qty'] " position="attributes">
                 	<attribute name="string">Qté Commandée</attribute>
+                	<attribute name="force_save">1</attribute>
                 </xpath>
                  <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_uom'] " position="attributes">
                 	<attribute name="string">Unité de mesure</attribute>
+                	<attribute name="force_save">1</attribute>
                 </xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_received'] " position="before">                    
-                    <field name="di_qte_un_saisie_liv" invisible="1" readonly="1"/>                                                            
+                    <field name="di_qte_un_saisie_liv" invisible="1" readonly="1" force_save="1"/>                                                            
                 </xpath>
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_invoiced'] " position="before">                    
-                    <field name="di_qte_un_saisie_fac" invisible="1" readonly="1"/>                                                            
+                    <field name="di_qte_un_saisie_fac" invisible="1" readonly="1" force_save="1"/>                                                            
                 </xpath>  
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit'] " position="before">
-                    <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1" force_save="1"/>
                 </xpath> 
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit'] " position="after">
-                	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
+                	<field name="di_un_prix" string="Unité de prix" attrs="{'required':[('di_spe_saisissable','=',True)]}" force_save="1"/>
                 </xpath>  
                 <xpath expr="//div[@class='oe_chatter']" position="replace"/>                                    
                 

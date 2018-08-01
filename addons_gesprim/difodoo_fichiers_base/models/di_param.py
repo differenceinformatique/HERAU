@@ -18,6 +18,11 @@ class DiParam(models.Model):
     di_printer_ach_id = fields.Many2one('di.printer',string="Imprimante étiquette achats")
     di_label_ach_id = fields.Many2one('di.labelmodel',string="Modèle étiquette achats")
     di_seuil_marge_prc = fields.Float(string='Taux de marge minimal',help="""Taux de marge en vente, en dessous duquel vous serez averti. """, default=0.0)
+    
+    di_prc_com_avec_court = fields.Float(string='% commission OP avec metteur en marche ',help="""Pourcentage de commission que prendra l'OP sur la ligne si un metteur en marche a fait la vente. """, default=0.0)
+    di_prc_com_sans_court = fields.Float(string='% commission OP sans metteur en marche',help="""Pourcentage de commission que prendra l'OP sur la ligne si l'OP a fait la vente directe. """, default=0.0)
+    
+    
      
                        
     #unicité 

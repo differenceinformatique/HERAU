@@ -15,8 +15,12 @@ class ResPartner(models.Model):
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", default=True, help="Permet de filtrer lors de la facturation")
     di_pres_bl = fields.Selection([('CHIFFRE','Chiffré'),('NONCHIFFRE','Non Chiffré')], default="NONCHIFFRE", string="Présentation BL",
                                    help="Choix de la présentation du bon de livraison")
-    is_company = fields.Boolean(string='Is a Company', default=True, help="Check if the contact is a company, otherwise it is a person")  # modif attribut default
+    is_company = fields.Boolean(string='Is a Company', default=True, help="Check if the contact is a company, otherwise it is a person")  # modif attribut default    
     di_defaut_adr = fields.Boolean(string="Adresse par défaut", default=False, help="Sera selectionnée automatiquement en saisie de pièces")
+    
+    di_is_court = fields.Boolean(string='Est un metteur en marche', default=False, help=""" Le tiers est un metteur en marche et peut donc recevoir des commissions """)  # modif attribut default
+    di_prc_com_avec_court = fields.Float(string='% commission',help="""Pourcentage de commission que le metteur en marche récupère sur une vente. """, default=0.0)
+    
     
     #unicité du code tiers
     @api.one

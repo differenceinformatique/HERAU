@@ -44,7 +44,9 @@
 							<group name="editions" string="Editions">
 								<field name="di_pres_bl"/>
 							</group>
-							<group>
+							<group name="courtier" string="Metteur en marche" attrs="{'invisible':[('supplier', '=', False)]}">
+							     <field name="di_is_court"/>
+							     <field name="di_prc_com_avec_court"/>
 							</group>
 						</group>
 					</page>

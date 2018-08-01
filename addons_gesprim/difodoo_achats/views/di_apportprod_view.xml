@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Apports producteurs -->
+    <record id="di_view_apportprod_tree" model="ir.ui.view">
+        <field name="name">di.apportprod.tree</field>
+        <field name="model">di.apportprod</field>
+        <field name="arch" type="xml">
+            <tree string="Apports producteurs" default_order="name">
+                <field name="di_product_id" modifiers="{'required':true}"/>                                                              
+                <field name="di_qte_theo" modifiers="{'required':true}"/>
+                <field name="di_qte_recept" />
+                <!-- <field name="di_exploitation" modifiers="{'required':true}"/> -->
+                <!-- <field name="di_date_estim"/> -->
+                <field name="di_date_recept" />
+                <field name="di_lot_prod" modifiers="{'required':true}" />
+                <field name="di_apport_valide"  />                    
+            </tree>
+        </field>
+    </record>
+    <record id="di_view_apportprod_form" model="ir.ui.view">
+        <field name="name">di.apportprod.form</field>
+        <field name="model">di.apportprod</field>
+        <field name="arch" type="xml">
+            <form string="Apports producteurs">
+                <sheet string="Apports producteurs" modifiers="{}">
+                    <group>
+                        <field name="di_company_id" can_create="true" can_write="true"
+                            modifiers="{'readonly':true}" />
+                        <field name="di_product_id" modifiers="{'required':true}"/>                                                              
+		                <field name="di_qte_theo" modifiers="{'required':true}"/>
+		                <field name="di_qte_recept" />
+		                <field name="di_exploitation" modifiers="{'required':true}"/>
+		                <label for="di_producteur_id" string="Producteur" />
+                        <div>
+                            <field class="oe_inline"
+                                context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}"
+                                domain="[('supplier','=',True)]" name="di_producteur_id" />
+                            <field class="oe_inline" name="di_producteur_nom"
+                                nolabel="1" readonly="1" style="margin-left:40px" />
+                        </div>
+                        <label for="di_station_id" string="Station" />
+                        <div>
+                            <field class="oe_inline" name="di_station_id" />
+                            <field class="oe_inline" name="di_station_di_des"
+                                nolabel="1" readonly="1" style="margin-left:40px" />
+                        </div>
+		                <field name="di_date_estim"/>
+		                <field name="di_date_recept" />
+		                <field name="di_lot_prod" modifiers="{'required':true}" />
+		                <field name="di_apport_valide"  />    
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="di_action_apportprod" model="ir.actions.act_window">
+        <field name="name">Apports producteurs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.apportprod</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            <p>
+                Cliquer pour gérer les apports producteurs
+            </p>
+        </field>
+    </record>    
+</odoo>

@@ -108,6 +108,11 @@ class AccountInvoice(models.Model):
             'di_tare':line.di_tare,  
             'di_un_saisie':line.di_un_saisie,
             'di_type_palette_id':line.di_type_palette_id,
+            
+            'di_categorie_id':line.di_categorie_id,
+            'di_origine_id':line.di_origine_id,
+            'di_marque_id':line.di_marque_id,
+            'di_calibre_id':line.di_calibre_id,                       
             'di_product_packaging_id':line.product_packaging,
             'di_un_prix':line.di_un_prix,
             'di_qte_un_saisie':di_qte_un_saisie,
@@ -138,6 +143,21 @@ class AccountInvoiceLine(models.Model):
     di_flg_modif_uom = fields.Boolean(default=False)
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    
+    di_categorie_id = fields.Many2one("di.categorie",string="Catégorie")    
+    di_categorie_di_des = fields.Char(related='di_categorie_id.di_des')#, store='False')
+    
+    di_origine_id = fields.Many2one("di.origine",string="Origine")
+    di_origine_di_des = fields.Char(related='di_origine_id.di_des')#, store='False')
+    
+    di_marque_id = fields.Many2one("di.marque",string="Marque")
+    di_marque_di_des = fields.Char(related='di_marque_id.di_des')#, store='False')
+    
+    di_calibre_id = fields.Many2one("di.calibre",string="Calibre")
+    di_calibre_di_des = fields.Char(related='di_calibre_id.di_des')#, store='False')
+    
+    di_station_id = fields.Many2one("stock.location",string="Station")
+    di_station_di_des = fields.Char(related='di_station_id.name')#, store='False')
     
     def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date):    
         prixFinal = 0.0       
@@ -256,6 +276,11 @@ class AccountInvoiceLine(models.Model):
                 self.di_type_palette_id = self.product_id.di_type_palette_id
                 self.di_product_packaging_id = self.product_id.di_type_colis_id
                 self.di_un_prix = self.product_id.di_un_prix
+                self.di_categorie_id = self.product_id.di_categorie_id 
+                self.di_origine_id = self.product_id.di_origine_id 
+                self.di_marque_id = self.product_id.di_marque_id 
+                self.di_calibre_id = self.product_id.di_calibre_id 
+                self.di_station_id = self.product_id.di_station_id
                 
                 
     @api.multi
@@ -456,7 +481,13 @@ class AccountInvoiceLine(models.Model):
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id 
                     vals["di_un_prix"] = Disaleorderline.di_un_prix
-                    vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom
+                    vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom                
+                    vals["di_categorie_id"]=Disaleorderline.di_categorie_id.id
+                    vals["di_origine_id"]=Disaleorderline.di_origine_id.id
+                    vals["di_marque_id"]=Disaleorderline.di_marque_id.id
+                    vals["di_calibre_id"]=Disaleorderline.di_calibre_id.id
+                    vals["di_station_id"]=Disaleorderline.di_station_id.id
+                             
                     qte_a_fac += Disaleorderline.di_qte_a_facturer_un_saisie   
                     poib += Disaleorderline.di_poib
                      
@@ -480,6 +511,11 @@ class AccountInvoiceLine(models.Model):
                     vals["di_type_palette_id"] = Dipurchaseorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Dipurchaseorderline.product_packaging.id 
                     vals["di_un_prix"] = Dipurchaseorderline.di_un_prix
+                    vals["di_categorie_id"]=Dipurchaseorderline.di_categorie_id.id
+                    vals["di_origine_id"]=Dipurchaseorderline.di_origine_id.id
+                    vals["di_marque_id"]=Dipurchaseorderline.di_marque_id.id
+                    vals["di_calibre_id"]=Dipurchaseorderline.di_calibre_id.id
+                    vals["di_station_id"]=Dipurchaseorderline.di_station_id.id
                     qte_a_fac += Dipurchaseorderline.di_qte_un_saisie   
                     poib += Dipurchaseorderline.di_poib
                      

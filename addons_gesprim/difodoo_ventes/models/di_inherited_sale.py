@@ -61,11 +61,28 @@ class SaleOrderLine(models.Model):
     di_marge_prc = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)
     
     di_marge_inf_seuil = fields.Boolean(string='Marge inférieure au seuil',default = False, compute='_di_compute_marge_seuil',store=True)
+            
+    di_categorie_id = fields.Many2one("di.categorie",string="Catégorie")    
+    di_categorie_di_des = fields.Char(related='di_categorie_id.di_des')#, store='False')
+    
+    di_origine_id = fields.Many2one("di.origine",string="Origine")
+    di_origine_di_des = fields.Char(related='di_origine_id.di_des')#, store='False')
+    
+    di_marque_id = fields.Many2one("di.marque",string="Marque")
+    di_marque_di_des = fields.Char(related='di_marque_id.di_des')#, store='False')
+    
+    di_calibre_id = fields.Many2one("di.calibre",string="Calibre")
+    di_calibre_di_des = fields.Char(related='di_calibre_id.di_des')#, store='False')
+    
+    di_station_id = fields.Many2one("stock.location",string="Station")
+    di_station_di_des = fields.Char(related='di_station_id.name')#, store='False')
     
 #     di_marge_param = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)
 #         
 #     def di_get_param_by_company_id(self,company_id):    
 #         return self.env['di.param'].search(['di_company_id','=',company_id],limit=1) 
+
+
     @api.one
     @api.depends('di_marge_prc','company_id.di_param_id.di_seuil_marge_prc')#,'di_param_id.di_seuil_marge_prc')
     def _di_compute_marge_seuil(self):   
@@ -73,6 +90,48 @@ class SaleOrderLine(models.Model):
             self.di_marge_inf_seuil = True
         else:
             self.di_marge_inf_seuil = False
+            
+            
+#     @api.multi
+#     @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 
+#                  'di_nb_pieces', 'di_nb_colis', 'di_nb_palette', 
+#                  'di_poin', 'di_poib', 'di_tare','product_packaging','di_categorie_id', 
+#                  'di_origine_id', 'di_marque_id', 'di_calibre_id', 'di_station_id')
+#     def _di_modif_champs_bl(self):   
+# #         moves = self.env['stock.move'].search([('sale_line_id', '=', self.id)])
+#         for line in self:
+#             for move in line.move_ids:  
+#                 move.di_qte_un_saisie_init = line.di_qte_un_saisie
+#                 move.di_un_saisie_init = line.di_un_saisie
+#                 move.di_type_palette_init_id = line.di_type_palette_id
+#                 move.di_nb_pieces_init = line.di_nb_pieces
+#                 move.di_nb_colis_init = line.di_nb_colis
+#                 move.di_nb_palette_init = line.di_nb_palette
+#                 move.di_poin_init = line.di_poin
+#                 move.di_poib_init = line.di_poib
+#                 move.di_tare_init = line.di_tare
+#                 move.di_product_packaging_init_id = line.product_packaging
+#                 move.di_categorie_id = line.di_categorie_id
+#                 move.di_origine_id = line.di_origine_id
+#                 move.di_marque_id = line.di_marque_id
+#                 move.di_calibre_id = line.di_calibre_id
+#                 move.di_station_id = line.di_station_id
+#                 move.di_qte_un_saisie_init = self.di_qte_un_saisie
+#                 move.di_un_saisie_init = self.di_un_saisie
+#                 move.di_type_palette_init_id = self.di_type_palette_id
+#                 move.di_nb_pieces_init = self.di_nb_pieces
+#                 move.di_nb_colis_init = self.di_nb_colis
+#                 move.di_nb_palette_init = self.di_nb_palette
+#                 move.di_poin_init = self.di_poin
+#                 move.di_poib_init = self.di_poib
+#                 move.di_tare_init = self.di_tare
+#                 move.di_product_packaging_init_id = self.product_packaging
+#                 move.di_categorie_id = self.di_categorie_id
+#                 move.di_origine_id = self.di_origine_id
+#                 move.di_marque_id = self.di_marque_id
+#                 move.di_calibre_id = self.di_calibre_id
+#                 move.di_station_id = self.di_station_id
+        
             
     
     @api.one
@@ -230,9 +289,13 @@ class SaleOrderLine(models.Model):
                 self.di_type_palette_id = self.product_id.di_type_palette_id
                 self.product_packaging = self.product_id.di_type_colis_id    
                 self.di_un_prix = self.product_id.di_un_prix    
-                self.di_spe_saisissable = self.product_id.di_spe_saisissable    
-
-
+                self.di_spe_saisissable = self.product_id.di_spe_saisissable                
+                self.di_categorie_id = self.product_id.di_categorie_id 
+                self.di_origine_id = self.product_id.di_origine_id 
+                self.di_marque_id = self.product_id.di_marque_id 
+                self.di_calibre_id = self.product_id.di_calibre_id 
+                self.di_station_id = self.product_id.di_station_id     
+                
     @api.multi
     @api.onchange('product_id')
     def product_id_change(self):
