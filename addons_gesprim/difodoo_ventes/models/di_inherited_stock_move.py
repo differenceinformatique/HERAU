@@ -340,6 +340,8 @@ class StockMove(models.Model):
                     vals["di_marque_id"] = Disaleorderline.di_marque_id.id
                     vals["di_calibre_id"] = Disaleorderline.di_calibre_id.id
                     vals["di_station_id"] = Disaleorderline.di_station_id.id
+                    if Disaleorderline.di_station_id:
+                        vals["location_id"] = Disaleorderline.di_station_id.id
                                                             
         
         if vals.get('purchase_line_id'):    
@@ -450,6 +452,14 @@ class StockMoveLine(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables', default=False, compute='_di_compute_spe_saisissable', store=True)
     
+    def di_get_lot_prod(self,product_id,id_lot):
+        lot_prod=''
+        move_line = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id), ('lot_id', '=', id_lot), ('move_id.state', '=', 'done'), ('location_dest_id.usage', '=', 'internal'), ('di_lot_prod', '!=', False)],limit=1)            
+        if move_line:
+            if move_line.di_lot_prod:
+                lot_prod = move_line.di_lot_prod
+        
+        return lot_prod
     
     @api.one
     @api.depends('product_id.di_spe_saisissable')
@@ -591,9 +601,7 @@ class StockMoveLine(models.Model):
                 move = self.move_id
             if move.product_uom.name.lower() == 'kg':
                 self.di_poin = self.qty_done
-            
-            
-                 
+                            
             
     @api.model
     def create(self, vals):
@@ -651,15 +659,95 @@ class StockMoveLine(models.Model):
                                 vals['lot_name'] = lotexist.name
                                 
                 elif picking.picking_type_id.code == 'outgoing':
-                    if vals.get('move_id') :  # si on a une commande liée
-                        if vals['move_id'] != False:            
-                            move = self.env['stock.move'].browse(vals['move_id'])
-                            if move.sale_line_id:
-                                if move.sale_line_id.di_station_id:
-                                    vals['location_id']=move.sale_line_id.di_station_id.id
+                    if vals.get('lot_id') :
+                        if not vals.get('di_lot_prod') :
+                            vals['di_lot_prod']= self.di_get_lot_prod(vals['product_id'],vals['lot_id'])
+                        
+#                     if vals.get('move_id') :  # si on a une commande liée
+#                         if vals['move_id'] != False:            
+#                             move = self.env['stock.move'].browse(vals['move_id'])
+#                             if move.sale_line_id:
+#                                 if move.sale_line_id.di_station_id:
+#                                     vals['location_id']=move.sale_line_id.di_station_id.id
                     
         ml = super(StockMoveLine, self).create(vals)
         return ml
+    
+    @api.multi
+    def write(self, vals):
+        for ml in self:    
+            pick_id = False        
+            if  (not vals.get('di_lot_prod') and not ml.di_lot_prod) :#or (vals.get('di_lot_prod')  and (vals['di_lot_prod']=='' or vals['di_lot_prod']==False)):
+                if vals.get('picking_id'):
+                    if vals['picking_id'] != False:
+                        pick_id = vals['picking_id']
+                if not pick_id:
+                    if ml.picking_id:
+                        if ml.picking_id != False:
+                            pick_id = ml.picking_id.id
+                     
+                if pick_id :             
+                    picking = ml.env['stock.picking'].browse(pick_id)
+                    if picking.picking_type_id.code == 'outgoing': 
+                        lot_id = False
+                        if vals.get('lot_id') :
+                            if vals['lot_id'] != False:
+                                lot_id = vals['lot_id']
+                        if not lot_id:
+                            if ml.lot_id:
+                                if ml.lot_id != False:
+                                    lot_id = ml.lot_id.id
+                                     
+                         
+                        if lot_id :     
+                            if vals.get('product_id') and vals['product_id'] != False:
+                                product_id = vals['product_id']  
+                            else:
+                                product_id = ml.product_id.id     
+                            vals['di_lot_prod']= ml.di_get_lot_prod(product_id,lot_id)
+                       
+        res = super(StockMoveLine, self).write(vals)
+    
+        return res
+    
+#         if self.ensure_one():
+#         for ml in self.move_line_ids:
+#             if  not vals.get('di_lot_prod') and not ml.di_lot_prod:
+#                 if vals.get('picking_id'):
+#                     if vals['picking_id'] != False:
+#                         pick_id = vals['picking_id']
+#                 if not pick_id:
+#                     if ml.picking_id:
+#                         if ml.picking_id != False:
+#                             pick_id = ml.picking_id
+#                     
+#                 if pick_id :             
+#                     picking = ml.env['stock.picking'].browse(pick_id)
+#                     if picking.picking_type_id.code == 'outgoing': 
+#                         if vals.get('lot_id') :
+#                             if vals['lot_id'] != False:
+#                                 lot_id = vals['lot_id']
+#                         if not lot_id:
+#                             if ml.lot_id:
+#                                 if ml.lot_id != False:
+#                                     lot_id = ml.lot_id.id
+#                                     
+#                         
+#                         if lot_id :     
+#                             if vals.get('product_id') and vals['product_id'] != False:
+#                                 product_id = vals['product_id']  
+#                             else:
+#                                 product_id = ml.product_id.id     
+#                             vals['di_lot_prod']= ml.di_get_lot_prod(product_id,lot_id)
+            
+    @api.multi                     
+    @api.onchange('lot_id')
+    def _di_change_lot_prod(self):
+        if self.ensure_one():            
+            if self.picking_id.picking_type_id.code == 'outgoing':                
+                if self.lot_id:
+                    if not self.di_lot_prod:
+                        self.di_lot_prod = self.di_get_lot_prod(self.product_id.id,self.lot_id.id)
     
     def di_qte_spe_en_stock(self, product_id, date, lot):            
         nbcol = 0.0

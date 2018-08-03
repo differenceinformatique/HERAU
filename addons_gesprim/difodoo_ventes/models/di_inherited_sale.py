@@ -77,10 +77,39 @@ class SaleOrderLine(models.Model):
     di_station_id = fields.Many2one("stock.location",string="Station")
     di_station_di_des = fields.Char(related='di_station_id.name')#, store='False')
     
-#     di_marge_param = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)
-#         
-#     def di_get_param_by_company_id(self,company_id):    
-#         return self.env['di.param'].search(['di_company_id','=',company_id],limit=1) 
+    di_courtier_id = fields.Many2one("res.partner",string="Metteur en marche")
+    di_prc_com_court = fields.Float(string='% com. Metteur en marche',help="""Pourcentage de commission que le metteur en marche récupère sur la vente. """, default=0.0,store=True)
+    di_prc_com_OP = fields.Float(string='% com. OP',help="""Pourcentage de commission que l'OP récupère sur la vente. """,store=True)#,compute='_di_compute_com_op')
+    
+
+            
+#     @api.one
+    @api.onchange('product_id')
+    def _di_charger_prc_op(self):   
+        if self.di_prc_com_OP == 0.0:
+            param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+            if self.di_courtier_id:
+                if self.di_courtier_id.di_is_court:
+                    self.di_prc_com_OP = param.di_prc_com_avec_court
+                else:
+                    self.di_prc_com_OP = param.di_prc_com_sans_court
+            else:
+                self.di_prc_com_OP = param.di_prc_com_sans_court
+                
+#     @api.one
+    @api.onchange('di_courtier_id')
+    def _di_charger_prc_court(self):
+        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+        if self.di_courtier_id:            
+            if self.di_courtier_id.di_is_court:
+                self.di_prc_com_OP = param.di_prc_com_avec_court
+                self.di_prc_com_court = self.di_courtier_id.di_prc_com_avec_court
+            else:
+                self.di_prc_com_court = 0.0
+                self.di_prc_com_OP = param.di_prc_com_sans_court
+        else:
+            self.di_prc_com_court = 0.0   
+            self.di_prc_com_OP = param.di_prc_com_sans_court                      
 
 
     @api.one

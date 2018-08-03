@@ -83,13 +83,13 @@
 					</tr>		
 					<tr style="border: 1px solid black;">
 						<td class="col-xs-2">Calibre</td>
-						<td class="col-xs-2"><span t-field="l.product_id.di_calibre_id"/></td>
+						<td class="col-xs-2"><span t-field="l.di_calibre_id"/></td>
 						<td style="border-left: 1px solid black;" class="col-xs-2">Origine</td>
-						<td class="col-xs-2"><span t-field="l.product_id.di_origine_id"/></td>
+						<td class="col-xs-2"><span t-field="l.di_origine_id"/></td>
 					</tr>
 					<tr style="border: 1px solid black;">
 						<td class="col-xs-2">Catégorie</td>
-						<td class="col-xs-2"><span t-field="l.product_id.di_categorie_id"/></td>
+						<td class="col-xs-2"><span t-field="l.di_categorie_id"/></td>
 						<td style="border-left: 1px solid black;" class="col-xs-2">Poids net</td>
 						<td class="col-xs-2"><span t-esc="poids"/><span> kg</span></td>
 					</tr>

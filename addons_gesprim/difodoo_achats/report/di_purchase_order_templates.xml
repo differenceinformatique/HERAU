@@ -48,24 +48,24 @@
 				<!-- on masque le nb pièces si prix au kg -->
 				<t t-if="line.di_un_prix != 'KG'">
 					<div t-field="line.di_nb_pieces" />
-					<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
+					<div t-field="line.di_categorie_id" />
 				</t>
 				<t t-if="line.di_un_prix == 'KG'">
 					<div>&amp;nbsp;</div>
-					<div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
+					<div t-field="line.di_categorie_id" />
 				</t>
 			</td>
 			<td class="text-right">
 				<div t-field="line.di_nb_colis" />
-				<div t-field="line.product_id.product_tmpl_id.di_origine_id" />
+				<div t-field="line.di_origine_id" />
 			</td>
 			<td>
 				<div t-field="line.product_packaging" />
-				<div t-field="line.product_id.product_tmpl_id.di_marque_id" />
+				<div t-field="line.di_marque_id" />
 			</td>
 			<td class="text-right">
 				<div t-field="line.di_poin" />
-				<div t-field="line.product_id.product_tmpl_id.di_calibre_id" />
+				<div t-field="line.di_calibre_id" />
 			</td>
 		</xpath>
 	</template>

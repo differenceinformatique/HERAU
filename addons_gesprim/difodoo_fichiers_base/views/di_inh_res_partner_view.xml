@@ -162,6 +162,19 @@
 				<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
 			</field>
 		</record>
+		
+		<record id="di_view_res_partner_filter" model="ir.ui.view">
+            <field name="name">di.base.view_res_partner_filter</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter" />
+            <field eval="99" name="priority" />
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Metteur en marche" name="courtier"
+                        domain="[('di_is_court', '=', True)]" />                        
+                </search>
+            </field>
+        </record>
 	</data>
 </odoo>
  

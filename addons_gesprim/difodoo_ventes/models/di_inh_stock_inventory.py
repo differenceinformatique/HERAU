@@ -169,6 +169,7 @@ class InventoryLine(models.Model):
             self.di_poin = self.di_poin_theo
             
     def _get_move_values(self, qty, location_id, location_dest_id, out):
+        #je dois surcharger en copiant le standard
         self.ensure_one()
         return {
             'name': _('INV:') + (self.inventory_id.name or ''),
