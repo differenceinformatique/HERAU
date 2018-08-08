@@ -234,8 +234,8 @@
 			<field name="name">Devis</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">sale.order</field>
-			<field name="inherit_id" ref="sale.action_quotations" />
-			<field eval="99" name="priority" />
+			<!-- <field name="inherit_id" ref="sale.action_quotations" /> -->
+			<!-- <field eval="99" name="priority" /> -->
 			<field name="context">{
 				'search_default_draft': 1,
 				'search_default_sent': 1
@@ -266,8 +266,8 @@
 			<field name="view_type">form</field>
 			<field name="res_model">sale.order</field>
 			<field name="search_view_id" ref="di_sale_order_view_search_inherit_sale" />
-			<field name="inherit_id" ref="sale.action_orders" />
-			<field eval="99" name="priority" />
+			<!-- <field name="inherit_id" ref="sale.action_orders" /> -->
+			<!-- <field eval="99" name="priority" /> -->
 			<field name="context">{'search_default_di_NonFact': 1,'search_default_di_cde': 1}</field>
 		</record>
 	</data>

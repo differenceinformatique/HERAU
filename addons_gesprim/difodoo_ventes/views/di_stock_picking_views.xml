@@ -24,7 +24,7 @@
 			'search_default_expedition': 1
 			}
 		</field>
-		<field name="di_search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search" />
+		<field name="search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search" />
 		<field name="help" type="html">
 			<p class="oe_view_nocontent_create">
 				Click to create a new operation type.
@@ -275,7 +275,7 @@
 			'search_default_reception': 1
 			}
 		</field>
-		<field name="di_search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search" />
+		<field name="search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search" />
 		<field name="help" type="html">
 			<p class="oe_view_nocontent_create">
 				Click to create a new operation type.
