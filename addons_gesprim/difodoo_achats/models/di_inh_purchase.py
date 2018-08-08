@@ -291,6 +291,7 @@ class PurchaseOrderLine(models.Model):
                 self.di_nb_pieces = self.product_packaging.di_qte_cond_inf * self.di_nb_colis
                
          
+    
     @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.quantity','invoice_lines.di_qte_un_saisie','invoice_lines.di_nb_pieces','invoice_lines.di_nb_colis','invoice_lines.di_nb_palette','invoice_lines.di_poin','invoice_lines.di_poib')
     def _compute_qty_invoiced(self):
         for line in self:
@@ -317,12 +318,12 @@ class PurchaseOrderLine(models.Model):
                         nbpal -= inv_line.di_nb_palette
                         poin -= inv_line.di_poin
             line.di_qte_un_saisie_fac = qty
-            line.di_poib = poib
-            line.di_nb_pieces = nbpieces
-            line.di_nb_colis = nbcol
-            line.di_nb_palette = nbpal
-            line.di_poin = poin
-                    
+            line.di_poib_fac = poib
+            line.di_nb_pieces_fac = nbpieces
+            line.di_nb_colis_fac = nbcol
+            line.di_nb_palette_fac = nbpal
+            line.di_poin_fac = poin
+                     
         super(PurchaseOrderLine, self)._compute_qty_invoiced()
 
 
