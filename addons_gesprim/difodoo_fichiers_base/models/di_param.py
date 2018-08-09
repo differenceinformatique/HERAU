@@ -22,8 +22,7 @@ class DiParam(models.Model):
     di_compta_prg   = fields.Selection([("INTERNE", "Interne"), ("DIVALTO", "Divalto"),("EBP", "EBP"),("SAGE","Sage")], string="Logiciel de comptabilité",
                                            help="Permet de savoir vers quel logiciel de comptabilité on va exporter (ou non) les écritures.",default="INTERNE")
     di_dos_divalto = fields.Char(string='Dossier Divalto',default="",help="""Dossier d'intégration sur Divalto.""")
-    di_etb_divalto = fields.Char(string='Etablissement Divalto',default="",help="""Etablissement d'intégration sur Divalto.""")
-    di_chem_exp_compta = fields.Char(string='Chemin export compta', default="",help="""Emplacement destination des fichiers d'export de la compta.""")     
+    di_etb_divalto = fields.Char(string='Etablissement Divalto',default="",help="""Etablissement d'intégration sur Divalto.""")        
     di_nom_exp_ecr_compta = fields.Char(string='Nom fichier export écritures',default="ecritures.csv",help="""Nom par défaut du fichier d'export des écritures comptables.""")
      
                        

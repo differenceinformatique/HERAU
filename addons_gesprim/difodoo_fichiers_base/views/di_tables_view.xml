@@ -444,8 +444,7 @@
                         <group string="Comptabilité">
                             <field name="di_compta_prg" />
                             <field name="di_dos_divalto" />
-                            <field name="di_etb_divalto" />
-                            <field name="di_chem_exp_compta" />
+                            <field name="di_etb_divalto" />                            
                             <field name="di_nom_exp_ecr_compta" />
                         </group>                                             
                     </group>

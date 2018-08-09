@@ -6,21 +6,6 @@
         <field name="model">di.transfertcompta.wiz</field>
         <field name="arch" type="xml">
             <form string="Transfert Compta">
-                <!--> 
-                <div class="oe_title">
-                
-                    <label for="date_start" />
-                    <h2>
-                        <field name="date_start" colspan="6" />
-                    </h2>
-                    <separator />
-                    <label for="date_end" />
-                    <h2>
-                        <field name="date_end" colspan="6" />
-                    </h2>
-                    
-                </div>
-                -->
                 <separator string="Période"/>
                 <group>
                     <group>
@@ -37,19 +22,14 @@
                 
                 <separator string="Transfert"/>
                 <group>
-                    <group>
-                        <field string="Chemin" name="path_account_transfer"/>
-                        <!-- <field string="Account File" name="account_file_transfer"/> -->
-                        <field string="Nom du fichier des écritures" name="writing_file_transfer"/>
-                        <!--<field string="Mail model" name="template_id"/>-->
+                    <group>                                            
+                        <field string="Nom du fichier des écritures" name="writing_file_transfer"/>                        
                     </group>
                 </group>
 
                 <footer>
                     <button string="Transfert" type="object" name="transfert_compta"
-                        default_focus="1" class="oe_link"/>
-                    <!-- <button string="Send Mail" type="object" name="send_mail_template"
-                        default_focus="1" class="oe_link"/>     -->
+                        default_focus="1" class="oe_link"/>                    
                     <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>
