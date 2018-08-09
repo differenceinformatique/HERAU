@@ -30,7 +30,7 @@
                 <footer>
                     <button string="Transfert" type="object" name="transfert_compta"
                         default_focus="1" class="oe_link"/>                    
-                    <button string="Cancel" class="oe_link" special="cancel" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
                 </footer>
             </form>
         </field>

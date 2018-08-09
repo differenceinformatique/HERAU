@@ -2,7 +2,7 @@
 from odoo import api, fields, models
 from datetime import timedelta, datetime
 import io
-import os
+# import os
 import base64
 from ..models import di_outils
 # from pip._internal import download
@@ -123,7 +123,8 @@ class Wizard_transfert_compta(models.TransientModel):
         return listrow
     
     @api.multi
-    def transfert_compta(self):  
+    def transfert_compta(self):
+        self.ensure_one()  
         param = self.env['di.param'].search([('di_company_id', '=', self.env.user.company_id.id)])
         date_d = self.date_start[0:4] + self.date_start[5:7] + self.date_start[8:10] 
         date_f = self.date_end[0:4] + self.date_end[5:7] + self.date_end[8:10] 
@@ -160,8 +161,7 @@ class Wizard_transfert_compta(models.TransientModel):
             nb_lig += 1
 
             listrow = list()
-            
-            
+                        
             if param.di_compta_prg == "DIVALTO":                               
                 listrow = self.di_ecrire_ligne_divalto(move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency, param.di_dos_divalto, param.di_etb_divalto)
                 
@@ -182,5 +182,4 @@ class Wizard_transfert_compta(models.TransientModel):
             'url': "web/content/?model=di.transfertcompta.wiz&id=" + str(self.id) + "&filename_field=filename&field=compta_data&download=true&filename=" + self.filename,
             'target': 'self',
             }
-        return action
-                          
+        return action                    
