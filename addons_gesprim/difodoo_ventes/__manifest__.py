@@ -23,7 +23,8 @@
 
     # always loaded
     'data': [
-        "wizard/di_grille_vente_wiz.xml",        
+        "wizard/di_grille_vente_wiz.xml",
+        "wizard/di_transfertcompta_wiz.xml",        
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",

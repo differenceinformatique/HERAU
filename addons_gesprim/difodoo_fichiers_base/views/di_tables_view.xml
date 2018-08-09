@@ -432,12 +432,22 @@
                     <group>
                         <field name="di_company_id" can_create="true" can_write="true"
                             readonly="1" />
-                        <field name="di_horizon" />  
-                        <field name="di_printer_id" />
-                        <field name="di_label_id" /> 
-                        <field name="di_printer_ach_id" />
-                        <field name="di_label_ach_id" />
-                        <field name="di_seuil_marge_prc" />                                              
+                        <field name="di_horizon" />
+                        <field name="di_seuil_marge_prc" /> 
+                        
+                        <group string="Impressions">  
+                            <field name="di_printer_id" />
+                            <field name="di_label_id" /> 
+                            <field name="di_printer_ach_id" />
+                            <field name="di_label_ach_id" />
+                        </group>    
+                        <group string="Comptabilité">
+                            <field name="di_compta_prg" />
+                            <field name="di_dos_divalto" />
+                            <field name="di_etb_divalto" />
+                            <field name="di_chem_exp_compta" />
+                            <field name="di_nom_exp_ecr_compta" />
+                        </group>                                             
                     </group>
                 </sheet>
             </form>
