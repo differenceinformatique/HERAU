@@ -334,6 +334,27 @@ class PurchaseOrder(models.Model):
     
     
     @api.multi
+    @api.depends('name', 'partner_ref')
+    def name_get(self):
+        
+        std = super(PurchaseOrder, self).name_get()
+        result = []
+        for (po_id,name) in std:
+            if self.env.context.get('di_afficher_BLs'):
+                line_ids = self.env['purchase.order.line'].search([('order_id','=',po_id)]).ids
+                move_ids = self.env['stock.move'].search([('purchase_line_id','in',line_ids),('picking_id','!=',False)]) 
+                pick_ids = list()
+                for move in move_ids:
+                    pick_ids.append(move.picking_id.id)
+                pickings = self.env['stock.picking'].search([('id','in',pick_ids)])
+                if pickings:
+                    for pick in pickings:
+                        name += ' - BL : ' + pick.name
+            result.append((po_id, name))                
+            
+        return result     
+    
+    @api.multi
     def di_action_grille_achat(self):
         self.ensure_one()        
          
