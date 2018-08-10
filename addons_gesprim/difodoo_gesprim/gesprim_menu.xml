@@ -103,7 +103,7 @@
     <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
     <!-- ***Menu Compta -->       
     <menuitem id="menu_gesprim_compta_cpt" name="Plan comptable" sequence="10" parent="menu_gesprim_compta" action="account.action_account_form" />
-    <menuitem id="menu_gesprim_compta_tax" name="Taxes" sequence="20" parent="menu_gesprim_compta" action="account.action_tax_form" />
+    <!-- <menuitem id="menu_gesprim_compta_tax" name="Taxes" sequence="20" parent="menu_gesprim_compta" action="account.action_tax_form" /> -->
     <menuitem id="menu_gesprim_compta_pos_fisc" name="Positions fiscales" sequence="30" parent="menu_gesprim_compta" action="account.action_account_fiscal_position_form" />
     <menuitem id="menu_gesprim_compta_jnl" name="Journaux" sequence="40" parent="menu_gesprim_compta" action="account.action_account_journal_form" />
     <menuitem id="menu_gesprim_compta_ecr" name="Ecritures" sequence="50" parent="menu_gesprim_compta" action="account.action_account_moves_all_a" />    

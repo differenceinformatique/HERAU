@@ -160,7 +160,7 @@
 				<field name="di_spe_saisissable" invisible="1"/>
 				<field name="di_flg_modif_uom" invisible="1" />
 				<field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie" />
-				<field name="di_qte_un_saisie" string="Qté validée unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+				<field name="di_qte_un_saisie" string="Qté validée unité saisie" attrs="{'readonly': [('is_quantity_done_editable','=',False)]}"/>
 				<field name="sale_line_id" invisible="1" />
 				<field name="di_un_saisie"  string="Unité de saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />				
 				<field name="di_nb_pieces" readonly="1" string="Nb pièces" />

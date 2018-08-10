@@ -108,7 +108,7 @@ class Wizard_transfert_compta(models.TransientModel):
         listrow.append( "{}".format(date_ech))
         listrow.append( "{}".format(chqno))
         listrow.append( "{}".format(currency))
-        listrow.append( "{}".format(regtyp))
+        listrow.append( "{}".format(regtyp)) # aml.payment_id.paymentmethod_id.code ???
         listrow.append( "{}".format(n_piece))  # pinotiers
         listrow.append( "{0:.2f}".format(montant))
         listrow.append( "{0:.2f}".format(montant))
@@ -145,8 +145,7 @@ class Wizard_transfert_compta(models.TransientModel):
                 INNER JOIN account_journal on account_journal.id = am.journal_id
                 INNER JOIN res_currency on res_currency.id = am.currency_id
                 INNER JOIN res_partner on res_partner.id = am.partner_id 
-                INNER JOIN account_account on account_account.id = aml.account_id 
-                LEFT JOIN account_analytic_account as aaa on aaa.id = aml.analytic_account_id 
+                INNER JOIN account_account on account_account.id = aml.account_id                
                 WHERE am.state = 'posted' 
                 AND to_char(am.date,'YYYYMMDD') BETWEEN %s AND %s
                 AND am.journal_id IN %s
