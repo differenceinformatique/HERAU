@@ -13,6 +13,7 @@ class DiParam(models.Model):
 #     di_act_grille_vente = fields.Boolean(string="Activer la grille de vente",help="""Permet l'activation de la grille de vente pour 
 #     une saisie plus rapide sur cadencier.""", default=False)
     di_horizon = fields.Integer(string="Horizon",help="""Horizon en jours pour la grille de vente. """)
+    di_horizon_ach = fields.Integer(string="Horizon achat",help="""Horizon en jours pour la grille d'achat. """)
     di_printer_id = fields.Many2one('di.printer',string="Imprimante étiquette")
     di_label_id = fields.Many2one('di.labelmodel',string="Modèle étiquette")
     di_printer_ach_id = fields.Many2one('di.printer',string="Imprimante étiquette achats")

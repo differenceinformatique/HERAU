@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_grille_achat_wiz" model="ir.ui.view">
+        <field name="name">di.grille.achat.form</field>
+        <field name="model">di.grille.achat.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Grille d'achat">
+                <group>                
+                    <group>                                              
+                        <field name="di_order_id" string="Commande"/>                               
+                    </group>                                      
+                </group>
+                <separator />
+                <label for="di_product_ids" string="Produits" />
+                <field name="di_product_ids">
+                    <tree order="display_name">
+                        <field name="display_name" />                                               
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Valider" type="object" name="di_valider_grille"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>      
+</odoo>

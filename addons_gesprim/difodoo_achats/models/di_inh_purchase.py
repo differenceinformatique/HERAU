@@ -332,6 +332,33 @@ class PurchaseOrder(models.Model):
     di_demdt = fields.Date(string='Date demandée', copy=False, help="Date de réception souhaitée",
                            default=lambda wdate : datetime.today().date()+timedelta(days=1))
     
+    
+    @api.multi
+    def di_action_grille_achat(self):
+        self.ensure_one()        
+         
+        view=self.env.ref('difodoo_achats.di_grille_achat_wiz').id
+        #       
+      
+        ctx= {                
+                'di_model':'purchase.order',   
+                'di_order': self                           
+            }
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'name': 'Grille d \'achat',
+            'res_model': 'di.grille.achat.wiz',
+            'views': [(view, 'form')],
+            'view_id': view,                        
+            'target': 'new',
+            'multi':'False',
+            'id':'di_action_grille_achat_wiz',
+            'key2':'client_action_multi',
+            'context': ctx            
+        }
+    
     @api.multi
     @api.onchange('di_demdt')
     def modif_demdt(self):

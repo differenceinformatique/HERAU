@@ -24,6 +24,7 @@
     # always loaded
     'data': [        
         "views/di_inh_purchase_view.xml",
+        "wizard/di_grille_achat_wiz.xml",
         "report/di_purchase_quotation_templates.xml",
         "report/di_purchase_order_templates.xml"
 #         "views/di_inherited_picking_view.xml",

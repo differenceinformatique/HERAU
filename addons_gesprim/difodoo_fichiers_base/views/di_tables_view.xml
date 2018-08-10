@@ -415,7 +415,7 @@
         <field name="arch" type="xml">
             <tree string="Paramètres" default_order="di_company_id">
                 <field name="di_company_id" readonly="1" />
-                <field name="di_horizon" />
+                <!-- <field name="di_horizon" /> -->
                 <!-- <field name="di_printer_id" />
                 <field name="di_label_id" />
                 <field name="di_printer_ach_id" />
@@ -430,11 +430,14 @@
             <form string="Paramètres">
                 <sheet string="Paramètres" modifiers="{}">
                     <group>
-                        <field name="di_company_id" can_create="true" can_write="true"
-                            readonly="1" />
-                        <field name="di_horizon" />
-                        <field name="di_seuil_marge_prc" /> 
-                        
+                        <group string="Généralités"> 
+                            <field name="di_company_id" can_create="true" can_write="true"
+                                readonly="1" />
+                            <field name="di_horizon" />
+                            <field name="di_horizon_ach" />
+                            <field name="di_seuil_marge_prc" />                             
+                        </group>
+                            
                         <group string="Impressions">  
                             <field name="di_printer_id" />
                             <field name="di_label_id" /> 
