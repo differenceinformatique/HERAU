@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<!-- surcharge mode liste de la grille de transport -->
+		<record id="di_view_delivery_price_rule_tree" model="ir.ui.view">
+			<field name="name">di.delivery.price.rule.tree</field>
+			<field name="model">delivery.price.rule</field>
+			<field name="inherit_id" ref="delivery.view_delivery_price_rule_tree" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<!-- on ajoute le transporteur(suivant contexte) + code destination -->
+				<xpath expr="//field[@name='name']" position="replace">
+					<field name="carrier_id" invisible="context.get('Aff_Transporteur') != True" />
+					<field name="di_code_dest_id" invisible="1" />
+					<field name="name" string="Règle de calcul" />
+				</xpath>
+				<!-- on enlève le widget séquence -->
+				<xpath expr="//field[@name='sequence']" position="replace">
+				</xpath>
+			</field>
+		</record>
+		<!-- surcharge mode fiche de la grille de transport -->
+		<record id="di_view_delivery_price_rule_form" model="ir.ui.view">
+			<field name="name">di.delivery.price.rule.form</field>
+			<field name="model">delivery.price.rule</field>
+			<field name="inherit_id" ref="delivery.view_delivery_price_rule_form" />
+			<field eval="99" name="priority" />
+			<field name="arch" type="xml">
+				<!-- on ajoute le transporteur(suivant contexte) + code destination -->
+				<xpath expr="/form/group[2]/label[@for='variable']" position="before">
+					<field name="carrier_id" invisible="context.get('Aff_Transporteur') != True" />
+					<field name="di_code_dest_id" />
+				</xpath>
+			</field>
+			<!-- création action pour appeler de façon autonome la grille de transport -->
+		</record>
+		<record id="di_action_delivery_price_rule" model="ir.actions.act_window">
+			<field name="name">Grilles Transporteurs</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">delivery.price.rule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'Aff_Transporteur': True}</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Aide
+				</p>
+				<p>
+					Cliquer pour gérer les grilles transporteurs
+				</p>
+			</field>
+		</record>
+		<!-- recherche -->
+		<record id="di_view_delivery_price_rule_search" model="ir.ui.view">
+            <field name="name">di.delivery.price.rule.search</field>
+            <field name="model">delivery.price.rule</field>
+            <field name="arch" type="xml">
+                <search string="Grilles Transports">
+                	<field name="name" string="Grilles Transports" filter_domain="['|',('name','ilike',self),('carrier_id','ilike',self)]"/>
+                    <field name="carrier_id"/>
+                    <field name="di_code_dest_id"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Transporteurs" name="carrier_id" context="{'group_by':'carrier_id',}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+	</data>
+</odoo>

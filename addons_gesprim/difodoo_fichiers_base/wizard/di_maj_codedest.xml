@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="wiz_maj_codedest" model="ir.ui.view">
+		<field name="name">di.majcodedestwiz_wiz.form</field>
+		<field name="model">di.majcodedestwiz_wiz</field>
+		<field name="arch" type="xml">
+			<form string="Mise à jour des codes destination">
+				<footer>
+					<button string='Mettre à jour' name="di_maj_codedest" type="object"
+						class="btn-primary" />
+					<button string="Annuler" class="btn-default" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<act_window id="di_action_wiz_maj_codedest" multi="False"
+		key2="client_action_multi" name="Mise à jour des codes destination" res_model="di.majcodedestwiz_wiz"
+		src_model="res.partner" view_mode="form" target="new" view_type="form"
+		view_id="wiz_maj_codedest">
+	</act_window>
+</odoo>
+ 

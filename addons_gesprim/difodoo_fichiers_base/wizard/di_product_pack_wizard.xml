@@ -43,6 +43,5 @@
 		src_model="product.template" view_mode="form" target="new" view_type="form"
 		view_id="wiz_create_producpack">
 	</act_window>
-
 </odoo>
  

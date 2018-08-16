@@ -8,22 +8,23 @@
 			<field eval="99" name="priority" />
 			<field name="arch" type="xml">
 				<!-- on masque default_code à son emplacement initial -->
-				<xpath
-					expr="/form/sheet/notebook/page/group/group/field[@name='default_code']"
-					position="replace">
+				<xpath	expr="/form/sheet/notebook/page/group/group/field[@name='default_code']" position="replace">
 				</xpath>
 				<!-- on le replace à un autre endroit -->
 				<xpath expr="//label[@for='name']" position="before">
 					<label class="oe_edit_only" for="default_code" string="Code article" />
 					<h1>
-						<field name="default_code" placeholder="Code article"
-							required="True" />
+						<field name="default_code" placeholder="Code article" required="True" />
 					</h1>
 				</xpath>
 				<!-- on change le libellé du champ name -->
 				<xpath expr="//label[@for='name']" position="replace">
 					<label class="oe_edit_only" for="name" string="Désignation"
 						style="font-style: oblique;" />
+				</xpath>
+				<!-- on change le libellé du champ category -->
+				<xpath expr="//field[@name='categ_id']" position="replace">
+					<field name="categ_id" string="Famille"/>
 				</xpath>
 				<!-- ajout group pour mettre nos champ sur l'onglet Informations Générales -->
 				<xpath expr="//page[1]/group[1]" position="attributes">                    
@@ -151,6 +152,9 @@
 				</xpath>
 				<xpath expr="//field[@name='default_code']" position="replace">
 					<field name="default_code" string="Code" />
+				</xpath>
+				<xpath expr="//field[@name='categ_id']" position="replace">
+					<field name="categ_id" string="Famille"/>
 				</xpath>
 			</field>
 		</record>

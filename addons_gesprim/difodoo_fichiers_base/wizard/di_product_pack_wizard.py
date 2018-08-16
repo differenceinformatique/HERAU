@@ -1,7 +1,7 @@
-
 # -*- coding: utf-8 -*-
  
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
  
 class DiProdPackWiz(models.TransientModel):
     _name = "di.prodpack_wiz"
@@ -17,14 +17,14 @@ class DiProdPackWiz(models.TransientModel):
     def default_get(self, fields):
         res = super(DiProdPackWiz, self).default_get(fields)
         # récupération de l'article sélectionné
+        if not self.env.context["active_id"]:
+            raise ValidationError("Pas d'enregistrement selectionné")
         res["product_id"] = self.env.context["active_id"]
         Product = self.env["product.product"].browse(res["product_id"]) 
         res["uom_id"] = Product.uom_id.id
         res["weight"] = Product.weight
         # récupération des conditionnements par défaut
-        res["cond_ids"] = self.env['di.conddefaut'].search([]).ids
-#         if not self.env.context["active_id"]:
-#             raise ValidationError("Pas d'enregistrement selectionné")
+        res["cond_ids"] = self.env['di.conddefaut'].search([]).ids        
         return res
 
     @api.multi

@@ -49,8 +49,9 @@
 						</group>
 					</page>
 				</xpath>
-				<!-- modif libellé tags -->
+				<!-- Modif libellé tags + Ajout du code destination -->
 				<xpath expr="//field[@name='category_id']" position="replace">
+					<field name="di_code_dest_id"/>
 					<field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Famille..." string="Famille"/>
 				</xpath>
 				<!-- masquage champ état + modif place ville/code postal sur la 1ère page du formulaire -->
@@ -65,12 +66,16 @@
 					<field name="city" placeholder="City"
 						attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" />
 				</xpath>
-				<!-- modification affichage contacts/adresses -->
+				<!-- modification affichage contacts/adresses (kanban - on ajoute le champ dans le kanban et on le positionne)-->
 				<xpath expr="//field[@name='child_ids']/kanban/field[@name='name']" position="after">
 					<field name="di_defaut_adr"/>
+					<field name="di_code_dest_id"/>
 				</xpath>
-				<xpath expr="//field[@name='child_ids']/kanban/templates/t/div/div[2]" position="after">
-					<t t-if="record.di_defaut_adr.raw_value "><i class='fa fa-check'></i></t>
+				<xpath expr="//field[@name='child_ids']/kanban/templates/t/div/div[2]" position="inside">
+					<t t-if="record.type.raw_value != 'contact'">
+						<i t-if="record.di_defaut_adr.raw_value " class='fa fa-check'/>
+						<field t-if="record.di_code_dest_id.raw_value" name="di_code_dest_id"/>
+					</t>				
 				</xpath>
 				<!-- masquage champ état + modif place ville/code postal dans le formulaire contact/adresse -->
 				<xpath expr="//notebook/page/field/form/sheet/group/group/div/div/field[@name='city']"
@@ -90,6 +95,9 @@
 					<p/>
 					<label for="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
 					<field name="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
+				</xpath>
+				<xpath expr="//notebook/page/field/form/sheet/group/group[1]" position="inside">
+					<field name="di_code_dest_id" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
 				</xpath>
 				<!-- Ajout dans l'onglet Ventes & achats -->
 				<xpath expr="//group[@name='sale']/field[@name='user_id']" position="after">
@@ -155,7 +163,8 @@
 			<field name="arch" type="xml">
 				<!-- ajout coche adresse par défaut-->
 				<xpath expr="//group/group[2]" position="inside">
-					<field name="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
+					<field name="di_code_dest_id" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />
+					<field name="di_defaut_adr" attrs="{'invisible':[('type', '!=', 'delivery'),('type', '!=', 'invoice')]}" />					
 				</xpath>
 				<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
 			</field>

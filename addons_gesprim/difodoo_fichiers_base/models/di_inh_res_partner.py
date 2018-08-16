@@ -17,7 +17,8 @@ class ResPartner(models.Model):
                                    help="Choix de la présentation du bon de livraison")
     is_company = fields.Boolean(string='Is a Company', default=True, help="Check if the contact is a company, otherwise it is a person")  # modif attribut default
     di_defaut_adr = fields.Boolean(string="Adresse par défaut", default=False, help="Sera selectionnée automatiquement en saisie de pièces")
-    
+    di_code_dest_id = fields.Many2one('di.code.dest', string='Code destination', help="Code destination pour les grilles transporteurs")
+     
     #unicité du code tiers
     @api.one
     @api.constrains('ref')
@@ -96,3 +97,13 @@ class ResPartner(models.Model):
         for adr_type in adr_pref:
             result[adr_type] = result.get(adr_type) or default
         return result
+
+    @api.multi
+    @api.onchange('country_id', 'zip')
+    def _compute_code_dest(self):
+        if self.ensure_one():
+            if self.country_id and self.zip:
+                search_name = self.country_id.code + '_' + self.zip[:2]
+                search_id = self.env['di.code.dest'].search([('name', '=', search_name)],limit=1)
+                if search_id:
+                    self.di_code_dest_id = search_id

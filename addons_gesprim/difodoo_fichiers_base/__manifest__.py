@@ -27,7 +27,9 @@
         "views/di_label_model_views.xml",
         "views/di_inh_product_view.xml",
         "views/di_inh_res_partner_view.xml",        
-        "views/di_tables_view.xml",        
+        "views/di_tables_view.xml",
+        "views/di_inh_product_view.xml",
+        "views/di_inh_delivery_view.xml",       
         "report/di_impression_tarifs.xml",
         "report/di_tarifs_report.xml",
         "report/di_etiquettes.xml",
@@ -38,8 +40,9 @@
         "wizard/di_generer_tarifs_wizard.xml",
         "wizard/di_generer_couts_wizard.xml",
         "wizard/di_popup_wizard.xml",
+        "wizard/di_maj_codedest.xml",
         "security/ir.model.access.csv"
-      
+              
     ],
     # only loaded in demonstration mode
     'demo': [

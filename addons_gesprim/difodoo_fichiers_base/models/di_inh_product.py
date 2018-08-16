@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from odoo import osv
 from odoo.exceptions import Warning
 from odoo import models, fields, api
 from xlrd.formula import FMLA_TYPE_COND_FMT

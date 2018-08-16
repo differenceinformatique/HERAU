@@ -5,7 +5,9 @@ from . import di_labelmodel
 from . import di_categorie
 from . import di_calibre
 from . import di_code_tarif
+from . import di_code_dest
 from . import di_cond_defaut
+from . import di_inh_delivery
 from . import di_inh_product
 from . import di_inh_res_partner
 from . import di_inh_res_company

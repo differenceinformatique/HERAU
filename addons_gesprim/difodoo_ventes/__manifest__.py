@@ -36,7 +36,7 @@
         "report/di_report_invoice.xml",
         "report/di_invoice_report.xml",
         "security/ir.model.access.csv"
-      
+              
     ],
     # only loaded in demonstration mode
     'demo': [

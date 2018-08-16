@@ -2,6 +2,7 @@
 "access_difodoo_fichier_base_dicalibre","access_difodoo_fichier_base_dicalibre","model_di_calibre","base.group_user",1,1,1,1
 "access_difodoo_fichier_base_dicategorie","access_difodoo_fichier_base_dicategorie","model_di_categorie","base.group_user",1,1,1,1
 "access_difodoo_fichier_base_dicodetarif","access_difodoo_fichier_base_dicodetarif","model_di_code_tarif","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_dicodedest","access_difodoo_fichier_base_dicodedest","model_di_code_dest","base.group_user",1,1,1,1
 "access_difodoo_fichier_base_dimarque","access_difodoo_fichier_base_dimarque","model_di_marque","base.group_user",1,1,1,1
 "access_difodoo_fichier_base_diorigine","access_difodoo_fichier_base_diorigine","model_di_origine","base.group_user",1,1,1,1
 "access_difodoo_fichier_base_diparam","access_difodoo_fichier_base_diparam","model_di_param","base.group_user",1,1,1,1

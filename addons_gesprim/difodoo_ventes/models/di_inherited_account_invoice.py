@@ -144,6 +144,8 @@ class AccountInvoiceLine(models.Model):
         prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date)
         if prixFinal == 0.0:
             prixFinal = prixOrig
+#             if prixOrig == 0.0:
+#                 raise Warning("Le prix unitaire de la ligne est à 0 !")
         return prixFinal 
     @api.one
     @api.depends('product_id.di_spe_saisissable')

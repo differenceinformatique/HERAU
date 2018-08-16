@@ -470,4 +470,49 @@
             </p>
         </field>
     </record>
+    <!--Code destination -->
+    <record id="view_code_dest_tree" model="ir.ui.view">
+        <field name="name">di.code.dest.tree</field>
+        <field name="model">di.code.dest</field>
+        <field name="arch" type="xml">
+            <tree string="Code destination" default_order="name">
+                <field name="name" />                
+                <field name="country_id" />
+                <field name="di_code_dest" string="Code"/>
+                <field name="di_des" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_code_dest_form" model="ir.ui.view">
+        <field name="name">di.code.dest.form</field>
+        <field name="model">di.code.dest</field>
+        <field name="arch" type="xml">
+            <form string="Code destination">
+                <sheet string="Code destination" modifiers="{}">
+                    <group>
+                        <field name="di_company_id" can_create="true" can_write="true"
+                            modifiers="{'readonly':true}" />
+                        <field name="country_id" modifiers="{'required':true}" />
+                        <field name="di_code_dest" modifiers="{'required':true}" />
+                        <field name="di_des" modifiers="{'required':true}" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="di_action_code_dest" model="ir.actions.act_window">
+        <field name="name">Codes destinations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.code.dest</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            <p>
+                Cliquer pour gérer les codes destinations pour les grilles transporteurs
+            </p>
+        </field>
+    </record>
 </odoo>

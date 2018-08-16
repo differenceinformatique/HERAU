@@ -3,7 +3,7 @@
 from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 from datetime import datetime, timedelta
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError, Warning
 from ...difodoo_fichiers_base.controllers import di_ctrl_print
 import ctypes
 from math import ceil
@@ -113,6 +113,8 @@ class SaleOrderLine(models.Model):
         prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date)
         if prixFinal == 0.0:
             prixFinal = prixOrig
+#             if prixOrig == 0.0:
+#                 raise ValidationError("Le prix unitaire de la ligne est à 0 !")
         return prixFinal                     
     @api.one
     @api.depends('product_id.di_spe_saisissable','product_id','di_qte_un_saisie')
