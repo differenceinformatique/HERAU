@@ -24,7 +24,11 @@ class DiParam(models.Model):
     
     di_art_com  =   fields.Many2one('product.product',string="Article commission",help="""Article qui va servir pour la facturation des commissions. """)
     
-     
+    di_compta_prg   = fields.Selection([("INTERNE", "Interne"), ("DIVALTO", "Divalto"),("EBP", "EBP"),("SAGE","Sage")], string="Logiciel de comptabilité",
+                                           help="Permet de savoir vers quel logiciel de comptabilité on va exporter (ou non) les écritures.",default="INTERNE")
+    di_dos_divalto = fields.Char(string='Dossier Divalto',default="",help="""Dossier d'intégration sur Divalto.""")
+    di_etb_divalto = fields.Char(string='Etablissement Divalto',default="",help="""Etablissement d'intégration sur Divalto.""")        
+    di_nom_exp_ecr_compta = fields.Char(string='Nom fichier export écritures',default="ecritures.csv",help="""Nom par défaut du fichier d'export des écritures comptables.""") 
                        
     #unicité 
     @api.one
@@ -36,3 +40,4 @@ class DiParam(models.Model):
                 ('di_company_id', '=', self.di_company_id.id)], limit=1)
             if di_company_id:
                 raise Warning("Le paramétrage pour ce dossier existe déjà.")
+            

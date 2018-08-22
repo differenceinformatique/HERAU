@@ -43,8 +43,9 @@
 	<menuitem id="menu_gesprim_ventes" name="Ventes" sequence="20" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_achats" name="Achats" sequence="30" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_stock" name="Stocks" sequence="40" parent="menu_gesprim" />
-	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="50" parent="menu_gesprim" />
-	<menuitem id="menu_gesprim_uti" name="Utilitaires" sequence="60" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_compta" name="Comptabilité" sequence="50" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="60" parent="menu_gesprim" />
+	<menuitem id="menu_gesprim_uti" name="Utilitaires" sequence="70" parent="menu_gesprim" />
 	<!-- ***Menu Fichiers -->	
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
@@ -105,6 +106,13 @@
     <menuitem id="menu_gesprim_stock_retcons" name="Retour consigne" sequence="30" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_inventory_form_retcons"/>
     <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="40" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
     <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="50" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
+    <!-- ***Menu Compta -->       
+    <menuitem id="menu_gesprim_compta_cpt" name="Plan comptable" sequence="10" parent="menu_gesprim_compta" action="account.action_account_form" />
+    <!-- <menuitem id="menu_gesprim_compta_tax" name="Taxes" sequence="20" parent="menu_gesprim_compta" action="account.action_tax_form" /> -->
+    <menuitem id="menu_gesprim_compta_pos_fisc" name="Positions fiscales" sequence="30" parent="menu_gesprim_compta" action="account.action_account_fiscal_position_form" />
+    <menuitem id="menu_gesprim_compta_jnl" name="Journaux" sequence="40" parent="menu_gesprim_compta" action="account.action_account_journal_form" />
+    <menuitem id="menu_gesprim_compta_ecr" name="Ecritures" sequence="50" parent="menu_gesprim_compta" action="account.action_account_moves_all_a" />    
+    <menuitem id="menu_gesprim_compta_transfert" name="Transfert comptabilité" sequence="60" parent="menu_gesprim_compta" action="difodoo_ventes.di_action_transfertcompta" />    
     <!-- ***Menu Statistiques -->
     <menuitem id="menu_gesprim_stats_factures" name="Analyse CA" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
     <!-- ***Menu Utilitaires -->

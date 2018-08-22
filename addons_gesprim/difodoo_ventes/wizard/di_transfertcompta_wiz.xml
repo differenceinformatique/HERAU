@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <record id="di_transfertcompta_wiz_form" model="ir.ui.view">
+        <field name="name">di.transfertcompta.wiz.form</field>
+        <field name="model">di.transfertcompta.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Transfert Compta">
+                <separator string="Période"/>
+                <group>
+                    <group>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                    </group>
+                    <group/>
+                </group>
+                
+                <separator string="Journaux"/>
+                <group>
+                    <field name="journal_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                </group>
+                
+                <separator string="Transfert"/>
+                <group>
+                    <group>                                            
+                        <field string="Nom du fichier des écritures" name="writing_file_transfer"/>                        
+                    </group>
+                </group>
+
+                <footer>
+                    <button string="Transfert" type="object" name="transfert_compta"
+                        default_focus="1" class="oe_link"/>                    
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="di_action_transfertcompta" model="ir.actions.act_window">
+        <field name="name">Transfert Compta</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.transfertcompta.wiz</field>
+        <field name="view_type">form</field>            
+        <field name="view_id" ref="di_transfertcompta_wiz_form"/>        
+        <field name="view_mode">tree,form</field>
+        <field name="target">new</field>
+    </record> 
+    
+    </data>
+ 
+</odoo>
