@@ -44,6 +44,8 @@ class ProductTemplate(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
+    di_cons = fields.Boolean(string='Emballage consigné',default=False,store=True)
+    
     @api.one
     @api.depends('di_un_saisie', 'di_un_prix')
     def _di_compute_spe_saisissable(self):

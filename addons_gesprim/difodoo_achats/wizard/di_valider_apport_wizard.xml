@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-	di_apport_id = fields.Many2one("di.apportprod",string="Apport")
-	di_lot_prod =
-	fields.Char(string="Lot producteur",required=True)
-	di_producteur_id =
-	fields.Many2one("res.partner",string="Producteur")
-	di_station_id =
-	fields.Many2one("stock.location",string="Station")
-	di_product_id =
-	fields.Many2one('product.product', string='Article', required=True)
-	di_qte_theo =
-	fields.Float(string="Quantité théorique en unité de référence",required=True,default=0.0)
-	di_exploitation = fields.Char(string="Exploitation d'origine",required=True)
-	di_date_estim =
-	fields.Date(string="Date de réception estimée")
-
-	di_date_recept = fields.Date(string="Date de
-	réception")
-	di_qte_recept = fields.Float(string="Quantité receptionnée en unité de
-	référence",default=0.0)
-
-
 	<record id="di_valider_apport_wiz" model="ir.ui.view">
 		<field name="name">di.valider.apport.form</field>
 		<field name="model">di.valid.apport.wiz</field>

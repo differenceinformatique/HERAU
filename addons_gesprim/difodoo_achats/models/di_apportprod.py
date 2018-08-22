@@ -25,6 +25,8 @@ class DiApportProd(models.Model):
     di_producteur_nom = fields.Char(related='di_producteur_id.display_name')
     di_station_id = fields.Many2one("stock.location",string="Station")
     di_station_di_des = fields.Char(related='di_station_id.name')
+    #TODO : gestion du transport pour les apports
+    
     
     @api.depends('di_station_di_des','di_lot_prod','di_producteur_nom')
     def _changer_nom(self):                 

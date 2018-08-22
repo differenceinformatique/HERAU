@@ -23,11 +23,13 @@
 
     # always loaded
     'data': [
-        "wizard/di_grille_vente_wiz.xml",        
+        "wizard/di_grille_vente_wiz.xml",
+        "wizard/di_consignes_wiz.xml",         
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
         "views/di_stock_inventory_views.xml",
+        "views/di_stock_production_views.xml",
         "static/di_webclient_templates.xml",
         "report/di_sale_report_templates.xml",
         "report/di_report_deliveryslip.xml",

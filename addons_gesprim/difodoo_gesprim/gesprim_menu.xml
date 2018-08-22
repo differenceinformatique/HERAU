@@ -70,11 +70,13 @@
 	<!-- ***Menu Ventes -->	
 	<menuitem id="menu_gesprim_ventes_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
 	<menuitem id="menu_gesprim_ventes_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />  
-	<menuitem id="menu_gesprim_ventes_liv" name="Livraisons" sequence="30" parent="menu_gesprim_ventes" />- 
-	<menuitem id="menu_gesprim_ventes_fact" name="Facturation" sequence="40" parent="menu_gesprim_ventes" />
+	<menuitem id="menu_gesprim_ventes_liv" name="Livraisons" sequence="30" parent="menu_gesprim_ventes" />
+	<menuitem id="menu_gesprim_ventes_cons" name="Tracer consignes" sequence="40" parent="menu_gesprim_ventes" action="difodoo_ventes.action_di_consignes_wiz"/> 
+	<menuitem id="menu_gesprim_ventes_fact" name="Facturation" sequence="50" parent="menu_gesprim_ventes" />
 	<!-- ****Menu Livraisons -->	
 	<menuitem id="menu_gesprim_ventes_liv_liv" name="Livraisons" sequence="10" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_stock_picking_type_action_ventes"/>
 	<menuitem id="menu_gesprim_ventes_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_attente"/>
+		
 	<!-- <menuitem id="menu_gesprim_ventes_liv_afaire" name="A Faire" sequence="30" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_a_faire"/> -->
 	<!-- <menuitem id="menu_gesprim_ventes_liv_ret" name="En Retard" sequence="40" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_retard"/> -->	
 	<!-- ****Menu Facturation Ventes-->      
@@ -86,6 +88,7 @@
     <menuitem id="menu_gesprim_achats_commandes" name="Commandes" sequence="20" parent="menu_gesprim_achats" action="purchase.purchase_form_action" />  
     <menuitem id="menu_gesprim_achats_liv" name="Réceptions" sequence="30" parent="menu_gesprim_achats" />
     <menuitem id="menu_gesprim_achats_fact" name="Facturation" sequence="40" parent="menu_gesprim_achats" />
+    <menuitem id="menu_gesprim_achats_paie_com" sequence="50" parent="menu_gesprim_achats" action="difodoo_achats.action_di_payer_com_wiz" />
     <!-- ****Menu Réception -->        
     <menuitem id="menu_gesprim_achats_liv_liv" name="Réceptions" sequence="10" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_stock_picking_type_action_achats"/>
     <menuitem id="menu_gesprim_achats_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_action_picking_tree_achats_attente"/>    
@@ -97,9 +100,11 @@
     <menuitem id="menu_gesprim_achats_factures" name="Factures fournisseur" sequence="10" parent="menu_gesprim_achats_fact" action="account.action_invoice_tree2"/>    
     <menuitem id="menu_gesprim_achats_avoirs" name="Avoirs fournisseur" sequence="20" parent="menu_gesprim_achats_fact" action="account.action_invoice_in_refund"/> -->
     <!-- ***Menu Stock -->    
-    <menuitem id="menu_gesprim_stock_inv" name="Resserre" sequence="10" parent="menu_gesprim_stock" action="stock.action_inventory_form"/>
-    <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="20" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
-    <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
+    <menuitem id="menu_gesprim_stock_ress" name="Resserre" sequence="10" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_inventory_form_std"/>
+    <menuitem id="menu_gesprim_stock_appprod" name="Apport prod." sequence="20" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_inventory_form_appprod"/>
+    <menuitem id="menu_gesprim_stock_retcons" name="Retour consigne" sequence="30" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_inventory_form_retcons"/>
+    <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="40" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
+    <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="50" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
     <!-- ***Menu Statistiques -->
     <menuitem id="menu_gesprim_stats_factures" name="Analyse CA" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
     <!-- ***Menu Utilitaires -->

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_consignes_wiz_form" model="ir.ui.view">
+        <field name="name">di.consignes.wiz.form</field>
+        <field name="model">di.consignes.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Consignes">
+                              
+                <label for="di_cons_ids" string="Consignes" />
+                <field name="di_cons_ids">
+                    <tree order="di_partner_name,di_product_name,di_lot_name" editable="bottom">                        
+                        <field name="di_product_id" />    
+                        <field name="di_lot_id" />
+                        <field name="di_parter_id" />
+                        <field name="di_select" />                                                                 
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Retour consigne" type="object" name="di_retourner_consigne" default_focus="1" />
+                    <button string="Ne plus suivre" type="object" name="di_plus_suivi" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>    
+   <act_window id="action_di_consignes_wiz" multi="False" key2="client_action_multi" name="Consignes chez les clients"
+        res_model="di.consignes.wiz" view_mode="form" target="new" view_type="form" view_id="di_consignes_wiz_form">
+    </act_window>
+   
+
+</odoo>

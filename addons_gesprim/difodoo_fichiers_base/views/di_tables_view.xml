@@ -439,7 +439,8 @@
                         <field name="di_label_ach_id" />
                         <field name="di_seuil_marge_prc" />
                         <field name="di_prc_com_avec_court" />
-                        <field name="di_prc_com_sans_court" />                                                                    
+                        <field name="di_prc_com_sans_court" />
+                        <field name="di_art_com" />                                                                                        
                     </group>
                 </sheet>
             </form>

@@ -626,37 +626,40 @@ class StockMoveLine(models.Model):
                                 move = self.env['stock.move'].browse(vals['move_id'])
                                 if move.product_id.tracking != 'none':
                                     if move.purchase_line_id.order_id.id != False:
-                                        lotexist = self.env['stock.production.lot'].search(['&', ('name', '=', move.purchase_line_id.order_id.name), ('product_id', '=', move.product_id.id)])
-                                        if not lotexist:
-                                            data = {
-                                            'name': move.purchase_line_id.order_id.name,
-                                            'product_id' : move.product_id.id                                      
-                                            }            
-                                            
-                                            lot = self.env['stock.production.lot'].create(data)  # création du lot
-                                            self.env.cr.commit()       
-                                                                   
-                                            vals['lot_id'] = lot.id 
-                                            vals['lot_name'] = lot.name
-                                        else:
-                                            vals['lot_id'] = lotexist.id 
-                                            vals['lot_name'] = lotexist.name
+                                        if move.product_id.tracking == 'lot' and not move.product_id.di_cons:
+                                            lotexist = self.env['stock.production.lot'].search(['&', ('name', '=', move.purchase_line_id.order_id.name), ('product_id', '=', move.product_id.id)])
+                                            if not lotexist:
+                                                data = {
+                                                'name': move.purchase_line_id.order_id.name,
+                                                'product_id' : move.product_id.id                                      
+                                                }            
+                                                
+                                                lot = self.env['stock.production.lot'].create(data)  # création du lot
+                                                self.env.cr.commit()       
+                                                                       
+                                                vals['lot_id'] = lot.id 
+                                                vals['lot_name'] = lot.name
+                                            else:
+                                                vals['lot_id'] = lotexist.id 
+                                                vals['lot_name'] = lotexist.name
+                                        
                             
-                        if not vals.get('lot_id') and  move.product_id.tracking != 'none':            
-                            picking = self.env['stock.picking'].browse(vals['picking_id'])
-                            lotexist = self.env['stock.production.lot'].search(['&', ('name', '=', picking.name), ('product_id', '=', move.product_id.id)])
-                            if not lotexist:
-                                data = {
-                                'name': picking.name,
-                                'product_id' : move.product_id.id                                        
-                                } 
-                                lot = self.env['stock.production.lot'].create(data)
-                                self.env.cr.commit()
-                                vals['lot_id'] = lot.id
-                                vals['lot_name'] = lot.name
-                            else:
-                                vals['lot_id'] = lotexist.id
-                                vals['lot_name'] = lotexist.name
+                        if not vals.get('lot_id') and  move.product_id.tracking != 'none':   
+                            if move.product_id.tracking == 'lot' and not move.product_id.di_cons:         
+                                picking = self.env['stock.picking'].browse(vals['picking_id'])
+                                lotexist = self.env['stock.production.lot'].search(['&', ('name', '=', picking.name), ('product_id', '=', move.product_id.id)])
+                                if not lotexist:
+                                    data = {
+                                    'name': picking.name,
+                                    'product_id' : move.product_id.id                                        
+                                    } 
+                                    lot = self.env['stock.production.lot'].create(data)
+                                    self.env.cr.commit()
+                                    vals['lot_id'] = lot.id
+                                    vals['lot_name'] = lot.name
+                                else:
+                                    vals['lot_id'] = lotexist.id
+                                    vals['lot_name'] = lotexist.name
                                 
                 elif picking.picking_type_id.code == 'outgoing':
                     if vals.get('lot_id') :
@@ -754,6 +757,7 @@ class StockMoveLine(models.Model):
         nbpal = 0.0
         nbpiece = 0.0
         poids = 0.0
+        qte_std = 0.0
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
             mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done'), ('move_id.picking_id', '!=', False)]).filtered(lambda mv: datetime.strptime(mv.move_id.picking_id.date_done, '%Y-%m-%d %H:%M:%S').date() <= date)
@@ -765,12 +769,14 @@ class StockMoveLine(models.Model):
                 nbcol = nbcol + mouv.di_nb_colis
                 nbpal = nbpal + mouv.di_nb_palette
                 nbpiece = nbpiece + mouv.di_nb_pieces
-                poids = poids + mouv.di_poin                
+                poids = poids + mouv.di_poin       
+                qte_std = qte_std + mouv.qty_done         
             else:                
                 nbcol = nbcol - mouv.di_nb_colis
                 nbpal = nbpal - mouv.di_nb_palette
                 nbpiece = nbpiece - mouv.di_nb_pieces
-                poids = poids - mouv.di_poin                             
+                poids = poids - mouv.di_poin 
+                qte_std = qte_std - mouv.qty_done                            
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
             mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done'), ('move_id.picking_id', '=', False)]).filtered(lambda mv: datetime.strptime(mv.move_id.inventory_id.date, '%Y-%m-%d %H:%M:%S').date() <= date)
@@ -784,13 +790,15 @@ class StockMoveLine(models.Model):
                 nbpal = nbpal + mouv.di_nb_palette
                 nbpiece = nbpiece + mouv.di_nb_pieces
                 poids = poids + mouv.di_poin
+                qte_std = qte_std + mouv.qty_done
             else:                
                 nbcol = nbcol - mouv.di_nb_colis
                 nbpal = nbpal - mouv.di_nb_palette
                 nbpiece = nbpiece - mouv.di_nb_pieces
-                poids = poids - mouv.di_poin                       
+                poids = poids - mouv.di_poin    
+                qte_std = qte_std - mouv.qty_done                   
                 
-        return (nbcol, nbpal, nbpiece, poids)
+        return (nbcol, nbpal, nbpiece, poids,qte_std)
     
     
 class StockPicking(models.Model):

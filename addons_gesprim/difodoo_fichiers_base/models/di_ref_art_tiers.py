@@ -19,7 +19,7 @@ class DiRefArtTiers(models.Model):
     @api.multi
     def write(self, vals):                              
         for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-            if key[0] == "di_un_prix":  # si on a modifié sale_line_id
+            if key[0] == "di_un_prix":  
                 if vals['di_un_prix'] == False:
                     vals['di_un_saisie']=False
                     break

@@ -50,10 +50,11 @@ class DiValidApportWiz(models.TransientModel):
             if apport.di_qte_recept > 0.0:
                 
                 data_inventory = { 
-                'name':'Appor prod.'+apport.di_lot_prod,                
+                'name':'Apport prod.'+apport.di_lot_prod,                
                 'location_id': apport.di_station_id.id,                
-                'state': 'draft' ,
-                'filter':'none'                        
+                'state': 'draft',
+                'filter':'none',
+                'di_type_inv':'appprod',                        
                         }
                 
                 codelot = apport.di_lot_prod

@@ -79,7 +79,9 @@ class SaleOrderLine(models.Model):
     
     di_courtier_id = fields.Many2one("res.partner",string="Metteur en marche")
     di_prc_com_court = fields.Float(string='% com. Metteur en marche',help="""Pourcentage de commission que le metteur en marche récupère sur la vente. """, default=0.0,store=True)
-    di_prc_com_OP = fields.Float(string='% com. OP',help="""Pourcentage de commission que l'OP récupère sur la vente. """,store=True)#,compute='_di_compute_com_op')
+    di_prc_com_OP = fields.Float(string='% com. OP',help="""Pourcentage de commission que l'OP récupère sur la vente. """, default=0.0,store=True)#,compute='_di_compute_com_op')
+    
+    di_flg_com = fields.Boolean(string='Commission payée',default=False,help="""Flag permettant de savoir si la commission de cette ligne a déjà été payée au courtier ou non.""")
     
 
             

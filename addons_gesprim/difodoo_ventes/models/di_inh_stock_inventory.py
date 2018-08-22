@@ -7,6 +7,7 @@ from math import ceil
 
 class Inventory(models.Model):
     _inherit = "stock.inventory"
+    di_type_inv    = fields.Selection([("std", "Standard"), ("retcons", "Retour consigne"),("appprod", "Apport producteur")], string="Type inventaire",default='std',store=True)
     
     def action_reset_product_qty(self):
         ret=super(Inventory, self).action_reset_product_qty()
@@ -80,7 +81,7 @@ class Inventory(models.Model):
             poids=0.0   
             lot = self.env['stock.production.lot'].browse(product_data['prod_lot_id'])    
             article = self.env['product.product'].browse(product_data['product_id']) 
-            (nbcol,nbpal,nbpiece,poids) = self.env['stock.move.line'].di_qte_spe_en_stock(article,datetime.strptime(self.date,'%Y-%m-%d %H:%M:%S').date(),lot)#        
+            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(article,datetime.strptime(self.date,'%Y-%m-%d %H:%M:%S').date(),lot)#        
             product_data['di_nb_colis']=nbcol
             product_data['di_nb_pieces']= nbpiece 
             product_data['di_nb_palette']=  nbpal
@@ -149,7 +150,7 @@ class InventoryLine(models.Model):
         nbpiece = 0.0
         poids = 0.0
         if self.product_id and self.inventory_id.date:
-            (nbcol,nbpal,nbpiece,poids) = self.env['stock.move.line'].di_qte_spe_en_stock(self.product_id,datetime.strptime(self.inventory_id.date,'%Y-%m-%d %H:%M:%S').date(),self.prod_lot_id)#            
+            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(self.product_id,datetime.strptime(self.inventory_id.date,'%Y-%m-%d %H:%M:%S').date(),self.prod_lot_id)#            
         self.di_nb_colis_theo = nbcol 
         self.di_nb_palette_theo = nbpal
         self.di_poin_theo = poids
