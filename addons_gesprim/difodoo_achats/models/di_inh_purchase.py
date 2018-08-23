@@ -250,16 +250,33 @@ class PurchaseOrderLine(models.Model):
     @api.onchange('product_id')
     def _di_charger_valeur_par_defaut(self):
         if self.ensure_one():
-            if self.product_id.id != False:
-                self.di_un_saisie = self.product_id.di_un_saisie
-                self.di_type_palette_id = self.product_id.di_type_palette_id
-                self.product_packaging = self.product_id.di_type_colis_id    
-                self.di_un_prix = self.product_id.di_un_prix     
+            if self.partner_id and self.product_id:
+                ref = self.env['di.ref.art.tiers'].search([('di_partner_id','=',self.partner_id.id),('di_product_id','=',self.product_id.id)],limit=1)
+            else:
+                ref = False
+            if ref:
+                self.di_un_saisie = ref.di_un_saisie
+                self.di_type_palette_id = ref.di_type_palette_id
+                self.product_packaging = ref.di_type_colis_id    
+                self.di_un_prix = ref.di_un_prix    
+                self.di_spe_saisissable = self.product_id.di_spe_saisissable  
+                self.di_spe_saisissable = self.product_id.di_spe_saisissable                
                 self.di_categorie_id = self.product_id.di_categorie_id 
                 self.di_origine_id = self.product_id.di_origine_id 
                 self.di_marque_id = self.product_id.di_marque_id 
-                self.di_calibre_id = self.product_id.di_calibre_id 
-#                 self.di_station_id = self.product_id.di_station_id      
+                self.di_calibre_id = self.product_id.di_calibre_id                                               
+            else:
+                if self.product_id:
+                    self.di_un_saisie = self.product_id.di_un_saisie
+                    self.di_type_palette_id = self.product_id.di_type_palette_id
+                    self.product_packaging = self.product_id.di_type_colis_id    
+                    self.di_un_prix = self.product_id.di_un_prix    
+                    self.di_spe_saisissable = self.product_id.di_spe_saisissable                
+                    self.di_categorie_id = self.product_id.di_categorie_id 
+                    self.di_origine_id = self.product_id.di_origine_id 
+                    self.di_marque_id = self.product_id.di_marque_id 
+                    self.di_calibre_id = self.product_id.di_calibre_id 
+                          
                 
 
     @api.multi    
