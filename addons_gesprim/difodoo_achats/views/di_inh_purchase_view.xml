@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field eval="99" name="priority"/>
             <field name="arch" type="xml">
-       
+    
                 <xpath expr="//header/field[@name='state']" position="before">   
                 <button class="di_class_grille_achat" name="di_action_grille_achat" type="object"
                         string="Grille d'achat" help="Permet d'importer les derniers articles achetés à ce fournisseur." />                                                                     

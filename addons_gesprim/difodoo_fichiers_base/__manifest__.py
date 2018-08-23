@@ -28,6 +28,7 @@
         "views/di_inh_product_view.xml",
         "views/di_inh_res_partner_view.xml",        
         "views/di_tables_view.xml",
+		"views/di_ref_art_tiers_view.xml",
         "views/di_inh_product_view.xml",
         "views/di_inh_delivery_view.xml",       
         "report/di_impression_tarifs.xml",

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>    
+    <record id="di_view_ref_art_tiers_tree" model="ir.ui.view">
+        <field name="name">di.view.ref.art.tiers.tree</field>
+        <field name="model">di.ref.art.tiers</field>
+        <field name="arch" type="xml">
+            <tree string="Référencement article" default_order="di_partner_id,di_product_id">
+                <field name="di_partner_id" string="Tiers"/>
+                <field name="di_product_id" string="Article"/>                
+                <field name="name" invisible = "1" />
+            </tree>
+        </field>
+    </record>
+    <record id="di_view_ref_art_tiers_form" model="ir.ui.view">
+        <field name="name">di.view.ref.art.tiers.form</field>
+        <field name="model">di.ref.art.tiers</field>
+        <field name="arch" type="xml">
+            <form string="Référencement article">
+                <sheet string="Référencement article" modifiers="{}">
+                    <group>
+	                    <group>
+	                        <field name="di_company_id" can_create="true" can_write="true"
+	                            modifiers="{'readonly':true}" />
+	                        <field name="name" invisible = "1" />	                        
+	                        <field name="di_partner_id" string="Tiers"/>
+	                        <field name="di_product_id" string="Article"/>
+                        </group>              
+                        <group>
+                            <field name="di_un_saisie" />
+                            <field name="di_type_palette_id" />
+                            <field name="di_type_colis_id" />
+                            <field name="di_un_prix" />                            
+                        </group>     
+                        <group>
+                            <field name="di_reftiers" />
+                            <field name="di_destiers" />
+                            <field name="di_eantiers" />                            
+                        </group>       
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+      
+    <record id="di_action_ref_art_tiers" model="ir.actions.act_window">
+        <field name="name">Référencement article</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.ref.art.tiers</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            <p>
+                Cliquer pour gérer les référencements article
+            </p>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="di_search_ref_art_tiers_filter">
+        <field name="name">Filtres référencement article</field>
+        <field name="model">di.ref.art.tiers</field>
+        <field name="arch" type="xml">
+            <search string="Filtres référencement article">                
+                <field name="di_product_id" string="Article"/>
+                <field name="di_partner_id" string="Tiers"/>         
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_product" string="Article" domain="[]" context="{'group_by':'di_product_id'}"/>
+                    <filter name="group_by_partner" string="Tiers" domain="[]" context="{'group_by':'di_partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

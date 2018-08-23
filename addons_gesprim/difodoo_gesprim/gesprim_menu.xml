@@ -48,9 +48,12 @@
 	<menuitem id="menu_gesprim_uti" name="Utilitaires" sequence="70" parent="menu_gesprim" />
 	<!-- ***Menu Fichiers -->	
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
+	
+	
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
 	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="30" parent="menu_gesprim_fichiers" action="base.action_partner_supplier_form" />
-	<menuitem id="menu_gesprim_param" name="Paramétrage" sequence="40" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_param" />
+	<menuitem id="menu_gesprim_refarttiers" name="Référencement article" sequence="40" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_ref_art_tiers" />
+	<menuitem id="menu_gesprim_param" name="Paramétrage" sequence="50" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_param" />
 	<menuitem id="menu_gesprim_tar" name="Tarifs" sequence="100" parent="menu_gesprim_fichiers" />
 	<menuitem id="menu_gesprim_tables" name="Tables" sequence="200" parent="menu_gesprim_fichiers" />	 
 	<!-- ****Menu Tarifs -->
@@ -75,11 +78,12 @@
 	<!-- ***Menu Ventes -->	
 	<menuitem id="menu_gesprim_ventes_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
 	<menuitem id="menu_gesprim_ventes_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />  
-	<menuitem id="menu_gesprim_ventes_liv" name="Livraisons" sequence="30" parent="menu_gesprim_ventes" />- 
+	<menuitem id="menu_gesprim_ventes_liv" name="Livraisons" sequence="30" parent="menu_gesprim_ventes" />	
 	<menuitem id="menu_gesprim_ventes_fact" name="Facturation" sequence="40" parent="menu_gesprim_ventes" />
 	<!-- ****Menu Livraisons -->	
 	<menuitem id="menu_gesprim_ventes_liv_liv" name="Livraisons" sequence="10" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_stock_picking_type_action_ventes"/>
 	<menuitem id="menu_gesprim_ventes_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_attente"/>
+		
 	<!-- <menuitem id="menu_gesprim_ventes_liv_afaire" name="A Faire" sequence="30" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_a_faire"/> -->
 	<!-- <menuitem id="menu_gesprim_ventes_liv_ret" name="En Retard" sequence="40" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_retard"/> -->
 	<menuitem id="menu_gesprim_ventes_liv_all" name="Toutes" sequence="50" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_ventes_all"/>
@@ -94,7 +98,7 @@
     <menuitem id="menu_gesprim_achats_fact" name="Facturation" sequence="40" parent="menu_gesprim_achats" />
     <!-- ****Menu Réception -->    
     <menuitem id="menu_gesprim_achats_liv_liv" name="Réceptions" sequence="10" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_stock_picking_type_action_achats"/>
-    <menuitem id="menu_gesprim_achats_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_action_picking_tree_achats_attente"/>
+    <menuitem id="menu_gesprim_achats_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_action_picking_tree_achats_attente"/>    
     <!-- <menuitem id="menu_gesprim_achats_liv_afaire" name="A Faire" sequence="30" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_action_picking_tree_achats_a_faire"/> -->
     <!-- <menuitem id="menu_gesprim_achats_liv_ret" name="En Retard" sequence="40" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_action_picking_tree_achats_retard"/> -->
     <menuitem id="menu_gesprim_achats_liv_all" name="Toutes" sequence="50" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_action_picking_achats_all"/>
