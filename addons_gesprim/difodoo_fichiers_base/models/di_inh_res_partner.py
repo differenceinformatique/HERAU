@@ -18,7 +18,36 @@ class ResPartner(models.Model):
     is_company = fields.Boolean(string='Is a Company', default=True, help="Check if the contact is a company, otherwise it is a person")  # modif attribut default
     di_defaut_adr = fields.Boolean(string="Adresse par défaut", default=False, help="Sera selectionnée automatiquement en saisie de pièces")
     di_code_dest_id = fields.Many2one('di.code.dest', string='Code destination', help="Code destination pour les grilles transporteurs")
-     
+    di_param_seq_cli = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_clifou',store=False)
+    di_param_seq_fou = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_clifou',store=False)
+    di_ref_required = fields.Boolean(string='Code article obligatoire',compute='_di_compute_ref_required',store=False)
+        
+    @api.one
+    @api.depends('company_id')
+    def _di_compute_seq_clifou(self):
+        if self.company_id and self.company_id.di_param_id:
+            self.di_param_seq_cli = self.company_id.di_param_id.di_seq_cli
+            self.di_param_seq_fou = self.company_id.di_param_id.di_seq_fou
+        else:
+            self.di_param_seq_cli = False   
+            self.di_param_seq_fou = False
+            
+    @api.one
+    @api.depends('di_param_seq_cli','di_param_seq_fou')
+    def _di_compute_ref_required(self):
+        if self.customer:
+            if self.di_param_seq_cli:
+                self.di_ref_required=False
+            else:
+                self.di_ref_required=True
+        elif self.supplier:
+            if self.di_param_seq_fou:
+                self.di_ref_required=False
+            else:
+                self.di_ref_required=True
+        else:
+            self.di_ref_required=False
+                 
     #unicité du code tiers
     @api.one
     @api.constrains('ref')
@@ -107,3 +136,22 @@ class ResPartner(models.Model):
                 search_id = self.env['di.code.dest'].search([('name', '=', search_name)],limit=1)
                 if search_id:
                     self.di_code_dest_id = search_id
+
+    @api.model
+    def create(self, values):
+        rp = super(ResPartner, self).create(values)
+        if rp.customer:
+        # si client, séquence client              
+            if (rp.ref == False) and (rp.di_param_seq_cli):            
+                if 'company_id' in values:
+                    rp.ref = self.env['ir.sequence'].with_context(force_company=values['company_id']).next_by_code('CLI_SEQ') or _('New')
+                else:
+                    rp.ref = self.env['ir.sequence'].next_by_code('CLI_SEQ') or _('New')
+        if rp.supplier:
+        # si fournisseur, séquence fournisseur
+            if (rp.ref == False) and (rp.di_param_seq_fou):            
+                if 'company_id' in values:
+                    rp.ref = self.env['ir.sequence'].with_context(force_company=values['company_id']).next_by_code('FOU_SEQ') or _('New')
+                else:
+                    rp.ref = self.env['ir.sequence'].next_by_code('FOU_SEQ') or _('New')
+        return rp

@@ -426,6 +426,7 @@
     <record id="view_param_form" model="ir.ui.view">
         <field name="name">di.param.form</field>
         <field name="model">di.param</field>
+        <field eval="15" name="priority" />
         <field name="arch" type="xml">
             <form string="Paramètres">
                 <sheet string="Paramètres" modifiers="{}">
@@ -446,10 +447,15 @@
                         </group>    
                         <group string="Comptabilité">
                             <field name="di_compta_prg" />
-                            <field name="di_dos_divalto" />
-                            <field name="di_etb_divalto" />                            
+                            <field name="di_dos_compt" />
+                            <field name="di_etb_compt" />                            
                             <field name="di_nom_exp_ecr_compta" />
-                        </group>                                             
+                        </group> 
+                      	<group>
+                      		<field name="di_seq_art" />
+                      		<field name="di_seq_cli" />
+                      		<field name="di_seq_fou" />
+                      	</group>                                            
                     </group>
                 </sheet>
             </form>
@@ -460,7 +466,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">di.param</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">form,tree</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Paramétrage

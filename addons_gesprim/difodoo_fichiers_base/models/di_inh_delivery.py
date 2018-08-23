@@ -31,7 +31,7 @@ class PriceRule(models.Model):
 
 class ProviderGrid(models.Model):
     _inherit = "delivery.carrier"
-    di_code_dest_id = False
+    di_code_dest_id = False     # pour passer le code destination d'une fonction à l'autre
             
     def _get_price_available(self, order):
         self.ensure_one()

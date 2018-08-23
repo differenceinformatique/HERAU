@@ -41,8 +41,8 @@
         "wizard/di_generer_couts_wizard.xml",
         "wizard/di_popup_wizard.xml",
         "wizard/di_maj_codedest.xml",
-        "security/ir.model.access.csv"
-              
+        "security/ir.model.access.csv",
+        "data/di_param_data.xml"              
     ],
     # only loaded in demonstration mode
     'demo': [

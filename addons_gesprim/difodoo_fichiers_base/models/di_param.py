@@ -22,10 +22,12 @@ class DiParam(models.Model):
     
     di_compta_prg   = fields.Selection([("INTERNE", "Interne"), ("DIVALTO", "Divalto"),("EBP", "EBP"),("SAGE","Sage")], string="Logiciel de comptabilité",
                                            help="Permet de savoir vers quel logiciel de comptabilité on va exporter (ou non) les écritures.",default="INTERNE")
-    di_dos_divalto = fields.Char(string='Dossier Divalto',default="",help="""Dossier d'intégration sur Divalto.""")
-    di_etb_divalto = fields.Char(string='Etablissement Divalto',default="",help="""Etablissement d'intégration sur Divalto.""")        
+    di_dos_compt = fields.Char(string='Dossier comptable',default="",help="""Dossier d'intégration pour le logiciel de comptabilité.""")
+    di_etb_compt = fields.Char(string='Etablissement comptable',default="",help="""Etablissement d'intégration pour le logiciel de comptabilité.""")        
     di_nom_exp_ecr_compta = fields.Char(string='Nom fichier export écritures',default="ecritures.csv",help="""Nom par défaut du fichier d'export des écritures comptables.""")
-     
+    di_seq_art  = fields.Boolean(string="Codification automatique article", default=False, help="""Activation de l'affectation automatique du code article""")
+    di_seq_cli  = fields.Boolean(string="Codification automatique client", default=False, help="""Activation de l'affectation automatique du code client""")
+    di_seq_fou  = fields.Boolean(string="Codification automatique fournisseur", default=False, help="""Activation de l'affectation automatique du code fournisseur""")     
                        
     #unicité 
     @api.one

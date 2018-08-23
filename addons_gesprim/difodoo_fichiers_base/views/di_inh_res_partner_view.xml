@@ -13,9 +13,9 @@
 				</xpath>
 				<!-- ajout du code interne juste avant le nom - obligatoire pour les clients/fournisseurs-->
 				<xpath expr="//field[@name='name']" position="before">
+					<field name="di_ref_required" invisible="1"/>
 					<h1>
-						<field name="ref" placeholder="Code tiers"
-						attrs="{'required':['|',('customer', '=', True),('supplier', '=', True)]}" />						
+						<field name="ref" placeholder="Code tiers" attrs="{'required':[('di_ref_required', '==', True)], 'readonly':[('ref','!=',False)]}" />						
 					</h1>
 				</xpath>
 				<!-- masquage des éléments client en fournisseur et inversement -->

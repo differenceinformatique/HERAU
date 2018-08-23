@@ -40,6 +40,7 @@ class ProductTemplate(models.Model):
                                        help="Si vide, prix unitaire en unité de mesure")
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
+    di_param_seq_art = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_art',store=False)
     
     @api.one
     @api.depends('di_un_saisie', 'di_un_prix')
@@ -49,6 +50,13 @@ class ProductTemplate(models.Model):
         else:
             self.di_spe_saisissable=False
             
+    @api.one
+    @api.depends('company_id')
+    def _di_compute_seq_art(self):
+        if self.company_id and self.company_id.di_param_id:
+            self.di_param_seq_art = self.company_id.di_param_id.di_seq_art
+        else:
+            self.di_param_seq_art = False          
     
     @api.multi
     def write(self, vals):                              
@@ -110,28 +118,27 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, self).write(vals)
         return res
     
-#     @api.model
-#     def create(self, vals):               
-#         if not vals.get('default_code'):
-#             vals['default_code']=self.env.ref('difodoo_fichiers_base.di_action_di_saisie_code_wiz').read([])[0]
-#                       
-#                              
-#         if vals.get('default_code') and vals['default_code']!=False:
-#             res = super(ProductProduct, self).create(vals)
-#         else:
-#             res =False
-#         return res
+    @api.model
+    def create(self, values):
+        pp = super(ProductProduct, self).create(values)
+        if (pp.default_code == False) and (pp.di_param_seq_art):            
+            if 'company_id' in values:
+                pp.default_code = self.env['ir.sequence'].with_context(force_company=values['company_id']).next_by_code('ART_SEQ') or _('New')
+            else:
+                pp.default_code = self.env['ir.sequence'].next_by_code('ART_SEQ') or _('New')
+        return pp
     
 
 class ProductPackaging(models.Model):
     _inherit = "product.packaging"
+    _order = 'product_id,name'
     
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond    = fields.Selection([("PIECE", "Cond. Réf."), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
     di_type_cond_inf_id   = fields.Many2one('product.packaging', string='Conditionnement inférieur')
     di_des          = fields.Char(string="Désignation")#, required=True)
     di_product_tmpl_id = fields.Many2one('product.template', 'Product Template', related='product_id.product_tmpl_id')
-    
+        
     @api.onchange('di_type_cond', 'di_type_cond_inf_id', 'di_qte_cond_inf')
     def onchange_recalc_colisage(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
         if self.di_type_cond=='PIECE':
@@ -159,20 +166,3 @@ class ProductPackaging(models.Model):
         if ProductPack:
             raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements avec le même nom pour un même article.") 
         
-
-# 
-# class ProductCategory(models.Model):
-#     _inherit = "product.category"
-#     
-#     @api.one
-#     def di_enfants_et_courant(self):
-#         childs = self.env['product.category'].new()
-#         childs = self.child_id + self                                                                     
-#         return childs
-#         
-#         
-#         
-#     def di_parents_et_courant(self):
-#         parents = self.env['product.category'].new()
-#         parents = self.parent_id + self                                                                        
-#         return parents

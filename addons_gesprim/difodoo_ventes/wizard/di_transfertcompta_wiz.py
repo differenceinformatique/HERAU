@@ -24,7 +24,7 @@ class Wizard_transfert_compta(models.TransientModel):
         start = datetime.today() + timedelta(days=-7)
         return fields.Date.context_today(self, timestamp=start)   
     
-    def di_ecrire_ligne_divalto(self, move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency, di_dos_divalto, di_etb_divalto):
+    def di_ecrire_ligne_divalto(self, move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency, di_dos_compt, di_etb_compt):
         listrow = list()        
         libelle = ""
         n_piece = ""
@@ -52,15 +52,15 @@ class Wizard_transfert_compta(models.TransientModel):
         
         ce1 = "8"
         
-        if di_dos_divalto:
-            dos = di_dos_divalto
+        if di_dos_compt:
+            dos = di_dos_compt
         else:
             dos = ""
             
         ce2 = "1"
         
-        if di_etb_divalto:
-            etb = di_etb_divalto
+        if di_etb_compt:
+            etb = di_etb_compt
         else:
             etb = ""
             
@@ -162,7 +162,7 @@ class Wizard_transfert_compta(models.TransientModel):
             listrow = list()
                         
             if param.di_compta_prg == "DIVALTO":                               
-                listrow = self.di_ecrire_ligne_divalto(move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency, param.di_dos_divalto, param.di_etb_divalto)
+                listrow = self.di_ecrire_ligne_divalto(move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency, param.di_dos_compt, param.di_etb_compt)
                 
             w.writerow(listrow)
             line = self.env['account.move.line'].browse(line_id)

@@ -12,9 +12,10 @@
 				</xpath>
 				<!-- on le replace à un autre endroit -->
 				<xpath expr="//label[@for='name']" position="before">
+					<field name="di_param_seq_art" invisible="1"/>
 					<label class="oe_edit_only" for="default_code" string="Code article" />
 					<h1>
-						<field name="default_code" placeholder="Code article" required="True" />
+						<field name="default_code" placeholder="Code article" attrs="{'required': [('di_param_seq_art', '==', False)]}"/>
 					</h1>
 				</xpath>
 				<!-- on change le libellé du champ name -->
@@ -145,8 +146,7 @@
 					<attribute name="default_order">default_code</attribute>
 				</xpath>
 				<!-- suppression de la colonne sequence (tri manuel) -->
-				<xpath expr="//field[@name='sequence']" position="replace">
-				</xpath>
+				<xpath expr="//field[@name='sequence']" position="replace"/>
 				<xpath expr="//field[@name='name']" position="replace">
 					<field name="name" string="Désignation" />
 				</xpath>
@@ -165,12 +165,15 @@
 			<field eval="15" name="priority" />
 			<field name="arch" type="xml">
 				<search>
-					<filter string="Palettes" name="palettes"
-						domain="[('di_type_cond', '=', 'PALETTE')]" />
-					<filter string="Colis" name="colis"
-						domain="[('di_type_cond', '=', 'COLIS')]" />
-					<filter string="Pièces" name="pieces"
-						domain="[('di_type_cond', '=', 'PIECE')]" />				
+					<filter string="Palettes" name="palettes" domain="[('di_type_cond', '=', 'PALETTE')]" />
+					<filter string="Colis" name="colis" domain="[('di_type_cond', '=', 'COLIS')]" />
+					<filter string="Pièces" name="pieces" domain="[('di_type_cond', '=', 'PIECE')]" />
+					<field name="name" string="Code conditionnment"/>
+					<field name="product_id"/>
+                    <field name="di_type_cond_inf_id"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Article" name="product_id" context="{'group_by':'product_id',}"/>
+                    </group>			
 				</search>
 			</field>
 		</record>
@@ -242,6 +245,8 @@
 <!-- 				<xpath expr="//tree" position="attributes">
 					<attribute name="editable">bottom</attribute>
 				</xpath> -->
+				<!-- suppression de la colonne sequence (tri manuel) + ajout du product name pour filtre en invisible-->
+				<xpath expr="//field[@name='sequence']" position="replace"/>
 				<!-- Modification libellé du champ -->
 				<xpath expr="//field[@name='name']" position="attributes">
 					<attribute name="string">Code Cond.</attribute>
@@ -264,6 +269,26 @@
 						groups="product.group_stock_packaging" />
 					<field name="di_qte_cond_inf" string="Qté cond. inf." />
 				</xpath>
+			</field>
+		</record>
+		<!-- création action pour appeler de façon autonome les conditionnements article -->
+		<record id="di_action_product_packaging" model="ir.actions.act_window">
+			<field name="name">Conditionnements article</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">product.packaging</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_ids" eval="[(5, 0, 0),			
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('product.product_packaging_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('product.product_packaging_form_view')})]"/>
+			<!-- <field name="context">{'Aff_Transporteur': True}</field> -->
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Aide
+				</p>
+				<p>
+					Cliquer pour gérer les conditionnements article
+				</p>
 			</field>
 		</record>
 	</data>
