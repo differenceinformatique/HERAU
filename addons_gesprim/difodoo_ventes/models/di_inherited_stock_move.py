@@ -524,7 +524,7 @@ class StockMoveLine(models.Model):
                                             }            
                                             
                                             lot = self.env['stock.production.lot'].create(data)       # création du lot
-                                            self.env.cr.commit()       
+                                             #self.env.cr.commit()# SC 23/08/2018 : Pas nécessaire de faire le commit pour que l'enreg soit utilisé       
                                                                    
                                             vals['lot_id']=lot.id 
                                             vals['lot_name']=lot.name
@@ -541,7 +541,7 @@ class StockMoveLine(models.Model):
                                 'product_id' : move.product_id.id                                        
                                 } 
                                 lot = self.env['stock.production.lot'].create(data)
-                                self.env.cr.commit()
+                                 #self.env.cr.commit()# SC 23/08/2018 : Pas nécessaire de faire le commit pour que l'enreg soit utilisé
                                 vals['lot_id']=lot.id
                                 vals['lot_name']=lot.name
                             else:
