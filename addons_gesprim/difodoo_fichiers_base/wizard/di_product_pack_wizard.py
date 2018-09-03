@@ -20,7 +20,7 @@ class DiProdPackWiz(models.TransientModel):
         if not self.env.context["active_id"]:
             raise ValidationError("Pas d'enregistrement selectionné")
         res["product_id"] = self.env.context["active_id"]
-        Product = self.env["product.product"].browse(res["product_id"]) 
+        Product = self.env["product.template"].browse(res["product_id"]) 
         res["uom_id"] = Product.uom_id.id
         res["weight"] = Product.weight
         # récupération des conditionnements par défaut
@@ -29,7 +29,7 @@ class DiProdPackWiz(models.TransientModel):
 
     @api.multi
     def di_gen_cond(self):
-        # parcours des produits de la liste pour les enregistrer 
+        # parcours des conditionnement de la liste pour les enregistrer 
         for Cond in self.cond_ids:
             Existe = self.env['product.packaging'].search(['&', ('product_id', '=', self.product_id.id), ('name', '=', Cond.name)])
             if not Existe:

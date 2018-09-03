@@ -42,6 +42,7 @@
         "wizard/di_generer_couts_wizard.xml",
         "wizard/di_popup_wizard.xml",
         "wizard/di_maj_codedest.xml",
+        "wizard/di_etiquette_lot_wizard.xml",
         "security/ir.model.access.csv",
         "data/di_param_data.xml"              
     ],

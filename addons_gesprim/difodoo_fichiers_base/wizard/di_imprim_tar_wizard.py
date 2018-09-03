@@ -65,7 +65,7 @@ class DiImpTarWiz(models.TransientModel):
         for tar in  self.di_tarifs_ids:
             if tar.id not in  di_tarifs_ids:
                 tar.unlink()                                                      
-        return self.env.ref('difodoo_fichiers_base.di_action_report_tarifs').report_action(self)  #                                                       
+        return self.env.ref('difodoo_fichiers_base.di_action_report_tarifs').report_action(self)                                                       
             
     @api.model
     def default_get(self, fields):

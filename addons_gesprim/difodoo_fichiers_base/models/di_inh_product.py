@@ -134,10 +134,17 @@ class ProductPackaging(models.Model):
     _order = 'product_id,name'
     
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
-    di_type_cond    = fields.Selection([("PIECE", "Cond. Réf."), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
-    di_type_cond_inf_id   = fields.Many2one('product.packaging', string='Conditionnement inférieur')
-    di_des          = fields.Char(string="Désignation")#, required=True)
+    di_type_cond = fields.Selection([("PIECE", "Cond. Réf."), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
+    di_type_cond_inf_id = fields.Many2one('product.packaging', string='Conditionnement inférieur')
+    di_des = fields.Char(string="Désignation")#, required=True)
     di_product_tmpl_id = fields.Many2one('product.template', 'Product Template', related='product_id.product_tmpl_id')
+    di_search_name = fields.Char(string='Recherche Code',compute='_di_compute_search_name',store=True)
+    
+    @api.one
+    @api.depends('product_id', 'name')
+    def _di_compute_search_name(self):
+        if self.product_id and self.name:
+            self.di_search_name = self.product_id.default_code + "_" + self.name            
         
     @api.onchange('di_type_cond', 'di_type_cond_inf_id', 'di_qte_cond_inf')
     def onchange_recalc_colisage(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
@@ -165,4 +172,14 @@ class ProductPackaging(models.Model):
         ProductPack = self.search([('name','=',self.name),('product_id', '=', self.product_id.id),('id','!=',self.id)], limit=1)        
         if ProductPack:
             raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements avec le même nom pour un même article.") 
-        
+    
+    # on définie la fonction name_search pour améliorer l'import excel     
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        if args is None:
+            args = []
+        firsts_records = self.search([('di_search_name', '=ilike', name)] + args, limit=limit)
+        search_domain = [('name', operator, name)]
+        search_domain.append(('id', 'not in', firsts_records.ids))
+        records = firsts_records + self.search(search_domain + args, limit=limit)
+        return [(record.id, record.display_name) for record in records]

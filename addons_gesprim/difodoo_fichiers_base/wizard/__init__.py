@@ -8,3 +8,4 @@ from . import di_imprim_tar_wizard
 from . import di_saisie_code_wizard
 from . import di_popup_wizard
 from . import di_maj_codedest
+from . import di_etiquette_lot_wizard
