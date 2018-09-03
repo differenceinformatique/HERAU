@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="wiz_imp_etiqlot" model="ir.ui.view">
+		<field name="name">di.etiqlot_wiz.form</field>
+		<field name="model">di.etiqlot_wiz</field>
+		<field name="arch" type="xml">
+			<form string="Impression étiquettes lot">
+				<div>
+					<label for="product_id" />
+					<field name="product_id" readonly="True" />
+				</div>
+				<div>
+					<label for="di_lot_txt" />
+					<field name="di_lot_txt" />
+				</div>
+				<div>				
+					<label for="weigth" />
+					<field name="weigth" />
+				</div>
+				<div>				
+					<label for="di_nb_colis" />
+					<field name="di_nb_colis"/><!--  class="oe_inline" /> -->
+				</div>
+				<footer>
+					<button string='Imprimer' name="di_imp_etiqlot" type="object"
+						class="btn-primary" />
+					<button string="Annuler" class="btn-default" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<act_window id="di_action_wiz_imp_etiqlot" multi="False"
+		key2="client_action_multi" name="Impression étiquettes lot" res_model="di.etiqlot_wiz"
+		src_model="product.template" view_mode="form" target="new" view_type="form"
+		view_id="wiz_imp_etiqlot">
+	</act_window>
+	
+	<report
+		id="di_wiz_report_etiqlot"
+		string="Impression étiquettes lot"
+		model="di.etiqlot_wiz"
+		report_type="qweb-pdf"
+		file="difodoo_fichiers_base.di_wiz_imp_report_etiqlot"
+		name="difodoo_fichiers_base.di_wiz_imp_report_etiqlot"
+		print_report_name="'Etiquettes_lot'"
+		paperformat="difodoo_fichiers_base.di_etiq_10_8"
+	/>
+</odoo>
+ 
