@@ -21,6 +21,8 @@ class ResPartner(models.Model):
     di_param_seq_cli = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_clifou',store=False)
     di_param_seq_fou = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_clifou',store=False)
     di_ref_required = fields.Boolean(string='Code article obligatoire',compute='_di_compute_ref_required',store=False)
+    di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
+    di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
         
     @api.one
     @api.depends('company_id')

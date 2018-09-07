@@ -24,7 +24,8 @@
     # always loaded
     'data': [
         "wizard/di_grille_vente_wiz.xml",
-        "wizard/di_transfertcompta_wiz.xml",        
+        "wizard/di_transfertcompta_wiz.xml",
+        "wizard/di_bord_trp_wiz.xml",        
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
@@ -35,6 +36,7 @@
         "report/di_report_stock_inventory.xml",
         "report/di_report_invoice.xml",
         "report/di_invoice_report.xml",
+        "report/di_report_bordtrp.xml",
         "security/ir.model.access.csv"
               
     ],

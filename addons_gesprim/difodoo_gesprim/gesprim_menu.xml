@@ -82,11 +82,11 @@
 	<menuitem id="menu_gesprim_ventes_fact" name="Facturation" sequence="40" parent="menu_gesprim_ventes" />
 	<!-- ****Menu Livraisons -->	
 	<menuitem id="menu_gesprim_ventes_liv_liv" name="Livraisons" sequence="10" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_stock_picking_type_action_ventes"/>
-	<menuitem id="menu_gesprim_ventes_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_attente"/>
-		
+	<menuitem id="menu_gesprim_ventes_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_attente"/>	
 	<!-- <menuitem id="menu_gesprim_ventes_liv_afaire" name="A Faire" sequence="30" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_a_faire"/> -->
 	<!-- <menuitem id="menu_gesprim_ventes_liv_ret" name="En Retard" sequence="40" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_retard"/> -->
 	<menuitem id="menu_gesprim_ventes_liv_all" name="Toutes" sequence="50" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_ventes_all"/>
+	<menuitem id="menu_gesprim_ventes_liv_bordtrp" name="Bordereaux de transport" sequence="60" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_wiz_imp_bordtrp"/>
 	<!-- ****Menu Facturation Ventes-->      
 	<menuitem id="menu_gesprim_ventes_cde_fact" name="Commandes à facturer" sequence="10" parent="menu_gesprim_ventes_fact" action="sale.action_orders_to_invoice"/>
 	<menuitem id="menu_gesprim_ventes_factures" name="Factures clients" sequence="20" parent="menu_gesprim_ventes_fact" action="account.action_invoice_tree1"/>    

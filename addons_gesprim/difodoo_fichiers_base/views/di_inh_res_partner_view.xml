@@ -41,10 +41,12 @@
 				<xpath expr="//page[@name='accounting']" position="after">
 					<page name="specifs" string="Compléments" style="font-style: oblique;" col="4">
 						<group>
-							<group name="editions" string="Editions">
-								<field name="di_pres_bl"/>
+							<group name="editions" string="Editions" attrs="{'invisible':[('customer', '==', False)]}">
+								<field name="di_pres_bl" />
 							</group>
-							<group>
+							<group name="transport" string="Transport" attrs="{'invisible':[('customer', '==', False)]}">
+								<field name="di_tournee"/>
+								<field name="di_rangtournee"/>
 							</group>
 						</group>
 					</page>

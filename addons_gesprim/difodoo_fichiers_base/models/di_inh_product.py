@@ -12,7 +12,7 @@ class ProductTemplate(models.Model):
     di_lavage = fields.Boolean(string="Lavage", default=False)
     di_prixmin = fields.Float(string="Prix minimum")
     di_prixmax = fields.Float(string="Prix maximum")
-    di_des = fields.Char(string="Désignation")
+    di_des = fields.Char(string="Désignation") # ????
     
     di_categorie_id = fields.Many2one("di.categorie",string="Catégorie")    
     di_categorie_di_des = fields.Char(related='di_categorie_id.di_des')#, store='False')
@@ -45,7 +45,7 @@ class ProductTemplate(models.Model):
     @api.one
     @api.depends('di_un_saisie', 'di_un_prix')
     def _di_compute_spe_saisissable(self):
-        if self.di_un_prix is not False or self.di_un_saisie is not False :
+        if self.di_un_prix is not False or self.di_un_saisie is not False : # ????
             self.di_spe_saisissable =True
         else:
             self.di_spe_saisissable=False
@@ -136,7 +136,7 @@ class ProductPackaging(models.Model):
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond = fields.Selection([("PIECE", "Cond. Réf."), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
     di_type_cond_inf_id = fields.Many2one('product.packaging', string='Conditionnement inférieur')
-    di_des = fields.Char(string="Désignation")#, required=True)
+    di_des = fields.Char(string="Désignation")#, required=True)    # ????
     di_product_tmpl_id = fields.Many2one('product.template', 'Product Template', related='product_id.product_tmpl_id')
     di_search_name = fields.Char(string='Recherche Code',compute='_di_compute_search_name',store=True)
     

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <record id="di_bordtrp_wiz_form" model="ir.ui.view">
+        <field name="name">di.bordtrp.wiz.form</field>
+        <field name="model">di.bordtrp.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Impression bordereaux transport">
+                <separator string="Sélection"/>
+                <group>
+                    <group>
+                        <field name="date_sel"/>
+                        <field name="transp_deb"/>                        
+                        <field name="transp_fin"/>
+                    </group>
+                    <group/>
+                </group>
+                <footer>
+                    <button string="Impression" type="object" name="edit_bordereau"
+                        default_focus="1" class="oe_link"/>                    
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="di_action_wiz_imp_bordtrp" model="ir.actions.act_window">
+        <field name="name">Impression bordereaux transport</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.bordtrp.wiz</field>
+        <field name="view_type">form</field>            
+        <field name="view_id" ref="di_bordtrp_wiz_form"/>        
+        <field name="view_mode">tree,form</field>
+        <field name="target">new</field>
+    </record> 
+    
+    </data>
+</odoo>

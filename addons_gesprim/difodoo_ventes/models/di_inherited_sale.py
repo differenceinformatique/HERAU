@@ -564,8 +564,9 @@ class SaleOrder(models.Model):
     di_livdt = fields.Date(string='Date de livraison', copy=False, help="Date de livraison souhaitée",
                            default=lambda wdate : datetime.today().date()+timedelta(days=1))
     di_prepdt = fields.Date(string='Date de préparation', copy=False, help="Date de préparation",
-                           default=lambda wdate : datetime.today().date())
-     
+                           default=lambda wdate : datetime.today().date())    
+    di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
+    di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")     
      
     @api.multi
     def imprimer_etiquettes(self):         
@@ -961,4 +962,11 @@ class SaleOrder(models.Model):
         
         return True
 
-   
+    @api.multi
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        result=super(SaleOrder, self).onchange_partner_id()
+        self.di_tournee = self.partner_id.di_tournee
+        self.di_rangtournee = self.partner_id.di_rangtournee         
+        return result
+

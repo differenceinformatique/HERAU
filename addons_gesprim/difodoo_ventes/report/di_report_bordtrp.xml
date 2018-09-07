@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="di_wiz_imp_bordtrp_doc">
+		<t t-set="doc" t-value="doc" />
+		<t t-set="flag" t-value="0"/>
+		<t t-foreach="doc.stock_picking_ids.sorted(key= lambda sp: sp.carrier_id.name)" t-as="transp">
+			<!-- afin de gérer les ruptures et les sauts de pages on fait un 1er parcours de boucle à ce niveau -->
+			<t t-set="imp_entete" t-value="0"/>
+			<t t-if="flag == 0">
+				<!-- au 1er passage on charge les données nécessaires et on lance l'impression de l'entête -->
+				<t t-set="flag" t-value="1"/>
+				<t t-set="carrier_id" t-value="transp.carrier_id"/>
+				<t t-set="carrier_id_name" t-value="transp.carrier_id.name"/>
+				<t t-set="imp_entete" t-value="1"/>
+			</t>
+			<t t-else="">
+				<t t-if="carrier_id != transp.carrier_id">
+					<!-- si rupture transporteur on charge les données nécessaires et on lance l'impression de l'entête -->
+					<p style="page-break-before:always;"> </p>
+					<t t-set="carrier_id" t-value="transp.carrier_id"/>
+					<t t-set="carrier_id_name" t-value="transp.carrier_id.name"/>
+					<t t-set="imp_entete" t-value="1"/>
+				</t>
+			</t>
+			<t t-set="TotCol" t-value="0.0" />
+			<t t-set="TotPal" t-value="0.0" />
+			<t t-set="TotPoids" t-value="0.0" />
+			<!-- impression entête -->
+			<t t-if="imp_entete == 1">
+				<!-- impression adresse dossier -->
+				<h3 t-field="doc.company_id.name" />
+				<h5 t-field="doc.company_id.street" />
+				<h5>
+					<span t-field="doc.company_id.zip" />
+					<span t-field="doc.company_id.city" />
+				</h5>
+				<h5>
+					<span>Téléphone :</span>
+					<span t-field="doc.company_id.phone" />
+				</h5>
+				<!-- impression du titre du document -->
+				<h2 style="text-align: center">
+					<span>Bordereau de Transport du&amp;nbsp;</span>
+					<span t-field="doc.date_sel" />
+				</h2>
+				<!-- impression du transporteur -->
+				<table class="table table-condensed table-bordered" width="100%">
+					<thead>
+						<tr>
+							<th width="50%">
+								<h3 style="text-align: center">Transporteur</h3>
+							</th>
+							<th width="50%">
+								<t t-if="carrier_id">
+									<h3 style="text-align: center" t-esc="carrier_id_name"/>
+								</t>
+							</th>
+						</tr>
+					</thead>
+				</table>
+				<!-- impression des entêtes de colonnes -->
+				<table class="table table-condensed table-bordered" width="100%">
+					<thead>
+						<tr>
+							<th>
+								<h4 style="text-align: center">
+									<div>Tournée/Rang</div>
+									<div>N° BL</div>
+								</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">Tiers</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">Adresse Livraison</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">Produit</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">Colis</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">Palettes</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">Poids Brut</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">Commentaires / Signature</h4>
+							</th>
+						</tr>
+					</thead>
+					<!-- impression des lignes, on fait un 2eme parcours afin de rester entre les balises table -->
+					<tbody>
+						<t t-foreach="doc.stock_picking_ids.sorted(key= lambda sp: (sp.di_tournee,sp.di_rangtournee))" t-as="sp">
+							<t t-if="sp.carrier_id == carrier_id">
+								<tr t-foreach="sp.move_line_ids" t-as="ml">								
+									<tr>
+										<t t-if="flagbon == 0">
+											<!-- impression infos entête à la 1ère ligne -->
+											<t t-set="flagbon" t-value="1"/>									
+											<td>
+												<div>
+													<span t-field="sp.di_tournee"/>
+													<span>/</span>
+													<span t-field="sp.di_rangtournee"/>
+												</div>
+												<div t-field="sp.name"></div>
+											</td>
+											<td>
+												<t t-if="sp.partner_id.name">
+													<span t-field="sp.partner_id.name" />
+												</t>
+												<t t-else="">
+													<span t-field="sp.partner_id.parent_id.name" />
+												</t>
+											</td>
+											<td>
+												<div t-field="sp.partner_id.street" />
+												<div>
+													<span t-field="sp.partner_id.zip" />
+													<span t-field="sp.partner_id.city" />
+												</div>
+											</td>
+										</t>
+										<t t-else="">
+											<!-- sinon on imprime ces colonnes à blanc -->
+											<td></td>
+											<td></td>
+											<td></td>
+										</t>										
+										<td><span t-field="ml.product_id"/></td>
+										<td><span t-field="ml.di_nb_colis"/></td>
+										<td><span t-field="ml.di_nb_palette"/></td>
+										<td><span t-field="ml.di_poib"/></td>
+										<td></td>										
+										<t t-set="flagbon" t-value="0"/>
+										<t t-set="TotCol" t-value="TotCol + ml.di_nb_colis" />
+										<t t-set="TotPal" t-value="TotPal + ml.di_nb_palette" />
+										<t t-set="TotPoids" t-value="TotPoids + ml.di_poib" />
+									</tr>
+								</tr>
+							</t>
+						</t>
+						<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td style="text-align: right"><b>TOTAL</b></td>
+						<td><b t-esc="TotCol"/></td>
+						<td><b t-esc="round(TotPal,3)"/></td>
+						<td><b t-esc="TotPoids"/></td>
+						<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</t>
+		</t>
+	</template>
+
+	<template id="di_wiz_imp_bordtrp">
+		<t t-call="web.basic_layout">
+			<t t-foreach="docs" t-as="doc">
+				<div class="page">
+					<t t-call="difodoo_ventes.di_wiz_imp_bordtrp_doc" />
+					<t t-set="doc" t-value="doc" />
+				</div>
+			</t>
+		</t>
+	</template>
+
+	<record id="di_A4_Paysage" model="report.paperformat">
+		<field name="name">A4 Paysage</field>
+		<field name="default" eval="True" />
+		<field name="format">A4</field>
+		<field name="page_height">0</field>
+		<field name="page_width">0</field>
+		<field name="orientation">Landscape</field>
+		<field name="margin_top">5</field>
+		<field name="margin_bottom">5</field>
+		<field name="margin_left">5</field>
+		<field name="margin_right">5</field>
+		<field name="header_line" eval="False" />
+		<field name="header_spacing">0</field>
+		<field name="dpi">90</field>
+	</record>
+
+	<report id="di_wiz_report_bordtrp" string="Impression bordereau transport" model="di.bordtrp.wiz"
+		report_type="qweb-pdf" file="difodoo_ventes.di_wiz_imp_bordtrp" name="difodoo_ventes.di_wiz_imp_bordtrp"
+		print_report_name="'Bordereau transport'" paperformat="difodoo_ventes.di_A4_Paysage" />
+</odoo>

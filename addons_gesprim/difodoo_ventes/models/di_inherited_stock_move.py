@@ -2,6 +2,7 @@
 from odoo import api, fields, models, _
 from math import ceil
 from datetime import  datetime
+from odoo.addons import decimal_precision as dp
  
 class StockMove(models.Model):
     _inherit = "stock.move"
@@ -396,7 +397,7 @@ class StockMoveLine(models.Model):
     di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True,compute="_compute_qte_un_saisie")          
     di_nb_pieces = fields.Integer(string='Nb pièces', store=True)
     di_nb_colis = fields.Integer(string='Nb colis' ,store=True)
-    di_nb_palette = fields.Float(string='Nb palettes' , store=True)
+    di_nb_palette = fields.Float(string='Nb palettes', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_poin = fields.Float(string='Poids net' , store=True)
     di_poib = fields.Float(string='Poids brut', store=True)
     di_tare = fields.Float(string='Tare', store=True)    
@@ -653,6 +654,8 @@ class StockPicking(models.Model):
     
     di_nbpal = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)
     di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)
+    di_tournee = fields.Char(string="Tournée",compute='_compute_tournee',store=True)
+    di_rangtournee = fields.Char(string="Rang dans la tournée",compute='_compute_tournee',store=True)
     
     @api.depends('move_lines')
     def _compute_di_nbpal_nbcol(self):
@@ -663,7 +666,22 @@ class StockPicking(models.Model):
             wnbcol = sum(move.di_nb_colis for move in picking.move_lines if move.state != 'cancel')
         picking.di_nbpal = ceil(wnbpal)
         picking.di_nbcol = ceil(wnbcol)
+        
+    @api.depends('name')
+    def _compute_tournee(self):
+        for sp in self:
+            # pour éviter erreur de tri à l'édition du bordereau de transport
+            sp.di_tournee = " "
+            sp.di_rangtournee = " "
+            so = self.env['sale.order'].search([('name', '=', sp.origin)])
+            if so:
+                if so.di_tournee:
+                    sp.di_tournee = so.di_tournee
+                if so.di_rangtournee:
+                    sp.di_rangtournee = so.di_rangtournee
 
+
+        
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
     

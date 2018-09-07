@@ -26,11 +26,13 @@
 				<xpath expr="//sheet/group/group/field[@name='partner_shipping_id']" position="replace">
 					<field name="partner_shipping_id" domain="['|',('id','=',partner_id),('parent_id','=',partner_id)]"
 						groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}" options='{"always_reload": True}' />
-					<field name="di_livdt" />
-					<field name="di_prepdt" />
+					<field name="di_livdt"/>
+					<field name="di_prepdt"/>
 				</xpath>
 				<xpath expr="//field[@name='payment_term_id']" position="after">
-					<field name="client_order_ref" />
+					<field name="client_order_ref"/>					
+					<field name="di_tournee"/>
+					<field name="di_rangtournee"/>
 				</xpath>
 				<!-- lignes en mode fiche -->
 				<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty']"
