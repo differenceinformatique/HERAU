@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_view_livrebord_tree" model="ir.ui.view" >
+            <field name="name">di.livrebord.tree</field>
+            <field name="priority">1</field>
+            <field name="model">di.livrebord</field>        
+            <field name="arch" type="xml">
+                <tree string="Livre de bord" default_order = "name"  import="false" create="false" edit="false">
+                    <field name="name"/>
+                    <field name="message"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+    </record>
+    
+    <record id="di_livrebord_form" model="ir.ui.view">
+        <field name="name">di.livrebord.form</field>
+        <field name="model">di.livrebord</field>
+        <field name="arch" type="xml">
+            <form string="Livre de bord">
+                <header>
+                </header>
+                <sheet> 
+                    <group>
+                        <group>
+                            <field name="name" readonly="1" />
+                            <field name="message" readonly="1" />
+                            <field name="user_id" readonly="1" />
+                        </group>
+                    </group>
+                </sheet>         
+            </form>
+        </field>
+    </record>
+    
+    <record id="di_action_livrebord" model="ir.actions.act_window">
+        <field name="name">Livre de bord</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.livrebord</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="di_view_livrebord_tree"/>              
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            <p>
+                Livre de bord
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -95,6 +95,7 @@
 					<tbody>
 						<t t-foreach="doc.stock_picking_ids.sorted(key= lambda sp: (sp.di_tournee,sp.di_rangtournee))" t-as="sp">
 							<t t-if="sp.carrier_id == carrier_id">
+								<t t-set="flagbon" t-value="0"/>
 								<tr t-foreach="sp.move_line_ids" t-as="ml">								
 									<tr>
 										<t t-if="flagbon == 0">
@@ -134,8 +135,7 @@
 										<td><span t-field="ml.di_nb_colis"/></td>
 										<td><span t-field="ml.di_nb_palette"/></td>
 										<td><span t-field="ml.di_poib"/></td>
-										<td></td>										
-										<t t-set="flagbon" t-value="0"/>
+										<td></td>
 										<t t-set="TotCol" t-value="TotCol + ml.di_nb_colis" />
 										<t t-set="TotPal" t-value="TotPal + ml.di_nb_palette" />
 										<t t-set="TotPoids" t-value="TotPoids + ml.di_poib" />

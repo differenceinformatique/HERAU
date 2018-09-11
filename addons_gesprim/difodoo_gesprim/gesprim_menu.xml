@@ -120,6 +120,7 @@
     <menuitem id="menu_gesprim_stats_factures" name="Analyse CA" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
     <!-- ***Menu Utilitaires -->
     <menuitem id="menu_gesprim_imp" name="Impressions" sequence="10" parent="menu_gesprim_uti" />
+    <menuitem id="menu_gesprim_livb" name="Livre de bord" sequence="20" parent="menu_gesprim_uti" action="difodoo_fichiers_base.di_action_livrebord"/>
     <!-- ****Menu impressions -->	
 	<menuitem id="menu_gesprim_imprimantes" sequence="10" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_printer" />
 	<menuitem id="menu_gesprim_etiquettes" sequence="20" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_labelmodel" />
