@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<template id="di_wiz_imp_bordtrp_doc">
+	<template id="di_wiz_imp_ctrltrp_doc">
 		<t t-set="doc" t-value="doc" />
 		<t t-set="flag" t-value="0"/>
 		<t t-foreach="doc.stock_picking_ids.sorted(key= lambda sp: sp.carrier_id.name)" t-as="transp">
@@ -40,15 +40,22 @@
 				</h5>
 				<!-- impression du titre du document -->
 				<h2 style="text-align: center">
-					<span>Bordereau de Transport du&amp;nbsp;</span>
-					<span t-field="doc.date_sel" />
+					<span>Contrôle Transporteur du&amp;nbsp;</span>
+					<span t-field="doc.date_debut" />
+					<span>au</span>
+					<span t-field="doc.date_fin" />
 				</h2>
 				<!-- impression du transporteur -->
-				<table class="table table-condensed table-bordered" width="100%">
+				<table class="table table-condensed table-ctrlered" width="100%">
 					<thead>
 						<tr>
 							<th width="50%">
-								<h3 style="text-align: center">Transporteur</h3>
+								<h3 style="text-align: center">
+									<span>Du </span>
+									<span t-field="doc.date_debut"/>
+									<span> au </span>
+									<span t-field="doc.date_debut"/>
+								</h3>
 							</th>
 							<th width="50%">
 								<t t-if="carrier_id">
@@ -59,20 +66,17 @@
 					</thead>
 				</table>
 				<!-- impression des entêtes de colonnes -->
-				<table class="table table-condensed table-bordered" width="100%">
+				<table class="table table-condensed table-ctrlered" width="100%">
 					<thead>
 						<tr>
 							<th>
-								<h4 style="text-align: center">
-									<div>Tournée/Rang</div>
-									<div>N° BL</div>
-								</h4>
+								<h4 style="text-align: center">Date</h4>
+							</th>
+							<th>
+								<h4 style="text-align: center">N° BL</h4>
 							</th>
 							<th>
 								<h4 style="text-align: center">Tiers</h4>
-							</th>
-							<th>
-								<h4 style="text-align: center">Adresse Livraison</h4>
 							</th>
 							<th>
 								<h4 style="text-align: center">Produit</h4>
@@ -93,7 +97,7 @@
 					</thead>
 					<!-- impression des lignes, on fait un 2eme parcours afin de rester entre les balises table -->
 					<tbody>
-						<t t-foreach="doc.stock_picking_ids.sorted(key= lambda sp: (sp.di_tournee,sp.di_rangtournee))" t-as="sp">
+						<t t-foreach="doc.stock_picking_ids.sorted(key= lambda sp: (sp.date_done,sp.name))" t-as="sp">
 							<t t-if="sp.carrier_id == carrier_id">
 								<t t-set="flagbon" t-value="0"/>
 								<tr t-foreach="sp.move_line_ids" t-as="ml">								
@@ -102,14 +106,19 @@
 											<!-- impression infos entête à la 1ère ligne -->
 											<t t-set="flagbon" t-value="1"/>									
 											<td>
-												<div>
-													<span t-field="sp.di_tournee"/>
-													<span>/</span>
-													<span t-field="sp.di_rangtournee"/>
-												</div>
-												<div t-field="sp.name"></div>
+												<span t-field="sp.date_done"/>
 											</td>
 											<td>
+												<span t-field="sp.name"/>
+											</td>
+											<td>
+												<t t-if="sp.partner_id.ref">
+													<span t-field="sp.partner_id.ref" />
+												</t>
+												<t t-else="">
+													<span t-field="sp.partner_id.parent_id.ref" />
+												</t>
+												<span> - </span>
 												<t t-if="sp.partner_id.name">
 													<span t-field="sp.partner_id.name" />
 												</t>
@@ -159,34 +168,18 @@
 		</t>
 	</template>
 
-	<template id="di_wiz_imp_bordtrp">
+	<template id="di_wiz_imp_ctrltrp">
 		<t t-call="web.basic_layout">
 			<t t-foreach="docs" t-as="doc">
 				<div class="page">
-					<t t-call="difodoo_ventes.di_wiz_imp_bordtrp_doc" />
+					<t t-call="difodoo_ventes.di_wiz_imp_ctrltrp_doc" />
 					<t t-set="doc" t-value="doc" />
 				</div>
 			</t>
 		</t>
 	</template>
 
-	<record id="di_A4_Paysage" model="report.paperformat"> <!-- ???? emplacement -->
-		<field name="name">A4 Paysage</field>
-		<field name="default" eval="True" />
-		<field name="format">A4</field>
-		<field name="page_height">0</field>
-		<field name="page_width">0</field>
-		<field name="orientation">Landscape</field>
-		<field name="margin_top">5</field>
-		<field name="margin_bottom">5</field>
-		<field name="margin_left">5</field>
-		<field name="margin_right">5</field>
-		<field name="header_line" eval="False" />
-		<field name="header_spacing">0</field>
-		<field name="dpi">90</field>
-	</record>
-
-	<report id="di_wiz_report_bordtrp" string="Impression bordereau transport" model="di.bordtrp.wiz"
-		report_type="qweb-pdf" file="difodoo_ventes.di_wiz_imp_bordtrp" name="difodoo_ventes.di_wiz_imp_bordtrp"
-		print_report_name="'Bordereau transport'" paperformat="difodoo_ventes.di_A4_Paysage" />
+	<report id="di_wiz_report_ctrltrp" string="Impression contrôle transporteur" model="di.ctrltrp.wiz"
+		report_type="qweb-html" file="difodoo_ventes.di_wiz_imp_ctrltrp" name="difodoo_ventes.di_wiz_imp_ctrltrp"
+		print_report_name="'Controle transporteur'" paperformat="difodoo_ventes.di_A4_Paysage" />
 </odoo>

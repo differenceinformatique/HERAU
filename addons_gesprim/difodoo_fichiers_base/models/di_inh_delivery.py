@@ -3,6 +3,7 @@
 from odoo import api, fields, models, _
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import UserError
+from math import ceil
 
 class PriceRule(models.Model):
     _inherit = "delivery.price.rule"
@@ -11,6 +12,9 @@ class PriceRule(models.Model):
     name = fields.Char(compute='_compute_name', store=True)
     di_code_dest_id = fields.Many2one('di.code.dest', string='Code destination', help="Code destination pour les grilles transporteurs")
     carrier_name = fields.Char(string="Nom Transporteur", related='carrier_id.name', store=True)
+    # ajout du calcul à la palette     
+    variable = fields.Selection([('weight', 'Weight'), ('volume', 'Volume'), ('wv', 'Weight * Volume'), ('price', 'Price'), ('quantity', 'Quantity'), ('palette', 'Palette')], required=True, default='weight')
+    variable_factor = fields.Selection([('weight', 'Weight'), ('volume', 'Volume'), ('wv', 'Weight * Volume'), ('price', 'Price'), ('quantity', 'Quantity'), ('palette', 'Palette')], 'Variable Factor', required=True, default='weight')
      
     @api.depends('variable', 'operator', 'max_value', 'list_base_price', 'list_price', 'variable_factor')
     def _compute_name(self):
@@ -31,7 +35,6 @@ class PriceRule(models.Model):
 
 class ProviderGrid(models.Model):
     _inherit = "delivery.carrier"
-    di_code_dest_id = False     # pour passer le code destination d'une fonction à l'autre
             
     def _get_price_available(self, order):
         self.ensure_one()
@@ -48,20 +51,23 @@ class ProviderGrid(models.Model):
             weight += (line.product_id.weight or 0.0) * qty
             volume += (line.product_id.volume or 0.0) * qty
             quantity += qty
+        palette = ceil(order.di_nbpal)    # difodoo
+        code_dest_id = order.partner_shipping_id.di_code_dest_id
         total = (order.amount_total or 0.0) - total_delivery
 
         total = order.currency_id.with_context(date=order.date_order).compute(total, order.company_id.currency_id)
-        # envoi du code destination
-        ProviderGrid.di_code_dest_id=order.partner_shipping_id.di_code_dest_id
-        return self._get_price_from_picking(total, weight, volume, quantity)
+        #return self._get_price_from_picking(total, weight, volume, quantity)
+        return self._get_price_from_picking(total, weight, volume, quantity, palette, code_dest_id)
                      
-    def _get_price_from_picking(self, total, weight, volume, quantity):
+    #def _get_price_from_picking(self, total, weight, volume, quantity):
+    def _get_price_from_picking(self, total, weight, volume, quantity, palette, code_dest_id):
         price = 0.0
         criteria_found = False
-        price_dict = {'price': total, 'volume': volume, 'weight': weight, 'wv': volume * weight, 'quantity': quantity}
+        #price_dict = {'price': total, 'volume': volume, 'weight': weight, 'wv': volume * weight, 'quantity': quantity}
+        price_dict = {'price': total, 'volume': volume, 'weight': weight, 'wv': volume * weight, 'quantity': quantity, 'palette': palette}
         for line in self.price_rule_ids:
             # récupération du code destination            
-            if line.di_code_dest_id == ProviderGrid.di_code_dest_id:
+            if line.di_code_dest_id == code_dest_id:
                 test = safe_eval(line.variable + line.operator + str(line.max_value), price_dict)
                 if test:
                     price = line.list_base_price + line.list_price * price_dict[line.variable_factor]

@@ -33,7 +33,6 @@ class DiBordTrpWiz(models.TransientModel):
         else:
             # sinon on teste transporteur début/transporteur fin
             stock_pickings3 = stock_pickings2.filtered(lambda sp: sp.carrier_id.name >= self.transp_deb and sp.carrier_id.name <= self.transp_fin)
-        ## on trie par tournée/rang
         self.stock_picking_ids=stock_pickings3
         if self.stock_picking_ids:
             return self.env.ref('difodoo_ventes.di_wiz_report_bordtrp').report_action(self)

@@ -566,7 +566,9 @@ class SaleOrder(models.Model):
     di_prepdt = fields.Date(string='Date de préparation', copy=False, help="Date de préparation",
                            default=lambda wdate : datetime.today().date())    
     di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
-    di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")     
+    di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
+    di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
+    di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)     
      
     @api.multi
     def imprimer_etiquettes(self):         
@@ -969,4 +971,12 @@ class SaleOrder(models.Model):
         self.di_tournee = self.partner_id.di_tournee
         self.di_rangtournee = self.partner_id.di_rangtournee         
         return result
+    
+    @api.depends('order_line')
+    def _compute_di_nbpal_nbcol(self):
+        for order in self:
+            wnbpal = sum(line.di_nb_palette for line in order.order_line)
+            wnbcol = sum(line.di_nb_colis for line in order.order_line)
+        order.di_nbpal = wnbpal
+        order.di_nbcol = ceil(wnbcol)
 

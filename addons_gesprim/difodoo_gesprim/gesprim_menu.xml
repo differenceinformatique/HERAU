@@ -47,9 +47,7 @@
 	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="60" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_uti" name="Utilitaires" sequence="70" parent="menu_gesprim" />
 	<!-- ***Menu Fichiers -->	
-	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />
-	
-	
+	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />	
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
 	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="30" parent="menu_gesprim_fichiers" action="base.action_partner_supplier_form" />
 	<menuitem id="menu_gesprim_refarttiers" name="Référencement article" sequence="40" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_ref_art_tiers" />
@@ -72,7 +70,7 @@
 	<!-- <menuitem id="menu_gesprim_stations" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" /> -->	
 	<menuitem id="menu_gesprim_conditionnement_defaut" name="Conditionnements" sequence="70" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_cond_defaut" />
 	<menuitem id="menu_gesprim_conditionnement_art" name="Conditionnements art." sequence="75" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_product_packaging" />
-	<menuitem id="menu_gesprim_methodes_liv" name="Méthodes de livraison" parent="menu_gesprim_tables" sequence="80" action="delivery.action_delivery_carrier_form"/>
+	<menuitem id="menu_gesprim_methodes_liv" name="Transporteurs" parent="menu_gesprim_tables" sequence="80" action="delivery.action_delivery_carrier_form"/> <!-- ??? Ne marche pas, le nom reste le même -->
 	<menuitem id="menu_gesprim_destinations" sequence="90" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_code_dest" />
 	<menuitem id="menu_gesprim_grilletrp" sequence="100" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_delivery_price_rule" />
 	<!-- ***Menu Ventes -->	
@@ -87,6 +85,7 @@
 	<!-- <menuitem id="menu_gesprim_ventes_liv_ret" name="En Retard" sequence="40" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_tree_ventes_retard"/> -->
 	<menuitem id="menu_gesprim_ventes_liv_all" name="Toutes" sequence="50" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_picking_ventes_all"/>
 	<menuitem id="menu_gesprim_ventes_liv_bordtrp" name="Bordereaux de transport" sequence="60" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_wiz_imp_bordtrp"/>
+	<menuitem id="menu_gesprim_ventes_liv_ctrltrp" name="Contrôle transporteur" sequence="70" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_wiz_imp_ctrltrp"/>
 	<!-- ****Menu Facturation Ventes-->      
 	<menuitem id="menu_gesprim_ventes_cde_fact" name="Commandes à facturer" sequence="10" parent="menu_gesprim_ventes_fact" action="sale.action_orders_to_invoice"/>
 	<menuitem id="menu_gesprim_ventes_factures" name="Factures clients" sequence="20" parent="menu_gesprim_ventes_fact" action="account.action_invoice_tree1"/>    

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <record id="di_ctrltrp_wiz_form" model="ir.ui.view">
+        <field name="name">di.ctrltrp.wiz.form</field>
+        <field name="model">di.ctrltrp.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Impression contrôle transporteur">
+                <separator string="Sélection"/>
+                <group>
+                    <group>
+                        <field name="date_debut"/>
+                        <field name="date_fin"/>
+                        <field name="transp_deb"/>                        
+                        <field name="transp_fin"/>
+                    </group>
+                    <group/>
+                </group>
+                <footer>
+                    <button string="Impression" type="object" name="edit_controle_trp"
+                        default_focus="1" class="oe_link"/>                    
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="di_action_wiz_imp_ctrltrp" model="ir.actions.act_window">
+        <field name="name">Impression contrôle transporteur</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.ctrltrp.wiz</field>
+        <field name="view_type">form</field>            
+        <field name="view_id" ref="di_ctrltrp_wiz_form"/>        
+        <field name="view_mode">tree,form</field>
+        <field name="target">new</field>
+    </record> 
+    
+    </data>
+</odoo>

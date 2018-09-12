@@ -652,19 +652,17 @@ class StockMoveLine(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
     
-    di_nbpal = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)
+    di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)
     di_tournee = fields.Char(string="Tournée",compute='_compute_tournee',store=True)
     di_rangtournee = fields.Char(string="Rang dans la tournée",compute='_compute_tournee',store=True)
     
     @api.depends('move_lines')
     def _compute_di_nbpal_nbcol(self):
-        wnbpal=0.0
-        wnbcol=0.0
         for picking in self:
             wnbpal = sum(move.di_nb_palette for move in picking.move_lines if move.state != 'cancel')
             wnbcol = sum(move.di_nb_colis for move in picking.move_lines if move.state != 'cancel')
-        picking.di_nbpal = ceil(wnbpal)
+        picking.di_nbpal = wnbpal
         picking.di_nbcol = ceil(wnbcol)
         
     @api.depends('name')
