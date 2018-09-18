@@ -30,6 +30,9 @@ class DiGrilleAchatWiz(models.TransientModel):
                          }          
 
             self.di_order_id.order_line.create(vals)
+        sql = """DELETE from di_grille_achat_wiz where di_order_id = %s"""
+
+        self.env.cr.execute(sql,(self.di_order_id.id))
 
     @api.model
     def default_get(self, fields):
