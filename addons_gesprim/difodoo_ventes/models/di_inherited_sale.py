@@ -977,6 +977,6 @@ class SaleOrder(models.Model):
         for order in self:
             wnbpal = sum(line.di_nb_palette for line in order.order_line)
             wnbcol = sum(line.di_nb_colis for line in order.order_line)
-        order.di_nbpal = wnbpal
-        order.di_nbcol = ceil(wnbcol)
+            order.di_nbpal = wnbpal
+            order.di_nbcol = ceil(wnbcol)
 

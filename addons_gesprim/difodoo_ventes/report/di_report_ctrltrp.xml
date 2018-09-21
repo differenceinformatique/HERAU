@@ -22,9 +22,10 @@
 					<t t-set="imp_entete" t-value="1"/>
 				</t>
 			</t>
-			<t t-set="TotCol" t-value="0.0" />
+			<t t-set="TotCol" t-value="0" />
 			<t t-set="TotPal" t-value="0.0" />
 			<t t-set="TotPoids" t-value="0.0" />
+			<t t-set="TotMt" t-value="0.0" />
 			<!-- impression entête -->
 			<t t-if="imp_entete == 1">
 				<!-- impression adresse dossier -->
@@ -46,7 +47,7 @@
 					<span t-field="doc.date_fin" />
 				</h2>
 				<!-- impression du transporteur -->
-				<table class="table table-condensed table-ctrlered" width="100%">
+				<table class="table table-condensed table-bordered" width="100%">
 					<thead>
 						<tr>
 							<th width="50%">
@@ -54,7 +55,7 @@
 									<span>Du </span>
 									<span t-field="doc.date_debut"/>
 									<span> au </span>
-									<span t-field="doc.date_debut"/>
+									<span t-field="doc.date_fin"/>
 								</h3>
 							</th>
 							<th width="50%">
@@ -66,7 +67,7 @@
 					</thead>
 				</table>
 				<!-- impression des entêtes de colonnes -->
-				<table class="table table-condensed table-ctrlered" width="100%">
+				<table class="table table-condensed table-bordered" width="100%">
 					<thead>
 						<tr>
 							<th>
@@ -79,7 +80,7 @@
 								<h4 style="text-align: center">Tiers</h4>
 							</th>
 							<th>
-								<h4 style="text-align: center">Produit</h4>
+								<h4 style="text-align: center">Adresse</h4>
 							</th>
 							<th>
 								<h4 style="text-align: center">Colis</h4>
@@ -91,66 +92,62 @@
 								<h4 style="text-align: center">Poids Brut</h4>
 							</th>
 							<th>
-								<h4 style="text-align: center">Commentaires / Signature</h4>
+								<h4 style="text-align: center">Montant Transport</h4>
 							</th>
 						</tr>
 					</thead>
 					<!-- impression des lignes, on fait un 2eme parcours afin de rester entre les balises table -->
 					<tbody>
 						<t t-foreach="doc.stock_picking_ids.sorted(key= lambda sp: (sp.date_done,sp.name))" t-as="sp">
-							<t t-if="sp.carrier_id == carrier_id">
-								<t t-set="flagbon" t-value="0"/>
-								<tr t-foreach="sp.move_line_ids" t-as="ml">								
-									<tr>
-										<t t-if="flagbon == 0">
-											<!-- impression infos entête à la 1ère ligne -->
-											<t t-set="flagbon" t-value="1"/>									
-											<td>
-												<span t-field="sp.date_done"/>
-											</td>
-											<td>
-												<span t-field="sp.name"/>
-											</td>
-											<td>
-												<t t-if="sp.partner_id.ref">
-													<span t-field="sp.partner_id.ref" />
-												</t>
-												<t t-else="">
-													<span t-field="sp.partner_id.parent_id.ref" />
-												</t>
-												<span> - </span>
-												<t t-if="sp.partner_id.name">
-													<span t-field="sp.partner_id.name" />
-												</t>
-												<t t-else="">
-													<span t-field="sp.partner_id.parent_id.name" />
-												</t>
-											</td>
-											<td>
-												<div t-field="sp.partner_id.street" />
-												<div>
-													<span t-field="sp.partner_id.zip" />
-													<span t-field="sp.partner_id.city" />
-												</div>
-											</td>
+						<t t-if="sp.carrier_id == carrier_id">
+							<tr>
+								<td>
+									<span t-esc="sp.date_done" t-options='{"widget": "date"}'/>
+								</td>
+								<td>
+									<span t-field="sp.name"/>
+								</td>
+								<td>
+									<t t-if="sp.partner_id.ref">
+										<span t-field="sp.partner_id.ref" />
+									</t>
+									<t t-else="">
+										<span t-field="sp.partner_id.parent_id.ref" />
+									</t>
+									<span> - </span>
+									<t t-if="sp.partner_id.name">
+										<span t-field="sp.partner_id.name" />
+									</t>
+									<t t-else="">
+										<span t-field="sp.partner_id.parent_id.name" />
+									</t>
+								</td>
+								<td>
+									<div t-field="sp.partner_id.street" />
+									<div>
+										<span t-field="sp.partner_id.zip" />
+										<span t-field="sp.partner_id.city" />
+									</div>
+								</td>
+								<td><span t-field="sp.di_nbcol"/></td>
+								<td><span t-field="sp.di_nbpal"/></td>
+								<td><span t-field="sp.di_poin"/></td>
+								<td>
+									<t if="sp.origin">
+										<t t-set="sale_order" t-value="env['sale.order']" />
+										<t t-set="so" t-value="sale_order.search([('name', '=', sp.origin)])" />
+										<t if="so.delivery_price">
+											<span t-esc="so.delivery_price"  t-options="{'widget': 'monetary',
+											'display_currency': doc.company_id.currency_id}" />
+											<t t-set="TotMt" t-value="TotMt + so.delivery_price" />
 										</t>
-										<t t-else="">
-											<!-- sinon on imprime ces colonnes à blanc -->
-											<td></td>
-											<td></td>
-											<td></td>
-										</t>										
-										<td><span t-field="ml.product_id"/></td>
-										<td><span t-field="ml.di_nb_colis"/></td>
-										<td><span t-field="ml.di_nb_palette"/></td>
-										<td><span t-field="ml.di_poib"/></td>
-										<td></td>
-										<t t-set="TotCol" t-value="TotCol + ml.di_nb_colis" />
-										<t t-set="TotPal" t-value="TotPal + ml.di_nb_palette" />
-										<t t-set="TotPoids" t-value="TotPoids + ml.di_poib" />
-									</tr>
-								</tr>
-							</t>
+									</t>
+								</td>
+								<t t-set="TotCol" t-value="TotCol + sp.di_nbcol" />
+								<t t-set="TotPal" t-value="TotPal + sp.di_nbpal" />
+								<t t-set="TotPoids" t-value="TotPoids + sp.di_poin" />								
+							</tr>						
+						</t>
 						</t>
 						<tr>
 						<td></td>
@@ -160,7 +157,11 @@
 						<td><b t-esc="TotCol"/></td>
 						<td><b t-esc="round(TotPal,3)"/></td>
 						<td><b t-esc="TotPoids"/></td>
-						<td></td>
+						<td>
+							<b t-esc="round(TotMt,3)"  t-options="{'widget': 'monetary',
+							'display_currency': doc.company_id.currency_id}"
+							/>
+						</td>
 						</tr>
 					</tbody>
 				</table>
@@ -180,6 +181,6 @@
 	</template>
 
 	<report id="di_wiz_report_ctrltrp" string="Impression contrôle transporteur" model="di.ctrltrp.wiz"
-		report_type="qweb-html" file="difodoo_ventes.di_wiz_imp_ctrltrp" name="difodoo_ventes.di_wiz_imp_ctrltrp"
+		report_type="qweb-pdf" file="difodoo_ventes.di_wiz_imp_ctrltrp" name="difodoo_ventes.di_wiz_imp_ctrltrp"
 		print_report_name="'Controle transporteur'" paperformat="difodoo_ventes.di_A4_Paysage" />
 </odoo>

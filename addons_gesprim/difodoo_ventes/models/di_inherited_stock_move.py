@@ -654,6 +654,7 @@ class StockPicking(models.Model):
     
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)
+    di_poin = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_tournee = fields.Char(string="Tournée",compute='_compute_tournee',store=True)
     di_rangtournee = fields.Char(string="Rang dans la tournée",compute='_compute_tournee',store=True)
     
@@ -662,8 +663,10 @@ class StockPicking(models.Model):
         for picking in self:
             wnbpal = sum(move.di_nb_palette for move in picking.move_lines if move.state != 'cancel')
             wnbcol = sum(move.di_nb_colis for move in picking.move_lines if move.state != 'cancel')
-        picking.di_nbpal = wnbpal
-        picking.di_nbcol = ceil(wnbcol)
+            wpoin = sum(move.di_poin for move in picking.move_lines if move.state != 'cancel')
+            picking.di_nbpal = wnbpal
+            picking.di_nbcol = ceil(wnbcol)
+            picking.di_poin = wpoin
         
     @api.depends('name')
     def _compute_tournee(self):
@@ -708,5 +711,3 @@ class StockQuant(models.Model):
         else:  
             self.di_nb_palette = self.di_nb_colis
         self.di_nb_pieces = ceil(self.product_id.di_type_colis_id.di_qte_cond_inf * self.di_nb_colis)
-                  
-            

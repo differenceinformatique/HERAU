@@ -22,7 +22,7 @@
 					<t t-set="imp_entete" t-value="1"/>
 				</t>
 			</t>
-			<t t-set="TotCol" t-value="0.0" />
+			<t t-set="TotCol" t-value="0" />
 			<t t-set="TotPal" t-value="0.0" />
 			<t t-set="TotPoids" t-value="0.0" />
 			<!-- impression entête -->
@@ -135,23 +135,33 @@
 										<td><span t-field="ml.di_nb_colis"/></td>
 										<td><span t-field="ml.di_nb_palette"/></td>
 										<td><span t-field="ml.di_poib"/></td>
-										<td></td>
-										<t t-set="TotCol" t-value="TotCol + ml.di_nb_colis" />
-										<t t-set="TotPal" t-value="TotPal + ml.di_nb_palette" />
-										<t t-set="TotPoids" t-value="TotPoids + ml.di_poib" />
+										<td></td>										
 									</tr>
 								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td style="text-align: right">Total BL</td>
+									<td><span t-field="sp.di_nbcol"/></td>
+									<td><span t-field="sp.di_nbpal"/></td>
+									<td><span t-field="sp.di_poin"/></td>
+									<td></td>
+								</tr>
+								<t t-set="TotCol" t-value="TotCol + sp.di_nbcol" />
+								<t t-set="TotPal" t-value="TotPal + sp.di_nbpal" />
+								<t t-set="TotPoids" t-value="TotPoids + sp.di_poin" />
 							</t>
 						</t>
 						<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td style="text-align: right"><b>TOTAL</b></td>
-						<td><b t-esc="TotCol"/></td>
-						<td><b t-esc="round(TotPal,3)"/></td>
-						<td><b t-esc="TotPoids"/></td>
-						<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td style="text-align: right"><b>TOTAL TRANSPORTEUR</b></td>
+							<td><b t-esc="TotCol"/></td>
+							<td><b t-esc="round(TotPal,3)"/></td>
+							<td><b t-esc="TotPoids"/></td>
+							<td></td>
 						</tr>
 					</tbody>
 				</table>
