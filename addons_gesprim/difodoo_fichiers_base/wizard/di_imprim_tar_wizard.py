@@ -13,6 +13,7 @@ class DiImpTarWiz(models.TransientModel):
     di_date_effet = fields.Date(string="Date d'application du tarif", required=True)    
     di_codes_tarifs_ids = fields.Many2many("di.code.tarif")
     di_category = fields.Many2one("product.category",string="Famille")
+    di_notImp_Un_vide = fields.Boolean(string="Ne pas imprimer tarifs sans unité de prix.",default=True)
     
     di_tarifs_ids = fields.Many2many("di.tarifs")
     
@@ -42,6 +43,8 @@ class DiImpTarWiz(models.TransientModel):
             .search(['&', ('di_date_effet', '<=', self.di_date_effet), ('di_code_tarif_id', 'in', self.di_codes_tarifs_ids.ids)])\
             .filtered(lambda t: (t.di_date_fin and t.di_date_fin >= self.di_date_effet) or not t.di_date_fin)
             
+        if self.di_notImp_Un_vide:
+            di_tarifs_ids_obj=di_tarifs_ids_obj.filtered(lambda t: (t.di_un_prix!=False and t.di_un_prix!=''))
         ok = False
         
         

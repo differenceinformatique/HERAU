@@ -9,6 +9,7 @@
                     <group>
                         <group>                                                                       
                             <field name="di_date_effet" string="Date d'application"/>
+                            <field name="di_notImp_Un_vide" string="Ne pas imprimer tarifs sans unité de prix."/>
                         </group>
                         <group>                                                                    
                             <field name="di_category" string="Famille article"/>
