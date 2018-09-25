@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<record id="di_payer_com_wiz" model="ir.ui.view">
+		<field name="name">di.payer.com.form</field>
+		<field name="model">di.payer.com.wiz</field>
+		<field name="arch" type="xml">
+			<form string="Paiement des commissions">
+				<!-- <group>
+					<div>
+						<label for="di_date_deb" class="oe_inline" string="Du" />
+						<field name="di_date_deb" class="oe_inline" nolabel="1" style="margin-left:40px;" />
+						<label for="di_date_fin" class="oe_inline" string="au" style="margin-left:40px;" />
+						<field name="di_date_fin" class="oe_inline" nolabel="1" style="margin-left:40px;" />
+					</div>
+				</group> -->
+
+				<footer>
+					<button string="Générer les factures" type="object" name="di_generer_factures"
+						default_focus="1" />
+					<button string="Annuler" class="oe_link" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+	<act_window id="action_di_payer_com_wiz" multi="False" key2="client_action_multi" name="Paiement des commissions"
+		res_model="di.payer.com.wiz" view_mode="form" target="new" view_type="form" view_id="di_payer_com_wiz">
+	</act_window>
+
+</odoo>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   
+    <!-- surcharge view_stock_move_line_operation_tree -->
+    <record id="di_stock_move_line_operations_tree_prod" model="ir.ui.view">
+        <field name="name">di.stock.move.line.operations.tree.prod</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field eval="81" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_id']" position="after">
+                <field name="di_lot_prod"/>
+                <field name="di_ES" invisible="1"/>                                
+                <field name="di_lot_cli" attrs="{'invisible': [('di_ES', '!=', 'sortie')]}"/>                                                
+            </xpath>            
+        </field>
+    </record>
+   
+</odoo>

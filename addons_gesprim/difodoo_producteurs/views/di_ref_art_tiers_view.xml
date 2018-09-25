@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- surcharge du formulaire - Commun Clients/Fournisseurs -->
+        <record id="di_view_ref_art_tiers_formprod" model="ir.ui.view">
+            <field name="name">di.view.ref.art.tiers.form.prod</field>
+            <field name="model">di.ref.art.tiers</field>
+            <field name="inherit_id" ref="difodoo_fichiers_base.di_view_ref_art_tiers_form" />
+            <field eval="81" name="priority" />
+            <field name="arch" type="xml">              
+                <xpath expr="//field[@name='di_un_prix']" position="after">                    
+                   <field name="di_station_id" />                        
+                </xpath>                
+            </field>
+        </record>
+      
+    </data>
+</odoo>
+ 

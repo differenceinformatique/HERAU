@@ -6,7 +6,7 @@
 			<field name="name">di.res.partner.form</field>
 			<field name="model">res.partner</field>
 			<field name="inherit_id" ref="base.view_partner_form" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- suppression du code interne à l'emplacement initial -->
 				<xpath expr="/form/sheet/notebook/page/group/group/field[@name='ref']" position="replace">
@@ -141,7 +141,7 @@
 			<field name="name">di.view_partner_tree</field>
 			<field name="model">res.partner</field>
 			<field name="inherit_id" ref="base.view_partner_tree" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- modification ordre de tri -->
 				<xpath expr="//tree" position="attributes">
@@ -168,7 +168,7 @@
 			<field name="name">di.res.partner.form.address</field>
 			<field name="model">res.partner</field>
 			<field name="inherit_id" ref="base.view_partner_address_form" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- ajout coche adresse par défaut-->
 				<xpath expr="//group/group[2]" position="inside">

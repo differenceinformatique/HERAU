@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<record id="di_valider_apport_wiz" model="ir.ui.view">
+		<field name="name">di.valider.apport.form</field>
+		<field name="model">di.valid.apport.wiz</field>
+		<field name="arch" type="xml">
+			<form string="Validation apport producteur">
+				<group>
+					<group>
+						<field name="di_product_id" string="Article" readonly="1" />
+						<field name="di_lot_prod" string="Lot producteur" readonly="1" />
+						<field name="di_producteur_id" string="Producteur" readonly="1" />
+						<field name="di_station_id" string="Station" readonly="1" />
+						<field name="di_exploitation" string="Exploitation" readonly="1" />
+					</group>
+					<group>
+						<field name="di_date_estim" string="Date réception estimée" readonly="1" />
+						<field name="di_qte_theo" string="Quantité estimée" readonly="1" />
+					</group>
+				</group>
+
+
+				<separator />
+				<group>
+					<field name="di_date_recept" string="Date réceptionr réelle" />
+					<field name="di_qte_recept" string="Quantité reçue" />
+				</group>
+
+				<footer>
+					<button string="Valider apport" type="object" name="valider_apport" default_focus="1" />
+					<button string="Annuler" class="oe_link" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+	<act_window id="action_di_valider_apport_wiz" multi="False" key2="client_action_multi"
+		name="Valider apport producteur" res_model="di.valid.apport.wiz" src_model="di.apportprod"
+		view_mode="form" target="new" view_type="form" view_id="di_valider_apport_wiz">
+	</act_window>
+
+</odoo>

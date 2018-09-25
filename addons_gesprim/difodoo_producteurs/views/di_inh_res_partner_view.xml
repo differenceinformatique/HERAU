@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<!-- surcharge du formulaire - Commun Clients/Fournisseurs -->
+		<record id="di_view_partner_form_prod" model="ir.ui.view">
+			<field name="name">di.res.partner.form.prod</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="difodoo_fichiers_base.di_view_partner_form" />
+			<field eval="81" name="priority" />
+			<field name="arch" type="xml">				
+				<xpath expr="//page[@name='accounting']" position="after">			
+				    <page name="producteurs" string="Producteurs" style="font-style: oblique;" col="4">
+                        <group>
+                            <group name="courtier" string="Metteur en marché" attrs="{'invisible':[('supplier', '=', False)]}">
+                                 <field name="di_is_court"/>
+                                 <field name="di_prc_com_avec_court"/>
+                            </group>
+                        </group>
+                    </page>		
+    										
+				</xpath>				
+			</field>
+		</record>
+		
+		<record id="di_view_res_partner_filter" model="ir.ui.view">
+            <field name="name">di.base.view_res_partner_filter</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter" />
+            <field eval="81" name="priority" />
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Metteur en marché" name="courtier"
+                        domain="[('di_is_court', '=', True)]" />                        
+                </search>
+            </field>
+        </record>
+	</data>
+</odoo>
+ 

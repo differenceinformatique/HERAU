@@ -6,7 +6,7 @@
 			<field name="name">di.sale.order.form</field>
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<xpath expr="//header/field[@name='state']" position="before">
 					<button class="di_class_grille_vente" name="di_action_grille_vente" type="object"
@@ -177,7 +177,7 @@
 			<field name="name">di.sale.order.form.sale.stock</field>
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- Modification du libellé -->
 				<xpath expr="//field[@name='product_packaging']" position="replace">
@@ -193,7 +193,7 @@
 			<field name="name">di.sale.order.tree</field>
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_tree" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- Masquage Date d'engagement + Date demandée - Ne fonctionne pas avec un xpath sur le nom -->
 				<xpath expr="//tree/field[5]" position="attributes">
@@ -219,7 +219,7 @@
 			<field name="name">di.Invoice Orders</field>
 			<field name="model">sale.advance.payment.inv</field>
 			<field name="inherit_id" ref="sale.view_sale_advance_payment_inv" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- Ajout périodicité de facturation -->
 				<xpath expr="//group" position="before">

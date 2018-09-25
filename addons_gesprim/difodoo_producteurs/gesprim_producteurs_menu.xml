@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>           
+    <menuitem id="menu_gesprim_prod" name="Producteurs" sequence="80" parent="difodoo_gesprim.menu_gesprim" />
+    <!-- ***Menu Producteurs -->
+    <menuitem id="menu_gesprim_prod_cons" name="Tracer consignes" sequence="10" parent="menu_gesprim_prod" action="difodoo_producteurs.action_di_consignes_wiz"/>   
+    <menuitem id="menu_gesprim_prod_paie_com" sequence="20" parent="menu_gesprim_prod" action="difodoo_producteurs.action_di_payer_com_wiz" />
+    <menuitem id="menu_gesprim_prod_liv_apport" name="Apports producteurs" sequence="30" parent="menu_gesprim_prod" action="difodoo_producteurs.di_action_apportprod"/>
+    <menuitem id="menu_gesprim_prod_ress" name="Resserre" sequence="40" parent="menu_gesprim_prod" action="difodoo_producteurs.di_action_inventory_form_std"/>
+    <menuitem id="menu_gesprim_prod_appprod" name="Apport prod." sequence="50" parent="menu_gesprim_prod" action="difodoo_producteurs.di_action_inventory_form_appprod"/>
+    <menuitem id="menu_gesprim_prod_retcons" name="Retour consigne" sequence="60" parent="menu_gesprim_prod" action="difodoo_producteurs.di_action_inventory_form_retcons"/>            
+</odoo>

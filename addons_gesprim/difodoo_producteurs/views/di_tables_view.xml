@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_param_form_prod" model="ir.ui.view">
+            <field name="name">di.param.form.prod</field>
+            <field name="model">di.param</field>
+            <field name="inherit_id" ref="difodoo_fichiers_base.view_param_form" />
+            <field eval="81" name="priority" />
+            <field name="arch" type="xml">                              
+                <xpath expr="//field[@name='di_seuil_marge_prc']" position="after">                                        
+                    <field name="di_prc_com_avec_court" />
+                    <field name="di_prc_com_sans_court" />
+                    <field name="di_art_com" />                    
+                </xpath>               
+            </field>
+        </record>
+    </data>
+</odoo>

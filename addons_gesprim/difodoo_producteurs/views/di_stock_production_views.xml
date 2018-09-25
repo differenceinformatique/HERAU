@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- surcharge view_production_lot_form -->
+    <record id="di_view_production_lot_form" model="ir.ui.view">
+        <field name="name">di.view.production.lot.form</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field eval="81" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="di_plus_suivi"/>                
+            </xpath>               
+            <xpath expr="//div[@class='oe_chatter']" position="replace"/>
+        </field>
+    </record>   
+</odoo>

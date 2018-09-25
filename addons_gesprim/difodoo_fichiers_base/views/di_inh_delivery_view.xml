@@ -6,7 +6,7 @@
 			<field name="name">di.delivery.price.rule.tree</field>
 			<field name="model">delivery.price.rule</field>
 			<field name="inherit_id" ref="delivery.view_delivery_price_rule_tree" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- on ajoute le transporteur(suivant contexte) + code destination -->
 				<xpath expr="//field[@name='name']" position="replace">
@@ -24,7 +24,7 @@
 			<field name="name">di.delivery.price.rule.form</field>
 			<field name="model">delivery.price.rule</field>
 			<field name="inherit_id" ref="delivery.view_delivery_price_rule_form" />
-			<field eval="99" name="priority" />
+			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- on ajoute le transporteur(suivant contexte) + code destination -->
 				<xpath expr="/form/group[2]/label[@for='variable']" position="before">
