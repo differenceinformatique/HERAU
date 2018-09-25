@@ -123,6 +123,13 @@
 					<field name="property_supplier_payment_term_id" widget="selection" nolabel="1" />
 				</xpath>
 				<xpath expr="//div[@class='oe_chatter']" position="replace"/>
+                <xpath expr="//sheet/notebook" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </xpath>
 			</field>
 		</record>
 		<!-- modification vue kanban par défaut, on préfère le mode liste - Clients -->

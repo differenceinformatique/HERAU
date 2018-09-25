@@ -108,6 +108,7 @@
     <menuitem id="menu_gesprim_stock_inv" name="Resserre" sequence="10" parent="menu_gesprim_stock" action="stock.action_inventory_form"/>
     <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="20" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
     <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
+    <menuitem id="menu_gesprim_stock_pertes" name="Pertes" sequence="40" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_stock_report_all"/>
     <!-- ***Menu Compta -->       
     <menuitem id="menu_gesprim_compta_cpt" name="Plan comptable" sequence="10" parent="menu_gesprim_compta" action="account.action_account_form" />
     <!-- <menuitem id="menu_gesprim_compta_tax" name="Taxes" sequence="20" parent="menu_gesprim_compta" action="account.action_tax_form" /> -->

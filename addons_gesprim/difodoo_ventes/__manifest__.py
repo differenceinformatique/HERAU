@@ -37,6 +37,7 @@
         "report/di_report_stock_inventory.xml",
         "report/di_report_invoice.xml",
         "report/di_invoice_report.xml",
+        "report/di_stock_report.xml",
         "report/di_report_bordtrp.xml",
         "report/di_report_ctrltrp.xml",
         "security/ir.model.access.csv"

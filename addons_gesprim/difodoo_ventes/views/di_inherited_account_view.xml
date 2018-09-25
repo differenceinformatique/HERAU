@@ -32,7 +32,14 @@
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
                 </xpath>  
-                <xpath expr="//div[@class='oe_chatter']" position="replace"/>                                       
+                <xpath expr="//div[@class='oe_chatter']" position="replace"/>
+                <xpath expr="//sheet/notebook" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </xpath>                                       
             </field>                                    
         </record> 
         <record id="di_account_invoice_supplier_form" model="ir.ui.view">
@@ -72,7 +79,14 @@
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
                 </xpath> 
-                <xpath expr="//div[@class='oe_chatter']" position="replace"/>                                       
+                <xpath expr="//div[@class='oe_chatter']" position="replace"/>
+                <xpath expr="//sheet/notebook" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </xpath>                                       
             </field>             
                                    
         </record> 

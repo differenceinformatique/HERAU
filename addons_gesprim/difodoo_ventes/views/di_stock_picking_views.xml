@@ -173,6 +173,13 @@
 				<field name="di_poib" readonly="1" string="Poids brut" />
 			</xpath>
 			<xpath expr="//div[@class='oe_chatter']" position="replace"/>
+            <xpath expr="//sheet/notebook" position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </xpath>
 		</field>
 	</record>
 	<!-- surcharge stock.view_move_form -->
