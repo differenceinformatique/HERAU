@@ -139,9 +139,9 @@ class AccountInvoiceLine(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
-    def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date):    
+    def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date,typecol,typepal):    
         prixFinal = 0.0       
-        prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date)
+        prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date,typecol,typepal)
         if prixFinal == 0.0:
             prixFinal = prixOrig
 #             if prixOrig == 0.0:
@@ -247,7 +247,7 @@ class AccountInvoiceLine(models.Model):
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.quantity             
             if line.product_id.id != False and line.di_un_prix:       
-                line.price_unit = self.di_recherche_prix_unitaire(line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date)            
+                line.price_unit = self.di_recherche_prix_unitaire(line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date,line.product_packaging,line.di_type_palette_id)            
      
     @api.multi            
     @api.onchange('product_id')

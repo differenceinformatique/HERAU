@@ -7,9 +7,12 @@
 			<field name="inherit_id" ref="product.product_template_only_form_view" />
 			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
+			     <!-- on masque l'unité d'achat -->
+                <!-- <xpath expr="//field[@name='uom_po_id']" position="replace">                   
+                </xpath> -->
 				<!-- on masque default_code à son emplacement initial -->
 				<xpath	expr="/form/sheet/notebook/page/group/group/field[@name='default_code']" position="replace">
-				</xpath>
+				</xpath>				
 				<!-- on le replace à un autre endroit -->
 				<xpath expr="//label[@for='name']" position="before">
 					<field name="di_param_seq_art" invisible="1"/>
