@@ -11,6 +11,7 @@
                 </group>
                 <group>
                     <field name="di_generer_tous_tar" string="Générer tous les tarifs"/>
+                    <field name="di_cde_ach" string="Prendre en compte les commandes d'achat dans le calcul."/>
                 </group>
             </group>
                 

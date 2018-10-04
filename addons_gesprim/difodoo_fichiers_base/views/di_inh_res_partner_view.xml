@@ -37,13 +37,19 @@
 				<xpath expr="//field[@name='property_account_receivable_id']" position="attributes">
 					<attribute name="attrs">{'invisible':[('supplier', '=', True)]}</attribute>
 				</xpath>
-				<!-- ajout onglet spécifique -->
+				<xpath expr="//field[@name='property_account_position_id']" position="after">
+                    <field name="di_iban" />
+                </xpath>
+                <xpath expr="//field[@name='siret']" position="after">
+                    <field name="di_naf" attrs="{'invisible':[('supplier', '==', False)]} "/>
+                </xpath>
+				<!-- ajout onglet spécifique -->				
 				<xpath expr="//page[@name='accounting']" position="after">
 					<page name="specifs" string="Compléments" style="font-style: oblique;" col="4">
 						<group>
 							<group name="editions" string="Editions" attrs="{'invisible':[('customer', '==', False)]}">
 								<field name="di_pres_bl" />
-							</group>
+							</group>							                                                     
 							<group name="transport" string="Transport" attrs="{'invisible':[('customer', '==', False)]}">
 								<field name="di_tournee"/>
 								<field name="di_rangtournee"/>

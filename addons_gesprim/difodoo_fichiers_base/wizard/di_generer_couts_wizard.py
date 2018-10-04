@@ -12,6 +12,7 @@ class DiGenCoutsWiz(models.TransientModel):
     _description = "Wizard de génération de couts"
     
     di_generer_tous_tar = fields.Boolean(string="Générer tous les tarifs ?",default=False)
+    di_cde_ach = fields.Boolean(string="Prendre en compte les commandes d'achat dans le calcul.",default=False)
    
 #     def afficher_message_fin(self):
 #         return self.env['di.popup.wiz'].afficher_message("Traitement terminé.",True,False,False,False)
@@ -51,7 +52,7 @@ class DiGenCoutsWiz(models.TransientModel):
             nbpal=0.0
             nbpiece=0.0
             poids=0.0
-            (qte,mont,nbcol,nbpal,nbpiece,poids) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date)       
+            (qte,mont,nbcol,nbpal,nbpiece,poids) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach)       
 #             if cout_veille:                         
 #                 qte = cout_veille.di_qte + self.env['stock.move.line'].di_somme_quantites(di_product_id,di_date)
 #                 mont = cout_veille.di_mont + self.env['stock.move.line'].di_somme_montants(di_product_id,di_date)

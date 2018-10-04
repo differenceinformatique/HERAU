@@ -23,6 +23,52 @@ class ResPartner(models.Model):
     di_ref_required = fields.Boolean(string='Code article obligatoire',compute='_di_compute_ref_required',store=False)
     di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
     di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
+    di_iban = fields.Char(string='IBAN',help="Saisir l'IBAN ",size=34)
+    di_naf = fields.Char(string='NAF')
+    
+    #@api.one
+    @api.onchange('di_iban')
+    def _di_controle_iban(self):
+        ibanstr=self.di_iban[4:34].strip()+self.di_iban[:4]
+        ibanstr=ibanstr.replace("A","10")
+        ibanstr=ibanstr.replace("B","11")
+        ibanstr=ibanstr.replace("C","12")
+        ibanstr=ibanstr.replace("D","13")
+        ibanstr=ibanstr.replace("E","14")
+        ibanstr=ibanstr.replace("F","15")
+        ibanstr=ibanstr.replace("G","16")
+        ibanstr=ibanstr.replace("H","17")
+        ibanstr=ibanstr.replace("I","18")
+        ibanstr=ibanstr.replace("J","19")
+        ibanstr=ibanstr.replace("K","20")
+        ibanstr=ibanstr.replace("L","21")
+        ibanstr=ibanstr.replace("M","22")
+        ibanstr=ibanstr.replace("N","23")
+        ibanstr=ibanstr.replace("O","24")
+        ibanstr=ibanstr.replace("P","25")
+        ibanstr=ibanstr.replace("Q","26")
+        ibanstr=ibanstr.replace("R","27")
+        ibanstr=ibanstr.replace("S","28")
+        ibanstr=ibanstr.replace("T","29")
+        ibanstr=ibanstr.replace("U","30")
+        ibanstr=ibanstr.replace("V","31")
+        ibanstr=ibanstr.replace("W","32")
+        ibanstr=ibanstr.replace("X","33")
+        ibanstr=ibanstr.replace("Y","34")
+        ibanstr=ibanstr.replace("Z","35")        
+        try:
+            ibanint=int(ibanstr)            
+        except:
+            ibanint=0
+            self.di_iban=''
+            raise Warning("L'IBAN saisi est incorrect.")
+        
+        if ibanint != 0:
+            reste=ibanint % 97
+            if reste !=1:            
+                self.di_iban=''
+                raise Warning("L'IBAN saisi est incorrect.")
+        
         
     @api.one
     @api.depends('company_id')

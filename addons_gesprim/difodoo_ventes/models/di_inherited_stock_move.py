@@ -333,18 +333,25 @@ class StockMove(models.Model):
 
         return res
     
-    def di_somme_quantites_montants(self,product_id,date =False):
+    def di_somme_quantites_montants(self,product_id,date =False,cde_ach=False):
         qte =0.0
         mont =0.0
         nbcol =0.0
         nbpal = 0.0
         nbpiece =0.0
         poids = 0.0
-        if date:
-#             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date)
+        if cde_ach:
+            if date:                                
+    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
+                mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','!=',False)]).filtered(lambda mv: (mv.picking_id.date_done and datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date) or (mv.picking_id.scheduled_date and datetime.strptime(mv.picking_id.scheduled_date,'%Y-%m-%d %H:%M:%S').date() == date))
+            else:
+                mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','!=',False)])
         else:
-            mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)])
+            if date:
+    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
+                mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date)
+            else:
+                mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)])
              
         for mouv in mouvs:
             if mouv.picking_type_id.code=='incoming':
@@ -367,7 +374,14 @@ class StockMove(models.Model):
                     mont = mont - mouv.purchase_line_id.price_subtotal
                 elif mouv.sale_line_id:
                     mont = mont - (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
-             
+         
+#         if cde_ach:
+#             if date:
+#     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
+#                 mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
+#             else:
+#                 mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','=',False)])
+#         else:          
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
