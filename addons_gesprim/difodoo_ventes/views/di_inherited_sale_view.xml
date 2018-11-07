@@ -9,7 +9,7 @@
 			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<xpath expr="//header/field[@name='state']" position="before">
-					<button class="di_class_grille_vente" name="di_action_grille_vente" type="object"
+					<button class="oe_edit_only" name="di_action_grille_vente" type="object"
 						string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client." />
 						<!-- <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/> -->
 				</xpath>

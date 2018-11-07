@@ -73,11 +73,25 @@ class ProductTemplate(models.Model):
                     break                                    
         res = super(ProductTemplate, self).write(vals)
         return res   
+    
+    @api.multi
+    def copy(self, default=None):
+        default = dict(default or {})
+
+        copied_count = self.search_count(
+            [('default_code', '=like', u"{}%_Copie".format(self.default_code))])
+        if not copied_count:
+            new_name = u"{}_Copie".format(self.default_code)            
+        else:
+            new_name = u"{}_Copie({})".format(self.default_code, copied_count)
+
+        default['default_code'] = new_name
+        return super(ProductTemplate, self).copy(default)
            
     
 class ProductProduct(models.Model):
     _inherit = "product.product"
-    default_code = fields.Char('Internal Reference', index=True, copy=False)
+    default_code = fields.Char('Internal Reference', index=True)
         
     di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')
     di_tarifs_ids = fields.One2many('di.tarifs', 'id',string='Tarifs de l\'article')
@@ -128,8 +142,7 @@ class ProductProduct(models.Model):
                 pp.default_code = self.env['ir.sequence'].with_context(force_company=values['company_id']).next_by_code('ART_SEQ') or _('New')
             else:
                 pp.default_code = self.env['ir.sequence'].next_by_code('ART_SEQ') or _('New')
-        return pp
-    
+        return pp        
 
 class ProductPackaging(models.Model):
     _inherit = "product.packaging"

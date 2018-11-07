@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
     
                 <xpath expr="//header/field[@name='state']" position="before">   
-                <button class="di_class_grille_achat" name="di_action_grille_achat" type="object"
+                <button class="oe_edit_only" name="di_action_grille_achat" type="object"
                         string="Grille d'achat" help="Permet d'importer les derniers articles achetés à ce fournisseur." />                                                                     
                     <!-- <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/> -->
                     <!-- <button class="di_imprimer_etiquette_JS" type="button" string="Imprimer étiquettes JS" help="Imprime les étiquettes de la commande"/> -->                                        

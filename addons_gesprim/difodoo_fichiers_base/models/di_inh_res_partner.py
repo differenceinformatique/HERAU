@@ -9,7 +9,7 @@ class ResPartner(models.Model):
     #référencement article 
     di_refarticle_ids = fields.Many2many('product.product', 'di_referencement_article_tiers', 'partner_id','product_id', string='Référencement article')
     di_code_tarif_id = fields.Many2one('di.code.tarif', string="Code tarif", help="Sans code tarif, c'est le tarif de la fiche article qui est repris")
-    ref = fields.Char(string='Internal Reference', index=True, copy=False,help="Code Tiers")  # modif attribut copy + ajout help
+    ref = fields.Char(string='Internal Reference', index=True, help="Code Tiers")  # modif attribut copy + ajout help
     di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", default=True, help="Permet de filtrer lors de la facturation")
@@ -203,3 +203,18 @@ class ResPartner(models.Model):
                 else:
                     rp.ref = self.env['ir.sequence'].next_by_code('FOU_SEQ') or _('New')
         return rp
+
+    
+    @api.multi
+    def copy(self, default=None):
+        default = dict(default or {})
+
+        copied_count = self.search_count(
+            [('ref', '=like', u"{}%_Copie".format(self.ref))])
+        if not copied_count:
+            new_name = u"{}_Copie".format(self.ref)            
+        else:
+            new_name = u"{}_Copie({})".format(self.ref, copied_count)
+
+        default['ref'] = new_name
+        return super(ResPartner, self).copy(default)

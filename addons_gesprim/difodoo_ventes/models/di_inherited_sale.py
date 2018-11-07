@@ -576,6 +576,13 @@ class SaleOrder(models.Model):
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)   
 #     di_liste_taxes = fields.Char(compute='_di_compute_taxes',string='Détail des taxes')  
+    
+#     @api.onchange('order_line')
+#     def di_onchange_order_line(self):
+#         for ol in self.order_line:
+#             if ol.price_total==0.0:
+#                 return {'warning': {'Montant à 0': _('Error'), 'message': _('Le montant de la ligne est égal à 0 !'),},}
+    
      
     @api.multi
     def imprimer_etiquettes(self):         
@@ -760,200 +767,98 @@ class SaleOrder(models.Model):
         }
 
     @api.model
-    def create(self, vals):   
-        status = 'aucun'
-        if vals.get('state'):
-            if vals['state']=='draft':
-                status='draft'
-            else:
-                status = 'autre'   
-        if ((self.state == 'draft' or  not self.state) and status == 'aucun')or(status == 'draft') :            
-            lignes_a_zero = False
-            if vals.get('order_line'):
-                for index,element in enumerate(vals['order_line']):                    
-                    dict_line = element[2] # dans element : 0 = action à effectuer , 1=id , 2 = dictionnaire contenant les infos de la ligne
-                    
-                    di_avec_product_uom_qty = False  # initialisation d'une variable       
-                    if dict_line != False:
-                        for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                            if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
-                                di_avec_product_uom_qty = True
-                                break
-                                                
-                    if di_avec_product_uom_qty:
-                        if dict_line['product_uom_qty']==0.0:
-                            lignes_a_zero = True
-                            break                            
-                    else:
-                        if element[1]: # si on a un id, on recherche la ligne correspondante. On ne doit pas passer ici en create normalement
-                            line = self.env['sale.order.line'].browse(element[1])
-                            if line.product_uom_qty ==0.0:
-                                lignes_a_zero = True
-                                break               
-                                 
-            if lignes_a_zero == True:
-#                 retour_box=messagebox.askyesno("Lignes à 0","Voulez-vous supprimer les lignes à 0 ?")
-#                 retour_box=pymsgbox.confirm(text='Voulez-vous supprimer les lignes à 0 ?', title='Lignes à 0', buttons=['Oui', 'Non'])
-#                 retour_box = self.env['di.popup.wiz'].afficher_message("Voulez-vous supprimer les lignes à 0 ?",False,True,True,False)
-#                 retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4) #TODO : a modifier
-#                 if retour_box == 6:
-#                 if retour_box == "oui":
-#                 if retour_box == "yes":
-#                 if retour_box == "Oui":
-                    #Suppression des lignes à 0
-                if vals.get('order_line'):
-                    for index,element in enumerate(vals['order_line']):
-                        dict_line = element[2]
-                        
-                        di_avec_product_uom_qty = False  # initialisation d'une variable       
-                        if dict_line != False:
-                            for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                                if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
-                                    di_avec_product_uom_qty = True
-                                    break
-                            
-                        if di_avec_product_uom_qty == True:
-                            if dict_line['product_uom_qty']==0.0:         
-#                                     element[0]=3                                                                   
-                                del vals['order_line'][index]       # on retire la ligne de la liste des lignes à enregistrer                                                                     
-                        else:
-                            line=self.env['sale.order.line'].browse(element[1])
-                            if line.product_uom_qty==0.0:
-                                del vals['order_line'][index]
-#                                     element[0]=3
-
-                                                  
-        cde = super(SaleOrder, self).create(vals)   
-#         if self.env.context.get('search_default_di_cde') :#and self.order_line:
-#             cde.action_confirm()
+    def create(self, vals):                                                       
+        cde = super(SaleOrder, self).create(vals)
+        lines = False
+        for order in self:    
+            if order.state == 'draft' :                                    
+                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                
+                order.write({'order_line': [(2, line.id, False) for line in lines]})
         return cde
-    
-    
+#         if lines:
+#             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id
+#             ctx= {                
+#                 'order_id': order.id,   
+#                 'lines': lines                           
+#             }
+#             return {
+#             'type': 'ir.actions.act_window',
+#             'view_type': 'form',
+#             'view_mode': 'form',
+#             'name': 'Lignes à 0',
+#             'res_model': 'di.lig.zero.wiz',
+#             'views': [(view, 'form')],
+#             'view_id': view,                        
+#             'target': 'new',
+#             'multi':'False',
+#             'id':'di_action_lig_zero_wiz',
+#             'key2':'client_action_multi',
+#             'context': ctx            
+#             }
+#         else:    
+#             return cde
+#     @api.multi
+#     def di_supp_lig_zero(self):
+#         self.ensure_one()
+#         lines = False 
+#         lines = self.env['sale.order.line'].search(['&', ('order_id', '=', self.id), ('product_uom_qty', '=', 0.0)])
+#         if lines:
+#             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id
+#             ctx= {                
+#                 'order_id': self.id,   
+#                 'lines': lines                           
+#             }
+#              
+#             return {
+#             'type': 'ir.actions.act_window',
+#             'view_type': 'form',
+#             'view_mode': 'form',
+#             'name': 'Lignes à 0',
+#             'res_model': 'di.lig.zero.wiz',
+#             'views': [(view, 'form')],
+#             'view_id': view,                        
+#             'target': 'new',
+#             'multi':'False',
+#             'id':'di_action_lig_zero_wiz',
+#             'key2':'client_action_multi',
+#             'context': ctx            
+#             }       
+#         return False     
+            
     
     @api.multi
     def write(self, vals):
-        status = 'aucun'
-        if vals.get('state'):
-            if vals['state']=='draft':
-                status='draft'
-            else:
-                status = 'autre'        
-            
-        if (self.state == 'draft' and status == 'aucun')or(status == 'draft') :            
-            lignes_a_zero = False
-            if vals.get('order_line'):
-                for index,element in enumerate(vals['order_line']):                    
-                    dict_line = element[2]
-                    
-                    di_avec_product_uom_qty = False  # initialisation d'une variable       
-                    if dict_line != False:
-                        for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                            if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
-                                di_avec_product_uom_qty = True
-                                break
-                                                
-                    if di_avec_product_uom_qty:
-                        if dict_line['product_uom_qty']==0.0:
-                            lignes_a_zero = True
-                            break                            
-                    else:
-                        if element[1]:
-                            line = self.env['sale.order.line'].browse(element[1])
-                            if line.product_uom_qty ==0.0:
-                                lignes_a_zero = True
-                                break               
-                                 
-#             if lignes_a_zero == False:
-#                 if self.order_line:
-#                     for line in self.order_line:
-#                         if line.product_uom_qty==0.0:
-#                             lignes_a_zero = True
-#                             break
-            if lignes_a_zero == True:
-#                 retour_box=messagebox.askyesno("Lignes à 0","Voulez-vous supprimer les lignes à 0 ?")
-#                 retour_box=pymsgbox.confirm(text='Voulez-vous supprimer les lignes à 0 ?', title='Lignes à 0', buttons=['Oui', 'Non'])
-#                 retour_box = self.env['di.popup.wiz'].afficher_message("Voulez-vous supprimer les lignes à 0 ?",False,True,True,False)
-#                 retour_box=ctypes.windll.user32.MessageBoxW(0,"Voulez-vous supprimer les lignes à 0 ?","Lignes à 0",4)#TODO : a modifier
-#                 if retour_box == 6:
-#                 if retour_box == "oui":
-#                 if retour_box == "yes":
-#                 if retour_box == "Oui":
-                    #Suppression des lignes à 0
-                if vals.get('order_line'):
-                    for index,element in enumerate(vals['order_line']):
-                        di_avec_product_uom_qty = False  # initialisation d'une variable
-                        dict_line = element[2]       
-                        if dict_line!=False:
-                            for key in dict_line.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-                                if key[0] == "product_uom_qty":  # si on a modifié la quantité sur une ligne
-                                    di_avec_product_uom_qty = True
-                                    break
-                            
-                        if di_avec_product_uom_qty == True:
-                            if dict_line['product_uom_qty']==0.0:  
-                                line=self.env['sale.order.line'].browse(element[1]) # recherche de la ligne dans la BDD
-                                try: # si on ne peut pas faire .isdigit() c'est que l'id est un entier, donc la ligne est bien dans la BDD alors on passe dans except
-                                    line.id.isdigit() # si on peut faire isdigit() alors l'id est un string (ex:virtual_XXX) alors la ligne n'existe pas dans la BDD
-                                    # on passe dans le else
-                                except:                                                                                                                        
-                                    element[0]=3 # change l'action à effectuer : 3=suppression
-                                else:                                                                                                                                                                        
-                                    del vals['order_line'][index]                                                                            
-                        else:
-                            line=self.env['sale.order.line'].browse(element[1])
-                            if line.product_uom_qty==0.0:
-                                element[0]=3
-#                                 del vals['order_line'][index]                                                                            
-#                     if self.order_line:
-#                         for line in self.order_line:
-#                             if line.product_uom_qty ==0.0:
-#                                 self.order_line.browse(line.id).unlink()
-                        
-                                
-        # confirmer la commande si on a des lignes                        
-                               
-            # create an analytic account if at least an expense product
-            #Création de l'analytique, fait dans la fonction standard. Je ne peux pas appeler la fonction ici
-#             if any([expense_policy != 'no' for expense_policy in self.order_line.mapped('product_id.expense_policy')]):
-#                 if not self.analytic_account_id:                     
-#                     name = self.name                                        
-#                     analytic = self.env['account.analytic.account'].create({
-#                         'name': name,
-#                         'code': self.client_order_ref,
-#                         'company_id': self.company_id.id,
-#                         'partner_id': self.partner_id.id
-#                     })
-#                     vals['analytic_account_id']=analytic                    
-                                                            
-        res = super(SaleOrder, self).write(vals)
-        if status == 'aucun':
-            for order in self:
-                if order.state =='draft':
-                    if self.env.context.get('search_default_di_cde') and vals.get('order_line'):                        
-        #                 vals['state']='sale'
-        #                 vals['confirmation_date']=fields.Datetime.now()    
-                        if self.env['ir.config_parameter'].sudo().get_param('sale.auto_done_setting'):
-                            state = 'done'
-                        else:
-                            state='sale'
-#                         order.update({                
-#                                 'state': state,
-#                                 'confirmation_date':fields.Datetime.now()
-#                             })                                        
-                
-#         if vals.get('state'):            
-#             self.state = vals['state']
-# #         if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
-# #             self.action_confirm()
-#             
-#         if self.state == 'draft' :
-#             for line in self.order_line:
-#                 if line.product_uom_qty ==0.0:
-#                     self.order_line.browse(line.id).unlink()
-#             if self.env.context.get('search_default_di_cde') and self.order_line: # boucle dans le write
-#                 self.action_confirm()
-# #                     line.order_id.unlink()
+        res = super(SaleOrder, self).write(vals)   
+        lines = False     
+        for order in self:    
+            if order.state == 'draft' :   
+#                 order.di_supp_lig_zero()                                 
+                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                               
+                super(SaleOrder, order).write({'order_line': [(2, line.id, False) for line in lines]})
         return res
+#         if lines:
+#             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id
+#             ctx= {                
+#                 'order_id': order.id,   
+#                 'lines': lines                           
+#             }
+#             
+#             return {
+#             'type': 'ir.actions.act_window',
+#             'view_type': 'form',
+#             'view_mode': 'form',
+#             'name': 'Lignes à 0',
+#             'res_model': 'di.lig.zero.wiz',
+#             'views': [(view, 'form')],
+#             'view_id': view,                        
+#             'target': 'new',
+#             'multi':'False',
+#             'id':'di_action_lig_zero_wiz',
+#             'key2':'client_action_multi',
+#             'context': ctx            
+#             }
+#         else:                  
+#             return res
     
     
     @api.depends('state', 'order_line.invoice_status')
