@@ -141,6 +141,7 @@ class ProductPackaging(models.Model):
     di_des = fields.Char(string="Désignation")#, required=True)    # ????
     di_product_tmpl_id = fields.Many2one('product.template', 'Product Template', related='product_id.product_tmpl_id')
     di_search_name = fields.Char(string='Recherche Code',compute='_di_compute_search_name',store=True)
+    di_poids = fields.Float(string='Poids',help="""Poids de l'emballage.""")
     
     @api.one
     @api.depends('product_id', 'name')

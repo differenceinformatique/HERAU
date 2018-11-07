@@ -132,13 +132,18 @@ class AccountInvoiceLine(models.Model):
     di_nb_palette = fields.Float(string='Nb palettes' ,compute="_compute_qte_aff", store=True)
     di_poin = fields.Float(string='Poids net' ,compute="_compute_qte_aff", store=True)
     di_poib = fields.Float(string='Poids brut', store=True)
-    di_tare = fields.Float(string='Tare', store=True)
+    di_tare = fields.Float(string='Tare', store=True)#,compute="_compute_tare")
     di_product_packaging_id = fields.Many2one('product.packaging', string='Package', default=False, store=True)
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
     di_flg_modif_uom = fields.Boolean(default=False)
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
+    @api.multi
+    @api.onchange('di_type_palette_id','di_product_packaging_id','di_nb_colis','di_nb_palette')
+    def _compute_tare(self):        
+        self.di_tare = (self.di_type_palette_id.di_poids * self.di_nb_palette) + (self.di_product_packaging_id.di_poids * self.di_nb_colis)
+        
     def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date,typecol,typepal):    
         prixFinal = 0.0       
         prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date,typecol,typepal)

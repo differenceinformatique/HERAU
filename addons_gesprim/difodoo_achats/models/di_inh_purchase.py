@@ -21,7 +21,7 @@ class PurchaseOrderLine(models.Model):
     di_nb_palette   = fields.Float(string='Nb palettes',compute ="_compute_qte_aff",store=True)
     di_poin         = fields.Float(string='Poids net',compute ="_compute_qte_aff",store=True)
     di_poib         = fields.Float(string='Poids brut',store=True)
-    di_tare         = fields.Float(string='Tare',store=True)
+    di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
     di_qte_un_saisie_liv = fields.Float(string='Quantité reçue en unité de saisie',compute='_compute_qty_received',store=True)
@@ -51,6 +51,12 @@ class PurchaseOrderLine(models.Model):
     
     di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)
     
+    
+    @api.multi
+    @api.onchange('di_type_palette_id','product_packaging','di_nb_colis','di_nb_palette')
+    def _compute_tare(self):        
+        self.di_tare = (self.di_type_palette_id.di_poids * self.di_nb_palette) + (self.product_packaging.di_poids * self.di_nb_colis)
+        
     def _get_dernier_prix(self):
         prix = 0.0
         lignes = self.search(['&', ('product_id', '=', self.product_id.id), ('partner_id', '=', self.partner_id.id),('date_order','<',self.date_order)]).sorted(key=lambda t: t.date_order,reverse=True)

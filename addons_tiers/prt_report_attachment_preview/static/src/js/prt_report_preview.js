@@ -18,20 +18,20 @@ Session.include({
       if (options.complete) { options.complete(); }
 
         //impression directe sur l'imprimante par défaut (ou ouverture de la boite de dialogue)
-        var objFra = document.createElement('iframe');   // CREATE AN IFRAME.
-        objFra.style.visibility = "hidden";    // HIDE THE FRAME.
-        objFra.src = url;                      // SET SOURCE.
-        document.body.appendChild(objFra);  // APPEND THE FRAME TO THE PAGE.
-        objFra.contentWindow.focus();       // SET FOCUS.
-        objFra.contentWindow.print();  
+//         var objFra = document.createElement('iframe');   // CREATE AN IFRAME.
+//         objFra.style.visibility = "hidden";    // HIDE THE FRAME.
+//         objFra.src = url;                      // SET SOURCE.
+//         document.body.appendChild(objFra);  // APPEND THE FRAME TO THE PAGE.
+//         objFra.contentWindow.focus();       // SET FOCUS.
+//         objFra.contentWindow.print();  
       //ouverture du doc dans un nouvel onglet  
-      //var w = window.open(url);
-      //if (!w || w.closed || typeof w.closed === 'undefined') {
-          // popup was blocked
-        //  return false;
-      //}
+      var w = window.open(url);
+      if (!w || w.closed || typeof w.closed === 'undefined') {
+         //  popup was blocked
+          return false;
+      }
       return true;
-    },
+     },
   });
 
 // Sidebar

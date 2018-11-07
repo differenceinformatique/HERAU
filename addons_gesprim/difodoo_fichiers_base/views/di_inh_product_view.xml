@@ -223,6 +223,9 @@
 				<xpath expr="//field[@name='qty']" position="attributes">
 					<attribute name="string">Qté unité mesure</attribute>
 				</xpath>
+				<xpath expr="//field[@name='qty']" position="after">
+                    <field name="di_poids"/>
+                </xpath>
 				<xpath expr="//group" position="before">
 					<label string="Désignation" />
 					<field name="di_des" required="True" />
@@ -264,6 +267,9 @@
 				<xpath expr="//field[@name='qty']" position="attributes">
 					<attribute name="string">Qté unité mesure</attribute>
 				</xpath>
+				<xpath expr="//field[@name='qty']" position="after">
+                    <field name="di_poids"/>
+                </xpath>
 				<!-- Article obligatoire -->
 				<xpath expr="//field[@name='product_id']" position="attributes">
 					<attribute name="required">True</attribute>

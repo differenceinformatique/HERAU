@@ -25,7 +25,7 @@ class DiGrilleAchatWiz(models.TransientModel):
                         'di_un_prix': product.di_un_prix, 
                         'di_spe_saisissable': product.di_spe_saisissable,
                         'product_qty': 0.0, 
-                        'price_unit':0.0  
+                        'price_unit':product.product_tmpl_id.standard_price  
                                                                
                          }          
 

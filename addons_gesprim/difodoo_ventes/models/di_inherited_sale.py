@@ -24,7 +24,7 @@ class SaleOrderLine(models.Model):
     di_nb_palette   = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True)
     di_poin         = fields.Float(string='Poids net',compute="_compute_qte_aff",store=True)
     di_poib         = fields.Float(string='Poids brut',store=True)
-    di_tare         = fields.Float(string='Tare',store=True)
+    di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
     di_flg_modif_uom = fields.Boolean(store=True)
@@ -94,6 +94,12 @@ class SaleOrderLine(models.Model):
         if l.price_unit:
             prix = l.price_unit            
         return prix
+    
+    @api.multi
+    @api.onchange('di_type_palette_id','product_packaging','di_nb_colis','di_nb_palette')
+    def _compute_tare(self):        
+        self.di_tare = (self.di_type_palette_id.di_poids * self.di_nb_palette) + (self.product_packaging.di_poids * self.di_nb_colis)
+    
     
     @api.one
     @api.depends('product_id','order_partner_id','order_id.date_order')
@@ -412,7 +418,7 @@ class SaleOrderLine(models.Model):
                     self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                 
     @api.one
-    @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','di_tare','product_packaging')
+    @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
     def _compute_qte_aff(self):
         #if self.ensure_one():
         
@@ -568,7 +574,8 @@ class SaleOrder(models.Model):
     di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
     di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
-    di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)     
+    di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)   
+#     di_liste_taxes = fields.Char(compute='_di_compute_taxes',string='Détail des taxes')  
      
     @api.multi
     def imprimer_etiquettes(self):         
@@ -642,6 +649,13 @@ class SaleOrder(models.Model):
                                 data =data+ di_ctrl_print.format_data(label, '[', informations)
 #                                 di_ctrl_print.printlabelonwindows(printer,label,'[',informations)
                     di_ctrl_print.printlabelonwindows(printer,data)
+                    
+#     @api.depends('order_line')                
+#     def _di_compute_taxes(self):
+#         taxes = self._get_tax_amount_by_group()
+#         self.di_liste_taxes = taxes
+        
+    
     @api.multi
     def _get_tax_amount_by_group(self):
         # copie standard

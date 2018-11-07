@@ -414,12 +414,16 @@ class StockMoveLine(models.Model):
     di_nb_palette = fields.Float(string='Nb palettes', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_poin = fields.Float(string='Poids net' , store=True)
     di_poib = fields.Float(string='Poids brut', store=True)
-    di_tare = fields.Float(string='Tare', store=True)    
+    di_tare = fields.Float(string='Tare', store=True)#,compute="_compute_tare")    
     di_flg_modif_uom = fields.Boolean(default=False)
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
-    
+    @api.multi
+    @api.onchange('move_id.di_type_palette_id','move_id.di_product_packaging_id','di_nb_colis','di_nb_palette')
+    def _compute_tare(self):        
+        self.di_tare = (self.move_id.di_type_palette_id.di_poids * self.di_nb_palette) + (self.move_id.di_product_packaging_id.di_poids * self.di_nb_colis)
+        
     @api.one
     @api.depends('product_id.di_spe_saisissable')
     def _di_compute_spe_saisissable(self):        
