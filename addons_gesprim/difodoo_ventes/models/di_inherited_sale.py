@@ -575,6 +575,14 @@ class SaleOrder(models.Model):
     di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)   
+    di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
+    
+    @api.multi
+    @api.onchange("partner_id")
+    def di_onchange_partner(self):
+        for order in self:
+            if order.partner_id:
+                order.di_nbex = order.partner_id.di_nbex_cde
 #     di_liste_taxes = fields.Char(compute='_di_compute_taxes',string='Détail des taxes')  
     
 #     @api.onchange('order_line')
@@ -583,7 +591,13 @@ class SaleOrder(models.Model):
 #             if ol.price_total==0.0:
 #                 return {'warning': {'Montant à 0': _('Error'), 'message': _('Le montant de la ligne est égal à 0 !'),},}
     
-     
+    @api.multi
+    def action_print_invoice(self):
+        invoices = self.mapped('invoice_ids')
+        for invoice in invoices:
+            invoice.invoice_print()
+        
+    
     @api.multi
     def imprimer_etiquettes(self):         
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
@@ -770,11 +784,15 @@ class SaleOrder(models.Model):
     def create(self, vals):                                                       
         cde = super(SaleOrder, self).create(vals)
         lines = False
-        for order in self:    
+        for order in cde:    
             if order.state == 'draft' :                                    
                 lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                
                 order.write({'order_line': [(2, line.id, False) for line in lines]})
+            if order.di_nbex==0: 
+                if order.partner_id:                
+                    order.write({'di_nbex': order.partner_id.di_nbex_cde})
         return cde
+     
 #         if lines:
 #             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id
 #             ctx= {                
@@ -797,34 +815,7 @@ class SaleOrder(models.Model):
 #             }
 #         else:    
 #             return cde
-#     @api.multi
-#     def di_supp_lig_zero(self):
-#         self.ensure_one()
-#         lines = False 
-#         lines = self.env['sale.order.line'].search(['&', ('order_id', '=', self.id), ('product_uom_qty', '=', 0.0)])
-#         if lines:
-#             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id
-#             ctx= {                
-#                 'order_id': self.id,   
-#                 'lines': lines                           
-#             }
-#              
-#             return {
-#             'type': 'ir.actions.act_window',
-#             'view_type': 'form',
-#             'view_mode': 'form',
-#             'name': 'Lignes à 0',
-#             'res_model': 'di.lig.zero.wiz',
-#             'views': [(view, 'form')],
-#             'view_id': view,                        
-#             'target': 'new',
-#             'multi':'False',
-#             'id':'di_action_lig_zero_wiz',
-#             'key2':'client_action_multi',
-#             'context': ctx            
-#             }       
-#         return False     
-            
+     
     
     @api.multi
     def write(self, vals):

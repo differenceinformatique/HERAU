@@ -11,6 +11,24 @@ from math import *
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
     
+    di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
+    
+    @api.model
+    def create(self,vals):        
+        res = super(AccountInvoice, self).create(vals)        
+        for invoice in res:   
+            if invoice.di_nbex==0: 
+                if invoice.partner_id:                
+                    invoice.write({'di_nbex': invoice.partner_id.di_nbex_fac})                
+        return res
+    
+    @api.multi
+    @api.onchange("partner_id")
+    def di_onchange_partner(self):
+        for fac in self:
+            if fac.partner_id:
+                fac.di_nbex = fac.partner_id.di_nbex_fac
+    
     @api.multi
     def _invoice_line_tax_values(self):
         # copie standard

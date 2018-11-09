@@ -38,6 +38,9 @@
 					<field name="di_tournee"/>
 					<field name="di_rangtournee"/>
 				</xpath>
+				<xpath expr="//field[@name='origin']" position="after">
+                    <field name="di_nbex"/>                                        
+                </xpath>
 				<!-- lignes en mode fiche -->
 				<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty']"
 					position="before">

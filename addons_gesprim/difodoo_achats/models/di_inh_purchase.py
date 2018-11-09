@@ -350,8 +350,25 @@ class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
     di_demdt = fields.Date(string='Date demandée', copy=False, help="Date de réception souhaitée",
                            default=lambda wdate : datetime.today().date()+timedelta(days=1))
+    di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
     
+    @api.model
+    def create(self,vals):        
+        res = super(PurchaseOrder, self).create(vals)        
+        for po in res:   
+            if po.di_nbex==0: 
+                if po.partner_id:                
+                    po.write({'di_nbex': po.partner_id.di_nbex_cde})                
+        return res
     
+    @api.multi
+    @api.onchange("partner_id")
+    def di_onchange_partner(self):
+        for order in self:
+            if order.partner_id:
+                order.di_nbex = order.partner_id.di_nbex_cde
+    
+        
     @api.multi
     @api.depends('name', 'partner_ref')
     def name_get(self):

@@ -39,16 +39,25 @@ class DiGrilleAchatWiz(models.TransientModel):
         res = super(DiGrilleAchatWiz, self).default_get(fields) 
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
         
-        date_debut_horizon = datetime.today() + timedelta(days=-param.di_horizon_ach)
-        order = self.env['purchase.order'].browse(self.env.context.get('active_id')) # la commande est sauvegardée quand on clique sur le bouton grille de vente
-        
+        order = self.env['purchase.order'].browse(self.env.context.get('active_id')) # la commande est sauvegardée quand on clique sur le bouton grille de vente        
         partner_id = order.partner_id
         res['di_order_id']=order.id
-                
-        lines= self.env['purchase.order.line'].search(['&',('company_id','=',self.env.user.company_id.id),('order_id.partner_id','=',partner_id.id)]).filtered(lambda l: datetime.strptime(l.order_id.date_order,'%Y-%m-%d %H:%M:%S')>=date_debut_horizon)
         liste_articles_ids=[]
-        for line in lines:
-            liste_articles_ids.append(line.product_id.id)            
+        
+        if param.di_mode_grille_ach=='HORIZON':
+            date_debut_horizon = datetime.today() + timedelta(days=-param.di_horizon_ach)                
+            lines= self.env['purchase.order.line'].search(['&',('company_id','=',self.env.user.company_id.id),('order_id.partner_id','=',partner_id.id)]).filtered(lambda l: datetime.strptime(l.order_id.date_order,'%Y-%m-%d %H:%M:%S')>=date_debut_horizon)
+        elif param.di_mode_grille_ach=='NBCDE':
+            if param.di_nbcde_ach !=0:
+                nbcde = param.di_nbcde_ach
+            else:
+                nbcde = 1
+            order_ids = self.env['purchase.order'].search(['&',('company_id','=',self.env.user.company_id.id),('partner_id','=',partner_id.id),('order_line','!=',False)],limit=nbcde,order='id desc')
+            lines= self.env['purchase.order.line'].search(['&',('company_id','=',self.env.user.company_id.id),('order_id.id','in',order_ids.ids)])
+            
+        if lines:
+            for line in lines:
+                liste_articles_ids.append(line.product_id.id)            
         
         res['di_product_ids']=list(set(liste_articles_ids)) # set permet de ne prendre que les valeurs uniques, et list pour reformater en liste
                                                     

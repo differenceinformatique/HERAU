@@ -301,7 +301,7 @@ class StockMove(models.Model):
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id                                                         
-                    vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom
+                    vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom                    
         
         
         if vals.get('purchase_line_id'):    
@@ -311,8 +311,8 @@ class StockMove(models.Model):
                 vals["di_un_saisie"] = purchaseline.di_un_saisie
                 vals["di_type_palette_id"] = purchaseline.di_type_palette_id.id
                 vals["di_product_packaging_id"] = purchaseline.product_packaging.id 
-    
-                 
+                
+                     
                                                      
         res = super(StockMove, self).create(vals)    
         
@@ -675,6 +675,30 @@ class StockPicking(models.Model):
     di_poin = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_tournee = fields.Char(string="Tournée",compute='_compute_tournee',store=True)
     di_rangtournee = fields.Char(string="Rang dans la tournée",compute='_compute_tournee',store=True)
+    di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
+    
+#     @api.model
+#     def di_get_nbex_partner(self):
+#         if self.partner_id:
+#             return self.partner_id.di_nbex
+#         else:
+#             return 1
+    @api.model
+    def create(self,vals):        
+        res = super(StockPicking, self).create(vals)        
+        for sp in res:   
+            if sp.di_nbex==0: 
+                if sp.partner_id:                
+                    sp.write({'di_nbex': sp.partner_id.di_nbex_bl})                
+        return res
+        
+        
+    @api.multi
+    @api.onchange("partner_id")
+    def di_onchange_partner(self):
+        for bl in self:
+            if bl.partner_id:
+                bl.di_nbex = bl.partner_id.di_nbex_bl
     
     @api.depends('move_lines')
     def _compute_di_nbpal_nbcol(self):

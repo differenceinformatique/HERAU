@@ -222,6 +222,13 @@
 			<t t-call="stock.report_delivery_document" t-lang="o.partner_id.lang"/>
 		</xpath>
 	</template> -->
+	<template id="stock.report_deliveryslip">
+        <t t-foreach="docs" t-as="o">
+            <t t-foreach="range(o.di_nbex)" t-as="n">
+                <t t-call="stock.report_delivery_document" t-lang="o.partner_id.lang"/>
+            </t>                
+        </t>
+    </template>
 	<!-- surcharge du bon de prépa/réception  -->
 	<template id="di_report_shipping2" inherit_id="stock.report_picking">
 		<!-- ajout titre du document -->
@@ -250,4 +257,21 @@
 			<span><strong>Adresse fournisseur:</strong></span>
 		</xpath>
 	</template>
+	
+	<template id="di_report_picking">
+        <t t-foreach="docs" t-as="o">
+            <t t-foreach="range(o.di_nbex)" t-as="n">
+                <t t-call="stock.report_picking" t-lang="o.partner_id.lang"/>
+            </t>                
+        </t>
+    </template>
+	 <report
+            string="Picking Operations"
+            id="stock.action_report_picking"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="difodoo_ventes.di_report_picking"
+            file="difodoo_ventes.di_report_picking_operations"
+            print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
+        />
 </odoo>

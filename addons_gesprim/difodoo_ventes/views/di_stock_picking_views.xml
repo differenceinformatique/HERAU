@@ -1,35 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<!-- filtres par défaut types de livraison -->
-	<record id="di_view_picking_type_action_search" model="ir.ui.view">
-		<field name="name">di.stock.picking.type.search</field>
-		<field name="model">stock.picking.type</field>
-		<field name="arch" type="xml">
-			<search string="Picking type Lists">
-				<filter name="expedition" string="Expéditions" domain="[('code','=','outgoing')]"
-					help="Flux d'expédition" />
-				<filter name="reception" string="Réceptions" domain="[('code','=','incoming')]"
-					help="Flux de réception" />
-			</search>
-		</field>
-	</record>
-	<!-- Choix des types de livraison -->
-	<record id="di_stock_picking_type_action_ventes" model="ir.actions.act_window">
-		<field name="name">Réceptions</field>
-		<field name="res_model">stock.picking.type</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">kanban,form</field>
-		<field name="context">{
+    <!-- filtres par défaut types de livraison -->
+    <record id="di_view_picking_type_action_search" model="ir.ui.view">
+        <field name="name">di.stock.picking.type.search</field>
+        <field name="model">stock.picking.type</field>
+        <field name="arch" type="xml">
+            <search string="Picking type Lists">
+                <filter domain="[('code','=','outgoing')]"
+                    help="Flux d'expédition" name="expedition" string="Expéditions"/>
+                <filter domain="[('code','=','incoming')]"
+                    help="Flux de réception" name="reception" string="Réceptions"/>
+            </search>
+        </field>
+    </record>
+    <!-- Choix des types de livraison -->
+    <record id="di_stock_picking_type_action_ventes" model="ir.actions.act_window">
+        <field name="name">Réceptions</field>
+        <field name="res_model">stock.picking.type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="context">{
 			'search_default_expedition': 1
 			}
 		</field>
-		<field name="search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click to create a new operation type.
 			</p>
-			<p>
+            <p>
 				The operation type system allows you to assign each stock
 				operation a specific type which will alter its views accordingly.
 				On
@@ -37,142 +37,149 @@
 				default,
 				if it should show the customer.
 			</p>
-		</field>
-	</record>
-	<!-- surcharge filtres par défaut livraisons -->
-	<record id="di_view_picking_internal_search" model="ir.ui.view">
-		<field name="name">di.stock.picking.internal.search</field>
-		<field name="model">stock.picking</field>
-		<field name="inherit_id" ref="stock.view_picking_internal_search" />
-		<field eval="80" name="priority" />
-		<field name="arch" type="xml">
-			<xpath expr="//search/field[@name='name']" position="before">
-				<filter name="expedition" string="Expéditions"
-					domain="[('picking_type_id.code','=','outgoing')]" help="Flux d'expédition" />
-				<filter name="reception" string="Réceptions"
-					domain="[('picking_type_id.code','=','incoming')]" help="Flux de réception" />
-			</xpath>
-		</field>
-	</record>
-	<!-- Liste des livraisons en attente -->
-	<record id="di_action_picking_tree_ventes_attente" model="ir.actions.act_window">
-		<field name="name">En Attente</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+        </field>
+    </record>
+    <!-- surcharge filtres par défaut livraisons -->
+    <record id="di_view_picking_internal_search" model="ir.ui.view">
+        <field name="name">di.stock.picking.internal.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='name']" position="before">
+                <filter
+                    domain="[('picking_type_id.code','=','outgoing')]"
+                    help="Flux d'expédition" name="expedition" string="Expéditions"/>
+                <filter
+                    domain="[('picking_type_id.code','=','incoming')]"
+                    help="Flux de réception" name="reception" string="Réceptions"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- Liste des livraisons en attente -->
+    <record id="di_action_picking_tree_ventes_attente" model="ir.actions.act_window">
+        <field name="name">En Attente</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_waiting': 1,
 			'search_default_confirmed': 1,
 			'search_default_expedition': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
-	<!-- Liste des livraisons en retard -->
-	<record id="di_action_picking_tree_ventes_retard" model="ir.actions.act_window">
-		<field name="name">En Retard</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+            <p/>
+        </field>
+    </record>
+    <!-- Liste des livraisons en retard -->
+    <record id="di_action_picking_tree_ventes_retard" model="ir.actions.act_window">
+        <field name="name">En Retard</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_late': 1,
 			'search_default_confirmed': 1,
 			'search_default_expedition': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
-	<!-- Liste des livraisons prêtes -->
-	<record id="di_action_picking_tree_ventes_a_faire" model="ir.actions.act_window">
-		<field name="name">A faire</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+            <p/>
+        </field>
+    </record>
+    <!-- Liste des livraisons prêtes -->
+    <record id="di_action_picking_tree_ventes_a_faire" model="ir.actions.act_window">
+        <field name="name">A faire</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_available': 1,
 			'search_default_expedition': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
-	<!-- Liste des livraisons (toutes) -->
-	<record id="di_action_picking_ventes_all" model="ir.actions.act_window">
-		<field name="name">Toutes les livraisons</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+            <p/>
+        </field>
+    </record>
+    <!-- Liste des livraisons (toutes) -->
+    <record id="di_action_picking_ventes_all" model="ir.actions.act_window">
+        <field name="name">Toutes les livraisons</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_expedition': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
-	<!-- surcharge view_picking_form -->
-	<record id="di_view_picking_form" model="ir.ui.view">
-		<field name="name">di.stock.picking.form</field>
-		<field name="model">stock.picking</field>
-		<field name="inherit_id" ref="stock.view_picking_form" />
-		<field eval="80" name="priority" />
-		<field name="arch" type="xml">
-			<xpath
-				expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']"
-				position="before">
-				<field name="di_spe_saisissable" invisible="1"/>
-				<field name="di_flg_modif_uom" invisible="1" />
-				<field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie" />
-				<field name="di_qte_un_saisie" string="Qté validée unité saisie" attrs="{'readonly': [('is_quantity_done_editable','=',False)]}"/>
-				<field name="sale_line_id" invisible="1" />
-				<field name="di_un_saisie"  string="Unité de saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />				
-				<field name="di_nb_pieces" readonly="1" string="Nb pièces" />
-				<field name="di_nb_colis" readonly="1" string="Nb colis" />
-				<field name="di_product_packaging_id" string="Colis" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
-				<field name="di_nb_palette" readonly="1" string="Nb palette" />
-				<field name="di_type_palette_id" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" /> 
-				<field name="di_poin" readonly="1" string="Poids net" />
-				<field name="di_tare" readonly="1" string="Tare" />
-				<field name="di_poib" readonly="1" string="Poids brut" />
-			</xpath>
-			<xpath expr="//div[@class='oe_chatter']" position="replace"/>
+            <p/>
+        </field>
+    </record>
+    <!-- surcharge view_picking_form -->
+    <record id="di_view_picking_form" model="ir.ui.view">
+        <field name="name">di.stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='number_of_packages']" position="after">                
+                <field name="di_nbex"/>                            
+            </xpath>
+            <xpath
+                expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']" position="before">
+                <field invisible="1" name="di_spe_saisissable"/>
+                <field invisible="1" name="di_flg_modif_uom"/>
+                <field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie"/>
+                <field
+                    attrs="{'readonly': [('is_quantity_done_editable','=',False)]}"
+                    name="di_qte_un_saisie" string="Qté validée unité saisie"/>
+                <field invisible="1" name="sale_line_id"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"
+                    name="di_un_saisie" string="Unité de saisie"/>
+                <field name="di_nb_pieces" readonly="1" string="Nb pièces"/>
+                <field name="di_nb_colis" readonly="1" string="Nb colis"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"
+                    name="di_product_packaging_id" string="Colis"/>
+                <field name="di_nb_palette" readonly="1" string="Nb palette"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_type_palette_id"/>
+                <field name="di_poin" readonly="1" string="Poids net"/>
+                <field name="di_tare" readonly="1" string="Tare"/>
+                <field name="di_poib" readonly="1" string="Poids brut"/>
+            </xpath>
+            <xpath expr="//div[@class='oe_chatter']" position="replace"/>
             <xpath expr="//sheet/notebook" position="after">
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
@@ -180,114 +187,126 @@
                     <field name="message_ids" widget="mail_thread"/>
                 </div>
             </xpath>
-		</field>
-	</record>
-	<!-- surcharge stock.view_move_form -->
-	<record id="di_view_move_picking_form" model="ir.ui.view">
-		<field name="name">di.stock.move.form</field>
-		<field name="model">stock.move</field>
-		<field name="inherit_id" ref="stock.view_move_picking_form" />
-		<field eval="80" name="priority" />
-		<field name="arch" type="xml">
-			<xpath expr="//group/group[1]" position="inside">
-			     <field name="di_spe_saisissable" invisible="1"/>
-			    <field name="sale_line_id" invisible="1" />
-				<field name="di_flg_modif_uom" invisible="1" />
-				<field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie" />
-				<field name="di_qte_un_saisie" string="Qté validée unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-				<field name="di_un_saisie"  string="Unité de saisie" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
-			</xpath>
-			<xpath expr="//group[1]" position="after">
-				<group>
-					<group>
-						<field name="di_nb_pieces" readonly="1" string="Nb pièces" />
-						<label for="di_nb_colis" />
-						<div>
-							<field name="di_nb_colis" readonly="1" />
-							<field name="di_product_packaging_id"  attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />
-						</div>
-						<label for="di_nb_palette" />
-						<div>
-							<field name="di_nb_palette" readonly="1" />
-							<field name="di_type_palette_id" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" />
-						</div>
-					</group>
-					<group>
-						<field name="di_poin" readonly="1" string="Poids net" />
-						<field name="di_tare" readonly="1" string="Tare" />
-						<field name="di_poib" readonly="1" string="Poids brut" />
-					</group>
-				</group>
-			</xpath>
-			<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
-		</field>
-	</record>
-	<!-- surcharge view_stock_move_operations -->
-	<record id="di_view_stock_move_operations" model="ir.ui.view">
-		<field name="name">di.stock.move.operations.form</field>
-		<field name="model">stock.move</field>
-		<field name="inherit_id" ref="stock.view_stock_move_operations" />
-		<field eval="80" name="priority" />
-		<field name="arch" type="xml">
-			<xpath expr="//label[@for='product_uom_qty']" position="before">
-				<field name="di_qte_un_saisie_init" string="Qté initiale unité saisie"
-					readonly="1" />
-				<field name="di_qte_un_saisie" string="Qté validée unité saisie"
-					readonly="1" />
-				<field name="di_un_saisie_init" 
-					string="Unité de saisie initiale" readonly="1"/>
-			</xpath>
-			<xpath expr="//label[@for='quantity_done']" position="before">
-			     <field name="di_spe_saisissable" invisible="1"/>
-			    <field name="sale_line_id" invisible="1" />
-				<field name="di_flg_modif_uom" invisible="1" />
-				<field name="di_un_saisie" attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
-				<field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-				<field name="di_product_packaging_id" invisible="1" />
-				<field name="di_type_palette_id" invisible="1" />
-				<field name="di_poib" invisible="1" />
-				<field name="di_tare" invisible="1" />
-			</xpath>
-			<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
-		</field>
-	</record>
-	<!-- surcharge view_stock_move_line_operation_tree -->
-	<record id="di_stock_move_line_operations_tree" model="ir.ui.view">
-		<field name="name">di.stock.move.line.operations.tree</field>
-		<field name="model">stock.move.line</field>
-		<field name="inherit_id" ref="stock.view_stock_move_line_operation_tree" />
-		<field eval="80" name="priority" />
-		<field name="arch" type="xml">
-			<xpath expr="//field[@name='qty_done']" position="before">
-			     <field name="di_spe_saisissable" invisible="1"/>
-				<field name="di_qte_un_saisie" invisible="1" />
-				<field name="move_id" invisible="1" />
-				<field name="di_nb_palette" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-				<field name="di_nb_colis" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-				<field name="di_nb_pieces" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-				<field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-				<field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-				<field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-			</xpath>
-		</field>
-	</record>
-	<!-- Choix des types de réceptions -->
-	<record id="di_stock_picking_type_action_achats" model="ir.actions.act_window">
-		<field name="name">Réceptions</field>
-		<field name="res_model">stock.picking.type</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">kanban,form</field>
-		<field name="context">{
+        </field>
+    </record>
+    <!-- surcharge stock.view_move_form -->
+    <record id="di_view_move_picking_form" model="ir.ui.view">
+        <field name="name">di.stock.move.form</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_picking_form"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group[1]" position="inside">
+                <field invisible="1" name="di_spe_saisissable"/>
+                <field invisible="1" name="sale_line_id"/>
+                <field invisible="1" name="di_flg_modif_uom"/>
+                <field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"
+                    name="di_qte_un_saisie" string="Qté validée unité saisie"/>
+                <field
+                    attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"
+                    name="di_un_saisie" string="Unité de saisie"/>
+            </xpath>
+            <xpath expr="//group[1]" position="after">
+                <group>
+                    <group>
+                        <field name="di_nb_pieces" readonly="1" string="Nb pièces"/>
+                        <label for="di_nb_colis"/>
+                        <div>
+                            <field name="di_nb_colis" readonly="1"/>
+                            <field
+                                attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" name="di_product_packaging_id"/>
+                        </div>
+                        <label for="di_nb_palette"/>
+                        <div>
+                            <field name="di_nb_palette" readonly="1"/>
+                            <field
+                                attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)]}" name="di_type_palette_id"/>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="di_poin" readonly="1" string="Poids net"/>
+                        <field name="di_tare" readonly="1" string="Tare"/>
+                        <field name="di_poib" readonly="1" string="Poids brut"/>
+                    </group>
+                </group>
+            </xpath>
+            <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
+        </field>
+    </record>
+    <!-- surcharge view_stock_move_operations -->
+    <record id="di_view_stock_move_operations" model="ir.ui.view">
+        <field name="name">di.stock.move.operations.form</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_stock_move_operations"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='product_uom_qty']" position="before">
+                <field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie"/>
+                <field name="di_qte_un_saisie" readonly="1" string="Qté validée unité saisie"/>
+                <field name="di_un_saisie_init" readonly="1" string="Unité de saisie initiale"/>
+            </xpath>
+            <xpath expr="//label[@for='quantity_done']" position="before">
+                <field invisible="1" name="di_spe_saisissable"/>
+                <field invisible="1" name="sale_line_id"/>
+                <field invisible="1" name="di_flg_modif_uom"/>
+                <field
+                    attrs="{'readonly': [('sale_line_id', '!=', False)],'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" name="di_un_saisie"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"
+                    name="di_qte_un_saisie" string="Qté unité saisie"/>
+                <field invisible="1" name="di_product_packaging_id"/>
+                <field invisible="1" name="di_type_palette_id"/>
+                <field invisible="1" name="di_poib"/>
+                <field invisible="1" name="di_tare"/>
+            </xpath>
+            <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
+        </field>
+    </record>
+    <!-- surcharge view_stock_move_line_operation_tree -->
+    <record id="di_stock_move_line_operations_tree" model="ir.ui.view">
+        <field name="name">di.stock.move.line.operations.tree</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='qty_done']" position="before">
+                <field invisible="1" name="di_spe_saisissable"/>
+                <field invisible="1" name="di_qte_un_saisie"/>
+                <field invisible="1" name="move_id"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_nb_palette"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_nb_colis"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_nb_pieces"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_poin"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_tare"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_poib"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- Choix des types de réceptions -->
+    <record id="di_stock_picking_type_action_achats" model="ir.actions.act_window">
+        <field name="name">Réceptions</field>
+        <field name="res_model">stock.picking.type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="context">{
 			'search_default_reception': 1
 			}
 		</field>
-		<field name="search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="difodoo_ventes.di_view_picking_type_action_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click to create a new operation type.
 			</p>
-			<p>
+            <p>
 				The operation type system allows you to assign each stock
 				operation a specific type which will alter its views accordingly.
 				On
@@ -295,100 +314,95 @@
 				default,
 				if it should show the customer.
 			</p>
-		</field>
-	</record>	
-	<!-- Liste des réceptions en attente -->
-	<record id="di_action_picking_tree_achats_attente" model="ir.actions.act_window">
-		<field name="name">En Attente</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+        </field>
+    </record>
+    <!-- Liste des réceptions en attente -->
+    <record id="di_action_picking_tree_achats_attente" model="ir.actions.act_window">
+        <field name="name">En Attente</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_waiting': 1,
 			'search_default_confirmed': 1,
 			'search_default_reception': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
-	<!-- Liste des réceptions en retard -->
-	<record id="di_action_picking_tree_achats_retard" model="ir.actions.act_window">
-		<field name="name">En Retard</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+            <p/>
+        </field>
+    </record>
+    <!-- Liste des réceptions en retard -->
+    <record id="di_action_picking_tree_achats_retard" model="ir.actions.act_window">
+        <field name="name">En Retard</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_late': 1,
 			'search_default_confirmed': 1,
 			'search_default_reception': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
-	<!-- Liste des réceptions prêtes -->
-	<record id="di_action_picking_tree_achats_a_faire" model="ir.actions.act_window">
-		<field name="name">A faire</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+            <p/>
+        </field>
+    </record>
+    <!-- Liste des réceptions prêtes -->
+    <record id="di_action_picking_tree_achats_a_faire" model="ir.actions.act_window">
+        <field name="name">A faire</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_available': 1,
 			'search_default_reception': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
-	<!-- Liste des réceptions (toutes) -->
-	<record id="di_action_picking_achats_all" model="ir.actions.act_window">
-		<field name="name">Toutes les réceptions</field>
-		<field name="res_model">stock.picking</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar</field>
-		<field name="domain"></field>
-		<field name="context">{
+            <p/>
+        </field>
+    </record>
+    <!-- Liste des réceptions (toutes) -->
+    <record id="di_action_picking_achats_all" model="ir.actions.act_window">
+        <field name="name">Toutes les réceptions</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="domain"/>
+        <field name="context">{
 			'contact_display': 'partner_address',
 			'search_default_reception': 1
 			}
 		</field>
-		<field name="search_view_id" ref="stock.view_picking_internal_search" />
-		<field name="help" type="html">
-			<p class="oe_view_nocontent_create">
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
 				Click here to create a new transfer.
 			</p>
-			<p>				
-			</p>
-		</field>
-	</record>
+            <p/>
+        </field>
+    </record>
 </odoo>
-        

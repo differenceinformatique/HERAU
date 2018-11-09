@@ -87,9 +87,11 @@
 				<t t-set="picking" t-value="env['stock.picking']" />
 				<t t-set="po_picking" t-value="picking.search([('origin', '=', o.name)])" />
 				<t t-foreach="po_picking" t-as="pick">
-					<t t-call="stock.report_picking">
-						<t t-set="docs" t-value="pick" />
-					</t>
+				    <t t-foreach="range(pick.di_nbex)" t-as="n">
+    					<t t-call="stock.report_picking">
+    						<t t-set="docs" t-value="pick" />
+    					</t>
+    				</t>
 				</t>
 			</t>
 		</t>
@@ -104,4 +106,45 @@
         file="difodoo_achats.di_report_po_br"
         print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
 	/>
+	
+	<template id="di_report_purchaseorder">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="range(o.di_nbex)" t-as="n">
+                    <t t-call="purchase.report_purchaseorder_document" t-lang="o.partner_id.lang"/>
+                </t>        
+            </t>
+        </t>
+    </template>
+    <template id="di_report_purchasequotation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="range(o.di_nbex)" t-as="n">
+                    <t t-call="purchase.report_purchasequotation_document" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+    <report 
+            string="Purchase Order" 
+            id="purchase.action_report_purchase_order" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="difodoo_achats.di_report_purchaseorder" 
+            file="difodoo_achats.di_report_purchaseorder"
+            print_report_name="
+                (object.state in ('draft', 'sent') and 'Request for Quotation - %s' % (object.name) or
+                'Purchase Order - %s' % (object.name))"
+        />
+
+        <report 
+            string="Request for Quotation" 
+            id="purchase.report_purchase_quotation" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="difodoo_achats.di_report_purchasequotation" 
+            file="difodoo_achats.di_report_purchasequotation"
+            print_report_name="'Request for Quotation - %s' % (object.name)"
+        />
+        
 </odoo>

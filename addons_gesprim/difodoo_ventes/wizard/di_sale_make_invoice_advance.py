@@ -56,8 +56,15 @@ class SaleAdvancePaymentInv(models.TransientModel):
                 order_partner.action_invoice_create(grouped=(not wRegr))
             # on met à jour la date de facture    
             invoices = sale_orders.mapped('invoice_ids')
+            param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
             for invoice in invoices:
                 invoice.date_invoice=self.date_fact
+                if param.di_autovalid_fact_ven:
+                    invoice.action_invoice_open()
+#                 if param.di_autoimp_fact_ven: # ne fonctionne pas
+#                     invoice.invoice_print()
+                    
+#             return sale_orders.action_print_invoice() # ne fonctionne pas
                 
             # comme en standard, on lance l'affichage des factures si demandé  
             if self._context.get('open_invoices', False):

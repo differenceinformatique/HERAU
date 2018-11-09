@@ -44,6 +44,24 @@ class ProductTemplate(models.Model):
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     di_param_seq_art = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_art',store=False)
     
+#     def di_action_afficher_cond(self):
+#         product=self.env['product.product'].search([('product_tmpl_id','=',self.id)])
+#         return {
+#             "type": "ir.actions.act_window",
+#             "res_model": "product.packaging",
+#             "views": [[False, "tree"], [False, "form"]],
+#             "domain": (["product_id", "=", product.id]), 
+#             "name": "Conditionnements",
+#         }
+#         
+    def di_action_afficher_cond(self):
+        self.ensure_one()
+        product=self.env['product.product'].search([('product_tmpl_id','=',self.id)])
+        action = self.env.ref('difodoo_fichiers_base.di_action_product_packaging').read()[0]
+        action['domain'] = [('product_id', '=', product.id)]
+        action['context'] = [('default_product_id', '=', product.id)]
+        return action
+    
     @api.one
     @api.depends('di_un_saisie', 'di_un_prix')
     def _di_compute_spe_saisissable(self):
@@ -96,6 +114,13 @@ class ProductProduct(models.Model):
     di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')
     di_tarifs_ids = fields.One2many('di.tarifs', 'id',string='Tarifs de l\'article')
     
+#     def di_action_afficher_cond(self):
+#         self.ensure_one()        
+#         action = self.env.ref('difodoo_fichiers_base.di_action_product_packaging').read()[0]
+#         action['domain'] = [('product_id', '=', self.id)]
+#         action['context'] = [('default_product_id', '=', self.id)]
+#         return action
+#     
     def di_get_type_piece(self):
         ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])
         return ProductPack
@@ -147,7 +172,7 @@ class ProductProduct(models.Model):
 class ProductPackaging(models.Model):
     _inherit = "product.packaging"
     _order = 'product_id,name'
-    
+        
     di_qte_cond_inf = fields.Float(string='Quantité conditionnement inférieur')
     di_type_cond = fields.Selection([("PIECE", "Cond. Réf."), ("COLIS", "Colis"),("PALETTE", "Palette")], string="Type de conditionnement")    
     di_type_cond_inf_id = fields.Many2one('product.packaging', string='Conditionnement inférieur')
@@ -155,6 +180,12 @@ class ProductPackaging(models.Model):
     di_product_tmpl_id = fields.Many2one('product.template', 'Product Template', related='product_id.product_tmpl_id')
     di_search_name = fields.Char(string='Recherche Code',compute='_di_compute_search_name',store=True)
     di_poids = fields.Float(string='Poids',help="""Poids de l'emballage.""")
+    
+    @api.onchange('product_id')
+    def di_oc_product_id(self):
+        self.ensure_one()
+        if self._context.get('default_product_id'):
+            self.product_id = self._context['default_product_id']
     
     @api.one
     @api.depends('product_id', 'name')

@@ -25,6 +25,9 @@ class ResPartner(models.Model):
     di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
     di_iban = fields.Char(string='IBAN',help="Saisir l'IBAN ",size=34)
     di_naf = fields.Char(string='NAF')
+    di_nbex_cde = fields.Integer("Nombre exemplaires commande",help="""Nombre d'exemplaires d'une impression de commande.""",default=1)
+    di_nbex_bl = fields.Integer("Nombre exemplaires BL",help="""Nombre d'exemplaires,d'une impression de BL.""",default=1)
+    di_nbex_fac = fields.Integer("Nombre exemplaires facture",help="""Nombre d'exemplaires, d'une impression de facture.""",default=1)
     
     #@api.one
     @api.onchange('di_iban')

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="di_report_saleorder_document" inherit_id="sale.report_saleorder_document">
+	<template id="di_report_saleorder_document" inherit_id="sale.report_saleorder_document">	 
 		<!-- Modification sur entêtes de colonnes -->
 		<!-- ajout de l'unité de prix après le prix -->
 		<xpath expr="//table[1]/thead/tr/th[3]" position="after">
@@ -72,21 +72,66 @@
 				<t t-set="picking" t-value="env['stock.picking']" />
 				<t t-set="so_picking" t-value="picking.search([('origin', '=', o.name)])" />
 				<t t-foreach="so_picking" t-as="pick">
-					<t t-call="stock.report_picking">
-						<t t-set="docs" t-value="pick" />
-					</t>
+				    <t t-foreach="range(pick.di_nbex)" t-as="n">
+    					<t t-call="stock.report_picking">
+    						<t t-set="docs" t-value="pick" />
+    					</t>
+    				</t>
 				</t>
 			</t>
 		</t>
 	</template>
 	<!-- déclaration rapport pour édition bon de préparation depuis commande client -->
-	<report
-		id="di_action_report_bp"
-		string="Bon de préparation"
-		model="sale.order"
-		report_type="qweb-pdf"
+    <report
+        id="di_action_report_bp"
+        string="Bon de préparation"
+        model="sale.order"
+        report_type="qweb-pdf"
         name="difodoo_ventes.di_report_po_bp"
         file="difodoo_ventes.di_report_po_bp"
         print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
-	/>
+    />
+    
+	<!-- Pour impression avec plusieurs exemplaires -->
+	<template id="di_report_saleorder">	   
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-foreach="range(doc.di_nbex)" t-as="n">
+                    <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+                </t>
+            </t>
+        </t>            
+    </template>
+    
+    <template id="di_report_saleorder_pro_forma">       
+        <t t-call="web.html_container">
+            <t t-set="is_pro_forma" t-value="True"/>
+            <t t-foreach="docs" t-as="doc">
+                <t t-foreach="range(doc.di_nbex)" t-as="n">
+                    <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+                </t>
+            </t>
+        </t>           
+    </template>
+    
+	<!-- On remplace l'action report standard en changeant le template utilisé pour mettre le notre -->
+	<report 
+            id="sale.action_report_saleorder"
+            string="Quotation / Order"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="difodoo_ventes.di_report_saleorder" 
+            name="difodoo_ventes.di_report_saleorder"
+            print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
+        />
+                  
+    <report
+        id="sale.action_report_pro_forma_invoice"
+        string="PRO-FORMA Invoice"
+        model="sale.order"
+        report_type="qweb-pdf"
+        file="difodoo_ventes.di_report_saleorder_pro_forma"
+        name="difodoo_ventes.di_report_saleorder_pro_forma"
+        print_report_name="'PRO-FORMA - %s' % (object.name)"
+    />
 </odoo>
