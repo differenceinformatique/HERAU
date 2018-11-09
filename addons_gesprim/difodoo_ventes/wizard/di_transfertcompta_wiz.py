@@ -179,6 +179,6 @@ class Wizard_transfert_compta(models.TransientModel):
             'name': 'di_transfert_compta',
             'type': 'ir.actions.act_url',
             'url': "web/content/?model=di.transfertcompta.wiz&id=" + str(self.id) + "&filename_field=filename&field=compta_data&download=true&filename=" + self.filename,
-            'target': 'self',
+            'target': 'new',
             }
         return action                    

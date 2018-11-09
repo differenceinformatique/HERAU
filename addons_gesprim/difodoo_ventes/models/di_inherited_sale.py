@@ -587,9 +587,12 @@ class SaleOrder(models.Model):
     
 #     @api.onchange('order_line')
 #     def di_onchange_order_line(self):
+#         ligzero = False
 #         for ol in self.order_line:
 #             if ol.price_total==0.0:
-#                 return {'warning': {'Montant à 0': _('Error'), 'message': _('Le montant de la ligne est égal à 0 !'),},}
+#                 ligzero = True
+#         if ligzero:        
+#             return {'warning': {'Il exixste une ligne avec montant à 0.': _('Error'), 'message': _('Il exixste une ligne avec montant à 0 !'),},}
     
     @api.multi
     def action_print_invoice(self):
