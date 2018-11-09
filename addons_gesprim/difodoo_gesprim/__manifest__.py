@@ -35,6 +35,7 @@
         , 'l10n_fr_sale_closing',
         'base_optional_quick_create',
         'eradicate_quick_create',
+        'prt_report_attachment_preview',
         ],
 
     # always loaded
