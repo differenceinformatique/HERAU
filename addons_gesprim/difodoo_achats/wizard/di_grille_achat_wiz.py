@@ -8,7 +8,7 @@ class DiGrilleAchatWiz(models.TransientModel):
     _description = "Wizard d'aide à la saisie de commande de achat"
     
     di_order_id = fields.Many2one("purchase.order", string="Commande", required=True)        
-    di_product_ids = fields.Many2many("product.product", string="Dernièrs achats")
+    di_product_ids = fields.Many2many("product.product", string="Derniers achats")
     
     @api.multi
     def di_valider_grille(self):

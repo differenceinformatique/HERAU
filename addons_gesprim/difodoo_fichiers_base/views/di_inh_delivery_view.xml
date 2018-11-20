@@ -26,6 +26,13 @@
 			<field name="inherit_id" ref="delivery.view_delivery_price_rule_form" />
 			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
+				<!-- on redéclare, car le nombre de décimales n'est pas bon  -->
+				<xpath expr="//field[@name='list_base_price']" position="replace">
+					<field name="list_base_price" class="oe_inline"/>
+				</xpath>
+				<xpath expr="//field[@name='list_price']" position="replace">
+                    <field name="list_price" class="oe_inline"/>
+				</xpath>
 				<!-- on ajoute le transporteur(suivant contexte) + code destination -->
 				<xpath expr="/form/group[2]/label[@for='variable']" position="before">
 					<field name="di_code_dest_id" />

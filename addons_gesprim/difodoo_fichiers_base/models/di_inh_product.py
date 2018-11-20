@@ -78,19 +78,38 @@ class ProductTemplate(models.Model):
         else:
             self.di_param_seq_art = False          
     
+#     @api.multi
+#     def write(self, vals):
+#         # TODO faire le parcours dans self de tous les enregs                             
+#         for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
+#             if key[0] == "di_un_prix":  # si on a modifié sale_line_id
+#                 if vals['di_un_prix'] == False:
+#                     vals['di_un_saisie']=False
+#                     break
+#             elif key[0] == "di_un_saisie":
+#                 if vals['di_un_saisie'] == False:
+#                     vals['di_un_prix']=False 
+#                     break                                    
+#         res = super(ProductTemplate, self).write(vals)
+#         return res   
+#     
+#     @api.multi
+#     def write(self, vals):
+#         if 'di_un_prix' in vals and not vals['di_un_prix'] and vals.get('di_un_saisie'):
+#             vals['di_un_saisie'] = False        
+#         if 'di_un_saisie' in vals and not vals.get('di_un_saisie') and vals.get('di_un_prix'):
+#             vals['di_un_prix'] = False                                    
+#         return super(ProductTemplate, self).write(vals)
+
     @api.multi
-    def write(self, vals):                              
-        for key in vals.items():  # vals est un dictionnaire qui contient les champs modifiés, on va lire les différents enregistrements                      
-            if key[0] == "di_un_prix":  # si on a modifié sale_line_id
-                if vals['di_un_prix'] == False:
-                    vals['di_un_saisie']=False
-                    break
-            elif key[0] == "di_un_saisie":
-                if vals['di_un_saisie'] == False:
-                    vals['di_un_prix']=False 
-                    break                                    
+    def write(self, vals):
         res = super(ProductTemplate, self).write(vals)
-        return res   
+        for product in self:
+            if product.di_un_prix and not product.di_un_saisie:
+                product.di_un_prix = False
+            if product.di_un_saisie and not product.di_un_prix:
+                product.di_un_saisie = False
+        return res
     
     @api.multi
     def copy(self, default=None):
@@ -105,7 +124,6 @@ class ProductTemplate(models.Model):
 
         default['default_code'] = new_name
         return super(ProductTemplate, self).copy(default)
-           
     
 class ProductProduct(models.Model):
     _inherit = "product.product"
