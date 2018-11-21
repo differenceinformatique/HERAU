@@ -40,7 +40,7 @@
                 <xpath expr="//field[@name='date_approve'] " position="after">
                     <field name="di_nbex"/>
                 </xpath>
-                <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/label[@for='product_qty'] " position="before">
+                <xpath expr="//field[@name='order_line']/form//label[@for='product_qty'] " position="before">
                     <field name="di_spe_saisissable" invisible="1"/>
                     <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
                     <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
@@ -69,7 +69,7 @@
                     <field name="price_subtotal" widget="monetary" force_save="1" readonly="1" />
                 </xpath>
                                 
-                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_qty'] " position="before">
+                <xpath expr="//field[@name='order_line']/tree//field[@name='product_qty'] " position="before">
                     <field name="di_spe_saisissable" invisible="1"/>
                     <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
                     <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />

@@ -22,20 +22,24 @@
         # any module necessary for this one to work correctly
     'depends': [
         'base',
-        'sale',
-        'sale_stock',
-        'sale_margin',
-        'purchase',
         'product',
+        'sale',
+        'sale_management',
+        'stock',
+        'sale_stock',
+        'delivery',                     
+        'purchase',
+        'sale_margin',
+        'account',                           
+        'l10n_fr_sale_closing',
         'difodoo_fichiers_base',
         'difodoo_ventes',
-        'difodoo_achats',
-        'web_sheet_full_width'
-        , 'report_intrastat'
-        , 'l10n_fr_sale_closing',
+        'difodoo_achats',                             
         'base_optional_quick_create',
         'eradicate_quick_create',
-        'prt_report_attachment_preview',
+#         'web_sheet_full_width',   # pas utile en enterprise
+#         'prt_report_attachment_preview',
+#         'report_intrastat',# le module n'existe plus en v12
         ],
 
     # always loaded

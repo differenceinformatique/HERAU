@@ -121,7 +121,8 @@ class SaleOrderLine(models.Model):
             prixFinal = prixOrig
 #             if prixOrig == 0.0:
 #                 raise ValidationError("Le prix unitaire de la ligne est à 0 !")
-        return prixFinal                     
+        return prixFinal  
+                       
     @api.one
     @api.depends('product_id.di_spe_saisissable','product_id','di_qte_un_saisie')
     def _di_compute_spe_saisissable(self):        

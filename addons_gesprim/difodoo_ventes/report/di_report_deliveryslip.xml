@@ -40,7 +40,7 @@
 				<t t-set="di_pres_bl" t-value="o.partner_id.di_pres_bl" />
 			</t>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][1]/thead/tr/th" position="after">
+		<xpath expr="//table[@class='table table-sm mt48'][1]/thead/tr/th" position="after">
 			<th>
 				<div>Nb Pièces/</div>
 				<div>Catégorie</div>
@@ -58,14 +58,14 @@
 				<div>Calibre</div>
 			</th>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][1]/thead/tr" position="inside">
+		<xpath expr="//table[@class='table table-sm mt48'][1]/thead/tr" position="inside">
 			<t t-if="di_pres_bl == 'CHIFFRE'">
 				<th>Prix Unitaire</th>
 				<th>Unité Prix</th>
 				<th>Montant</th>
 			</t>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][1]/tbody/tr/td" position="after">
+		<xpath expr="//table[@class='table table-sm mt48'][1]/tbody/tr/td" position="after">
 			<td>				
 				<!-- on masque le nb pièces si prix au kg -->
 				<t t-if="move.sale_line_id.di_un_prix != 'KG'">
@@ -90,7 +90,7 @@
 				<div t-field="move.product_id.product_tmpl_id.di_calibre_id" />
 			</td>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][1]/tbody/tr" position="inside">
+		<xpath expr="//table[@class='table table-sm mt48'][1]/tbody/tr" position="inside">
 			<t t-if="di_pres_bl == 'CHIFFRE'">
 				<td>
 					<span t-field="move.sale_line_id.price_unit" />
@@ -110,7 +110,7 @@
                 Quantité
             </th>
 		</xpath>
-		<xpath expr="//table[3]/tbody[1]/tr[1]/t[1]/td[1]" position="replace">
+		<xpath expr="//table[3]/tbody[1]/tr[1]//td[1]" position="replace">
 			<td>
 				<span t-field="move_line.lot_id" />
 				<t t-if="not move_line.lot_id">
@@ -123,7 +123,7 @@
 				</t>
 			</td>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][2]/thead/tr/th" position="after">
+		<xpath expr="//table[@class='table table-sm mt48'][2]/thead/tr/th" position="after">
 			<th>
 				<div>Nb Pièces/</div>
 				<div>Catégorie</div>
@@ -141,14 +141,14 @@
 				<div>Calibre</div>
 			</th>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][2]/thead/tr" position="inside">
+		<xpath expr="//table[@class='table table-sm mt48'][2]/thead/tr" position="inside">
 			<t t-if="di_pres_bl == 'CHIFFRE'">
 				<th>Prix Unitaire</th>
 				<th>Unité Prix</th>
 				<th>Montant</th>
 			</t>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][2]/tbody/tr/td" position="after">
+		<xpath expr="//table[@class='table table-sm mt48'][2]/tbody/tr/td" position="after">
 			<td>				
 				<!-- on masque le nb pièces si prix au kg -->				
 				<t t-if="move_line.move_id.sale_line_id.di_un_prix != 'KG'">
@@ -173,7 +173,7 @@
 				<div t-field="move_line.product_id.product_tmpl_id.di_calibre_id" />
 			</td>
 		</xpath>
-		<xpath expr="//table[@class='table table-condensed mt48'][2]/tbody/tr" position="inside">
+		<xpath expr="//table[@class='table table-sm mt48'][2]/tbody/tr" position="inside">
 			<t t-if="di_pres_bl == 'CHIFFRE'">
 				<td>
 					<span t-field="move_line.move_id.sale_line_id.price_unit" />

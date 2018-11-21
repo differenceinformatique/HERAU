@@ -6,7 +6,9 @@
         <field name="arch" type="xml">
             <form string="Lignes à 0">
                 <group>                
-                    <label string="Voulez-vous supprimer les lignes à 0 ?" />                                      
+                    <div name="question">
+                                Voulez-vous supprimer les lignes à 0 ?
+                             </div>                                                                    
                 </group>                                            
                 <footer>
                     <button string="Oui" type="object" name="di_supp_lig_zero"

@@ -88,7 +88,7 @@
 					</group>
 				</xpath>
 				<!-- ajout onglet Caractéristiques -->
-				<xpath expr="//page[@name='notes']" position="after">
+				<xpath expr="//page[@name='inventory']" position="after">
 					<page name="specifs" string="Caractéristiques" style="font-style: oblique;">
 						<group col="12">
 							<group colspan="8" string="Paramétrage par défaut">
@@ -215,7 +215,7 @@
 			<field name="res_model">product.template</field>
 			<field name="view_mode">tree,kanban,form</field>
 		</record>
-		<!-- Formulaire conditionnement -->
+		<!-- Formulaire conditionnement  -->
 		<record id="di_product_packaging_form_view" model="ir.ui.view">
 			<field name="name">di.product.packaging.form.view</field>
 			<field name="model">product.packaging</field>
@@ -224,20 +224,17 @@
 			<field name="arch" type="xml">
 				<!-- Modification libellé du champ -->
 				<xpath expr="/form/sheet/label[@for='name']" position="replace">
-					<label string="Code Conditionnement" />
+					<label string="Code Conditionnement" for="name" />
 				</xpath>
 				<xpath expr="//field[@name='qty']" position="attributes">
                     <attribute name="string">Qté unité mesure</attribute>
                 </xpath>
-				<!-- <xpath expr="//field[@name='product_id']" position="attributes">
-                    <attribute name="attrs">{'readonly':[('')]}</attribute>
-                </xpath> -->
-				
+					
 				<xpath expr="//field[@name='qty']" position="after">
                     <field name="di_poids"/>
                 </xpath>
 				<xpath expr="//group" position="before">
-					<label string="Désignation" />
+					<label for="di_des" string="Désignation" />
 					<field name="di_des" required="True" />
 				</xpath>
 				<xpath expr="//group[@name='qty']" position="after">
@@ -253,8 +250,7 @@
 						<field name="di_qte_cond_inf"
 							attrs="{'required':[('di_type_cond','!=','PIECE')],'readonly':[('di_type_cond','=','PIECE')]}" />
 					</group>
-				</xpath>
-				<!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/> -->
+				</xpath>				
 			</field>
 		</record>
 		<!-- Liste conditionnement -->

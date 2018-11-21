@@ -6,8 +6,10 @@
         <field name="arch" type="xml">
             <form string="Génération Coûts">           
             <group>
-                <group>     
-                    <label string="Voulez-vous lancer la génération des coûts ?"/>
+                <group>                     
+                    <div name="question">
+                                Voulez-vous lancer la génération des coûts ?
+                             </div>                    
                 </group>
                 <group>
                     <field name="di_generer_tous_tar" string="Générer tous les tarifs"/>

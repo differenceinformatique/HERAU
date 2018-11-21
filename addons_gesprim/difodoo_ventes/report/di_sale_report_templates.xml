@@ -1,87 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="di_report_saleorder_document" inherit_id="sale.report_saleorder_document">	 
-		<!-- Modification sur entêtes de colonnes -->
-		<!-- ajout de l'unité de prix après le prix -->
-		<xpath expr="//table[1]/thead/tr/th[3]" position="after">
-			<th>Unité Prix</th>
-		</xpath>
-		<!-- suppression quantité en unité de mesure -->
-		<!-- <xpath expr="//th[2]" position="replace"/> -->
-		<!-- ajout colonnes pièces, colis, palettes, poids -->
-		<xpath expr="//table[1]/thead/tr/th[1]" position="after">
-			<th>
-				<div>Nb Pièces/</div>
-				<div>Catégorie</div>
-			</th>
-			<th>
-				<div>Nb Colis/</div>
-				<div>Origine</div>
-			</th>
-			<th>
-				<div>Type Colis/</div>
-				<div>Marque</div>
-			</th>
-			<th>
-				<div>Poids Net/</div>
-				<div>Calibre</div>
-			</th>
-		</xpath>
-		<!-- Modification sur le contenu des colonnes -->
-		<!-- ajout de l'unité de prix après le prix -->
-		<xpath expr="//table[1]/tbody/t/t[2]/tr/td[3]" position="after">
-			<td>
-				<span t-field="l.di_un_prix" />
-			</td>
-		</xpath>
-		<!-- ajout colonnes pièces, colis, palettes, poids -->
-		<xpath expr="//table[1]/tbody/t/t[2]/tr/td[1]" position="after">
-			<td class="text-right">
-				<!-- on masque le nb pièces si prix au kg -->
-				<t t-if="l.di_un_prix != 'KG'">
-					<div t-field="l.di_nb_pieces" />
-					<div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
-				</t>
-				<t t-if="l.di_un_prix == 'KG'">
-					<div>&amp;nbsp;</div>
-					<div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
-				</t>
-			</td>
-			<td class="text-right">
-				<div t-field="l.di_nb_colis" />
-				<div t-field="l.product_id.product_tmpl_id.di_origine_id" />
-			</td>
-			<td>
-				<div t-field="l.product_packaging" />
-				<div t-field="l.product_id.product_tmpl_id.di_marque_id" />
-			</td>
-			<!-- <td class="text-right"> <span t-field="l.di_nb_palette"/> </td> <td> <span t-field="l.di_type_palette_id"/> 
-				</td> -->
-			<td class="text-right">
-				<div t-field="l.di_poin" />
-				<div t-field="l.product_id.product_tmpl_id.di_calibre_id" />
-			</td>
-		</xpath>
-		<!-- suppression quantité en unité de mesure -->
-		<!-- <xpath expr="//td[2]" position="replace"/> -->
-	</template>
-	<!-- rapport permettant de lancer l'impression du bon de préparation depuis la commande client -->
-	<template id="di_report_po_bp">
-		<t t-call="web.html_container">
-			<t t-foreach="docs" t-as="o">
-				<t t-set="picking" t-value="env['stock.picking']" />
-				<t t-set="so_picking" t-value="picking.search([('origin', '=', o.name)])" />
-				<t t-foreach="so_picking" t-as="pick">
-				    <t t-foreach="range(pick.di_nbex)" t-as="n">
-    					<t t-call="stock.report_picking">
-    						<t t-set="docs" t-value="pick" />
-    					</t>
-    				</t>
-				</t>
-			</t>
-		</t>
-	</template>
-	<!-- déclaration rapport pour édition bon de préparation depuis commande client -->
+  <template id="di_report_saleorder_document" inherit_id="sale.report_saleorder_document">
+    <!-- Modification sur entêtes de colonnes -->
+    <!-- ajout de l'unité de prix après le prix -->
+    <xpath expr="//table[1]/thead/tr/th[3]" position="after">
+      <th>Unité Prix</th>
+    </xpath>
+    <!-- suppression quantité en unité de mesure -->
+    <!-- <xpath expr="//th[2]" position="replace"/> -->
+    <!-- ajout colonnes pièces, colis, palettes, poids -->
+    <xpath expr="//table[1]/thead/tr/th[1]" position="after">
+      <th>
+        <div>Nb Pièces/</div>
+        <div>Catégorie</div>
+      </th>
+      <th>
+        <div>Nb Colis/</div>
+        <div>Origine</div>
+      </th>
+      <th>
+        <div>Type Colis/</div>
+        <div>Marque</div>
+      </th>
+      <th>
+        <div>Poids Net/</div>
+        <div>Calibre</div>
+      </th>
+    </xpath>
+    <!-- Modification sur le contenu des colonnes -->
+    <!-- ajout de l'unité de prix après le prix -->
+    <xpath expr="//table[1]/tbody/t[2]/tr/t/td[3]" position="after">
+      <td>
+        <span t-field="l.di_un_prix" />
+      </td>
+    </xpath>
+    <!-- ajout colonnes pièces, colis, palettes, poids -->
+    <xpath expr="//table[1]/tbody/t[2]/tr/t/td[1]" position="after">
+      <td class="text-right">
+        <!-- on masque le nb pièces si prix au kg -->
+        <t t-if="l.di_un_prix != 'KG'">
+          <div t-field="l.di_nb_pieces" />
+          <div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
+        </t>
+        <t t-if="l.di_un_prix == 'KG'">
+          <div>&amp;nbsp;</div>
+          <div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
+        </t>
+      </td>
+      <td class="text-right">
+        <div t-field="l.di_nb_colis" />
+        <div t-field="l.product_id.product_tmpl_id.di_origine_id" />
+      </td>
+      <td>
+        <div t-field="l.product_packaging" />
+        <div t-field="l.product_id.product_tmpl_id.di_marque_id" />
+      </td>
+      <!-- <td class="text-right"> <span t-field="l.di_nb_palette"/> </td> <td> <span t-field="l.di_type_palette_id"/>
+        </td> -->
+      <td class="text-right">
+        <div t-field="l.di_poin" />
+        <div t-field="l.product_id.product_tmpl_id.di_calibre_id" />
+      </td>
+    </xpath>
+    <!-- suppression quantité en unité de mesure -->
+    <!-- <xpath expr="//td[2]" position="replace"/> -->
+  </template>
+  <!-- rapport permettant de lancer l'impression du bon de préparation depuis la commande client -->
+  <template id="di_report_po_bp">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="o">
+        <t t-set="picking" t-value="env['stock.picking']" />
+        <t t-set="so_picking" t-value="picking.search([('origin', '=', o.name)])" />
+        <t t-foreach="so_picking" t-as="pick">
+            <t t-foreach="range(pick.di_nbex)" t-as="n">
+              <t t-call="stock.report_picking">
+                <t t-set="docs" t-value="pick" />
+              </t>
+            </t>
+        </t>
+      </t>
+    </t>
+  </template>
+  <!-- déclaration rapport pour édition bon de préparation depuis commande client -->
     <report
         id="di_action_report_bp"
         string="Bon de préparation"
@@ -91,19 +91,19 @@
         file="difodoo_ventes.di_report_po_bp"
         print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
     />
-    
-	<!-- Pour impression avec plusieurs exemplaires -->
-	<template id="di_report_saleorder">	   
+
+  <!-- Pour impression avec plusieurs exemplaires -->
+  <template id="di_report_saleorder">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-foreach="range(doc.di_nbex)" t-as="n">
                     <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
                 </t>
             </t>
-        </t>            
+        </t>
     </template>
-    
-    <template id="di_report_saleorder_pro_forma">       
+
+    <template id="di_report_saleorder_pro_forma">
         <t t-call="web.html_container">
             <t t-set="is_pro_forma" t-value="True"/>
             <t t-foreach="docs" t-as="doc">
@@ -111,20 +111,20 @@
                     <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
                 </t>
             </t>
-        </t>           
+        </t>
     </template>
-    
-	<!-- On remplace l'action report standard en changeant le template utilisé pour mettre le notre -->
-	<report 
+
+  <!-- On remplace l'action report standard en changeant le template utilisé pour mettre le notre -->
+  <report
             id="sale.action_report_saleorder"
             string="Quotation / Order"
-            model="sale.order" 
+            model="sale.order"
             report_type="qweb-pdf"
-            file="difodoo_ventes.di_report_saleorder" 
+            file="difodoo_ventes.di_report_saleorder"
             name="difodoo_ventes.di_report_saleorder"
             print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
         />
-                  
+
     <report
         id="sale.action_report_pro_forma_invoice"
         string="PRO-FORMA Invoice"

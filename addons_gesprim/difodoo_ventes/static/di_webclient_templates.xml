@@ -2,11 +2,11 @@
 <odoo>
     <data>
     <!-- Adds all assets in Odoo -->
-        <template id="di_assets_backend" name="Backend Assets  surcharge (used in backend interface)" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
+        <!-- <template id="di_assets_backend" name="Backend Assets  surcharge (used in backend interface)" inherit_id="web.assets_backend">
+            <xpath expr="//script[last()]" position="after">
                 <script type="text/javascript" src="/difodoo_ventes/static/di_form_controller.js"></script>
-                <!-- <script type="text/javascript" src="/difodoo_fichiers_base/script/di_impression_client.js"></script> -->      
+                <script type="text/javascript" src="/difodoo_fichiers_base/script/di_impression_client.js"></script>      
             </xpath>
-        </template>
+        </template> -->
     </data>
 </odoo>

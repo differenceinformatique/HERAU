@@ -59,9 +59,9 @@
                 <field name="categ_id" filter_domain="[('categ_id', 'child_of', self)]"/>
                 <group expand="1" string="Group By">                   
                     <filter string="Catégorie produit" name="category_product" context="{'group_by':'categ_id','residual_invisible':True}"/>                   
-                    <filter string="Société" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                    <filter string="Société" name="societe" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
                     <separator orientation="vertical" />
-                    <filter string="Date" context="{'group_by':'date'}"/>
+                    <filter string="Date" name="filterdate" context="{'group_by':'date'}"/>
                 </group>
             </search>
         </field>

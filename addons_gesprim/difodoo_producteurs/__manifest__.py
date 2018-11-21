@@ -3,7 +3,7 @@
     'name': "difodoo_producteurs",
 
     'summary': """
-        difodoo_ventes""",
+        difodoo_producteurs""",
 
     'description': """
         Surcharge de difodoo pour intégrer les besoins producteurs
@@ -30,9 +30,9 @@
         'difodoo_ventes',
         'difodoo_achats',
         'difodoo_gesprim',
-        'web_sheet_full_width'
-        , 'report_intrastat'
-        , 'l10n_fr_sale_closing',
+#         'web_sheet_full_width'
+#         , 'report_intrastat'
+        'l10n_fr_sale_closing',
         'base_optional_quick_create',
         'eradicate_quick_create',
         ],

@@ -152,11 +152,11 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field eval="80" name="priority"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='number_of_packages']" position="after">                
+            <xpath expr="//field[@name='group_id']" position="after">                
                 <field name="di_nbex"/>                            
             </xpath>
             <xpath
-                expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']" position="before">
+                expr="//field[@name='move_ids_without_package']/tree//field[@name='product_uom_qty']" position="before">
                 <field invisible="1" name="di_spe_saisissable"/>
                 <field invisible="1" name="di_flg_modif_uom"/>
                 <field name="di_qte_un_saisie_init" readonly="1" string="Qté initiale unité saisie"/>

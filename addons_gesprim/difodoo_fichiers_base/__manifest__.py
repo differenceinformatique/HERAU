@@ -19,7 +19,25 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','product','sale_stock'],
+      'depends': [
+        'base',
+        'product',
+        'sale',
+        'sale_management',
+        'stock',
+        'sale_stock',
+        'delivery',                     
+        'purchase',
+        'sale_margin',
+        'account',                           
+        'l10n_fr_sale_closing',                                
+        'base_optional_quick_create',
+        'eradicate_quick_create',
+#         'web_sheet_full_width',   # pas utile en enterprise
+#         'prt_report_attachment_preview',
+#         'report_intrastat',# le module n'existe plus en v12
+        ],
+
 
     # always loaded
     'data': [

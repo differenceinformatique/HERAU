@@ -42,7 +42,7 @@
                     <field name="di_nbex"/>                                        
                 </xpath>
 				<!-- lignes en mode fiche -->
-				<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='product_uom_qty']"
+				<xpath expr="//field[@name='order_line']/form//label[@for='product_uom_qty']"
 					position="before">
 					<field name="di_spe_saisissable" invisible="1" force_save="1" />
 					<field name="di_qte_un_saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
@@ -95,15 +95,15 @@
 					position="replace" />
 				<xpath expr="//page/field[@name='order_line']/form/group/group/label[@for='qty_invoiced']"
 					position="replace" />
-				<xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='purchase_price']"
-					position="replace" />
-				<xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='tax_id']"
+				<xpath expr="//field[@name='order_line']/form//field[@name='purchase_price']" position="attributes" >
+				    <attribute name="invisible">1</attribute>	
+				</xpath>
+				<xpath expr="//page/field[@name='order_line']/form//field[@name='tax_id']"
 					position="after">
-					<label for="qty_delivered" string="Quantité Livrée"
-						attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}" />
-					<div attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}">
-						<field name="qty_delivered" attrs="{'readonly': [('qty_delivered_updateable', '=', False)]}" />
-					</div>
+					   <label for="qty_delivered" string="Delivered Quantity" attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                                            <div attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}">
+                                                <field name="qty_delivered" attrs="{'readonly': [('qty_delivered_method', '!=', 'manual')]}"/>
+                                            </div>
 					<field name="di_qte_un_saisie_liv" readonly="1" invisible="1" />
 					<label for="qty_invoiced" string="Quantité Facturée"
 						attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}" />
@@ -112,7 +112,7 @@
 					</div>
 					<field name="di_qte_un_saisie_fac" readonly="1" invisible="1" />
 					<field name="di_marge_prc" groups="base.group_user" />
-					<field name="purchase_price" invisible="1" groups="base.group_user" />
+					<!-- <field name="purchase_price" invisible="1" groups="base.group_user" /> -->
 				</xpath>
 				<!-- lignes en mode liste -->
 				<xpath expr="//field[@name='order_line']/tree" position="attributes"> 
@@ -127,20 +127,20 @@
 				<!-- suppression champs pour déplacement -->
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_delivered']" position="replace" />
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='qty_invoiced']" position="replace" />
-				<xpath expr="//page/field[@name='order_line']/tree/field[@name='purchase_price']"
-					position="replace" />
+				<xpath expr="//field[@name='order_line']/tree//field[@name='purchase_price']" position="attributes" >
+					<attribute name="invisible">1</attribute>
+				</xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']"
 					position="after">
 					<field name="di_flg_modif_uom" invisible="1" />
-					<field name="qty_delivered"
-						attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])], 'readonly': [('qty_delivered_updateable', '=', False)]}" />
+					<field name="qty_delivered" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])],'readonly': [('qty_delivered_method', '!=', 'manual')]}" />
 					<field name="di_qte_un_saisie_liv" readonly="1" invisible="1" />
 					<field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}" />
 					<field name="di_qte_un_saisie_fac" readonly="1" invisible="1" />
 					<field name="di_marge_prc" groups="base.group_user" />
-					<field name="purchase_price" invisible="1" groups="base.group_user" />
+					<!-- <field name="purchase_price" invisible="1" groups="base.group_user" /> -->
 				</xpath>
-				<xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="after">				
+				<xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="after">				
 				    <field name="di_marge_inf_seuil" invisible="1" force_save="1" />
 					<field name="di_spe_saisissable" invisible="1" force_save="1" />
 					<field name="di_qte_un_saisie" string="Qté unité saisie"
