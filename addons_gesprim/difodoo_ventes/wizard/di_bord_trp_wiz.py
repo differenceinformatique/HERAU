@@ -20,7 +20,7 @@ class DiBordTrpWiz(models.TransientModel):
     @api.multi
     def edit_bordereau(self):
         # on récupère les livraisons du jour
-        wdate       = datetime.datetime.strptime(self.date_sel,'%Y-%m-%d').date()
+        wdate       = self.date_sel.date()
         date_deb    = datetime.datetime(wdate.year,wdate.month,wdate.day,0,0,0,0).strftime("%Y-%m-%d %H:%M:%S")
         date_fin    = datetime.datetime(wdate.year,wdate.month,wdate.day,23,59,59,0).strftime("%Y-%m-%d %H:%M:%S")
         stock_pickings1 = self.env['stock.picking'].search([('date_done','>',date_deb),('date_done','<',date_fin)])

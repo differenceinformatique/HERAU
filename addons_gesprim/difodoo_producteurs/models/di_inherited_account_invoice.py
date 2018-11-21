@@ -12,7 +12,7 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
    
 
-    def _prepare_invoice_line_from_po_line(self, line):
+    def _prepare_invoice_line_from_po_line(self, line): # revoir v12
         # copie standard
         #Copie du standard pour ajouter des éléments dans data
         if line.product_id.purchase_method == 'purchase':
@@ -30,6 +30,7 @@ class AccountInvoice(models.Model):
         taxes = line.taxes_id
         invoice_line_tax_ids = line.order_id.fiscal_position_id.map_tax(taxes)
         invoice_line = self.env['account.invoice.line']
+        date = self.date or self.date_invoice
         data = {
             'purchase_line_id': line.id,
             'name': line.order_id.name+': '+line.name,
@@ -37,7 +38,8 @@ class AccountInvoice(models.Model):
             'uom_id': line.product_uom.id,
             'product_id': line.product_id.id,
             'account_id': invoice_line.with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
-            'price_unit': line.order_id.currency_id.with_context(date=self.date_invoice).compute(line.price_unit, self.currency_id, round=False),
+            'price_unit': line.order_id.currency_id._convert(
+                line.price_unit, self.currency_id, line.company_id, date or fields.Date.today(), round=False),
             'quantity': qty,
             'discount': 0.0,
             'account_analytic_id': line.account_analytic_id.id,
@@ -99,7 +101,6 @@ class AccountInvoiceLine(models.Model):
             else:
                 self.di_prc_com_OP = param.di_prc_com_sans_court
                 
-#     @api.one
     @api.onchange('di_courtier_id')
     def _di_charger_prc_court(self):
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])

@@ -12,22 +12,23 @@ class DiPayerComWiz(models.TransientModel):
 #     di_date_deb = fields.Date(string="Date de début")
 #     di_date_fin = fields.Date(string="Date de fin")
     
-    @api.one
+    @api.multi
     def di_generer_factures(self):
-        sol = self.env['sale.order.line'].search(['&',('di_courtier_id','!=',False),('di_prc_com_court','!=',0.0),('di_flg_com','!=',True),('invoice_lines','!=',False),('invoice_lines.invoice_id.state','!=','cancel')]).sorted(key=lambda l: l.di_courtier_id)                 
-        courtier = False
-        montant = 0.0
-        if sol:
-            for line in sol:
-                if line.di_courtier_id != courtier and courtier!= False :   
-                    self.ecrire_facture(courtier,montant)
-                    montant = 0.0                                                         
-                montant += sum([il.price_total for il in line.invoice_lines if il.price_subtotal_signed >=0.0])
-                montant -= sum([il.price_total for il in line.invoice_lines if il.price_subtotal_signed <0.0])                             
-                courtier = line.di_courtier_id                    
-            self.ecrire_facture(courtier,montant)
-            sol.update({'di_flg_com':True})
-    # TODO : flaguer les lignes de commandes
+        for payer in self:
+            sol = self.env['sale.order.line'].search(['&',('di_courtier_id','!=',False),('di_prc_com_court','!=',0.0),('di_flg_com','!=',True),('invoice_lines','!=',False),('invoice_lines.invoice_id.state','!=','cancel')]).sorted(key=lambda l: l.di_courtier_id)                 
+            courtier = False
+            montant = 0.0
+            if sol:
+                for line in sol:
+                    if line.di_courtier_id != courtier and courtier!= False :   
+                        payer.ecrire_facture(courtier,montant)
+                        montant = 0.0                                                         
+                    montant += sum([il.price_total for il in line.invoice_lines if il.price_subtotal_signed >=0.0])
+                    montant -= sum([il.price_total for il in line.invoice_lines if il.price_subtotal_signed <0.0])                             
+                    courtier = line.di_courtier_id                    
+                payer.ecrire_facture(courtier,montant)
+                sol.update({'di_flg_com':True})
+        # TODO : flaguer les lignes de commandes
 
     def ecrire_facture(self,courtier,montant):      
         invoice = self.env['account.invoice']

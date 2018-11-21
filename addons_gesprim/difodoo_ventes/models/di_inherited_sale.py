@@ -66,26 +66,28 @@ class SaleOrderLine(models.Model):
 #         
 #     def di_get_param_by_company_id(self,company_id):    
 #         return self.env['di.param'].search(['di_company_id','=',company_id],limit=1) 
-    @api.one
+    @api.multi
     @api.depends('di_marge_prc','company_id.di_param_id.di_seuil_marge_prc')#,'di_param_id.di_seuil_marge_prc')
     def _di_compute_marge_seuil(self):   
-        if self.di_marge_prc < self.company_id.di_param_id.di_seuil_marge_prc:     
-            self.di_marge_inf_seuil = True
-        else:
-            self.di_marge_inf_seuil = False
+        for sol in self:
+            if sol.di_marge_prc < sol.company_id.di_param_id.di_seuil_marge_prc:     
+                sol.di_marge_inf_seuil = True
+            else:
+                sol.di_marge_inf_seuil = False
             
     
-    @api.one
+    @api.multi
     @api.depends('price_subtotal','product_uom_qty','purchase_price')
     def _di_calul_marge_prc(self):
-        if self.product_uom_qty and self.product_uom_qty != 0.0:
-            qte = self.product_uom_qty
-        else:
-            qte = 1.0
-        if self.purchase_price and self.purchase_price !=0.0:
-            self.di_marge_prc = (self.price_subtotal/qte - self.purchase_price )*100/self.purchase_price            
-        else:
-            self.di_marge_prc = self.price_subtotal/qte*100
+        for sol in self:
+            if sol.product_uom_qty and sol.product_uom_qty != 0.0:
+                qte = sol.product_uom_qty
+            else:
+                qte = 1.0
+            if sol.purchase_price and sol.purchase_price !=0.0:
+                sol.di_marge_prc = (sol.price_subtotal/qte - sol.purchase_price )*100/sol.purchase_price            
+            else:
+                sol.di_marge_prc = sol.price_subtotal/qte*100
         
         
     def _get_dernier_prix(self):
@@ -101,10 +103,11 @@ class SaleOrderLine(models.Model):
         self.di_tare = (self.di_type_palette_id.di_poids * self.di_nb_palette) + (self.product_packaging.di_poids * self.di_nb_colis)
     
     
-    @api.one
+    @api.multi
     @api.depends('product_id','order_partner_id','order_id.date_order')
     def _di_compute_dernier_prix(self):        
-        self.di_dern_prix =self._get_dernier_prix()
+        for sol in self:
+            sol.di_dern_prix =sol._get_dernier_prix()
             
 #     @api.model
 #     def create(self, vals):         
@@ -123,10 +126,11 @@ class SaleOrderLine(models.Model):
 #                 raise ValidationError("Le prix unitaire de la ligne est à 0 !")
         return prixFinal  
                        
-    @api.one
+    @api.multi
     @api.depends('product_id.di_spe_saisissable','product_id','di_qte_un_saisie')
-    def _di_compute_spe_saisissable(self):        
-        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+    def _di_compute_spe_saisissable(self):     
+        for sol in self:   
+            sol.di_spe_saisissable =sol.product_id.di_spe_saisissable
      
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
@@ -156,7 +160,7 @@ class SaleOrderLine(models.Model):
                 'price_total': taxes['total_included'],
                 'price_subtotal': taxes['total_excluded'],
             })
-    
+       
     @api.multi
     def _get_qte_un_saisie_liv(self):
         self.ensure_one()        
@@ -418,82 +422,82 @@ class SaleOrderLine(models.Model):
                         self.di_nb_palette = self.di_nb_colis
                     self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                 
-    @api.one
+    @api.multi
     @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
     def _compute_qte_aff(self):
         #if self.ensure_one():
-        
-        if self.di_flg_modif_uom == False:
-            if self.di_un_saisie == "PIECE":
-                self.di_nb_pieces = ceil(self.di_qte_un_saisie)            
-                if self.product_packaging.qty != 0.0 :
-                    self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
+        for sol in self:
+            if sol.di_flg_modif_uom == False:
+                if sol.di_un_saisie == "PIECE":
+                    sol.di_nb_pieces = ceil(sol.di_qte_un_saisie)            
+                    if sol.product_packaging.qty != 0.0 :
+                        sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
+                    else:      
+                        sol.di_nb_colis = ceil(sol.product_uom_qty)             
+                    if sol.di_type_palette_id.di_qte_cond_inf != 0.0:
+                        sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
+                    else:
+                        sol.di_nb_palette = sol.di_nb_colis
+                    sol.di_poin = sol.product_uom_qty * sol.product_id.weight             
+                            
+                elif sol.di_un_saisie == "COLIS":
+                    sol.di_nb_colis = ceil(sol.di_qte_un_saisie)            
+                    sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)
+                    if sol.di_type_palette_id.di_qte_cond_inf !=0.0:                
+                        sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
+                    else:
+                        sol.di_nb_palette = sol.di_nb_colis
+                    sol.di_poin = sol.product_uom_qty * sol.product_id.weight             
+                                           
+                elif sol.di_un_saisie == "PALETTE":            
+                    sol.di_nb_palette = sol.di_qte_un_saisie
+                    if sol.di_type_palette_id.di_qte_cond_inf!=0.0:
+                        sol.di_nb_colis = ceil(sol.di_nb_palette / sol.di_type_palette_id.di_qte_cond_inf)
+                    else:
+                        sol.di_nb_colis = ceil(sol.di_nb_palette)
+                    sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)            
+                    sol.di_poin = sol.product_uom_qty * sol.product_id.weight             
+                      
+                elif sol.di_un_saisie == "KG":
+    
+                    sol.di_poin = sol.di_qte_un_saisie                        
+                    if sol.product_packaging.qty !=0.0:
+                        sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
+                    else:
+                        sol.di_nb_colis = ceil(sol.product_uom_qty)
+                    if sol.di_type_palette_id.di_qte_cond_inf !=0.0:    
+                        sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
+                    else:  
+                        sol.di_nb_palette = sol.di_nb_colis
+                    sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)
+                      
+                else:
+                    sol.di_poin = sol.di_qte_un_saisie            
+                    sol.product_uom_qty = sol.di_poin
+                    if sol.product_packaging.qty !=0.0:
+                        sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
+                    else:
+                        sol.di_nb_colis = ceil(sol.product_uom_qty)
+                    if sol.di_type_palette_id.di_qte_cond_inf !=0.0:    
+                        sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
+                    else:  
+                        sol.di_nb_palette = sol.di_nb_colis
+                    sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)
+            else:           
+                if sol.product_id.di_get_type_piece().qty != 0.0:
+                    sol.di_nb_pieces = ceil(sol.product_uom_qty/sol.product_id.di_get_type_piece().qty)
+                else:
+                    sol.di_nb_pieces = ceil(sol.product_uom_qty)                                
+                if sol.product_packaging.qty != 0.0 :
+                    sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
                 else:      
-                    self.di_nb_colis = ceil(self.product_uom_qty)             
-                if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                    sol.di_nb_colis = ceil(sol.product_uom_qty)             
+                if sol.di_type_palette_id.di_qte_cond_inf != 0.0:
+                    sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
                 else:
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_poin = self.product_uom_qty * self.product_id.weight             
-                        
-            elif self.di_un_saisie == "COLIS":
-                self.di_nb_colis = ceil(self.di_qte_un_saisie)            
-                self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
-                if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                else:
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_poin = self.product_uom_qty * self.product_id.weight             
-                                       
-            elif self.di_un_saisie == "PALETTE":            
-                self.di_nb_palette = self.di_qte_un_saisie
-                if self.di_type_palette_id.di_qte_cond_inf!=0.0:
-                    self.di_nb_colis = ceil(self.di_nb_palette / self.di_type_palette_id.di_qte_cond_inf)
-                else:
-                    self.di_nb_colis = ceil(self.di_nb_palette)
-                self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)            
-                self.di_poin = self.product_uom_qty * self.product_id.weight             
-                  
-            elif self.di_un_saisie == "KG":
-
-                self.di_poin = self.di_qte_un_saisie                        
-                if self.product_packaging.qty !=0.0:
-                    self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
-                else:
-                    self.di_nb_colis = ceil(self.product_uom_qty)
-                if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                else:  
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
-                  
-            else:
-                self.di_poin = self.di_qte_un_saisie            
-                self.product_uom_qty = self.di_poin
-                if self.product_packaging.qty !=0.0:
-                    self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
-                else:
-                    self.di_nb_colis = ceil(self.product_uom_qty)
-                if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                else:  
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
-        else:           
-            if self.product_id.di_get_type_piece().qty != 0.0:
-                self.di_nb_pieces = ceil(self.product_uom_qty/self.product_id.di_get_type_piece().qty)
-            else:
-                self.di_nb_pieces = ceil(self.product_uom_qty)                                
-            if self.product_packaging.qty != 0.0 :
-                self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
-            else:      
-                self.di_nb_colis = ceil(self.product_uom_qty)             
-            if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-            else:
-                self.di_nb_palette = self.di_nb_colis
-            self.di_poin = self.product_uom_qty * self.product_id.weight 
-            self.di_poib = self.di_poin + self.di_tare
+                    sol.di_nb_palette = sol.di_nb_colis
+                sol.di_poin = sol.product_uom_qty * sol.product_id.weight 
+                sol.di_poib = sol.di_poin + sol.di_tare
             
     @api.multi
     def _check_package(self):    
@@ -507,18 +511,21 @@ class SaleOrderLine(models.Model):
         #surcharge pour enlever la remise à 0 de product_packaging
         if self.product_id.type == 'product':
             precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-            product = self.product_id.with_context(warehouse=self.order_id.warehouse_id.id)
+            product = self.product_id.with_context(warehouse=self.order_id.warehouse_id.id,lang=self.order_id.partner_id.lang or self.env.user.lang or 'en_US')
             product_qty = self.product_uom._compute_quantity(self.product_uom_qty, self.product_id.uom_id)
             if float_compare(product.virtual_available, product_qty, precision_digits=precision) == -1:
                 is_available = self._check_routing()
                 if not is_available:
-                    message =  _('You plan to sell %s %s but you only have %s %s available in %s warehouse.') % \
-                            (self.product_uom_qty, self.product_uom.name, product.virtual_available, product.uom_id.name, self.order_id.warehouse_id.name)
+                    message =  _('You plan to sell %s %s of %s but you only have %s %s available in %s warehouse.') % \
+                            (self.product_uom_qty, self.product_uom.name, self.product_id.name, product.virtual_available, product.uom_id.name, self.order_id.warehouse_id.name)
                     # We check if some products are available in other warehouses.
                     if float_compare(product.virtual_available, self.product_id.virtual_available, precision_digits=precision) == -1:
-                        message += _('\nThere are %s %s available accross all warehouses.') % \
+                        message += _('\nThere are %s %s available across all warehouses.\n\n') % \
                                 (self.product_id.virtual_available, product.uom_id.name)
-
+                        for warehouse in self.env['stock.warehouse'].search([]):
+                            quantity = self.product_id.with_context(warehouse=warehouse.id).virtual_available
+                            if quantity > 0:
+                                message += "%s: %s %s\n" % (warehouse.name, quantity, self.product_id.uom_id.name)
                     warning_mess = {
                         'title': _('Not enough inventory!'),
                         'message' : message
@@ -681,74 +688,78 @@ class SaleOrder(models.Model):
 #         self.di_liste_taxes = taxes
         
     
-    @api.multi
-    def _get_tax_amount_by_group(self):
+    def _amount_by_group(self):
         # copie standard
-        self.ensure_one()
-        res = {}
-        for line in self.order_line:
-            # modif de la quantité à prendre en compte            
-            di_qte_prix = 0.0
-            if line.di_un_prix == "PIECE":
-                di_qte_prix = line.di_nb_pieces
-            elif line.di_un_prix == "COLIS":
-                di_qte_prix = line.di_nb_colis
-            elif line.di_un_prix == "PALETTE":
-                di_qte_prix = line.di_nb_palette
-            elif line.di_un_prix == "KG":
-                di_qte_prix = line.di_poin
-            elif line.di_un_prix == False or line.di_un_prix == '':
-                di_qte_prix = line.product_uom_qty 
-            base_tax = 0
-#   J'enlève un morceau du standard pour le remplacer afin de pouvoir afficher les taxes spé sur les impressions de commande           
-#             for tax in line.tax_id:
-#                 group = tax.tax_group_id
-#                 res.setdefault(group, {'amount': 0.0, 'base': 0.0})
-#                 # FORWARD-PORT UP TO SAAS-17
-#                 price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
-#                 taxes = tax.compute_all(price_reduce + base_tax, quantity=di_qte_prix,
-#                                          product=line.product_id, partner=self.partner_shipping_id)['taxes']
-#                 for t in taxes:
-#                     res[group]['amount'] += t['amount']
-#                     res[group]['base'] += t['base']
-#                 if tax.include_base_amount:
-#                     base_tax += tax.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,
-#                                                 partner=self.partner_shipping_id)['taxes'][0]['amount']
-#         res = sorted(res.items(), key=lambda l: l[0].sequence)
-#         res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]
-            price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
-            # Lecture de toutes  les taxes  de la ligne, y compris les taxes spé 
-            taxes = line.tax_id.compute_all(price_reduce + base_tax, quantity=di_qte_prix,product=line.product_id, partner=self.partner_shipping_id)['taxes']
-            for tax in taxes: # parcous des taxes trouvées
-                di_taxe = self.env['account.tax'].browse(tax['id'])# recherche de l'enreg de la taxe
-                group = di_taxe.tax_group_id
-                res.setdefault(group, {'amount': 0.0, 'base': 0.0})
-                #ajout des montants par groupe
-                res[group]['amount'] += tax['amount']
-                res[group]['base'] += tax['base']
-                if di_taxe.include_base_amount:
-                    base_tax += di_taxe.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,partner=self.partner_shipping_id)['taxes'][0]['amount']                                            
-        res = sorted(res.items(), key=lambda l: l[0].sequence)
-        res = [(l[0].name, l[1]['amount'], l[1]['base'], len(res)) for l in res]   
-        return res                         
+        for order in self:
+            currency = order.currency_id or order.company_id.currency_id
+            fmt = partial(formatLang, self.with_context(lang=order.partner_id.lang).env, currency_obj=currency)
+            res = {}
+            for line in order.order_line:
+                # modif de la quantité à prendre en compte
+                di_qte_prix = 0.0
+                if line.di_un_prix == "PIECE":
+                    di_qte_prix = line.di_nb_pieces
+                elif line.di_un_prix == "COLIS":
+                    di_qte_prix = line.di_nb_colis
+                elif line.di_un_prix == "PALETTE":
+                    di_qte_prix = line.di_nb_palette
+                elif line.di_un_prix == "KG":
+                    di_qte_prix = line.di_poin
+                elif line.di_un_prix == False or line.di_un_prix == '':
+                    di_qte_prix = line.product_uom_qty
+                    
+                price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+                # Lecture de toutes  les taxes  de la ligne, y compris les taxes spé
+                taxes = line.tax_id.compute_all(price_reduce, quantity=di_qte_prix, product=line.product_id, partner=order.partner_shipping_id)['taxes']
+#   J'enlève un morceau du standard pour le remplacer afin de pouvoir afficher les taxes spé sur les impressions de commande
+#                 for tax in line.tax_id:
+#                     group = tax.tax_group_id
+#                     res.setdefault(group, {'amount': 0.0, 'base': 0.0})
+#                     for t in taxes:
+#                         if t['id'] == tax.id or t['id'] in tax.children_tax_ids.ids:
+#                             res[group]['amount'] += t['amount']
+#                             res[group]['base'] += t['base']
+#             res = sorted(res.items(), key=lambda l: l[0].sequence)
+#             order.amount_by_group = [(
+#                 l[0].name, l[1]['amount'], l[1]['base'],
+#                 fmt(l[1]['amount']), fmt(l[1]['base']),
+#                 len(res),
+#             ) for l in res]
+
+                for tax in taxes: # parcous des taxes trouvées
+                    di_taxe = self.env['account.tax'].browse(tax['id'])# recherche de l'enreg de la taxe
+                    group = di_taxe.tax_group_id
+                    res.setdefault(group, {'amount': 0.0, 'base': 0.0})
+                    #ajout des montants par groupe
+                    res[group]['amount'] += tax['amount']
+                    res[group]['base'] += tax['base']
+                    if di_taxe.include_base_amount:
+                        base_tax += di_taxe.compute_all(price_reduce + base_tax, quantity=1, product=line.product_id,partner=self.partner_shipping_id)['taxes'][0]['amount']                                            
+            res = sorted(res.items(), key=lambda l: l[0].sequence)
+            order.amount_by_group = [(
+                l[0].name, l[1]['amount'], l[1]['base'],
+                fmt(l[1]['amount']), fmt(l[1]['base']),
+                len(res),
+            ) for l in res]
+                   
     
     @api.multi
     @api.onchange('di_livdt')
     def modif_livdt(self):
-        if datetime.strptime(self.di_livdt,'%Y-%m-%d').date()<datetime.today().date():
+        if self.di_livdt.date()<datetime.today().date():
             return {'warning': {'Erreur date livraison': _('Error'), 'message': _('La date de livraison ne peut être inférieure à la date du jour !'),},}       
-        self.di_prepdt = datetime.strptime(self.di_livdt,'%Y-%m-%d').date() + timedelta(days=-1)
-        if datetime.strptime(self.di_prepdt,'%Y-%m-%d').date()<datetime.today().date():
+        self.di_prepdt = self.di_livdt.date() + timedelta(days=-1)
+        if self.di_prepdt.date()<datetime.today().date():
             self.di_prepdt=datetime.today().date()
-        self.requested_date = datetime.strptime(self.di_livdt,'%Y-%m-%d')
+        self.requested_date = self.di_livdt
      
     @api.multi
     @api.onchange('di_prepdt')
     def modif_prepdt(self):
-        if datetime.strptime(self.di_prepdt,'%Y-%m-%d').date()<datetime.today().date():
+        if self.di_prepdt.date()<datetime.today().date():
             return {'warning': {'Erreur date préparation': _('Error'), 'message': _('La date de préparation ne peut être inférieure à la date du jour !'),},}
-        self.di_livdt = datetime.strptime(self.di_prepdt,'%Y-%m-%d').date() + timedelta(days=1)
-        self.requested_date = datetime.strptime(self.di_livdt,'%Y-%m-%d')
+        self.di_livdt = self.di_prepdt.date() + timedelta(days=1)
+        self.requested_date = self.di_livdt
      
     def _force_lines_to_invoice_policy_order(self):
         super(SaleOrder, self)._force_lines_to_invoice_policy_order()
@@ -870,13 +881,6 @@ class SaleOrder(models.Model):
                 })
                 
                 
-    @api.multi
-    def _action_confirm(self): 
-        # copie standard  pour ne pas confirmer une commande sans ligne
-#         if self.order_line :
-        super(SaleOrder, self)._action_confirm()
-        
-        return True
 
     @api.multi
     @api.onchange('partner_id')

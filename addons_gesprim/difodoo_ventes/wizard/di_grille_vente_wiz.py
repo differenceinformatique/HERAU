@@ -41,7 +41,7 @@ class DiGrilleVenteWiz(models.TransientModel):
         partner_id = order.partner_id
         res['di_order_id']=order.id
                 
-        lines= self.env['sale.order.line'].search(['&',('company_id','=',self.env.user.company_id.id),('order_id.partner_id','=',partner_id.id)]).filtered(lambda l: datetime.strptime(l.order_id.date_order,'%Y-%m-%d %H:%M:%S')>=date_debut_horizon)
+        lines= self.env['sale.order.line'].search(['&',('company_id','=',self.env.user.company_id.id),('order_id.partner_id','=',partner_id.id)]).filtered(lambda l: l.order_id.date_order>=date_debut_horizon)
         liste_articles_ids=[]
         for line in lines:
             liste_articles_ids.append(line.product_id.id)            

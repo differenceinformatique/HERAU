@@ -20,10 +20,11 @@ class DiCout(models.Model):
     di_mont = fields.Float(string="Valorisation du stock")
     di_date = fields.Date(string="Date coût")
     
-    @api.one
+    @api.multi
     @api.depends('di_product_id', 'di_date')
     def _compute_name(self):
-        self.name = self.di_product_id.display_name + ' ' + datetime.strptime(self.di_date,'%Y-%m-%d').strftime('%d/%m/%Y')
+        for cout in self:
+            cout.name = cout.di_product_id.display_name + ' ' + cout.di_date.strftime('%d/%m/%Y')
         
     def di_get_cout_uom(self, product_id, date):        
         dernier_mouv_achat = self.env['purchase.order.line'].new()
@@ -34,7 +35,7 @@ class DiCout(models.Model):
             # date de commande inférieure ou égale à la date saisie
             
             mouvs_achat = self.env['purchase.order.line'].search([('product_id', '=', product_id), ('price_total', '!=', 0.0), ('state', '=', 'purchase')]) \
-            .filtered(lambda m: datetime.strptime(m.order_id.date_order, '%Y-%m-%d %H:%M:%S').date() <= date) \
+            .filtered(lambda m: m.order_id.date_order.date() <= date) \
             .sorted(key=lambda m: m.order_id.date_order, reverse=True)
             
              

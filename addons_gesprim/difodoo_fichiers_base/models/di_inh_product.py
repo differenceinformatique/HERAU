@@ -62,21 +62,23 @@ class ProductTemplate(models.Model):
         action['context'] = [('default_product_id', '=', product.id)]
         return action
     
-    @api.one
+    @api.multi
     @api.depends('di_un_saisie', 'di_un_prix')
     def _di_compute_spe_saisissable(self):
-        if self.di_un_prix is not False or self.di_un_saisie is not False : # ????
-            self.di_spe_saisissable =True
-        else:
-            self.di_spe_saisissable=False
+        for prod in self:
+            if prod.di_un_prix is not False or prod.di_un_saisie is not False : # ????
+                prod.di_spe_saisissable =True
+            else:
+                prod.di_spe_saisissable=False
             
-    @api.one
+    @api.multi
     @api.depends('company_id')
     def _di_compute_seq_art(self):
-        if self.company_id and self.company_id.di_param_id:
-            self.di_param_seq_art = self.company_id.di_param_id.di_seq_art
-        else:
-            self.di_param_seq_art = False          
+        for prod in self:
+            if prod.company_id and prod.company_id.di_param_id:
+                prod.di_param_seq_art = prod.company_id.di_param_id.di_seq_art
+            else:
+                prod.di_param_seq_art = False          
     
 #     @api.multi
 #     def write(self, vals):
@@ -144,15 +146,16 @@ class ProductProduct(models.Model):
         return ProductPack
     
     #unicité du code article
-    @api.one
+    @api.multi
     @api.constrains('default_code')
     def _check_default_code(self):
-        if self.default_code:
-            default_code = self.search([
-                ('id', '!=', self.id),
-                ('default_code', '=', self.default_code)], limit=1)
-            if default_code:
-                raise Warning("Le code existe déjà.")
+        for prod in self:
+            if prod.default_code:
+                default_code = prod.search([
+                    ('id', '!=', prod.id),
+                    ('default_code', '=', prod.default_code)], limit=1)
+                if default_code:
+                    raise Warning("Le code existe déjà.")
                      
     @api.multi
     def write(self, vals):     
@@ -205,11 +208,12 @@ class ProductPackaging(models.Model):
         if self._context.get('default_product_id'):
             self.product_id = self._context['default_product_id']
     
-    @api.one
+    @api.multi
     @api.depends('product_id', 'name')
     def _di_compute_search_name(self):
-        if self.product_id and self.name:
-            self.di_search_name = self.product_id.default_code + "_" + self.name            
+        for pack in self:
+            if pack.product_id and pack.name:
+                pack.di_search_name = pack.product_id.default_code + "_" + pack.name            
         
     @api.onchange('di_type_cond', 'di_type_cond_inf_id', 'di_qte_cond_inf')
     def onchange_recalc_colisage(self):    #TODO à faire à l'écriture car les enregs ne sont pas à jour tant que l'article n'est pas sauvegardé
@@ -222,21 +226,23 @@ class ProductPackaging(models.Model):
                    
     
     #vérifie qu'on a un seul conditionnement pièce par article
-    @api.one
+    @api.multi
     @api.constrains('product_id','di_type_cond')
     def _check_cond_piece_article(self):
-        if self.di_type_cond=="PIECE":
-            ProductPack = self.search([('name','!=',self.name),('product_id', '=', self.product_id.id),('di_type_cond', '=', "PIECE")], limit=1)        
-            if ProductPack:
-                raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements de type Pièce pour un même article.") 
+        for pack in self:
+            if pack.di_type_cond=="PIECE":
+                ProductPack = pack.search([('name','!=',pack.name),('product_id', '=', pack.product_id.id),('di_type_cond', '=', "PIECE")], limit=1)        
+                if ProductPack:
+                    raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements de type Pièce pour un même article.") 
 
     #vérifie l'unicité du nom du conditionnement pour un article
-    @api.one
+    @api.multi
     @api.constrains('name')
     def _check_nom_unique_article(self):
-        ProductPack = self.search([('name','=',self.name),('product_id', '=', self.product_id.id),('id','!=',self.id)], limit=1)        
-        if ProductPack:
-            raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements avec le même nom pour un même article.") 
+        for pack in self:
+            ProductPack = pack.search([('name','=',pack.name),('product_id', '=', pack.product_id.id),('id','!=',pack.id)], limit=1)        
+            if ProductPack:
+                raise Warning("Vous ne pouvez pas avoir plusieurs conditionnements avec le même nom pour un même article.") 
     
     # on définie la fonction name_search pour améliorer l'import excel     
     @api.model

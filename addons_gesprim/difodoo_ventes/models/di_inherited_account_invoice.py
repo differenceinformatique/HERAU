@@ -57,12 +57,15 @@ class AccountInvoice(models.Model):
                 tax_line['tag_ids'] = TAX.browse(tax_line['id']).tag_ids.ids
             tax_datas[line.id] = tax_lines
         return tax_datas
+   
     
     @api.multi
     def get_taxes_values(self):  
         # copie standard          
         tax_grouped = {}
         for line in self.invoice_line_ids:
+            if not line.account_id:
+                continue
             # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
            
@@ -90,7 +93,8 @@ class AccountInvoice(models.Model):
                     tax_grouped[key]['amount'] += val['amount']
                     tax_grouped[key]['base'] += val['base']
         return tax_grouped
-
+    
+    
     def _prepare_invoice_line_from_po_line(self, line):
         # copie standard
         #Copie du standard pour ajouter des éléments dans data
@@ -170,59 +174,39 @@ class AccountInvoiceLine(models.Model):
 #             if prixOrig == 0.0:
 #                 raise Warning("Le prix unitaire de la ligne est à 0 !")
         return prixFinal 
-    @api.one
+    
+    @api.multi
     @api.depends('product_id.di_spe_saisissable')
-    def _di_compute_spe_saisissable(self):        
-        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+    def _di_compute_spe_saisissable(self):
+        for aol in self:        
+            aol.di_spe_saisissable =aol.product_id.di_spe_saisissable
      
  
-     
-#     di_qte_un_saisie_init = fields.Float(related="sale_line_id.di_qte_un_saisie")
-#     di_un_saisie_init = fields.Selection(related="sale_line_id.di_un_saisie")
-#     di_type_palette_init = fields.Many2one(related="sale_line_id.di_type_palette_id") 
-#     di_nb_pieces_init = fields.Integer(related="sale_line_id.di_nb_pieces")
-#     di_nb_colis_init = fields.Integer(related="sale_line_id.di_nb_colis")
-#     di_nb_palette_init = fields.Float(related="sale_line_id.di_nb_palette")
-#     di_poin_init = fields.Float(related="sale_line_id.di_poin")
-#     di_poib_init = fields.Float(related="sale_line_id.di_poib")
-#     di_tare_init = fields.Float(related="sale_line_id.di_tare")
-#     product_packaging_init = fields.Many2one(related="sale_line_id.di_product_packaging_id")    
-    
- 
-    @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
-        'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
-        'invoice_id.date_invoice')
-    def _compute_total_price(self):
-        # copie standard
-        for line in self:
-            # modif de la quantité à prendre en compte
-            di_qte_prix = 0.0
-            if line.di_un_prix == "PIECE":
-                di_qte_prix = line.di_nb_pieces
-            elif line.di_un_prix == "COLIS":
-                di_qte_prix = line.di_nb_colis
-            elif line.di_un_prix == "PALETTE":
-                di_qte_prix = line.di_nb_palette
-            elif line.di_un_prix == "KG":
-                di_qte_prix = line.di_poin
-            elif line.di_un_prix == False or line.di_un_prix == '':
-                di_qte_prix = line.quantity
-            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            taxes = line.invoice_line_tax_ids.compute_all(price, line.invoice_id.currency_id, di_qte_prix, product=line.product_id, partner=line.invoice_id.partner_id)
-            line.price_total = taxes['total_included']
+ # n'existe plus en v12
+#     @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
+#         'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
+#         'invoice_id.date_invoice')
+#     def _compute_total_price(self):
+#         for line in self:
+#             # modif de la quantité à prendre en compte
+#             di_qte_prix = 0.0
+#             if line.di_un_prix == "PIECE":
+#                 di_qte_prix = line.di_nb_pieces
+#             elif line.di_un_prix == "COLIS":
+#                 di_qte_prix = line.di_nb_colis
+#             elif line.di_un_prix == "PALETTE":
+#                 di_qte_prix = line.di_nb_palette
+#             elif line.di_un_prix == "KG":
+#                 di_qte_prix = line.di_poin
+#             elif line.di_un_prix == False or line.di_un_prix == '':
+#                 di_qte_prix = line.quantity
+#             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+#             taxes = line.invoice_line_tax_ids.compute_all(price, line.invoice_id.currency_id, di_qte_prix, product=line.product_id, partner=line.invoice_id.partner_id)
+#             line.price_total = taxes['total_included']
 
-    sale_line_ids = fields.Many2many(
-        'sale.order.line',
-        'sale_order_line_invoice_rel',
-        'invoice_line_id', 'order_line_id',
-        string='Sales Order Lines', readonly=True, copy=False)
-    layout_category_id = fields.Many2one('sale.layout_category', string='Section')
-    layout_category_sequence = fields.Integer(string='Layout Sequence')
-    # TODO: remove layout_category_sequence in master or make it work properly
-    price_total = fields.Monetary(compute='_compute_total_price', string='Total Amount', store=True)
     
     
-    @api.one
+    @api.one # SC je garde api.one car c'est une copie du standard
     @api.depends('price_unit', 'discount', 'invoice_line_tax_ids', 'quantity',
         'product_id', 'invoice_id.partner_id', 'invoice_id.currency_id', 'invoice_id.company_id',
         'invoice_id.date_invoice', 'invoice_id.date','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
@@ -250,9 +234,12 @@ class AccountInvoiceLine(models.Model):
         self.price_subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else di_qte_prix * price
         self.price_total = taxes['total_included'] if taxes else self.price_subtotal
         if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
-            price_subtotal_signed = self.invoice_id.currency_id.with_context(date=self.invoice_id._get_currency_rate_date()).compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
+            currency = self.invoice_id.currency_id
+            date = self.invoice_id._get_currency_rate_date()
+            price_subtotal_signed = currency._convert(price_subtotal_signed, self.invoice_id.company_id.currency_id, self.company_id or self.env.user.company_id, date or fields.Date.today())
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
         self.price_subtotal_signed = price_subtotal_signed * sign
+
         
     @api.multi
     @api.onchange('product_id','invoice_id.partner_id','invoice_id.date','di_un_prix','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','quantity')
@@ -399,80 +386,82 @@ class AccountInvoiceLine(models.Model):
                     else:  
                         self.di_nb_palette = self.di_nb_colis
                     self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
-    @api.one
+                    
+    @api.multi
     @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_tare', 'di_product_packaging_id')
     def _compute_qte_aff(self):
         #recalcule des quantités non modifiables pour qu'elles soient enregistrées même si on met en readonly dans les masques.
-        if self.di_flg_modif_uom == False:        
-            if self.di_un_saisie == "PIECE":
-                self.di_nb_pieces = ceil(self.di_qte_un_saisie)            
-                if self.di_product_packaging_id.qty != 0.0 :
-                    self.di_nb_colis = ceil(self.quantity / self.di_product_packaging_id.qty)
+        for aol in self:
+            if aol.di_flg_modif_uom == False:        
+                if aol.di_un_saisie == "PIECE":
+                    aol.di_nb_pieces = ceil(aol.di_qte_un_saisie)            
+                    if aol.di_product_packaging_id.qty != 0.0 :
+                        aol.di_nb_colis = ceil(aol.quantity / aol.di_product_packaging_id.qty)
+                    else:      
+                        aol.di_nb_colis = ceil(aol.quantity)             
+                    if aol.di_type_palette_id.di_qte_cond_inf != 0.0:
+                        aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
+                    else:
+                        aol.di_nb_palette = aol.di_nb_colis
+                    aol.di_poin = aol.quantity * aol.product_id.weight             
+                            
+                elif aol.di_un_saisie == "COLIS":
+                    aol.di_nb_colis = ceil(aol.di_qte_un_saisie)            
+                    aol.di_nb_pieces = ceil(aol.di_product_packaging_id.di_qte_cond_inf * aol.di_nb_colis)
+                    if aol.di_type_palette_id.di_qte_cond_inf != 0.0:                
+                        aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
+                    else:
+                        aol.di_nb_palette = aol.di_nb_colis
+                    aol.di_poin = aol.quantity * aol.product_id.weight             
+                                           
+                elif aol.di_un_saisie == "PALETTE":            
+                    aol.di_nb_palette = aol.di_qte_un_saisie
+                    if aol.di_type_palette_id.di_qte_cond_inf != 0.0:
+                        aol.di_nb_colis = ceil(aol.di_nb_palette / aol.di_type_palette_id.di_qte_cond_inf)
+                    else:
+                        aol.di_nb_colis = ceil(aol.di_nb_palette)
+                    aol.di_nb_pieces = ceil(aol.di_product_packaging_id.di_qte_cond_inf * aol.di_nb_colis)            
+                    aol.di_poin = aol.quantity * aol.product_id.weight             
+                      
+                elif aol.di_un_saisie == "KG":
+                    aol.di_poin = aol.di_qte_un_saisie                        
+                    if aol.di_product_packaging_id.qty != 0.0:
+                        aol.di_nb_colis = ceil(aol.quantity / aol.di_product_packaging_id.qty)
+                    else:
+                        aol.di_nb_colis = ceil(aol.quantity)
+                    if aol.di_type_palette_id.di_qte_cond_inf != 0.0:    
+                        aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
+                    else:  
+                        aol.di_nb_palette = aol.di_nb_colis
+                    aol.di_nb_pieces = ceil(aol.di_product_packaging_id.di_qte_cond_inf * aol.di_nb_colis)
+                      
+                else:
+                    aol.di_poin = aol.di_qte_un_saisie            
+                    aol.quantity = aol.di_poin
+                    if aol.di_product_packaging_id.qty != 0.0:
+                        aol.di_nb_colis = ceil(aol.quantity / aol.di_product_packaging_id.qty)
+                    else:
+                        aol.di_nb_colis = ceil(aol.quantity)
+                    if aol.di_type_palette_id.di_qte_cond_inf != 0.0:    
+                        aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
+                    else:  
+                        aol.di_nb_palette = aol.di_nb_colis
+                    aol.di_nb_pieces = ceil(aol.di_product_packaging_id.di_qte_cond_inf * aol.di_nb_colis) 
+            else:           
+                if aol.product_id.di_get_type_piece().qty != 0.0:
+                    aol.di_nb_pieces = ceil(aol.quantity/aol.product_id.di_get_type_piece().qty)
+                else:
+                    aol.di_nb_pieces = ceil(aol.quantity)                                
+                if aol.di_product_packaging_id.qty != 0.0 :
+                    aol.di_nb_colis = ceil(aol.quantity / aol.di_product_packaging_id.qty)
                 else:      
-                    self.di_nb_colis = ceil(self.quantity)             
-                if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                    aol.di_nb_colis = ceil(aol.quantity)             
+                if aol.di_type_palette_id.di_qte_cond_inf != 0.0:
+                    aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
                 else:
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_poin = self.quantity * self.product_id.weight             
-                        
-            elif self.di_un_saisie == "COLIS":
-                self.di_nb_colis = ceil(self.di_qte_un_saisie)            
-                self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
-                if self.di_type_palette_id.di_qte_cond_inf != 0.0:                
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                else:
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_poin = self.quantity * self.product_id.weight             
-                                       
-            elif self.di_un_saisie == "PALETTE":            
-                self.di_nb_palette = self.di_qte_un_saisie
-                if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                    self.di_nb_colis = ceil(self.di_nb_palette / self.di_type_palette_id.di_qte_cond_inf)
-                else:
-                    self.di_nb_colis = ceil(self.di_nb_palette)
-                self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
-                self.di_poin = self.quantity * self.product_id.weight             
-                  
-            elif self.di_un_saisie == "KG":
-                self.di_poin = self.di_qte_un_saisie                        
-                if self.di_product_packaging_id.qty != 0.0:
-                    self.di_nb_colis = ceil(self.quantity / self.di_product_packaging_id.qty)
-                else:
-                    self.di_nb_colis = ceil(self.quantity)
-                if self.di_type_palette_id.di_qte_cond_inf != 0.0:    
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                else:  
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
-                  
-            else:
-                self.di_poin = self.di_qte_un_saisie            
-                self.quantity = self.di_poin
-                if self.di_product_packaging_id.qty != 0.0:
-                    self.di_nb_colis = ceil(self.quantity / self.di_product_packaging_id.qty)
-                else:
-                    self.di_nb_colis = ceil(self.quantity)
-                if self.di_type_palette_id.di_qte_cond_inf != 0.0:    
-                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                else:  
-                    self.di_nb_palette = self.di_nb_colis
-                self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis) 
-        else:           
-            if self.product_id.di_get_type_piece().qty != 0.0:
-                self.di_nb_pieces = ceil(self.quantity/self.product_id.di_get_type_piece().qty)
-            else:
-                self.di_nb_pieces = ceil(self.quantity)                                
-            if self.di_product_packaging_id.qty != 0.0 :
-                self.di_nb_colis = ceil(self.quantity / self.di_product_packaging_id.qty)
-            else:      
-                self.di_nb_colis = ceil(self.quantity)             
-            if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-            else:
-                self.di_nb_palette = self.di_nb_colis
-            self.di_poin = self.quantity * self.product_id.weight 
-            self.di_poib = self.di_poin + self.di_tare
+                    aol.di_nb_palette = aol.di_nb_colis
+                aol.di_poin = aol.quantity * aol.product_id.weight 
+                aol.di_poib = aol.di_poin + aol.di_tare
                
     @api.model
     def create(self, vals):               
@@ -597,6 +586,7 @@ class AccountTax(models.Model):
         # case of group taxes.
         
         for tax in self.sorted(key=lambda r: r.sequence):
+            price_include = self._context.get('force_price_include', tax.price_include)
             if tax.amount_type == 'group':
                 children = tax.children_tax_ids.with_context(base_values=(total_excluded, total_included, base))
                 ret = children.compute_all(price_unit, currency, quantity, product, partner)
@@ -613,7 +603,7 @@ class AccountTax(models.Model):
             else:
                 tax_amount = currency.round(tax_amount)
 
-            if tax.price_include:
+            if price_include:
                 total_excluded -= tax_amount
                 base -= tax_amount
             else:
@@ -634,7 +624,8 @@ class AccountTax(models.Model):
                 'account_id': tax.account_id.id,
                 'refund_account_id': tax.refund_account_id.id,
                 'analytic': tax.analytic,
-                'price_include': tax.price_include,                
+                'price_include': tax.price_include, 
+                'tax_exigibility': tax.tax_exigibility,               
             })
              
             # spé pour affecter une taxe sur une autre taxe
@@ -653,7 +644,8 @@ class AccountTax(models.Model):
                     'account_id': tax.di_taxe_id.account_id.id,
                     'refund_account_id': tax.di_taxe_id.refund_account_id.id,
                     'analytic': tax.di_taxe_id.analytic,
-                    'price_include': tax.di_taxe_id.price_include,                    
+                    'price_include': tax.di_taxe_id.price_include, 
+                    'tax_exigibility': tax.di_taxe_id.tax_exigibility,                   
                 })
                 
                 #fin spé

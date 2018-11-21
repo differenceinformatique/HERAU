@@ -26,19 +26,20 @@ class DiValidApportWiz(models.TransientModel):
    
     
     #                     TODO : En cours validation apport avec entrée en stock
-    @api.one
+    @api.multi
     def valider_apport(self):
-        apport = self.env["di.apportprod"].browse(self.di_apport_id.id)
-        if apport :     
-            if not apport.di_apport_valide:
-                data = { 'di_qte_recept' : self.di_qte_recept,
-                        'di_date_recept' : self.di_date_recept,
-                        'di_apport_valide' : True
-                    }
-                  
-                apport.update(data) 
-                  
-                self.generer_entree_stock(apport)                
+        for validapp in self :
+            apport = self.env["di.apportprod"].browse(validapp.di_apport_id.id)
+            if apport :     
+                if not apport.di_apport_valide:
+                    data = { 'di_qte_recept' : validapp.di_qte_recept,
+                            'di_date_recept' : validapp.di_date_recept,
+                            'di_apport_valide' : True
+                        }
+                      
+                    apport.update(data) 
+                      
+                    validapp.generer_entree_stock(apport)                
   
               
     def generer_entree_stock(self, apport):

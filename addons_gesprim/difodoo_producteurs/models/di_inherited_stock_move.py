@@ -21,21 +21,21 @@ class StockMove(models.Model):
     di_station_id = fields.Many2one("stock.location", string="Station", compute='_di_compute_champs_art_init')
     di_station_di_des = fields.Char(related='di_station_id.name')  # , store='False')     
      
-    @api.one
+    @api.multi
     @api.depends('sale_line_id','purchase_line_id')
     def _di_compute_champs_art_init(self): 
-        
-        if self.sale_line_id :
-            self.di_categorie_id = self.sale_line_id.di_categorie_id
-            self.di_origine_id = self.sale_line_id.di_origine_id
-            self.di_marque_id = self.sale_line_id.di_marque_id
-            self.di_calibre_id = self.sale_line_id.di_calibre_id
-            self.di_station_id = self.sale_line_id.di_station_id 
-        elif self.purchase_line_id:
-            self.di_categorie_id = self.purchase_line_id.di_categorie_id
-            self.di_origine_id = self.purchase_line_id.di_origine_id
-            self.di_marque_id = self.purchase_line_id.di_marque_id
-            self.di_calibre_id = self.purchase_line_id.di_calibre_id            
+        for sm in self:
+            if sm.sale_line_id :
+                sm.di_categorie_id = sm.sale_line_id.di_categorie_id
+                sm.di_origine_id = sm.sale_line_id.di_origine_id
+                sm.di_marque_id = sm.sale_line_id.di_marque_id
+                sm.di_calibre_id = sm.sale_line_id.di_calibre_id
+                sm.di_station_id = sm.sale_line_id.di_station_id 
+            elif sm.purchase_line_id:
+                sm.di_categorie_id = sm.purchase_line_id.di_categorie_id
+                sm.di_origine_id = sm.purchase_line_id.di_origine_id
+                sm.di_marque_id = sm.purchase_line_id.di_marque_id
+                sm.di_calibre_id = sm.purchase_line_id.di_calibre_id            
      
     @api.multi            
     @api.onchange('product_id')
@@ -113,13 +113,14 @@ class StockMoveLine(models.Model):
         return lot_prod
        
 
-    @api.one
+    @api.multi
     @api.depends('move_id.picking_type_id.code')
     def _compute_di_ES(self):   
-        if self.move_id.picking_type_id.code == 'incoming':
-            self.di_ES = "entree"
-        else:
-            self.di_ES = "sortie"                  
+        for sml in self:
+            if sml.move_id.picking_type_id.code == 'incoming':
+                sml.di_ES = "entree"
+            else:
+                sml.di_ES = "sortie"                  
                 
             
     @api.model

@@ -46,7 +46,7 @@ class DiGrilleAchatWiz(models.TransientModel):
         
         if param.di_mode_grille_ach=='HORIZON':
             date_debut_horizon = datetime.today() + timedelta(days=-param.di_horizon_ach)                
-            lines= self.env['purchase.order.line'].search(['&',('company_id','=',self.env.user.company_id.id),('order_id.partner_id','=',partner_id.id)]).filtered(lambda l: datetime.strptime(l.order_id.date_order,'%Y-%m-%d %H:%M:%S')>=date_debut_horizon)
+            lines= self.env['purchase.order.line'].search(['&',('company_id','=',self.env.user.company_id.id),('order_id.partner_id','=',partner_id.id)]).filtered(lambda l: l.order_id.date_order>=date_debut_horizon)
         elif param.di_mode_grille_ach=='NBCDE':
             if param.di_nbcde_ach !=0:
                 nbcde = param.di_nbcde_ach

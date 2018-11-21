@@ -36,12 +36,13 @@ class DiParam(models.Model):
          
                        
     #unicité 
-    @api.one
+    @api.multi
     @api.constrains('di_company_id')
     def _check_di_company_id(self):
-        if self.di_company_id:
-            di_company_id = self.search([
-                ('id', '!=', self.id),
-                ('di_company_id', '=', self.di_company_id.id)], limit=1)
-            if di_company_id:
-                raise Warning("Le paramétrage pour ce dossier existe déjà.")
+        for param in self:
+            if param.di_company_id:
+                di_company_id = param.search([
+                    ('id', '!=', param.id),
+                    ('di_company_id', '=', param.di_company_id.id)], limit=1)
+                if di_company_id:
+                    raise Warning("Le paramétrage pour ce dossier existe déjà.")

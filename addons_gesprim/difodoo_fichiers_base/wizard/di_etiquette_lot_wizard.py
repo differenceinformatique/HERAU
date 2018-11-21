@@ -15,11 +15,12 @@ class DiEtiqLotWiz(models.TransientModel):
     company_id = fields.Many2one('res.company', string='Société', readonly=True,  default=lambda self: self.env.user.company_id)
     order_id = fields.Many2one('sale.order', string='Order Reference') # pour ne pas déclencher d'erreur à l'édition  
     
-    @api.one
+    @api.multi
     @api.depends('weigth', 'di_nb_colis')
     def _compute_poidstotal(self):
-        if self.weigth and self.di_nb_colis:
-            self.di_poin = self.weigth * self.di_nb_colis 
+        for etiq in self:
+            if etiq.weigth and etiq.di_nb_colis:
+                etiq.di_poin = etiq.weigth * etiq.di_nb_colis 
 
     @api.model
     def default_get(self, fields):

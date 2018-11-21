@@ -10,53 +10,54 @@ class DiConsignesWiz(models.TransientModel):
     
     di_cons_ids = fields.Many2many("di.cons.line.wiz", string="Consignes chez le client")
     
-    @api.one           
+    @api.multi           
     def di_plus_suivi(self):
         """Marque le numéro de lot comme n'étant plus à suivre afin qu'il n'apparaisse plus dans la liste des emballages chez les clients."""
-    
-        for line in self.di_cons_ids:
-            if line.di_select:
-                line.di_lot_id.update({'di_plus_suivi':True})
-        # Suppression des lignes de consignes générées par l'utilisateur car sinon on les retrouve quand on réouvre le wizard même si elles n'ont pas lieu d'être
-        self._cr.execute("DELETE FROM di_cons_line_wiz WHERE create_uid=%s ", [self.env.user.id])        
-        self.env.cr.commit()
-                       
-    @api.one
-    def di_retourner_consigne(self):
-        """Créé un inventaire de type retour consigne avec les lignes sélectionnées pour en faire le retour en stock. """
-        for line in self.di_cons_ids:
-            inventory = self.env['stock.inventory']
-            inventory_line = self.env['stock.inventory.line']
-                                      
-            data_inventory = { 
-                                'name':'Retour consigne '+line.di_lot_name+' '+line.di_product_name+' '+line.di_partner_name+' '+datetime.today().date().strftime('%d/%m/%Y'),                
-                                'location_id': line.di_sml_id.location_id.id,                
-                                'state': 'draft',
-                                'filter':'none',
-                                'di_type_inv':'retcons',                        
-                            }
-                                                                 
-            data_inventory_line={
-                                    'inventory_id':inventory.create(data_inventory).id,                        
-                                    'product_id': line.di_sml_id.product_id.id,
-                                    'product_name': line.di_sml_id.product_id.display_name,
-                                    'product_uom_id':line.di_sml_id.product_id.uom_id.id ,
-                                    'product_code':line.di_sml_id.product_id.default_code,
-                                    'product_qty': line.di_sml_id.qty_done,
-                                    'location_id': line.di_sml_id.location_id.id,  
-                                    'location_name': line.di_sml_id.location_id.name,  
-                                    'prod_lot_id': line.di_sml_id.lot_id.id ,
-                                    'prodlot_name': line.di_sml_id.lot_id.name ,
-                                    'theoretical_qty': 0.0,                    
-                                }                                                                                                                                                                                                                                                                                   
-                    
-            inventory_line.create(data_inventory_line)
-            self.env.cr.commit()
-            inventaire = self.env['stock.inventory'].browse(data_inventory_line['inventory_id'])
-            inventaire.action_done()
-            # suppression des lignes de consignes générées par l'utilisateur car sinon on les retrouve quand on réouvre le wizard même si elles n'ont pas lieu d'être
+        for cons in self:
+            for line in cons.di_cons_ids:
+                if line.di_select:
+                    line.di_lot_id.update({'di_plus_suivi':True})
+            # Suppression des lignes de consignes générées par l'utilisateur car sinon on les retrouve quand on réouvre le wizard même si elles n'ont pas lieu d'être
             self._cr.execute("DELETE FROM di_cons_line_wiz WHERE create_uid=%s ", [self.env.user.id])        
             self.env.cr.commit()
+                       
+    @api.multi
+    def di_retourner_consigne(self):
+        """Créé un inventaire de type retour consigne avec les lignes sélectionnées pour en faire le retour en stock. """
+        for cons in self:
+            for line in self.di_cons_ids:
+                inventory = self.env['stock.inventory']
+                inventory_line = self.env['stock.inventory.line']
+                                          
+                data_inventory = { 
+                                    'name':'Retour consigne '+line.di_lot_name+' '+line.di_product_name+' '+line.di_partner_name+' '+datetime.today().date().strftime('%d/%m/%Y'),                
+                                    'location_id': line.di_sml_id.location_id.id,                
+                                    'state': 'draft',
+                                    'filter':'none',
+                                    'di_type_inv':'retcons',                        
+                                }
+                                                                     
+                data_inventory_line={
+                                        'inventory_id':inventory.create(data_inventory).id,                        
+                                        'product_id': line.di_sml_id.product_id.id,
+                                        'product_name': line.di_sml_id.product_id.display_name,
+                                        'product_uom_id':line.di_sml_id.product_id.uom_id.id ,
+                                        'product_code':line.di_sml_id.product_id.default_code,
+                                        'product_qty': line.di_sml_id.qty_done,
+                                        'location_id': line.di_sml_id.location_id.id,  
+                                        'location_name': line.di_sml_id.location_id.name,  
+                                        'prod_lot_id': line.di_sml_id.lot_id.id ,
+                                        'prodlot_name': line.di_sml_id.lot_id.name ,
+                                        'theoretical_qty': 0.0,                    
+                                    }                                                                                                                                                                                                                                                                                   
+                        
+                inventory_line.create(data_inventory_line)
+                self.env.cr.commit()
+                inventaire = self.env['stock.inventory'].browse(data_inventory_line['inventory_id'])
+                inventaire.action_done()
+                # suppression des lignes de consignes générées par l'utilisateur car sinon on les retrouve quand on réouvre le wizard même si elles n'ont pas lieu d'être
+                self._cr.execute("DELETE FROM di_cons_line_wiz WHERE create_uid=%s ", [self.env.user.id])        
+                self.env.cr.commit()
     
     
     @api.model

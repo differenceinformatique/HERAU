@@ -35,9 +35,7 @@ class SaleOrderLine(models.Model):
     
     di_flg_com = fields.Boolean(string='Commission payée',default=False,help="""Flag permettant de savoir si la commission de cette ligne a déjà été payée au courtier ou non.""")
     
-
-            
-#     @api.one
+        
     @api.onchange('product_id')
     def _di_charger_prc_op(self):   
         if self.di_prc_com_OP == 0.0:
@@ -50,7 +48,6 @@ class SaleOrderLine(models.Model):
             else:
                 self.di_prc_com_OP = param.di_prc_com_sans_court
                 
-#     @api.one
     @api.onchange('di_courtier_id')
     def _di_charger_prc_court(self):
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
@@ -66,13 +63,14 @@ class SaleOrderLine(models.Model):
             self.di_prc_com_OP = param.di_prc_com_sans_court                      
 
 
-    @api.one
+    @api.multi
     @api.depends('di_marge_prc','company_id.di_param_id.di_seuil_marge_prc')#,'di_param_id.di_seuil_marge_prc')
     def _di_compute_marge_seuil(self):   
-        if self.di_marge_prc < self.company_id.di_param_id.di_seuil_marge_prc:     
-            self.di_marge_inf_seuil = True
-        else:
-            self.di_marge_inf_seuil = False
+        for sol in self:
+            if sol.di_marge_prc < sol.company_id.di_param_id.di_seuil_marge_prc:     
+                sol.di_marge_inf_seuil = True
+            else:
+                sol.di_marge_inf_seuil = False
            
                
     @api.multi

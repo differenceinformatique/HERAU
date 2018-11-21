@@ -20,9 +20,9 @@ class DiCtrlTrpWiz(models.TransientModel):
     @api.multi
     def edit_controle_trp(self):
         # on récupére les livraisons du jour
-        wdate = datetime.datetime.strptime(self.date_debut,'%Y-%m-%d').date()
+        wdate = self.date_debut.date()
         date_d = datetime.datetime(wdate.year,wdate.month,wdate.day,0,0,0,0).strftime("%Y-%m-%d %H:%M:%S")
-        wdate = datetime.datetime.strptime(self.date_fin,'%Y-%m-%d').date()
+        wdate = self.date_fin.date()
         date_f = datetime.datetime(wdate.year,wdate.month,wdate.day,23,59,59,0).strftime("%Y-%m-%d %H:%M:%S")
         stock_pickings1 = self.env['stock.picking'].search([('date_done','>',date_d),('date_done','<',date_f)])
         # on filtre sur les expéditions

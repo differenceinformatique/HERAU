@@ -35,47 +35,43 @@ class StockMove(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
-    @api.one
-#     @api.depends('sale_line_id.di_qte_un_saisie', 'sale_line_id.di_un_saisie', 'sale_line_id.di_type_palette_id', 
-#                  'sale_line_id.di_nb_pieces', 'sale_line_id.di_nb_colis', 'sale_line_id.di_nb_palette', 
-#                  'sale_line_id.di_poin', 'sale_line_id.di_poib', 'sale_line_id.di_tare','sale_line_id.product_packaging',                  
-#                  'purchase_line_id.di_qte_un_saisie', 'purchase_line_id.di_un_saisie', 'purchase_line_id.di_type_palette_id', 
-#                  'purchase_line_id.di_nb_pieces', 'purchase_line_id.di_nb_colis', 'purchase_line_id.di_nb_palette', 
-#                  'purchase_line_id.di_poin', 'purchase_line_id.di_poib', 'purchase_line_id.di_tare','purchase_line_id.product_packaging')
+    @api.multi
     @api.depends('sale_line_id','purchase_line_id')
-    def _di_compute_champs_cde_init(self):         
-        if self.sale_line_id :              
-            self.di_qte_un_saisie_init = self.sale_line_id.di_qte_un_saisie
-            self.di_un_saisie_init = self.sale_line_id.di_un_saisie
-            self.di_type_palette_init_id = self.sale_line_id.di_type_palette_id
-            self.di_nb_pieces_init = self.sale_line_id.di_nb_pieces
-            self.di_nb_colis_init = self.sale_line_id.di_nb_colis
-            self.di_nb_palette_init = self.sale_line_id.di_nb_palette
-            self.di_poin_init = self.sale_line_id.di_poin
-            self.di_poib_init = self.sale_line_id.di_poib
-            self.di_tare_init = self.sale_line_id.di_tare
-            self.di_product_packaging_init_id = self.sale_line_id.product_packaging 
-        elif self.purchase_line_id:
-            self.di_qte_un_saisie_init = self.purchase_line_id.di_qte_un_saisie
-            self.di_un_saisie_init = self.purchase_line_id.di_un_saisie
-            self.di_type_palette_init_id = self.purchase_line_id.di_type_palette_id
-            self.di_nb_pieces_init = self.purchase_line_id.di_nb_pieces
-            self.di_nb_colis_init = self.purchase_line_id.di_nb_colis
-            self.di_nb_palette_init = self.purchase_line_id.di_nb_palette
-            self.di_poin_init = self.purchase_line_id.di_poin
-            self.di_poib_init = self.purchase_line_id.di_poib
-            self.di_tare_init = self.purchase_line_id.di_tare
-            self.di_product_packaging_init_id = self.purchase_line_id.product_packaging
+    def _di_compute_champs_cde_init(self):       
+        for sm in self:  
+            if sm.sale_line_id :              
+                sm.di_qte_un_saisie_init = sm.sale_line_id.di_qte_un_saisie
+                sm.di_un_saisie_init = sm.sale_line_id.di_un_saisie
+                sm.di_type_palette_init_id = sm.sale_line_id.di_type_palette_id
+                sm.di_nb_pieces_init = sm.sale_line_id.di_nb_pieces
+                sm.di_nb_colis_init = sm.sale_line_id.di_nb_colis
+                sm.di_nb_palette_init = sm.sale_line_id.di_nb_palette
+                sm.di_poin_init = sm.sale_line_id.di_poin
+                sm.di_poib_init = sm.sale_line_id.di_poib
+                sm.di_tare_init = sm.sale_line_id.di_tare
+                sm.di_product_packaging_init_id = sm.sale_line_id.product_packaging 
+            elif sm.purchase_line_id:
+                sm.di_qte_un_saisie_init = sm.purchase_line_id.di_qte_un_saisie
+                sm.di_un_saisie_init = sm.purchase_line_id.di_un_saisie
+                sm.di_type_palette_init_id = sm.purchase_line_id.di_type_palette_id
+                sm.di_nb_pieces_init = sm.purchase_line_id.di_nb_pieces
+                sm.di_nb_colis_init = sm.purchase_line_id.di_nb_colis
+                sm.di_nb_palette_init = sm.purchase_line_id.di_nb_palette
+                sm.di_poin_init = sm.purchase_line_id.di_poin
+                sm.di_poib_init = sm.purchase_line_id.di_poib
+                sm.di_tare_init = sm.purchase_line_id.di_tare
+                sm.di_product_packaging_init_id = sm.purchase_line_id.product_packaging
             
     
     
-    @api.one
+    @api.multi
     @api.depends('product_id.di_spe_saisissable','sale_line_id','product_id.product_tmpl_id.tracking')
-    def _di_compute_spe_saisissable(self):       
-        if (self.sale_line_id or self.purchase_line_id)and self.product_id.product_tmpl_id.tracking != 'none':
-            self.di_spe_saisissable = False
-        else :                        
-            self.di_spe_saisissable = self.product_id.di_spe_saisissable
+    def _di_compute_spe_saisissable(self): 
+        for sm in self:      
+            if (sm.sale_line_id or sm.purchase_line_id)and sm.product_id.product_tmpl_id.tracking != 'none':
+                sm.di_spe_saisissable = False
+            else :                        
+                sm.di_spe_saisissable = sm.product_id.di_spe_saisissable
      
         
     def action_show_details(self):
@@ -343,13 +339,13 @@ class StockMove(models.Model):
         if cde_ach:
             if date:                                
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-                mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','!=',False)]).filtered(lambda mv: (mv.picking_id.date_done and datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date) or (mv.picking_id.scheduled_date and datetime.strptime(mv.picking_id.scheduled_date,'%Y-%m-%d %H:%M:%S').date() == date))
+                mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','!=',False)]).filtered(lambda mv: (mv.picking_id.date_done and mv.picking_id.date_done.date() == date) or (mv.picking_id.scheduled_date and mv.picking_id.scheduled_date.date() == date))
             else:
                 mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','!=',False)])
         else:
             if date:
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-                mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() == date)
+                mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)]).filtered(lambda mv: mv.picking_id.date_done.date() == date)
             else:
                 mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)])
              
@@ -374,17 +370,10 @@ class StockMove(models.Model):
                     mont = mont - mouv.purchase_line_id.price_subtotal
                 elif mouv.sale_line_id:
                     mont = mont - (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
-         
-#         if cde_ach:
-#             if date:
-#     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-#                 mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
-#             else:
-#                 mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','in',('done','assigned')),('picking_id','=',False)])
-#         else:          
+          
         if date:
-#             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() == date)
+
+            mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False)]).filtered(lambda mv: mv.inventory_id.date.date() == date)
         else:
             mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','=',False)])
              
@@ -424,32 +413,34 @@ class StockMoveLine(models.Model):
     def _compute_tare(self):        
         self.di_tare = (self.move_id.di_type_palette_id.di_poids * self.di_nb_palette) + (self.move_id.di_product_packaging_id.di_poids * self.di_nb_colis)
         
-    @api.one
+    @api.multi
     @api.depends('product_id.di_spe_saisissable')
-    def _di_compute_spe_saisissable(self):        
-        self.di_spe_saisissable =self.product_id.di_spe_saisissable
+    def _di_compute_spe_saisissable(self):   
+        for sml in self:     
+            sml.di_spe_saisissable =sml.product_id.di_spe_saisissable
      
         
-    @api.one    
+    @api.multi    
     @api.depends('di_poib','di_tare','di_nb_colis','di_nb_pieces','di_nb_palette')
     def _compute_qte_un_saisie(self):
         #recalcule la quantité en unité de saisie
-        if not self.move_id.inventory_id:
-            if self._context.get('di_move_id'):
-                move = self.env['stock.move'].browse(self._context['di_move_id'])
-            else:
-                move = self.move_id
-             
-            if move.di_un_saisie == "PIECE":
-                self.di_qte_un_saisie = self.di_nb_pieces
-            elif move.di_un_saisie == "COLIS":
-                self.di_qte_un_saisie = self.di_nb_colis
-            elif move.di_un_saisie == "PALETTE":
-                self.di_qte_un_saisie = self.di_nb_palette
-            elif move.di_un_saisie == "KG":
-                self.di_qte_un_saisie = self.di_poib
-            else:
-                self.di_qte_un_saisie = self.qty_done   
+        for sml in self:
+            if not sml.move_id.inventory_id:
+                if self._context.get('di_move_id'):
+                    move = self.env['stock.move'].browse(self._context['di_move_id'])
+                else:
+                    move = sml.move_id
+                 
+                if move.di_un_saisie == "PIECE":
+                    sml.di_qte_un_saisie = sml.di_nb_pieces
+                elif move.di_un_saisie == "COLIS":
+                    sml.di_qte_un_saisie = sml.di_nb_colis
+                elif move.di_un_saisie == "PALETTE":
+                    sml.di_qte_un_saisie = sml.di_nb_palette
+                elif move.di_un_saisie == "KG":
+                    sml.di_qte_un_saisie = sml.di_poib
+                else:
+                    sml.di_qte_un_saisie = sml.qty_done   
                        
     
     @api.multi                     
@@ -626,7 +617,7 @@ class StockMoveLine(models.Model):
         qte_std = 0.0    
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','!=',False)]).filtered(lambda mv: datetime.strptime(mv.move_id.picking_id.date_done,'%Y-%m-%d %H:%M:%S').date() <= date)
+            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','!=',False)]).filtered(lambda mv: mv.move_id.picking_id.date_done.date() <= date)
         else:
             mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('picking_id','!=',False)])
              
@@ -645,7 +636,7 @@ class StockMoveLine(models.Model):
                 qte_std = qte_std - mouv.qty_done  				                        
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)]).filtered(lambda mv: datetime.strptime(mv.move_id.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() <= date)
+            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)]).filtered(lambda mv: mv.move_id.inventory_id.date.date() <= date)
         else:
             mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)])
              
@@ -735,21 +726,23 @@ class StockQuant(models.Model):
     di_poin         = fields.Float(string='Poids net',compute="_compute_qte_spe",group_operator='sum',store=True)
     currency_id = fields.Many2one("res.currency", related='company_id.currency_id', string="Currency")   # pour avoir le widget euro
     
-    @api.one
+    @api.multi
     @api.depends('di_cmp','quantity')
     def _compute_valstock(self):
-        self.di_valstock = self.quantity*self.di_cmp
+        for quant in self:
+            quant.di_valstock = quant.quantity*quant.di_cmp
         
-    @api.one
+    @api.multi
     @api.depends('quantity')
     def _compute_qte_spe(self):
-        self.di_poin = self.quantity*self.product_id.weight                        
-        if self.product_id.di_type_colis_id.qty != 0.0:
-            self.di_nb_colis = ceil(self.quantity / self.product_id.di_type_colis_id.qty)
-        else:
-            self.di_nb_colis = ceil(self.quantity)
-        if self.product_id.di_type_palette_id.di_qte_cond_inf !=0.0:    
-            self.di_nb_palette = self.di_nb_colis / self.product_id.di_type_palette_id.di_qte_cond_inf
-        else:  
-            self.di_nb_palette = self.di_nb_colis
+        for quant in self:
+            quant.di_poin = quant.quantity*quant.product_id.weight                        
+            if quant.product_id.di_type_colis_id.qty != 0.0:
+                quant.di_nb_colis = ceil(quant.quantity / quant.product_id.di_type_colis_id.qty)
+            else:
+                quant.di_nb_colis = ceil(quant.quantity)
+            if quant.product_id.di_type_palette_id.di_qte_cond_inf !=0.0:    
+                quant.di_nb_palette = quant.di_nb_colis / quant.product_id.di_type_palette_id.di_qte_cond_inf
+            else:  
+                quant.di_nb_palette = quant.di_nb_colis
         self.di_nb_pieces = ceil(self.product_id.di_type_colis_id.di_qte_cond_inf * self.di_nb_colis)

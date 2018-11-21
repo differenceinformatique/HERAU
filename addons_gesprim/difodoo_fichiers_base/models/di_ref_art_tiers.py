@@ -38,10 +38,11 @@ class DiRefArtTiers(models.Model):
             
 
     #unicité 
-    @api.one
+    @api.multi
     @api.constrains('di_product_id', 'di_partner_id')
     def _check_primary_key(self):
-        if self.di_product_id and self.di_partner_id:
-            ref = self.search([('id', '!=', self.id),('di_partner_id','=',self.di_partner_id.id),('di_product_id','=',self.di_product_id.id)],limit=1)            
-            if ref:
-                raise Warning("Le couple tiers/article existe déjà.")
+        for refarttiers in self:
+            if refarttiers.di_product_id and refarttiers.di_partner_id:
+                ref = refarttiers.search([('id', '!=', refarttiers.id),('di_partner_id','=',refarttiers.di_partner_id.id),('di_product_id','=',refarttiers.di_product_id.id)],limit=1)            
+                if ref:
+                    raise Warning("Le couple tiers/article existe déjà.")

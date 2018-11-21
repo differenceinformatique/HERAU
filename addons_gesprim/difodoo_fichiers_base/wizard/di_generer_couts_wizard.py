@@ -53,33 +53,10 @@ class DiGenCoutsWiz(models.TransientModel):
             nbpiece=0.0
             poids=0.0
             (qte,mont,nbcol,nbpal,nbpiece,poids) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach)       
-#             if cout_veille:                         
-#                 qte = cout_veille.di_qte + self.env['stock.move.line'].di_somme_quantites(di_product_id,di_date)
-#                 mont = cout_veille.di_mont + self.env['stock.move.line'].di_somme_montants(di_product_id,di_date)
-                                              
-#             elif premier_mouv.order_id.date_order and  date_veille >= datetime.strptime(premier_mouv.order_id.date_order,'%Y-%m-%d %H:%M:%S').date() :
-            if not cout_veille and premier_mouv.order_id.date_order and  date_veille >= datetime.strptime(premier_mouv.order_id.date_order,'%Y-%m-%d %H:%M:%S').date() :
+            if not cout_veille and premier_mouv.order_id.date_order and  date_veille >= premier_mouv.order_id.date_order.date() :
                 self.di_generer_cmp(di_product_id,date_veille)
                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
-                
-#             else:
-#                 if premier_mouv.order_id.date_order:
-#                     (qte,mont) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date)
-# #                     mont =self.env['stock.move.line'].di_somme_montants(di_product_id) 
-#                     if qte !=0.0:
-#                         cmp=mont/qte
-#                     else:
-#                         cmp=mont
-#                     if qte !=0.0 or mont != 0.0:
-#                     
-#                         data  =   {
-#                                         'di_date': di_date,  
-#                                         'di_product_id' : di_product_id,
-#                                         'di_qte' : qte,
-#                                         'di_mont' : mont,
-#                                         'di_cmp' : cmp        
-#                                         }       
-#                         cout_jour.create(data)
+
             qte = cout_veille.di_qte + qte
             mont = cout_veille.di_mont+ mont
             nbcol = cout_veille.di_nbcol + nbcol

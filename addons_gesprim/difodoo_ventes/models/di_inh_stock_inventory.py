@@ -80,7 +80,7 @@ class Inventory(models.Model):
             poids=0.0   
             lot = self.env['stock.production.lot'].browse(product_data['prod_lot_id'])    
             article = self.env['product.product'].browse(product_data['product_id']) 
-            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(article,datetime.strptime(self.date,'%Y-%m-%d %H:%M:%S').date(),lot)#        
+            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(article,self.date.date(),lot)#        
             product_data['di_nb_colis']=nbcol
             product_data['di_nb_pieces']= nbpiece 
             product_data['di_nb_palette']=  nbpal
@@ -97,25 +97,6 @@ class Inventory(models.Model):
                        
         return vals
     
-#     def _get_inventory_lines_values(self):
-#         vals = []
-#         vals=super(Inventory, self).action_reset_product_qty()
-# #         if vals != True:
-#         nbcol=0.0
-#         nbpal=0.0
-#         nbpiece=0.0
-#         poids=0.0
-#         if vals.get('prod_lot_id'):
-#             (nbcol,nbpal,nbpiece,poids) = self.env['stock.move.line'].di_qte_spe_en_stock(self.product_id,datetime.strptime(self.date,'%Y-%m-%d %H:%M:%S').date(),vals['prod_lot_id'])#
-#         data=[]
-#         data['di_nb_colis']=nbcol
-#         data['di_nb_pieces']= nbpiece 
-#         data['di_nb_palette']=  nbpal
-#         data['di_poin']=  poids        
-#         vals.append(data)
-#         return vals
-
-# from datetime import datetime
 class InventoryLine(models.Model):
     _inherit = "stock.inventory.line"         
                  
@@ -131,13 +112,14 @@ class InventoryLine(models.Model):
     
     di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')       
     
-    @api.one
+    @api.multi
     @api.depends('product_qty', 'theoretical_qty')
-    def _compute_ecart(self):                    
-        self.di_ecart_qte = self.product_qty - self.theoretical_qty                                        
+    def _compute_ecart(self):    
+        for sil in self:                
+            sil.di_ecart_qte = sil.product_qty - sil.theoretical_qty                                        
          
         
-    @api.one
+    @api.one # SC je garde api.one car on surcharge une fonction qui est en api.one
     @api.depends('location_id', 'product_id', 'package_id', 'product_uom_id', 'company_id', 'prod_lot_id', 'partner_id')
     def _compute_theoretical_qty(self):                     
         super(InventoryLine, self)._compute_theoretical_qty()
@@ -147,7 +129,7 @@ class InventoryLine(models.Model):
         nbpiece = 0.0
         poids = 0.0
         if self.product_id and self.inventory_id.date:
-            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(self.product_id,datetime.strptime(self.inventory_id.date,'%Y-%m-%d %H:%M:%S').date(),self.prod_lot_id)#            
+            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(self.product_id,self.inventory_id.date.date(),self.prod_lot_id)#            
         self.di_nb_colis_theo = nbcol 
         self.di_nb_palette_theo = nbpal
         self.di_poin_theo = poids
@@ -311,7 +293,8 @@ class InventoryLine(models.Model):
     def _generate_moves(self):
         # copie standard
         #je dois surcharger en copiant le standard
-        moves = self.env['stock.move']
+#         moves = self.env['stock.move'] # v11
+        vals_list = [] # v12
         for line in self:
             if float_utils.float_compare(line.theoretical_qty, line.product_qty, precision_rounding=line.product_id.uom_id.rounding) == 0 \
             and float_utils.float_compare(line.di_nb_palette_theo, line.di_nb_palette, precision_rounding=line.product_id.uom_id.rounding) == 0 \
@@ -332,7 +315,8 @@ class InventoryLine(models.Model):
             else:
                 diff = diff - 1
                 vals = line._di_get_move_values_pal(abs(di_diff_pal), line.location_id.id, line.product_id.property_stock_inventory.id, True)
-            moves |= self.env['stock.move'].create(vals)
+#             moves |= self.env['stock.move'].create(vals)# v11
+            vals_list.append(vals) #v12
             
             if di_diff_col < 0:  # found more than expected
                 diff = diff + 1
@@ -340,7 +324,8 @@ class InventoryLine(models.Model):
             else:
                 diff = diff - 1
                 vals = line._di_get_move_values_col(abs(di_diff_col), line.location_id.id, line.product_id.property_stock_inventory.id, True)
-            moves |= self.env['stock.move'].create(vals)
+#             moves |= self.env['stock.move'].create(vals)# v11
+            vals_list.append(vals)#v12
             
             if di_diff_piece < 0:  # found more than expected
                 diff = diff + 1
@@ -348,7 +333,8 @@ class InventoryLine(models.Model):
             else:
                 diff = diff - 1
                 vals = line._di_get_move_values_piece(abs(di_diff_piece), line.location_id.id, line.product_id.property_stock_inventory.id, True)
-            moves |= self.env['stock.move'].create(vals)
+#             moves |= self.env['stock.move'].create(vals)# v11
+            vals_list.append(vals)#v12
             
             if di_diff_poids < 0:  # found more than expected
                 diff = diff + 1
@@ -356,36 +342,15 @@ class InventoryLine(models.Model):
             else:
                 diff = diff - 1
                 vals = line._di_get_move_values_poids(abs(di_diff_poids), line.location_id.id, line.product_id.property_stock_inventory.id, True)
-            moves |= self.env['stock.move'].create(vals)
+#             moves |= self.env['stock.move'].create(vals)# v11
+            vals_list.append(vals)#v12
             
             if diff < 0:  # found more than expected
                 vals = line._get_move_values(abs(diff), line.product_id.property_stock_inventory.id, line.location_id.id, False)
             else:
                 vals = line._get_move_values(abs(diff), line.location_id.id, line.product_id.property_stock_inventory.id, True)
-            moves |= self.env['stock.move'].create(vals)
-#             date_veille = datetime.strptime(self.inventory_id.date,'%Y-%m-%d %H:%M:%S').date() + timedelta(days=-1)
-#             cout = self.env['di.cout'].search(['&', ('di_product_id', '=', line.product_id), ('di_date', '=',  date_veille )])
-#             
-#             
-#             qte =cout.di_qte + diff
-#             nbpiece=cout.di_nbpiece + di_diff_piece
-#             nbcol=cout.di_nbcol + di_diff_col
-#             nbpal=cout.di_nbpal + di_diff_pal
-#             poids=cout.di_poin + di_diff_poids
-#             
-#             if qte !=0.0:
-#                 cmp=cout.di_mont/qte
-#             else:
-#                 cmp=cout.di_mont
-#             
-#             data ={                        
-#                         'di_qte' : qte,
-#                         'di_nbcol' : nbcol,
-#                         'di_nbpal' : nbpal ,
-#                         'di_nbpiece' : nbpiece,
-#                         'di_poin' : poids,                        
-#                         'di_cmp' : cmp        
-#                         }
-#               
-#             cout.update(data)                                                        
-        return moves
+#             moves |= self.env['stock.move'].create(vals)# v11
+            vals_list.append(vals)#v12
+                                               
+#         return moves # v11
+        return self.env['stock.move'].create(vals_list)#v12

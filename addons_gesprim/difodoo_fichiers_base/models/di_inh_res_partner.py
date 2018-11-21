@@ -29,86 +29,90 @@ class ResPartner(models.Model):
     di_nbex_bl = fields.Integer("Nombre exemplaires BL",help="""Nombre d'exemplaires,d'une impression de BL.""",default=1)
     di_nbex_fac = fields.Integer("Nombre exemplaires facture",help="""Nombre d'exemplaires, d'une impression de facture.""",default=1)
     
-    #@api.one
+
     @api.onchange('di_iban')
     def _di_controle_iban(self):
-        ibanstr=self.di_iban[4:34].strip()+self.di_iban[:4]
-        ibanstr=ibanstr.replace("A","10")
-        ibanstr=ibanstr.replace("B","11")
-        ibanstr=ibanstr.replace("C","12")
-        ibanstr=ibanstr.replace("D","13")
-        ibanstr=ibanstr.replace("E","14")
-        ibanstr=ibanstr.replace("F","15")
-        ibanstr=ibanstr.replace("G","16")
-        ibanstr=ibanstr.replace("H","17")
-        ibanstr=ibanstr.replace("I","18")
-        ibanstr=ibanstr.replace("J","19")
-        ibanstr=ibanstr.replace("K","20")
-        ibanstr=ibanstr.replace("L","21")
-        ibanstr=ibanstr.replace("M","22")
-        ibanstr=ibanstr.replace("N","23")
-        ibanstr=ibanstr.replace("O","24")
-        ibanstr=ibanstr.replace("P","25")
-        ibanstr=ibanstr.replace("Q","26")
-        ibanstr=ibanstr.replace("R","27")
-        ibanstr=ibanstr.replace("S","28")
-        ibanstr=ibanstr.replace("T","29")
-        ibanstr=ibanstr.replace("U","30")
-        ibanstr=ibanstr.replace("V","31")
-        ibanstr=ibanstr.replace("W","32")
-        ibanstr=ibanstr.replace("X","33")
-        ibanstr=ibanstr.replace("Y","34")
-        ibanstr=ibanstr.replace("Z","35")        
-        try:
-            ibanint=int(ibanstr)            
-        except:
-            ibanint=0
-            self.di_iban=''
-            raise Warning("L'IBAN saisi est incorrect.")
-        
-        if ibanint != 0:
-            reste=ibanint % 97
-            if reste !=1:            
+        if self.di_iban:
+            ibanstr=self.di_iban[4:34].strip()+self.di_iban[:4]
+            ibanstr=ibanstr.replace("A","10")
+            ibanstr=ibanstr.replace("B","11")
+            ibanstr=ibanstr.replace("C","12")
+            ibanstr=ibanstr.replace("D","13")
+            ibanstr=ibanstr.replace("E","14")
+            ibanstr=ibanstr.replace("F","15")
+            ibanstr=ibanstr.replace("G","16")
+            ibanstr=ibanstr.replace("H","17")
+            ibanstr=ibanstr.replace("I","18")
+            ibanstr=ibanstr.replace("J","19")
+            ibanstr=ibanstr.replace("K","20")
+            ibanstr=ibanstr.replace("L","21")
+            ibanstr=ibanstr.replace("M","22")
+            ibanstr=ibanstr.replace("N","23")
+            ibanstr=ibanstr.replace("O","24")
+            ibanstr=ibanstr.replace("P","25")
+            ibanstr=ibanstr.replace("Q","26")
+            ibanstr=ibanstr.replace("R","27")
+            ibanstr=ibanstr.replace("S","28")
+            ibanstr=ibanstr.replace("T","29")
+            ibanstr=ibanstr.replace("U","30")
+            ibanstr=ibanstr.replace("V","31")
+            ibanstr=ibanstr.replace("W","32")
+            ibanstr=ibanstr.replace("X","33")
+            ibanstr=ibanstr.replace("Y","34")
+            ibanstr=ibanstr.replace("Z","35")        
+            try:
+                ibanint=int(ibanstr)            
+            except:
+                ibanint=0
                 self.di_iban=''
                 raise Warning("L'IBAN saisi est incorrect.")
+            
+            if ibanint != 0:
+                reste=ibanint % 97
+                if reste !=1:            
+                    self.di_iban=''
+                    raise Warning("L'IBAN saisi est incorrect.")
         
         
-    @api.one
+    @api.multi
     @api.depends('company_id')
     def _di_compute_seq_clifou(self):
-        if self.company_id and self.company_id.di_param_id:
-            self.di_param_seq_cli = self.company_id.di_param_id.di_seq_cli
-            self.di_param_seq_fou = self.company_id.di_param_id.di_seq_fou
-        else:
-            self.di_param_seq_cli = False   
-            self.di_param_seq_fou = False
+        for partner in self:
+            if partner.company_id and partner.company_id.di_param_id:
+                partner.di_param_seq_cli = partner.company_id.di_param_id.di_seq_cli
+                partner.di_param_seq_fou = partner.company_id.di_param_id.di_seq_fou
+            else:
+                partner.di_param_seq_cli = False   
+                partner.di_param_seq_fou = False
             
-    @api.one
+    @api.multi
     @api.depends('di_param_seq_cli','di_param_seq_fou')
     def _di_compute_ref_required(self):
-        if self.customer:
-            if self.di_param_seq_cli:
-                self.di_ref_required=False
+        for partner in self:
+            if partner.customer:
+                if partner.di_param_seq_cli:
+                    partner.di_ref_required=False
+                else:
+                    partner.di_ref_required=True
+            elif partner.supplier:
+                if partner.di_param_seq_fou:
+                    partner.di_ref_required=False
+                else:
+                    partner.di_ref_required=True
             else:
-                self.di_ref_required=True
-        elif self.supplier:
-            if self.di_param_seq_fou:
-                self.di_ref_required=False
-            else:
-                self.di_ref_required=True
-        else:
-            self.di_ref_required=False
+                partner.di_ref_required=False
                  
     #unicité du code tiers
-    @api.one
+    @api.multi
     @api.constrains('ref')
     def _check_ref(self):
-        if self.ref:
-            default_code = self.search([
-                ('id', '!=', self.id),
-                ('ref', '=', self.ref)], limit=1)
-            if default_code:
-                raise Warning("Le code existe déjà.")
+        for partner in self:
+            if partner.ref:
+                default_code = partner.search([
+                    ('id', '!=', partner.id),
+                    ('ref', '=', partner.ref)], limit=1)
+                if default_code:
+                    raise Warning("Le code existe déjà.")
 
     @api.multi
     def name_get(self):
