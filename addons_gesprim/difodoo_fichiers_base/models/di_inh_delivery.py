@@ -9,6 +9,9 @@ class PriceRule(models.Model):
     _inherit = "delivery.price.rule"
     _order = 'carrier_name,di_code_dest_id,variable,operator,max_value'
     
+    # on change les décimales sur les prix
+    list_base_price = fields.Float(string='Sale Base Price', digits=(16,4), required=True, default=0.0)
+    list_price = fields.Float('Sale Price', digits=(16,4), required=True, default=0.0)
     name = fields.Char(compute='_compute_name', store=True)
     di_code_dest_id = fields.Many2one('di.code.dest', string='Code destination', help="Code destination pour les grilles transporteurs")
     carrier_name = fields.Char(string="Nom Transporteur", related='carrier_id.name', store=True)
