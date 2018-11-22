@@ -24,15 +24,15 @@ class PurchaseOrderLine(models.Model):
     di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
-    di_qte_un_saisie_liv = fields.Float(string='Quantité reçue en unité de saisie',compute='_compute_qty_received',store=True)
+    di_qte_un_saisie_liv = fields.Float(string='Quantité reçue en unité de saisie',store=True)
     di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie reçue",store=True)
     di_type_palette_liv_id  = fields.Many2one('product.packaging', string='Palette reçue',store=True) 
-    di_nb_pieces_liv     = fields.Integer(string='Nb pièces reçues',compute='_compute_qty_received',store=True)
-    di_nb_colis_liv      = fields.Integer(string='Nb colis reçus',compute='_compute_qty_received',store=True)
-    di_nb_palette_liv    = fields.Float(string='Nb palettes reçues',compute='_compute_qty_received',store=True)
-    di_poin_liv          = fields.Float(string='Poids net reçu',compute='_compute_qty_received',store=True)
-    di_poib_liv          = fields.Float(string='Poids brut reçu',compute='_compute_qty_received',store=True)
-    di_tare_liv          = fields.Float(string='Tare reçue',compute='_compute_qty_received',store=True)
+    di_nb_pieces_liv     = fields.Integer(string='Nb pièces reçues',store=True)
+    di_nb_colis_liv      = fields.Integer(string='Nb colis reçus',store=True)
+    di_nb_palette_liv    = fields.Float(string='Nb palettes reçues',store=True)
+    di_poin_liv          = fields.Float(string='Poids net reçu',store=True)
+    di_poib_liv          = fields.Float(string='Poids brut reçu',store=True)
+    di_tare_liv          = fields.Float(string='Tare reçue',store=True)
     di_product_packaging_liv_id=fields.Many2one('product.packaging', string='Colis reçu',store=True)
     
     di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie',compute='_compute_qty_invoiced',store=True)
@@ -112,26 +112,69 @@ class PurchaseOrderLine(models.Model):
                 'price_subtotal': taxes['total_excluded'],
             })    
                  
-    @api.depends('order_id.state', 'move_ids.state', 'move_ids.product_uom_qty','move_ids.di_qte_un_saisie','move_ids.di_nb_pieces','move_ids.di_nb_colis','move_ids.di_nb_palette','move_ids.di_poin','move_ids.di_poib')
-    def _compute_qty_received(self):
-         
+#                  n'existe plus en v12
+#     @api.depends('order_id.state', 'move_ids.state', 'move_ids.product_uom_qty','move_ids.di_qte_un_saisie','move_ids.di_nb_pieces','move_ids.di_nb_colis','move_ids.di_nb_palette','move_ids.di_poin','move_ids.di_poib')
+#     def _compute_qty_received(self):
+#          
+#         for line in self:
+#             if line.order_id.state not in ['purchase', 'done']:
+#                 line.di_qte_un_saisie_liv = 0.0
+#                 line.di_nb_pieces_liv = 0.0
+#                 line.di_nb_colis_liv = 0.0
+#                 line.di_nb_palette_liv = 0.0
+#                 line.di_poin_liv = 0.0
+#                 line.di_poib_liv = 0.0
+#                 continue
+#             if line.product_id.type not in ['consu', 'product']:
+#                 line.di_qte_un_saisie_liv = line.di_qte_un_saisie
+#                 line.di_nb_pieces_liv = line.di_nb_pieces
+#                 line.di_nb_colis_liv = line.di_nb_colis
+#                 line.di_nb_palette_liv = line.di_nb_palette
+#                 line.di_poin_liv = line.di_poin
+#                 line.di_poib_liv = line.di_poib
+#                 continue
+#             total_qte_un_saisie_liv = 0.0
+#             total_nb_pieces_liv = 0.0
+#             total_nb_colis_liv = 0.0
+#             total_nb_palette_liv = 0.0
+#             total_poin_liv = 0.0
+#             total_poib_liv = 0.0
+#             for move in line.move_ids:
+#                 if move.state == 'done':
+#                     if move.location_dest_id.usage == "supplier":
+#                         if move.to_refund:
+#                             total_qte_un_saisie_liv -= move.di_qte_un_saisie
+#                             total_nb_pieces_liv -= move.di_nb_pieces
+#                             total_nb_colis_liv -= move.di_nb_colis
+#                             total_nb_palette_liv -= move.di_nb_palette
+#                             total_poin_liv -= move.di_poin
+#                             total_poib_liv -= move.di_poib
+#                     else:
+#                         total_qte_un_saisie_liv += move.di_qte_un_saisie
+#                         total_nb_pieces_liv += move.di_nb_pieces
+#                         total_nb_colis_liv += move.di_nb_colis
+#                         total_nb_palette_liv += move.di_nb_palette
+#                         total_poin_liv += move.di_poin
+#                         total_poib_liv += move.di_poib
+#                                            
+#                 line.di_type_palette_liv_id  = move.di_type_palette_id
+#                 line.di_un_saisie_liv     = move.di_un_saisie
+#                 line.di_product_packaging_liv_id = move.di_product_packaging_id
+#                 line.di_tare_liv          = move.di_tare                
+#                    
+#             line.di_qte_un_saisie_liv = total_qte_un_saisie_liv
+#             line.di_nb_pieces_liv = total_nb_pieces_liv
+#             line.di_nb_colis_liv = total_nb_colis_liv
+#             line.di_nb_palette_liv = total_nb_palette_liv
+#             line.di_poin_liv = total_poin_liv
+#             line.di_poib_liv = total_poib_liv            
+#         super(PurchaseOrderLine, self)._compute_qty_received() 
+        
+        
+        
+    def _update_received_qty(self):
+        super(PurchaseOrderLine, self)._update_received_qty()
         for line in self:
-            if line.order_id.state not in ['purchase', 'done']:
-                line.di_qte_un_saisie_liv = 0.0
-                line.di_nb_pieces_liv = 0.0
-                line.di_nb_colis_liv = 0.0
-                line.di_nb_palette_liv = 0.0
-                line.di_poin_liv = 0.0
-                line.di_poib_liv = 0.0
-                continue
-            if line.product_id.type not in ['consu', 'product']:
-                line.di_qte_un_saisie_liv = line.di_qte_un_saisie
-                line.di_nb_pieces_liv = line.di_nb_pieces
-                line.di_nb_colis_liv = line.di_nb_colis
-                line.di_nb_palette_liv = line.di_nb_palette
-                line.di_poin_liv = line.di_poin
-                line.di_poib_liv = line.di_poib
-                continue
             total_qte_un_saisie_liv = 0.0
             total_nb_pieces_liv = 0.0
             total_nb_colis_liv = 0.0
@@ -155,19 +198,18 @@ class PurchaseOrderLine(models.Model):
                         total_nb_palette_liv += move.di_nb_palette
                         total_poin_liv += move.di_poin
                         total_poib_liv += move.di_poib
-                                           
+                        
                 line.di_type_palette_liv_id  = move.di_type_palette_id
                 line.di_un_saisie_liv     = move.di_un_saisie
                 line.di_product_packaging_liv_id = move.di_product_packaging_id
-                line.di_tare_liv          = move.di_tare                
-                   
+                line.di_tare_liv          = move.di_tare 
+
             line.di_qte_un_saisie_liv = total_qte_un_saisie_liv
             line.di_nb_pieces_liv = total_nb_pieces_liv
             line.di_nb_colis_liv = total_nb_colis_liv
             line.di_nb_palette_liv = total_nb_palette_liv
             line.di_poin_liv = total_poin_liv
-            line.di_poib_liv = total_poib_liv            
-        super(PurchaseOrderLine, self)._compute_qty_received() 
+            line.di_poib_liv = total_poib_liv  
             
            
     @api.multi

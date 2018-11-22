@@ -15,8 +15,8 @@
 					<field name="name" string="Règle de calcul" />
 				</xpath>
 				<!-- on enlève le widget séquence -->
-				<xpath expr="//field[@name='sequence']" position="replace">
-				</xpath>
+				<!-- <xpath expr="//field[@name='sequence']" position="replace"> -->
+				<!-- </xpath> -->
 			</field>
 		</record>
 		<!-- surcharge mode fiche de la grille de transport standard (depuis la méthode de livraison)-->
@@ -61,9 +61,9 @@
                         <label for="list_base_price" string="Delivery Cost"/>
                         <div>
                             <field name="list_base_price" class="oe_inline"/>
-                            +
+                            <p class="oe_inline">+</p>
                             <field name="list_price" class="oe_inline"/>
-                            *
+                            <p class="oe_inline">*</p>
                             <field name="variable_factor" class="oe_inline"/>
                         </div>
                     </group>

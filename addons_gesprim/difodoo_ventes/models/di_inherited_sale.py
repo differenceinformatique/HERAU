@@ -9,6 +9,8 @@ import ctypes
 from math import ceil
 from odoo.addons import decimal_precision as dp
 from difodoo.addons_gesprim.difodoo_fichiers_base.models import di_param
+from functools import partial
+from odoo.tools.misc import formatLang
 
 
 class SaleOrderLine(models.Model):
@@ -29,15 +31,15 @@ class SaleOrderLine(models.Model):
 
     di_flg_modif_uom = fields.Boolean(store=True)
 
-    di_qte_un_saisie_liv = fields.Float(string='Quantité livrée en unité de saisie')
+    di_qte_un_saisie_liv = fields.Float(string='Quantité livrée en unité de saisie', compute='_compute_qty_delivered')
     di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie livrée")
     di_type_palette_liv_id  = fields.Many2one('product.packaging', string='Palette livrée') 
-    di_nb_pieces_liv     = fields.Integer(string='Nb pièces livrées')
-    di_nb_colis_liv      = fields.Integer(string='Nb colis livrés')
-    di_nb_palette_liv    = fields.Float(string='Nb palettes livrées')
-    di_poin_liv          = fields.Float(string='Poids net livré')
-    di_poib_liv          = fields.Float(string='Poids brut livré')
-    di_tare_liv          = fields.Float(string='Tare livrée')
+    di_nb_pieces_liv     = fields.Integer(string='Nb pièces livrées', compute='_compute_qty_delivered')
+    di_nb_colis_liv      = fields.Integer(string='Nb colis livrés', compute='_compute_qty_delivered')
+    di_nb_palette_liv    = fields.Float(string='Nb palettes livrées', compute='_compute_qty_delivered')
+    di_poin_liv          = fields.Float(string='Poids net livré', compute='_compute_qty_delivered')
+    di_poib_liv          = fields.Float(string='Poids brut livré', compute='_compute_qty_delivered')
+    di_tare_liv          = fields.Float(string='Tare livrée', compute='_compute_qty_delivered')
     di_product_packaging_liv_id=fields.Many2one('product.packaging', string='Colis livré')
     
     di_qte_un_saisie_fac = fields.Float(string='Quantité facturée en unité de saisie',compute='_get_invoice_qty')
@@ -62,10 +64,51 @@ class SaleOrderLine(models.Model):
     
     di_marge_inf_seuil = fields.Boolean(string='Marge inférieure au seuil',default = False, compute='_di_compute_marge_seuil',store=True)
     
-#     di_marge_param = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)
-#         
-#     def di_get_param_by_company_id(self,company_id):    
-#         return self.env['di.param'].search(['di_company_id','=',company_id],limit=1) 
+    @api.multi
+    @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom', 'move_ids.di_qte_un_saisie'
+                 , 'move_ids.di_nb_pieces', 'move_ids.di_nb_colis', 'move_ids.di_nb_palette', 'move_ids.di_poin', 'move_ids.di_poib')
+    def _compute_qty_delivered(self):
+        super(SaleOrderLine, self)._compute_qty_delivered()
+
+        for line in self:  # TODO: maybe one day, this should be done in SQL for performance sake
+            if line.qty_delivered_method == 'stock_move':
+                qte_un_saisie = 0.0
+                pieces = 0.0
+                colis = 0.0
+                palettes = 0.0
+                poib = 0.0
+                poin = 0.0
+                
+                for move in line.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped and line.product_id == r.product_id):
+                    if move.location_dest_id.usage == "customer":
+                        if not move.origin_returned_move_id or (move.origin_returned_move_id and move.to_refund):
+                            qte_un_saisie += move.di_qte_un_saisie
+                            pieces += move.di_nb_pieces
+                            colis += move.di_nb_colis
+                            palettes += move.di_nb_palette
+                            poib += move.di_poib
+                            poin += move.di_poin
+                   
+                    elif move.location_dest_id.usage != "customer" and move.to_refund:
+                        qte_un_saisie -= move.di_qte_un_saisie
+                        pieces -= move.di_nb_pieces
+                        colis -= move.di_nb_colis
+                        palettes -= move.di_nb_palette
+                        poib -= move.di_poib
+                        poin -= move.di_poin
+                        
+                    line.di_type_palette_liv_id  = move.di_type_palette_id
+                    line.di_un_saisie_liv     = move.di_un_saisie
+                    line.di_product_packaging_liv_id = move.di_product_packaging_id
+                    line.di_tare_liv          = move.di_tare 
+               
+                line.di_qte_un_saisie_liv = qte_un_saisie
+                line.di_nb_pieces_liv = pieces
+                line.di_nb_colis_liv = colis
+                line.di_nb_palette_liv = palettes
+                line.di_poib_liv = poib
+                line.di_poin_liv = poin
+                
     @api.multi
     @api.depends('di_marge_prc','company_id.di_param_id.di_seuil_marge_prc')#,'di_param_id.di_seuil_marge_prc')
     def _di_compute_marge_seuil(self):   
@@ -746,19 +789,19 @@ class SaleOrder(models.Model):
     @api.multi
     @api.onchange('di_livdt')
     def modif_livdt(self):
-        if self.di_livdt.date()<datetime.today().date():
+        if self.di_livdt<datetime.today().date():
             return {'warning': {'Erreur date livraison': _('Error'), 'message': _('La date de livraison ne peut être inférieure à la date du jour !'),},}       
-        self.di_prepdt = self.di_livdt.date() + timedelta(days=-1)
-        if self.di_prepdt.date()<datetime.today().date():
+        self.di_prepdt = self.di_livdt + timedelta(days=-1)
+        if self.di_prepdt<datetime.today().date():
             self.di_prepdt=datetime.today().date()
         self.requested_date = self.di_livdt
      
     @api.multi
     @api.onchange('di_prepdt')
     def modif_prepdt(self):
-        if self.di_prepdt.date()<datetime.today().date():
+        if self.di_prepdt<datetime.today().date():
             return {'warning': {'Erreur date préparation': _('Error'), 'message': _('La date de préparation ne peut être inférieure à la date du jour !'),},}
-        self.di_livdt = self.di_prepdt.date() + timedelta(days=1)
+        self.di_livdt = self.di_prepdt + timedelta(days=1)
         self.requested_date = self.di_livdt
      
     def _force_lines_to_invoice_policy_order(self):

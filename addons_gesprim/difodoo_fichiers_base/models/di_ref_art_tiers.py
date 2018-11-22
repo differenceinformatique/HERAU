@@ -27,14 +27,14 @@ class DiRefArtTiers(models.Model):
             self.di_type_palette_id = self.di_product_id.di_type_palette_id
             self.di_type_colis_id = self.di_product_id.di_type_colis_id
             self.di_un_prix = self.di_product_id.di_un_prix
-            self.di_eantiers = self.di_product_id.barcode
+            self.di_eantiers = self.di_product_id.barcode or ' '
             
             
-    @api.depends('di_product_id', 'di_partner_id')
+    @api.depends('di_product_id', 'di_partner_id', 'di_reftiers', 'di_destiers', 'di_eantiers')
     def _compute_name(self):
         for refart in self:
             if refart.di_partner_id and refart.di_product_id:
-                refart.name=refart.di_partner_id.name+' '+refart.di_product_id.name+' '+refart.di_reftiers+' '+refart.di_destiers+' '+refart.di_eantiers
+                refart.name=refart.di_partner_id.name+' '+refart.di_product_id.name+' '+refart.di_reftiers+' '+refart.di_destiers+' '+refart.di_eantiers 
             
 
     #unicité 

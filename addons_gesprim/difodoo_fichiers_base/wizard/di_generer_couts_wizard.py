@@ -101,8 +101,7 @@ class DiGenCoutsWiz(models.TransientModel):
         
         
         for article in articles:  
-            if article.id ==5986:
-                article.id 
+
             move = self.env['stock.move'].search([ ('product_id', '=', article.id)], limit=1)
             if move:            
                 self.di_generer_cmp(article.id, date_lancement)

@@ -10,8 +10,8 @@ class DiCtrlTrpWiz(models.TransientModel):
     _description = "Impression contrôle transporteur"
     
     company_id = fields.Many2one('res.company', string='Société', readonly=True,  default=lambda self: self.env.user.company_id)
-    date_debut = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
-    date_fin = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
+    date_debut = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
+    date_fin = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
     
     transp_deb = fields.Char(default=" ", string="Transporteur Début")
     transp_fin = fields.Char(required=True, default="zzzzzzzz", string="Transporteur Fin")
@@ -20,9 +20,9 @@ class DiCtrlTrpWiz(models.TransientModel):
     @api.multi
     def edit_controle_trp(self):
         # on récupére les livraisons du jour
-        wdate = self.date_debut.date()
+        wdate = self.date_debut
         date_d = datetime.datetime(wdate.year,wdate.month,wdate.day,0,0,0,0).strftime("%Y-%m-%d %H:%M:%S")
-        wdate = self.date_fin.date()
+        wdate = self.date_fin
         date_f = datetime.datetime(wdate.year,wdate.month,wdate.day,23,59,59,0).strftime("%Y-%m-%d %H:%M:%S")
         stock_pickings1 = self.env['stock.picking'].search([('date_done','>',date_d),('date_done','<',date_f)])
         # on filtre sur les expéditions

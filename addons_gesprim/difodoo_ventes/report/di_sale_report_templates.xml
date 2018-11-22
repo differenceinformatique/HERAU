@@ -31,35 +31,35 @@
     <!-- ajout de l'unité de prix après le prix -->
     <xpath expr="//table[1]/tbody/t[2]/tr/t/td[3]" position="after">
       <td>
-        <span t-field="l.di_un_prix" />
+        <span t-field="line.di_un_prix" />
       </td>
     </xpath>
     <!-- ajout colonnes pièces, colis, palettes, poids -->
     <xpath expr="//table[1]/tbody/t[2]/tr/t/td[1]" position="after">
       <td class="text-right">
         <!-- on masque le nb pièces si prix au kg -->
-        <t t-if="l.di_un_prix != 'KG'">
-          <div t-field="l.di_nb_pieces" />
-          <div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
+        <t t-if="line.di_un_prix != 'KG'">
+          <div t-field="line.di_nb_pieces" />
+          <div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
         </t>
-        <t t-if="l.di_un_prix == 'KG'">
+        <t t-if="line.di_un_prix == 'KG'">
           <div>&amp;nbsp;</div>
-          <div t-field="l.product_id.product_tmpl_id.di_categorie_id" />
+          <div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
         </t>
       </td>
       <td class="text-right">
-        <div t-field="l.di_nb_colis" />
-        <div t-field="l.product_id.product_tmpl_id.di_origine_id" />
+        <div t-field="line.di_nb_colis" />
+        <div t-field="line.product_id.product_tmpl_id.di_origine_id" />
       </td>
       <td>
-        <div t-field="l.product_packaging" />
-        <div t-field="l.product_id.product_tmpl_id.di_marque_id" />
+        <div t-field="line.product_packaging" />
+        <div t-field="line.product_id.product_tmpl_id.di_marque_id" />
       </td>
-      <!-- <td class="text-right"> <span t-field="l.di_nb_palette"/> </td> <td> <span t-field="l.di_type_palette_id"/>
+      <!-- <td class="text-right"> <span t-field="line.di_nb_palette"/> </td> <td> <span t-field="line.di_type_palette_id"/>
         </td> -->
       <td class="text-right">
-        <div t-field="l.di_poin" />
-        <div t-field="l.product_id.product_tmpl_id.di_calibre_id" />
+        <div t-field="line.di_poin" />
+        <div t-field="line.product_id.product_tmpl_id.di_calibre_id" />
       </td>
     </xpath>
     <!-- suppression quantité en unité de mesure -->

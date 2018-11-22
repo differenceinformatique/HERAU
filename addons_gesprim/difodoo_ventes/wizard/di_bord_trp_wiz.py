@@ -11,7 +11,7 @@ class DiBordTrpWiz(models.TransientModel):
     
     company_id = fields.Many2one('res.company', string='Société', readonly=True,  default=lambda self: self.env.user.company_id)
     date_sel = fields.Date(string='Date', help="Date d'interrogation", required=True,
-                           default=datetime.datetime(datetime.date.today().year, datetime.date.today().month,
+                           default=datetime.date(datetime.date.today().year, datetime.date.today().month,
                                                      calendar.mdays[datetime.date.today().month]))
     transp_deb = fields.Char(default=" ", string="Transporteur Début")
     transp_fin = fields.Char(required=True, default="zzzzzzzz", string="Transporteur Fin")
@@ -20,7 +20,7 @@ class DiBordTrpWiz(models.TransientModel):
     @api.multi
     def edit_bordereau(self):
         # on récupère les livraisons du jour
-        wdate       = self.date_sel.date()
+        wdate       = self.date_sel
         date_deb    = datetime.datetime(wdate.year,wdate.month,wdate.day,0,0,0,0).strftime("%Y-%m-%d %H:%M:%S")
         date_fin    = datetime.datetime(wdate.year,wdate.month,wdate.day,23,59,59,0).strftime("%Y-%m-%d %H:%M:%S")
         stock_pickings1 = self.env['stock.picking'].search([('date_done','>',date_deb),('date_done','<',date_fin)])

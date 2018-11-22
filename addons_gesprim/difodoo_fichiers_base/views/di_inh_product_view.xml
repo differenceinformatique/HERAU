@@ -162,7 +162,7 @@
 					<attribute name="default_order">default_code</attribute>
 				</xpath>
 				<!-- suppression de la colonne sequence (tri manuel) -->
-				<xpath expr="//field[@name='sequence']" position="replace"/>
+				<!-- <xpath expr="//field[@name='sequence']" position="replace"/> -->
 				<xpath expr="//field[@name='name']" position="replace">
 					<field name="name" string="Désignation" />
 				</xpath>
@@ -265,7 +265,7 @@
 					<attribute name="editable">bottom</attribute>
 				</xpath>
 				<!-- suppression de la colonne sequence (tri manuel) + ajout du product name pour filtre en invisible-->
-				<xpath expr="//field[@name='sequence']" position="replace"/>
+				<!-- <xpath expr="//field[@name='sequence']" position="replace"/> -->
 				<!-- Modification libellé du champ -->
 				<xpath expr="//field[@name='name']" position="attributes">
 					<attribute name="string">Code Cond.</attribute>

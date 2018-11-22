@@ -30,6 +30,8 @@ class DiGenTarWiz(models.TransientModel):
                             'di_code_tarif_id': tarifdest.id,
                             'di_partner_id': tarif_origine.di_partner_id.id,
                             'di_un_prix': tarif_origine.di_un_prix,
+                            'di_type_colis_id': tarif_origine.di_type_colis_id,
+                            'di_type_palette_id': tarif_origine.di_type_palette_id,
                             'di_prix': tarif_origine.di_prix * tarifdest.di_coef,
                             'di_qte_seuil': tarif_origine.di_qte_seuil,
                             'di_date_effet': self.di_date_effet,
@@ -40,8 +42,10 @@ class DiGenTarWiz(models.TransientModel):
                                                                    ('di_date_effet','=',self.di_date_effet),
                                                                    ('di_company_id','=',self.env.user.company_id.id),
                                                                    ('di_product_id','=',tarif_origine.di_product_id.id),
-                                                                   ('di_partner_id','=',tarif_origine.di_partner_id.id),
+                                                                   ('di_partner_id','=',tarif_origine.di_partner_id.id),                                                                   
                                                                    ('di_un_prix','=',tarif_origine.di_un_prix),
+                                                                   ('di_type_colis_id','=', tarif_origine.di_type_colis_id.id),
+                                                                   ('di_type_palette_id','=', tarif_origine.di_type_palette_id),
                                                                    ('di_qte_seuil','=',tarif_origine.di_qte_seuil)
                                                                    ])
                     

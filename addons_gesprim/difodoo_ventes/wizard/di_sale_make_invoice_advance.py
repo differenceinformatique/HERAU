@@ -11,11 +11,11 @@ from odoo.exceptions import UserError
 class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = "sale.advance.payment.inv"
     
-    date_fact = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date de facturation")
+    date_fact = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date de facturation")
     period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
-    date_debut = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
-    date_fin = fields.Date(required=True, default=datetime.datetime(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
+    date_debut = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
+    date_fin = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
     ref_debut = fields.Char(required=True, default="C", string="Code Tiers Début")
     ref_fin = fields.Char(required=True, default="Czzzzzzz", string="Code Tiers Fin")
          
@@ -36,7 +36,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
             # on filtre sur la date
             sale_orders_2 = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin)
             # on filtre sur le code client
-            sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.di_livdt <= self.ref_fin)
+            sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin)
             wPartnerId = 0
             wRegr = True
             # on les parcourt, triées par partner_id

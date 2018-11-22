@@ -126,8 +126,10 @@ class Wizard_transfert_compta(models.TransientModel):
     def transfert_compta(self):
         self.ensure_one()  
         param = self.env['di.param'].search([('di_company_id', '=', self.env.user.company_id.id)])
-        date_d = self.date_start[0:4] + self.date_start[5:7] + self.date_start[8:10] 
-        date_f = self.date_end[0:4] + self.date_end[5:7] + self.date_end[8:10] 
+#         date_d = self.date_start[0:4] + self.date_start[5:7] + self.date_start[8:10] 
+#         date_f = self.date_end[0:4] + self.date_end[5:7] + self.date_end[8:10] 
+        date_d=self.date_start.strftime('%Y%m%d')
+        date_f=self.date_end.strftime('%Y%m%d')
         
         
         compta_file = io.BytesIO()

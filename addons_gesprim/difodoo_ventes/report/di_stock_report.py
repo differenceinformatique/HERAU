@@ -39,6 +39,7 @@ class DiStockReport(models.Model):
             SELECT sub.id, sub.date, 
                 sub.company_id, sub.state,
                 sub.categ_id,
+                sub.product_id,
                 sub.di_qte_entree as di_qte_entree,            
                 sub.di_perte as di_perte
         """
@@ -47,7 +48,8 @@ class DiStockReport(models.Model):
     def _sub_select(self):
         select_str = """
                 SELECT pr.id AS id,
-                    sm.date AS date,                    
+                    sm.date AS date,
+                    sm.product_id,                     
                     sm.company_id,
                     sm.state, pt.categ_id,
                     SUM ( Case when stock_type.sign = 1 then sm.product_qty else 0 end) AS di_qte_entree,
