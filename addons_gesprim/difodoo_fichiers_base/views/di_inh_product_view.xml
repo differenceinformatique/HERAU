@@ -261,9 +261,9 @@
 			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<!-- liste modifiable -->
-				<xpath expr="//tree" position="attributes">
+				<!-- <xpath expr="//tree" position="attributes">
 					<attribute name="editable">bottom</attribute>
-				</xpath>
+				</xpath> -->
 				<!-- suppression de la colonne sequence (tri manuel) + ajout du product name pour filtre en invisible-->
 				<!-- <xpath expr="//field[@name='sequence']" position="replace"/> -->
 				<!-- Modification libellé du champ -->

@@ -3,7 +3,7 @@
 from odoo import models,fields,api,http
 #from . import models,wizards
 import os, sys
-import win32print
+# import win32print
 
 # class MyController(http.Controller):
 #     @http.route(type='json', website=True)
@@ -52,18 +52,18 @@ def printlabelonwindows(printer,contenu):
 #     printWindow.print();
 #   }
 #     printer_name = win32print.GetDefaultPrinter ()  
-    hPrinter = win32print.OpenPrinter (printer)
-#    hPrinter = win32print.OpenPrinter (printer_name)
-    try:
-        hJob = win32print.StartDocPrinter(hPrinter, 1, ("print", None, "RAW"))
-        try:
-            win32print.StartPagePrinter (hPrinter)
-            win32print.WritePrinter (hPrinter, raw_data)
-            win32print.EndPagePrinter (hPrinter)
-        finally:
-            win32print.EndDocPrinter (hPrinter)
-    finally:
-        win32print.ClosePrinter (hPrinter)
+#     hPrinter = win32print.OpenPrinter (printer)
+# #    hPrinter = win32print.OpenPrinter (printer_name)
+#     try:
+#         hJob = win32print.StartDocPrinter(hPrinter, 1, ("print", None, "RAW"))
+#         try:
+#             win32print.StartPagePrinter (hPrinter)
+#             win32print.WritePrinter (hPrinter, raw_data)
+#             win32print.EndPagePrinter (hPrinter)
+#         finally:
+#             win32print.EndDocPrinter (hPrinter)
+#     finally:
+#         win32print.ClosePrinter (hPrinter)
 
 def callFonction(self):
     return
