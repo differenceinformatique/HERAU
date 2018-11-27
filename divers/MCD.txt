@@ -9,4 +9,4 @@ CATEGORIE (_categorie_id_, libelle, #PIECE_ENT_id, #article_id, #origine_id, #ca
 ARTICLE (_article_id_, name, designation, lavage, prixmin, prix_max, #emlevement_id, #code_emballage_id, #origine_id, #code_emballage_id.1, #partner_id, #partner_id.1, #categorie_id, #calibre_id)
 ORIGINE (_origine_id_, libelle)
 CALIBRE (_calibre_id_, libelle)
-ENLEVEMENT (_emlevement_id_, libelle)
+ENLEVEMENT (_emlevement_id_, libelle) 
