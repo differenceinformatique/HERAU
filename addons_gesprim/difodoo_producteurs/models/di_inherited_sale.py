@@ -8,7 +8,7 @@ from ...difodoo_fichiers_base.controllers import di_ctrl_print
 import ctypes
 from math import ceil
 from odoo.addons import decimal_precision as dp
-from difodoo.addons_gesprim.difodoo_fichiers_base.models import di_param
+from ...difodoo_fichiers_base.models import di_param
 
 
 class SaleOrderLine(models.Model):
