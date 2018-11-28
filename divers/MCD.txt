@@ -10,3 +10,4 @@ ARTICLE (_article_id_, name, designation, lavage, prixmin, prix_max, #emlevement
 ORIGINE (_origine_id_, libelle)
 CALIBRE (_calibre_id_, libelle)
 ENLEVEMENT (_emlevement_id_, libelle) 
+TEST(_test_id_, libelle) 
