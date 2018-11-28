@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 import io
 # import os
 import base64
-from ..models import di_outils
+# from ..models import di_outils
 # from pip._internal import download
 from odoo.tools import pycompat
 
@@ -19,6 +19,19 @@ class Wizard_transfert_compta(models.TransientModel):
     compta_data = fields.Binary('Compta File', readonly=True)
     filename = fields.Char(string='Filename', size=256, readonly=True)            
         
+        
+    def replace_accent(self, s):
+        if s:
+            s = s.replace('ê', 'e') \
+                 .replace('è', 'e') \
+                 .replace('é', 'e') \
+                 .replace('à', 'a') \
+                 .replace('ô', 'o') \
+                 .replace('ö', 'o') \
+                 .replace('î', 'i')
+        return s                 
+
+
     @api.model
     def _default_start(self):        
         start = datetime.today() + timedelta(days=-7)
@@ -38,7 +51,7 @@ class Wizard_transfert_compta(models.TransientModel):
             if move_line_name:
                 libelle = move_line_name  
         
-        libelle = di_outils.replace_accent(self, libelle)
+        libelle = replace_accent(self, libelle)
                          
         if move_name:
             n_piece = move_name
