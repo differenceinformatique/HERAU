@@ -51,7 +51,7 @@ class Wizard_transfert_compta(models.TransientModel):
             if move_line_name:
                 libelle = move_line_name  
         
-        libelle = replace_accent(self, libelle)
+        libelle = self.replace_accent(libelle)
                          
         if move_name:
             n_piece = move_name
