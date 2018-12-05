@@ -6,3 +6,4 @@ from . import di_inherited_account_invoice
 from . import di_inh_stock_inventory
 from . import di_inh_account_move
 from . import di_inh_stock_traceability
+# from . import di_sale_taxes

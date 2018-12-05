@@ -479,7 +479,7 @@
                         <group string="Facturation">                           
                             <group string="Ventes">
                                 <field name="di_autovalid_fact_ven"/>
-                                <field name="di_autoimp_fact_ven"/>
+                                <field name="di_autoimp_fact_ven" invisible = "1"/>
                             </group>                           
                         </group>
                         <group>

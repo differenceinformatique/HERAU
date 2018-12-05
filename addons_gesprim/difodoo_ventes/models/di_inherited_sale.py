@@ -64,6 +64,15 @@ class SaleOrderLine(models.Model):
     
     di_marge_inf_seuil = fields.Boolean(string='Marge inférieure au seuil',default = False, compute='_di_compute_marge_seuil',store=True)
     
+    
+#     @api.onchange("price_total","product_uom_qty")
+#     def di_maj_ligne_port(self):
+#         for sol in self:            
+#             if sol.order_id.carrier_id and sol.order_id.state in ("draft","sent") and sol.order_id.delivery_rating_success:                
+#                 sol.order_id.set_delivery_line() # Ne fonctionne pas -> message d'erreur unknown company_id # Pas possible ici car on est en création/modif de ligne -> conflit pour créer une autre ligne
+                
+                
+    
     @api.multi
     @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom', 'move_ids.di_qte_un_saisie'
                  , 'move_ids.di_nb_pieces', 'move_ids.di_nb_colis', 'move_ids.di_nb_palette', 'move_ids.di_poin', 'move_ids.di_poib')
@@ -612,7 +621,15 @@ class SaleOrderLine(models.Model):
                         qty_invoiced -= invoice_line.di_qte_un_saisie
             line.di_qte_un_saisie_fac = qty_invoiced
         super(SaleOrderLine, self)._get_invoice_qty()
-  
+        
+#     @api.multi
+#     def write(self, vals):        
+#         res = super(SaleOrderLine, self).write(vals)  
+#         for sol in self:                       
+#             if sol.order_id.carrier_id and sol.order_id.state in ("draft","sent") and sol.order_id.delivery_rating_success and not sol.is_delivery:                
+#                 sol.order_id.set_delivery_line() # Ne fonctionne pas -> dans le for on parcourt les lignes et cette fonction en supprime une pour en créer une autre -> enregistrement inexistant         
+#         return res    
+#   
 class SaleOrder(models.Model):
     _inherit = "sale.order"
     di_period_fact = fields.Selection(string="Périodicité de Facturation", related='partner_id.di_period_fact')#,store=True)
@@ -627,6 +644,37 @@ class SaleOrder(models.Model):
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)   
     di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
+#     
+#     di_taxe_ids = fields.One2many('di.sale.taxe', 'order_id', string='Taxes',compute="_amount_by_group")
+#      
+#     def prepare_taxe_lines(self,order):
+#         ids = [] 
+#         for ligne in order.amount_by_group:               
+#             taxe_line = self.env['di.sale.taxe'].create({
+#                 'name': ligne[0],
+#                 'order_id': order.id,
+#                 'amount': ligne[1],
+#                 'base': ligne[2],
+#                 })
+#             ids.append(taxe_line.id)                        
+#         return ids
+#      
+# 
+#     def _compute_taxes(self):       
+#         for order in self:
+#             order.di_taxe_ids= [(6,0,self.prepare_taxe_lines(order))]                        
+# #             order.update({                
+# #                 'di_taxe_ids': [(6,0,self.prepare_taxe_lines(order))],                
+# #             })
+
+    @api.onchange("order_line")
+    def di_recalcul_port(self):
+        for order in self:
+            order.get_delivery_price()
+#             if order.carrier_id and order.state in ("draft","sent") and order.delivery_rating_success:                
+#             order.set_delivery_line() # Ne fonctionne pas -> message d'erreur unknown company_id # Pas possible ici car on est en création/modif de ligne -> conflit pour créer une autre ligne
+                
+                
     
     @api.multi
     @api.onchange("partner_id")
@@ -784,6 +832,9 @@ class SaleOrder(models.Model):
                 fmt(l[1]['amount']), fmt(l[1]['base']),
                 len(res),
             ) for l in res]
+#             order.di_taxe_ids =[(6,0,self.prepare_taxe_lines(order))]
+            
+        
                    
     
     @api.multi
@@ -839,7 +890,8 @@ class SaleOrder(models.Model):
         }
 
     @api.model
-    def create(self, vals):                                                       
+    def create(self, vals):     
+                                                    
         cde = super(SaleOrder, self).create(vals)
         lines = False
         for order in cde:    
@@ -874,9 +926,15 @@ class SaleOrder(models.Model):
 #         else:    
 #             return cde
      
+    @api.multi
+    def unlink(self,):
+        self.get_delivery_price()
+        res = super(SaleOrder, self).unlink()
+        return res
+       
     
     @api.multi
-    def write(self, vals):
+    def write(self, vals):        
         res = super(SaleOrder, self).write(vals)   
         lines = False     
         for order in self:    
@@ -884,6 +942,8 @@ class SaleOrder(models.Model):
 #                 order.di_supp_lig_zero()                                 
                 lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                               
                 super(SaleOrder, order).write({'order_line': [(2, line.id, False) for line in lines]})
+            if order.carrier_id and order.state in ("draft","sent") and order.delivery_rating_success:                
+                order.set_delivery_line()
         return res
 #         if lines:
 #             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id

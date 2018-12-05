@@ -230,7 +230,7 @@
                     <attribute name="string">Qté unité mesure</attribute>
                 </xpath>
 					
-				<xpath expr="//field[@name='qty']" position="after">
+				<xpath expr="//field[@name='barcode']" position="before">
                     <field name="di_poids"/>
                 </xpath>
 				<xpath expr="//group" position="before">

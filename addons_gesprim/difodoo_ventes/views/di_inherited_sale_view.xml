@@ -38,7 +38,7 @@
 					<field name="di_tournee"/>
 					<field name="di_rangtournee"/>
 				</xpath>
-				<xpath expr="//field[@name='origin']" position="after">
+				<xpath expr="//field[@name='user_id']" position="before">
                     <field name="di_nbex"/>                                        
                 </xpath>
 				<!-- lignes en mode fiche -->
@@ -169,6 +169,19 @@
 					<field name="di_un_prix" string="Unité de prix"
 						attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
 				</xpath>
+				<!-- Ajout de la liste des taxes -->
+				<!-- <xpath expr="//group[@name='sale_total']" position="before">
+				    <group name="detail_taxes">
+				        <field name="di_taxe_ids">
+				            <tree>
+				                <field name="name" />
+				                <field name="amount" />
+				                <field name="base" />
+				            </tree>				            
+				        </field>    				    
+				    </group>                    
+                </xpath>  -->
+                
 				<xpath expr="//div[@class='oe_chatter']" position="replace"/>
                 <xpath expr="//sheet/notebook" position="after">
                     <div class="oe_chatter">

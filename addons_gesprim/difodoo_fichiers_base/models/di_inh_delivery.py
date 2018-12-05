@@ -41,7 +41,7 @@ class ProviderGrid(models.Model):
             
     def _get_price_available(self, order):
         self.ensure_one()
-        total = weight = volume = quantity = 0
+        total = total_delivered = amount_delivered = weight = quantity_delivered = volume = quantity = 0
         total_delivery = 0.0
         for line in order.order_line:
             if line.state == 'cancel':
@@ -51,16 +51,26 @@ class ProviderGrid(models.Model):
             if not line.product_id or line.is_delivery:
                 continue
             qty = line.product_uom._compute_quantity(line.product_uom_qty, line.product_id.uom_id)
+            qty_delivered = line.product_uom._compute_quantity(line.qty_delivered, line.product_id.uom_id)
             weight += (line.product_id.weight or 0.0) * qty
             volume += (line.product_id.volume or 0.0) * qty
             quantity += qty
+            quantity_delivered += qty_delivered
+            
+            if line.product_uom_qty != 0.0:
+                amount_delivered += (line.price_total / line.product_uom_qty) * line.qty_delivered
         palette = ceil(order.di_nbpal)    # difodoo
         code_dest_id = order.partner_shipping_id.di_code_dest_id
         total = (order.amount_total or 0.0) - total_delivery
+        total_delivered = (amount_delivered or 0.0) - total_delivery
 
         total = order.currency_id.with_context(date=order.date_order).compute(total, order.company_id.currency_id)
+        total_delivered = order.currency_id.with_context(date=order.date_order).compute(total_delivered, order.company_id.currency_id)
         #return self._get_price_from_picking(total, weight, volume, quantity)
-        return self._get_price_from_picking(total, weight, volume, quantity, palette, code_dest_id)
+        if quantity_delivered != 0.0:
+            return self._get_price_from_picking(total_delivered, weight, volume, quantity_delivered, palette, code_dest_id)            
+        else:
+            return self._get_price_from_picking(total, weight, volume, quantity, palette, code_dest_id)            
                      
     #def _get_price_from_picking(self, total, weight, volume, quantity):
     def _get_price_from_picking(self, total, weight, volume, quantity, palette, code_dest_id):
