@@ -40,7 +40,10 @@ class ProviderGrid(models.Model):
     _inherit = "delivery.carrier"
             
     def _get_price_available(self, order):
-        self.ensure_one()
+        # copie standard
+        # prise en compte de la quantité livrée si on a au moins une quantité livrée sur la pièce
+        self.ensure_one()        
+        #total = weight = volume = quantity = 0
         total = total_delivered = amount_delivered = weight = quantity_delivered = volume = quantity = 0
         total_delivery = 0.0
         for line in order.order_line:
@@ -51,22 +54,24 @@ class ProviderGrid(models.Model):
             if not line.product_id or line.is_delivery:
                 continue
             qty = line.product_uom._compute_quantity(line.product_uom_qty, line.product_id.uom_id)
-            qty_delivered = line.product_uom._compute_quantity(line.qty_delivered, line.product_id.uom_id)
+            qty_delivered = line.product_uom._compute_quantity(line.qty_delivered, line.product_id.uom_id) # difodoo
             weight += (line.product_id.weight or 0.0) * qty
             volume += (line.product_id.volume or 0.0) * qty
             quantity += qty
-            quantity_delivered += qty_delivered
+            quantity_delivered += qty_delivered # difodoo
             
-            if line.product_uom_qty != 0.0:
-                amount_delivered += (line.price_total / line.product_uom_qty) * line.qty_delivered
+            if line.product_uom_qty != 0.0: # difodoo
+                amount_delivered += (line.price_total / line.product_uom_qty) * line.qty_delivered # difodoo
         palette = ceil(order.di_nbpal)    # difodoo
-        code_dest_id = order.partner_shipping_id.di_code_dest_id
+        code_dest_id = order.partner_shipping_id.di_code_dest_id # difodoo
         total = (order.amount_total or 0.0) - total_delivery
-        total_delivered = (amount_delivered or 0.0) - total_delivery
+        total_delivered = (amount_delivered or 0.0) - total_delivery # difodoo
 
         total = order.currency_id.with_context(date=order.date_order).compute(total, order.company_id.currency_id)
-        total_delivered = order.currency_id.with_context(date=order.date_order).compute(total_delivered, order.company_id.currency_id)
+        total_delivered = order.currency_id.with_context(date=order.date_order).compute(total_delivered, order.company_id.currency_id) # difodoo
         #return self._get_price_from_picking(total, weight, volume, quantity)
+        
+        # difodoo
         if quantity_delivered != 0.0:
             return self._get_price_from_picking(total_delivered, weight, volume, quantity_delivered, palette, code_dest_id)            
         else:
@@ -74,6 +79,8 @@ class ProviderGrid(models.Model):
                      
     #def _get_price_from_picking(self, total, weight, volume, quantity):
     def _get_price_from_picking(self, total, weight, volume, quantity, palette, code_dest_id):
+        # copie standard
+        # changement de la signature de la fonction et ajout de la prise en compte du code dest
         price = 0.0
         criteria_found = False
         #price_dict = {'price': total, 'volume': volume, 'weight': weight, 'wv': volume * weight, 'quantity': quantity}
