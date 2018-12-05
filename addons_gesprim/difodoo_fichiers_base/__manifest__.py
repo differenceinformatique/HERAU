@@ -63,7 +63,8 @@
         "wizard/di_maj_codedest.xml",
         "wizard/di_etiquette_lot_wizard.xml",
         "security/ir.model.access.csv",
-        "data/di_param_data.xml"              
+        "data/di_param_data.xml",
+        "data/di.code.dest.csv"               
     ],
     # only loaded in demonstration mode
     'demo': [

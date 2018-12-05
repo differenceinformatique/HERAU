@@ -745,4 +745,4 @@ class StockQuant(models.Model):
                 quant.di_nb_palette = quant.di_nb_colis / quant.product_id.di_type_palette_id.di_qte_cond_inf
             else:  
                 quant.di_nb_palette = quant.di_nb_colis
-        self.di_nb_pieces = ceil(self.product_id.di_type_colis_id.di_qte_cond_inf * self.di_nb_colis)
+            quant.di_nb_pieces = ceil(quant.product_id.di_type_colis_id.di_qte_cond_inf * quant.di_nb_colis)
