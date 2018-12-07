@@ -49,8 +49,8 @@
                     <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                                                    
                 </xpath>                          
                 <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/field[@name='taxes_id'] " position="before">
-                    <field name="product_packaging" string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>                    
-                    <field name="di_type_palette_id"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>                                    
+                    <field name="product_packaging" string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />                    
+                    <field name="di_type_palette_id"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />                                    
                     <field name="di_nb_pieces" readonly="1"  force_save="1"/>
                     <field name="di_nb_colis" readonly="1"  force_save="1"/>
                     <field name="di_nb_palette" readonly="1" force_save="1"/>
@@ -75,9 +75,9 @@
                     <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
                     <field name="di_nb_pieces" readonly="1" force_save="1" />
                     <field name="di_nb_colis" readonly="1" force_save="1"/>
-                    <field name="product_packaging" string="Colis"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>
+                    <field name="product_packaging" string="Colis"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />
                     <field name="di_nb_palette" readonly="1" force_save="1"/>
-                    <field name="di_type_palette_id" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" groups="product.group_stock_packaging"/>
+                    <field name="di_type_palette_id" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />
                     <field name="di_poin" readonly="1" /><field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
                     <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                                                    
                 </xpath>   
@@ -109,17 +109,6 @@
                 </xpath>                                     
                 
             </field>                                    
-        </record>        
-        <!-- <record id="di_view_order_form_inherit_sale_stock" model="ir.ui.view">
-            <field name="name">di.sale.order.form.sale.stock</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
-            <field eval="99" name="priority"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='product_packaging']" position="replace">
-                    <field name="product_packaging" string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" groups="product.group_stock_packaging"/>                                                    
-                </xpath>
-            </field>                                 
-        </record> -->
+        </record>               
     </data>
 </odoo>

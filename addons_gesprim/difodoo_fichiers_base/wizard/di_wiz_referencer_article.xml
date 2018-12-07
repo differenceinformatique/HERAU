@@ -28,43 +28,7 @@
         </field>
     </record>
 
-    <!-- <record id="wiz_refer_article" model="ir.ui.view">
-        <field name="name">wiz.refer.article.form</field>
-        <field name="model">wiz.refer.article</field>
-        <field name="arch" type="xml">
-            <form string="Référencement article">  
-                <div class="oe_title">
-                    <label for="partner_id" />
-                    <h2>
-                        <field name="partner_id" colspan="6" />
-                    </h2>
-                    <separator />
-                </div>   
-                                   
-                    <tree order="product_id">
-                        <field name="partner_id" invisible="1" />
-                        <field name="product_id" readonly ="True"/>
-                        <field name="product_id" readonly ="True" />   
-                        <field name="di_un_saisie"/>
-                        <field name="di_type_palette_id"
-                                context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
-                                domain="[('product_id','=',id),('di_type_cond','=','PALETTE')]"
-                                groups="product.group_stock_packaging" />
-                        <field name="di_type_colis_id"
-                                context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
-                                domain="[('product_id','=',id),('di_type_cond','=','COLIS')]"
-                                groups="product.group_stock_packaging" />
-                        <field name="di_un_prix" />                                                            
-                    </tree>   
-                         
-                <footer>
-                    <button string="Référencer articles" type="object" name="referencer_article"
-                        default_focus="1" />
-                    <button string="Annuler" class="oe_link" special="cancel" />
-                </footer>
-            </form>
-        </field>
-    </record> -->
+  
     <act_window
         id="action_wiz_refer_article"
         multi="False"
@@ -77,27 +41,5 @@
         view_type="form"
         view_id="wiz_refer_article">    
     </act_window>
-    
-<!--     
-    <record id="view_wizlistart_tree" model="ir.ui.view">
-        <field name="name">di.wizlistart.tree</field>
-        <field name="model">wiz.list.art</field>
-        <field name="arch" type="xml">
-            <tree string="Liste" default_order="product_id">
-                <field name="product_id" readonly = "True"/>
-                <field name="di_un_saisie"/>
-                <field name="di_type_palette_id"
-                        context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
-                        domain="[('product_id','=',id),('di_type_cond','=','PALETTE')]"
-                        groups="product.group_stock_packaging" />
-                <field name="di_type_colis_id"
-                        context="{ 'default_product_id': id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
-                        domain="[('product_id','=',id),('di_type_cond','=','COLIS')]"
-                        groups="product.group_stock_packaging" />
-                <field name="di_un_prix" />      
-            </tree>
-        </field>
-    </record>    
-    
- -->
+
 </odoo>
