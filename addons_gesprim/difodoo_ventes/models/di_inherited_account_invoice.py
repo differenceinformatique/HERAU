@@ -257,7 +257,7 @@ class AccountInvoiceLine(models.Model):
             elif line.di_un_prix == False or line.di_un_prix == '':
                 di_qte_prix = line.quantity             
             if line.product_id.id != False and line.di_un_prix:       
-                line.price_unit = self.di_recherche_prix_unitaire(line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date,line.product_packaging,line.di_type_palette_id)            
+                line.price_unit = self.di_recherche_prix_unitaire(line.price_unit,line.invoice_id.partner_id,line.product_id,line.di_un_prix,di_qte_prix,line.invoice_id.date,line.di_product_packaging_id,line.di_type_palette_id)            
      
     @api.multi            
     @api.onchange('product_id')
@@ -270,14 +270,14 @@ class AccountInvoiceLine(models.Model):
             if ref:
                 self.di_un_saisie = ref.di_un_saisie
                 self.di_type_palette_id = ref.di_type_palette_id
-                self.product_packaging = ref.di_type_colis_id    
+                self.di_product_packaging_id = ref.di_type_colis_id    
                 self.di_un_prix = ref.di_un_prix    
                 self.di_spe_saisissable = self.product_id.di_spe_saisissable                  
             else:
                 if self.product_id:
                     self.di_un_saisie = self.product_id.di_un_saisie
                     self.di_type_palette_id = self.product_id.di_type_palette_id
-                    self.product_packaging = self.product_id.di_type_colis_id    
+                    self.di_product_packaging_id = self.product_id.di_type_colis_id    
                     self.di_un_prix = self.product_id.di_un_prix    
                     self.di_spe_saisissable = self.product_id.di_spe_saisissable                                    
                 

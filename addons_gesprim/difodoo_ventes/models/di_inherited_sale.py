@@ -670,7 +670,8 @@ class SaleOrder(models.Model):
     @api.onchange("order_line")
     def di_recalcul_port(self):
         for order in self:
-            order.get_delivery_price()
+            if order.carrier_id:
+                order.get_delivery_price()
 #             if order.carrier_id and order.state in ("draft","sent") and order.delivery_rating_success:                
 #             order.set_delivery_line() # Ne fonctionne pas -> message d'erreur unknown company_id # Pas possible ici car on est en création/modif de ligne -> conflit pour créer une autre ligne
                 
@@ -888,16 +889,35 @@ class SaleOrder(models.Model):
             'key2':'client_action_multi',
             'context': ctx            
         }
-
+        
+    @api.model
+    def di_avec_lignes_a_zero(self):
+        lines = False
+        for order in self:
+            if order.state == 'draft' :
+                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])
+                if lines:
+                    return True
+        return False
+    
+    @api.model
+    def di_supprimer_ligne_a_zero(self):
+        lines = False
+        for order in self:
+            if order.state == 'draft' :
+                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])
+                order.write({'order_line': [(2, line.id, False) for line in lines]})
+        
+    
     @api.model
     def create(self, vals):     
                                                     
         cde = super(SaleOrder, self).create(vals)
         lines = False
         for order in cde:    
-            if order.state == 'draft' :                                    
-                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                
-                order.write({'order_line': [(2, line.id, False) for line in lines]})
+#             if order.state == 'draft' :                                    
+#                 lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                
+#                 order.write({'order_line': [(2, line.id, False) for line in lines]})
             if order.di_nbex==0: 
                 if order.partner_id:                
                     order.write({'di_nbex': order.partner_id.di_nbex_cde})
@@ -927,8 +947,8 @@ class SaleOrder(models.Model):
 #             return cde
      
     @api.multi
-    def unlink(self,):
-        self.get_delivery_price()
+    def unlink(self):        
+        self.get_delivery_price() # on recalcul le prix du transport si on supprime une ligne
         res = super(SaleOrder, self).unlink()
         return res
        
@@ -938,10 +958,11 @@ class SaleOrder(models.Model):
         res = super(SaleOrder, self).write(vals)   
         lines = False     
         for order in self:    
-            if order.state == 'draft' :   
-#                 order.di_supp_lig_zero()                                 
-                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                               
-                super(SaleOrder, order).write({'order_line': [(2, line.id, False) for line in lines]})
+#             if order.state == 'draft' :   
+# #                 order.di_supp_lig_zero()                                 
+#                 lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])                               
+#                 super(SaleOrder, order).write({'order_line': [(2, line.id, False) for line in lines]})
+            #ajout ligne transport
             if order.carrier_id and order.state in ("draft","sent") and order.delivery_rating_success:                
                 order.set_delivery_line()
         return res
