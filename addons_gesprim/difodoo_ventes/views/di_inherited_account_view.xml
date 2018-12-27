@@ -112,6 +112,30 @@
                 <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/>    -->
             </field>
         </record>
+        
+        <record id="di_view_move_line_tree" model="ir.ui.view">
+            <field name="name">di.view.move.line.tree</field>
+            <field name="model">account.move.line</field>            
+            <field name="inherit_id" ref="account.view_move_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_maturity']" position="after">                
+                    <field name="di_transfere"/>                   
+                </xpath>                
+            </field>
+        </record>
+        
+         <record id="di_view_move_line_form" model="ir.ui.view">
+            <field name="name">di.view.move.line.form</field>
+            <field name="model">account.move.line</field>            
+            <field name="inherit_id" ref="account.view_move_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_maturity']/.." position="after">
+                    <group string="Transferts">
+                        <field name="di_transfere"/>
+                    </group>                                
+                </xpath>                
+            </field>
+        </record>
                    
     </data>
 </odoo> 
