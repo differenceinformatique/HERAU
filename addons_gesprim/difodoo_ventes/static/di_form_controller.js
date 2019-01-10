@@ -18,17 +18,22 @@ var DiFormController = FormController.include({
         var self = this;                
         this._disableButtons();
         this.saveRecord().always(function () {
-            self._enableButtons();            
-            if (self.modelName == 'sale.order'){
-                var env = self.model.get(self.handle, {env: true});                
-                var id = env.currentId ? [env.currentId] : [];                                                
-                self._rpc({model: 'sale.order', method: 'di_avec_lignes_a_zero',  args: [id], }).then(function (result){                                                    
-                    if (result === true){                        
-                        if (window.confirm('Voulez-vous supprimer les lignes à 0 ?')) {                            
-                            self._rpc({model: 'sale.order', method: 'di_supprimer_ligne_a_zero', args: [id],}).then(function () {self.trigger_up('reload');});                                                                                               
+            self._enableButtons();                     
+            if (self.modelName == 'sale.order'){ // on vérifie qu'on est sur une commande ou devis de vente
+            // à ce moment la commande est déjà sauvegardée ainsi que les lignes
+                var env = self.model.get(self.handle, {env: true}); // récup de l'environnement              
+                var id = env.currentId ? [env.currentId] : [];  // récup de l'id courant                                                 
+                self._rpc({model: 'sale.order', method: 'di_avec_lignes_a_zero',  args: [id], }).then(function (result){
+                //appel de la fonction di_avec_lignes_a_zero de la classe SaleOrder avec les arguments id                                                    
+                    if (result === true){   // contrôle du retour de la fonction                    
+                        if (window.confirm('Voulez-vous supprimer les lignes à 0 ?')) { // question
+                            //appel de la fonction di_supprimer_ligne_a_zero de la classe SaleOrder avec les arguments id, suivi d'un appel à la fonction de rechargement de la page                           
+                            self._rpc({model: 'sale.order', method: 'di_supprimer_ligne_a_zero', args: [id],}).then(function () {self.trigger_up('reload');});
+                                                                                                                           
                         }  
                     }
                 });   
+                //appel de la fonction di_avec_lignes_mt_zero de la classe SaleOrder avec les arguments id 
                 self._rpc({model: 'sale.order', method: 'di_avec_lignes_mt_zero',  args: [id], }).then(function (result){                                                    
                     if (result === true){                        
                         window.alert('Il y a des lignes avec montant à 0 !');                                                   
