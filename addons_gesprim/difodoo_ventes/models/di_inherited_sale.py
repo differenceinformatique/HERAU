@@ -890,24 +890,63 @@ class SaleOrder(models.Model):
             'context': ctx            
         }
         
-    @api.model
-    def di_avec_lignes_a_zero(self):
-        lines = False
-        for order in self:
-            if order.state == 'draft' :
-                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])
-                if lines:
-                    return True
+    @api.multi
+    def di_action_supp_lig_zero(self):
+        self.ensure_one()        
+         
+        view=self.env.ref('difodoo_ventes.di_supp_lig_zero_wiz').id
+        #       
+      
+        ctx= {                
+                'di_model':'sale.order',   
+                'di_order': self                           
+            }
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'name': 'Suppression lignes à 0',
+            'res_model': 'di.supp.lig.zero.wiz',
+            'views': [(view, 'form')],
+            'view_id': view,                        
+            'target': 'new',
+            'multi':'False',
+            'id':'di_action_supp_lig_zero_wiz',
+            'key2':'client_action_multi',
+            'context': ctx            
+        }
+            
+    @api.model    
+    def di_avec_lignes_mt_zero(self,id):         
+        lines = False        
+        order = self.env['sale.order'].browse(id)
+        if order.state == 'draft' :                
+            lines = self.env['sale.order.line'].search(['&', ('order_id', '=', id), ('price_subtotal', '=', 0.0)])        
+            if lines:
+                return True        
         return False
     
+    @api.model    
+    def di_avec_lignes_a_zero(self,id):         
+        lines = False        
+        order = self.env['sale.order'].browse(id)
+        if order.state == 'draft' :                
+            lines = self.env['sale.order.line'].search(['&', ('order_id', '=', id), ('product_uom_qty', '=', 0.0)])        
+            if lines:
+                return True        
+        return False
+     
     @api.model
-    def di_supprimer_ligne_a_zero(self):
+    def di_supprimer_ligne_a_zero(self,id):        
         lines = False
-        for order in self:
-            if order.state == 'draft' :
-                lines = self.env['sale.order.line'].search(['&', ('order_id', '=', order.id), ('product_uom_qty', '=', 0.0)])
-                order.write({'order_line': [(2, line.id, False) for line in lines]})
-        
+        order = self.env['sale.order'].browse(id)
+        if order.state == 'draft' :        
+            lines = self.env['sale.order.line'].search(['&', ('order_id', '=', id), ('product_uom_qty', '=', 0.0)])
+            if lines:                            
+                order.write({'order_line': [(2, line.id, False) for line in lines]})                
+                return True
+        return False
+             
     
     @api.model
     def create(self, vals):     
@@ -922,29 +961,7 @@ class SaleOrder(models.Model):
                 if order.partner_id:                
                     order.write({'di_nbex': order.partner_id.di_nbex_cde})
         return cde
-     
-#         if lines:
-#             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id
-#             ctx= {                
-#                 'order_id': order.id,   
-#                 'lines': lines                           
-#             }
-#             return {
-#             'type': 'ir.actions.act_window',
-#             'view_type': 'form',
-#             'view_mode': 'form',
-#             'name': 'Lignes à 0',
-#             'res_model': 'di.lig.zero.wiz',
-#             'views': [(view, 'form')],
-#             'view_id': view,                        
-#             'target': 'new',
-#             'multi':'False',
-#             'id':'di_action_lig_zero_wiz',
-#             'key2':'client_action_multi',
-#             'context': ctx            
-#             }
-#         else:    
-#             return cde
+
      
     @api.multi
     def unlink(self):        
@@ -966,29 +983,6 @@ class SaleOrder(models.Model):
             if order.carrier_id and order.state in ("draft","sent") and order.delivery_rating_success:                
                 order.set_delivery_line()
         return res
-#         if lines:
-#             view=self.env.ref('difodoo_ventes.di_lig_zero_wiz').id
-#             ctx= {                
-#                 'order_id': order.id,   
-#                 'lines': lines                           
-#             }
-#             
-#             return {
-#             'type': 'ir.actions.act_window',
-#             'view_type': 'form',
-#             'view_mode': 'form',
-#             'name': 'Lignes à 0',
-#             'res_model': 'di.lig.zero.wiz',
-#             'views': [(view, 'form')],
-#             'view_id': view,                        
-#             'target': 'new',
-#             'multi':'False',
-#             'id':'di_action_lig_zero_wiz',
-#             'key2':'client_action_multi',
-#             'context': ctx            
-#             }
-#         else:                  
-#             return res
     
     
     @api.depends('state', 'order_line.invoice_status')

@@ -41,16 +41,16 @@
 
     # always loaded
     'data': [
+        "static/di_webclient_templates.xml",
         "wizard/di_grille_vente_wiz.xml",
         "wizard/di_transfertcompta_wiz.xml",
         "wizard/di_bord_trp_wiz.xml",
         "wizard/di_ctrl_trp_wiz.xml",
-        "wizard/di_lig_zero_wiz.xml",         
+        "wizard/di_supp_lig_zero_wiz.xml",                
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
-        "views/di_stock_inventory_views.xml",
-        "static/di_webclient_templates.xml",
+        "views/di_stock_inventory_views.xml",        
         "report/di_sale_report_templates.xml",
         "report/di_report_deliveryslip.xml",
         "report/di_report_stock_inventory.xml",

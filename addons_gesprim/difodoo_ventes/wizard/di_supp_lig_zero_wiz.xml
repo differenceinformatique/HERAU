@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_supp_lig_zero_wiz" model="ir.ui.view">
+        <field name="name">di.supp.lig.zero.form</field>
+        <field name="model">di.supp.lig.zero.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Suppression lignes à zéro">
+                <group>                
+                    <div name="question">
+                        Voulez-vous supprimer les lignes à 0 ?
+                    </div>                                                                    
+                </group>  
+                <footer>
+                    <button string="OUI" type="object" name="di_supprimer_lignes"
+                        default_focus="1" />
+                    <button string="NON" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>     
+</odoo>
