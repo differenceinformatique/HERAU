@@ -417,7 +417,7 @@ class AccountInvoiceLine(models.Model):
                 elif aol.di_un_saisie == "PALETTE":            
                     aol.di_nb_palette = aol.di_qte_un_saisie
                     if aol.di_type_palette_id.di_qte_cond_inf != 0.0:
-                        aol.di_nb_colis = ceil(aol.di_nb_palette / aol.di_type_palette_id.di_qte_cond_inf)
+                        aol.di_nb_colis = ceil(aol.di_nb_palette * aol.di_type_palette_id.di_qte_cond_inf)
                     else:
                         aol.di_nb_colis = ceil(aol.di_nb_palette)
                     aol.di_nb_pieces = ceil(aol.di_product_packaging_id.di_qte_cond_inf * aol.di_nb_colis)            

@@ -504,7 +504,7 @@ class SaleOrderLine(models.Model):
                 elif sol.di_un_saisie == "PALETTE":            
                     sol.di_nb_palette = sol.di_qte_un_saisie
                     if sol.di_type_palette_id.di_qte_cond_inf!=0.0:
-                        sol.di_nb_colis = ceil(sol.di_nb_palette / sol.di_type_palette_id.di_qte_cond_inf)
+                        sol.di_nb_colis = ceil(sol.di_nb_palette * sol.di_type_palette_id.di_qte_cond_inf)
                     else:
                         sol.di_nb_colis = ceil(sol.di_nb_palette)
                     sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)            

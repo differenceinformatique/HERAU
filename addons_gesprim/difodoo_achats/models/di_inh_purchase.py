@@ -240,7 +240,7 @@ class PurchaseOrderLine(models.Model):
             elif pol.di_un_saisie == "PALETTE":            
                 pol.di_nb_palette = pol.di_qte_un_saisie
                 if pol.di_type_palette_id.di_qte_cond_inf!=0.0:
-                    pol.di_nb_colis = pol.di_nb_palette / pol.di_type_palette_id.di_qte_cond_inf
+                    pol.di_nb_colis = pol.di_nb_palette * pol.di_type_palette_id.di_qte_cond_inf
                 else:
                     pol.di_nb_colis = pol.di_nb_palette
                 pol.di_nb_pieces = pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis            
