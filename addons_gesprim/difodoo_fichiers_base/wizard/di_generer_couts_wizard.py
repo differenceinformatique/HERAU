@@ -163,7 +163,8 @@ class DiGenCoutsWiz(models.TransientModel):
                                     'di_prix': cout_un,
                                     'di_qte_seuil': 0.0,
                                     'di_date_effet': di_cout.di_date,
-                                    'di_un_prix':'COLIS'                                                            
+                                    'di_un_prix':'COLIS',
+                                    'di_type_colis_id': di_cout.di_product_id.di_type_colis_id.id                                                           
                                     }      
                                      
                     #recherche si tarif existant                                    
@@ -172,7 +173,9 @@ class DiGenCoutsWiz(models.TransientModel):
                                                                    ('di_product_id','=',di_cout.di_product_id.id),
                                                                    ('di_partner_id','=',False),
                                                                    ('di_un_prix','=','COLIS'),
-                                                                   ('di_qte_seuil','=',0.0)
+                                                                   ('di_qte_seuil','=',0.0),
+                                                                   ('di_type_colis_id','=',di_cout.di_product_id.di_type_colis_id.id)
+                                                                   
                                                                    ])
                             
                     if tarif_existant:
@@ -228,7 +231,8 @@ class DiGenCoutsWiz(models.TransientModel):
                                     'di_prix': cout_un,
                                     'di_qte_seuil': 0.0,
                                     'di_date_effet': di_cout.di_date,
-                                    'di_un_prix':'PALETTE'                                                            
+                                    'di_un_prix':'PALETTE',
+                                    'di_type_palette_id': di_cout.di_product_id.di_type_palette_id.id                                                            
                                     }      
                                      
                     #recherche si tarif existant                                    
@@ -238,7 +242,9 @@ class DiGenCoutsWiz(models.TransientModel):
                                                                    ('di_product_id','=',di_cout.di_product_id.id),
                                                                    ('di_partner_id','=',False),
                                                                    ('di_un_prix','=','PALETTE'),
-                                                                   ('di_qte_seuil','=',0.0)
+                                                                   ('di_qte_seuil','=',0.0),
+                                                                   ('di_type_palette_id','=',di_cout.di_product_id.di_type_palette_id.id)
+                                                                   
                                                                    ])
                             
                     if tarif_existant:

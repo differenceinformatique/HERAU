@@ -223,6 +223,8 @@ class ProductPackaging(models.Model):
         if self.di_type_cond=='COLIS':
             self.di_type_cond_inf_id=self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).id
             self.qty = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('di_type_cond', '=', 'PIECE')]).qty*self.di_qte_cond_inf
+        if self.di_type_cond=='PALETTE':            
+            self.qty = self.env['product.packaging'].search(['&',('product_id', '=', self.product_id.id),('name', '=', self.di_type_cond_inf_id.name)]).qty*self.di_qte_cond_inf
                    
     
     #vérifie qu'on a un seul conditionnement pièce par article
@@ -254,3 +256,42 @@ class ProductPackaging(models.Model):
         search_domain.append(('id', 'not in', firsts_records.ids))
         records = firsts_records + self.search(search_domain + args, limit=limit)
         return [(record.id, record.display_name) for record in records]
+
+    @api.multi
+    def write(self, vals):        
+        res = super(ProductPackaging, self).write(vals)           
+        for prodpack in self:    
+            if prodpack.di_type_cond=='COLIS':
+                product = self.env['product.template'].browse(prodpack.product_id.product_tmpl_id.id)
+                if not product.di_type_colis_id :
+                    product.update({                
+                    'di_type_colis_id': prodpack.id
+                })                                                       
+            elif prodpack.di_type_cond=='PALETTE':
+                product = self.env['product.template'].browse(prodpack.product_id.product_tmpl_id.id)
+                if not product.di_type_palette_id :
+                    product.update({                
+                    'di_type_palette_id': prodpack.id
+                })
+
+        return res
+    
+    @api.model
+    def create(self, vals):        
+        res = super(ProductPackaging, self).create(vals)           
+        for prodpack in res:    
+            if prodpack.di_type_cond=='COLIS':
+                product = self.env['product.template'].browse(prodpack.product_id.product_tmpl_id.id)
+                if not product.di_type_colis_id :
+                    product.update({                
+                    'di_type_colis_id': prodpack.id
+                })                                                       
+            elif prodpack.di_type_cond=='PALETTE':
+                product = self.env['product.template'].browse(prodpack.product_id.product_tmpl_id.id)
+                if not product.di_type_palette_id :
+                    product.update({                
+                    'di_type_palette_id': prodpack.id
+                })
+
+        return res
+    
