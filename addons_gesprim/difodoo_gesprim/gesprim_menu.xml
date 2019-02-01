@@ -70,6 +70,7 @@
 	<!-- <menuitem id="menu_gesprim_stations" sequence="60" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_station" /> -->	
 	<menuitem id="menu_gesprim_conditionnement_defaut" name="Conditionnements" sequence="70" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_cond_defaut" />
 	<menuitem id="menu_gesprim_conditionnement_art" name="Conditionnements art." sequence="75" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_product_packaging" />
+	<menuitem id="menu_gesprim_conditionnement_creation" sequence="76" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_wiz_create_producpack_menu" />
 	<menuitem id="menu_gesprim_methodes_liv" name="Transporteurs" parent="menu_gesprim_tables" sequence="80" action="delivery.action_delivery_carrier_form"/> <!-- ??? Ne marche pas, le nom reste le même -->
 	<menuitem id="menu_gesprim_destinations" sequence="90" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_code_dest" />
 	<menuitem id="menu_gesprim_grilletrp" sequence="100" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_delivery_price_rule" />
