@@ -32,13 +32,13 @@
         'sale_margin',
         'account',                           
         'l10n_fr_sale_closing',
+        'difodoo_report_attachment_preview',
         'difodoo_fichiers_base',
         'difodoo_ventes',
         'difodoo_achats',                             
         'base_optional_quick_create',
         'eradicate_quick_create',
-#         'web_sheet_full_width',   # pas utile en enterprise
-#         'prt_report_attachment_preview',
+#         'web_sheet_full_width',   # pas utile en enterprise       
 #         'report_intrastat',# le module n'existe plus en v12
         ],
 

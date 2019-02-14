@@ -33,6 +33,10 @@ class DiParam(models.Model):
     di_seq_fou  = fields.Boolean(string="Codification automatique fournisseur", default=False, help="""Activation de l'affectation automatique du code fournisseur""")
     di_autovalid_fact_ven  = fields.Boolean(string="Validation automatique des factures de ventes", default=False, help="""Validation automatique des factures de ventes""")
     di_autoimp_fact_ven  = fields.Boolean(string="Impression automatique des factures de ventes", default=False, help="""Impression automatique des factures de ventes""")
+    
+    di_opt_imp = fields.Selection([("STD", "Standard"), ("ONG", "Nouvel onglet"),("DIR", "Impression directe")], string="Option d'impression",
+                                           help="Paramétrage de l'impression par défaut, pour savoir si on télécharge, on ouvre dans un nouvel onglet ou si on envoie à l'imprimante (nécessite chrome en mode kiosk-printing)",
+                                           default="STD")
          
                        
     #unicité 
@@ -46,3 +50,7 @@ class DiParam(models.Model):
                     ('di_company_id', '=', param.di_company_id.id)], limit=1)
                 if di_company_id:
                     raise Warning("Le paramétrage pour ce dossier existe déjà.")
+                
+    def di_get_option_impression(self):
+        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+        return param.di_opt_imp

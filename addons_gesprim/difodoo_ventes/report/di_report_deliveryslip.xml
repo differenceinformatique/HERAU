@@ -1,277 +1,281 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<template id="di_report_delivery_document" inherit_id="stock.report_delivery_document">
-		<!-- ajout titre du document -->
-		<xpath expr="//h2" position="replace">
-			<t t-if="o.picking_type_id.code == 'incoming'">
-				<h2>
-					<span>Bon d'entrée</span>
-					<span t-field="o.name"/>
-				</h2>
-			</t>
-			<t t-if="o.picking_type_id.code == 'outgoing'">
-				<h2>
-					<span>Bon de livraison</span>
-					<span t-field="o.name"/>
-				</h2>
-			</t>
-			<t t-if="o.picking_type_id.code == 'internal'">
-				<h2>
-					<span>Bon de livraison</span>
-					<span t-field="o.name"/>
-				</h2>
-			</t>
-		</xpath>
-		<!-- ajout totaux en début de document  -->
-         <xpath expr="//th[3]" position="after">
-            <th><strong>Nb Colis</strong></th>
-            <th><strong>Nb Pal.</strong></th>
+    <template id="di_report_delivery_document" inherit_id="stock.report_delivery_document">
+        <!-- ajout titre du document -->
+        <xpath expr="//h2" position="replace">
+            <t t-if="o.picking_type_id.code == 'incoming'">
+                <h2>
+                    <span>Bon d'entrée</span>
+                    <span t-field="o.name"/>
+                </h2>
+            </t>
+            <t t-if="o.picking_type_id.code == 'outgoing'">
+                <h2>
+                    <span>Bon de livraison</span>
+                    <span t-field="o.name"/>
+                </h2>
+            </t>
+            <t t-if="o.picking_type_id.code == 'internal'">
+                <h2>
+                    <span>Bon de livraison</span>
+                    <span t-field="o.name"/>
+                </h2>
+            </t>
+        </xpath>
+        <!-- ajout totaux en début de document  -->
+        <xpath expr="//th[3]" position="after">
+            <th>
+                <strong>Nb Colis</strong>
+            </th>
+            <th>
+                <strong>Nb Pal.</strong>
+            </th>
         </xpath>
         <xpath expr="//td[3]" position="after">
-            <td><span t-field="o.di_nbcol"/></td>
-            <td><span t-field="o.di_nbpal"/></td>
+            <td>
+                <span t-field="o.di_nbcol"/>
+            </td>
+            <td>
+                <span t-field="o.di_nbpal"/>
+            </td>
         </xpath>
         <!-- Modification colonnes si pas mouvements de stock -->
-		<xpath expr="//div" position="before">
-			<t t-if="o.partner_id.parent_id">
-				<t t-set="di_pres_bl" t-value="o.partner_id.parent_id.di_pres_bl" />
-			</t>
-			<t t-if="not o.partner_id.parent_id">
-				<t t-set="di_pres_bl" t-value="o.partner_id.di_pres_bl" />
-			</t>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][1]/thead/tr/th" position="after">
-			<th>
-				<div>Nb Pièces/</div>
-				<div>Catégorie</div>
-			</th>
-			<th>
-				<div>Nb Colis/</div>
-				<div>Origine</div>
-			</th>
-			<th>
-				<div>Type Colis/</div>
-				<div>Marque</div>
-			</th>
-			<th>
-				<div>Poids Net/</div>
-				<div>Calibre</div>
-			</th>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][1]/thead/tr" position="inside">
-			<t t-if="di_pres_bl == 'CHIFFRE'">
-				<th>Prix Unitaire</th>
-				<th>Unité Prix</th>
-				<th>Montant</th>
-			</t>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][1]/tbody/tr/td" position="after">
-			<td>				
-				<!-- on masque le nb pièces si prix au kg -->
-				<t t-if="move.sale_line_id.di_un_prix != 'KG'">
-					<div t-field="move.sale_line_id.di_nb_pieces" />
-					<div t-field="move.product_id.product_tmpl_id.di_categorie_id" />
-				</t>
-				<t t-if="move.sale_line_id.di_un_prix == 'KG'">
-					<div>&amp;nbsp;</div>
-					<div t-field="move.product_id.product_tmpl_id.di_categorie_id" />
-				</t>
-			</td>
-			<td>
-				<div t-field="move.sale_line_id.di_nb_colis" />
-				<div t-field="move.product_id.product_tmpl_id.di_origine_id" />
-			</td>
-			<td>
-				<div t-field="move.sale_line_id.product_packaging" />
-				<div t-field="move.product_id.product_tmpl_id.di_marque_id" />
-			</td>
-			<td>
-				<div t-field="move.sale_line_id.di_poin" />
-				<div t-field="move.product_id.product_tmpl_id.di_calibre_id" />
-			</td>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][1]/tbody/tr" position="inside">
-			<t t-if="di_pres_bl == 'CHIFFRE'">
-				<td>
-					<span t-field="move.sale_line_id.price_unit" />
-				</td>
-				<td>
-					<span t-field="move.sale_line_id.di_un_prix" />
-				</td>
-				<td>
-					<span t-field="move.sale_line_id.price_subtotal" />
-				</td>
-			</t>
-		</xpath>
-		<!-- Modification colonnes si mouvements de stock -->
-				<!-- modification format affichage lot/qté -->
-		<xpath expr="//table[3]/thead[1]/tr[1]/th[2]" position="after">
-			<th t-if="has_serial_number">
+        <xpath expr="//div" position="before">
+            <t t-if="o.partner_id.parent_id">
+                <t t-set="di_pres_bl" t-value="o.partner_id.parent_id.di_pres_bl"/>
+            </t>
+            <t t-if="not o.partner_id.parent_id">
+                <t t-set="di_pres_bl" t-value="o.partner_id.di_pres_bl"/>
+            </t>
+        </xpath>
+        <xpath expr="//table[2]/thead/tr/th" position="after">
+            <th>
+                <div>Nb Pièces/</div>
+                <div>Catégorie</div>
+            </th>
+            <th>
+                <div>Nb Colis/</div>
+                <div>Origine</div>
+            </th>
+            <th>
+                <div>Type Colis/</div>
+                <div>Marque</div>
+            </th>
+            <th>
+                <div>Poids Net/</div>
+                <div>Calibre</div>
+            </th>
+        </xpath>
+        <xpath expr="//table[2]/thead/tr" position="inside">
+            <t t-if="di_pres_bl == 'CHIFFRE'">
+                <th>Prix Unitaire</th>
+                <th>Unité Prix</th>
+                <th>Montant</th>
+            </t>
+        </xpath>
+        <xpath expr="//table[2]/tbody/tr/td" position="after">
+            <td>
+                <!-- on masque le nb pièces si prix au kg -->
+                <t t-if="move.sale_line_id.di_un_prix != 'KG'">
+                    <div t-field="move.sale_line_id.di_nb_pieces"/>
+                    <div t-field="move.product_id.product_tmpl_id.di_categorie_id"/>
+                </t>
+                <t t-if="move.sale_line_id.di_un_prix == 'KG'">
+                    <div>&amp;nbsp;</div>
+                    <div t-field="move.product_id.product_tmpl_id.di_categorie_id"/>
+                </t>
+            </td>
+            <td>
+                <div t-field="move.sale_line_id.di_nb_colis"/>
+                <div t-field="move.product_id.product_tmpl_id.di_origine_id"/>
+            </td>
+            <td>
+                <div t-field="move.sale_line_id.product_packaging"/>
+                <div t-field="move.product_id.product_tmpl_id.di_marque_id"/>
+            </td>
+            <td>
+                <div t-field="move.sale_line_id.di_poin"/>
+                <div t-field="move.product_id.product_tmpl_id.di_calibre_id"/>
+            </td>
+        </xpath>
+        <xpath expr="//table[2]/tbody/tr" position="inside">
+            <t t-if="di_pres_bl == 'CHIFFRE'">
+                <td>
+                    <span t-field="move.sale_line_id.price_unit"/>
+                </td>
+                <td>
+                    <span t-field="move.sale_line_id.di_un_prix"/>
+                </td>
+                <td>
+                    <span t-field="move.sale_line_id.price_subtotal"/>
+                </td>
+            </t>
+        </xpath>
+        <!-- Modification colonnes si mouvements de stock -->
+        <!-- modification format affichage lot/qté -->
+        <xpath expr="//table[3]/thead[1]/tr[1]/th[2]" position="after">
+            <th t-if="has_serial_number">
                 Quantité
             </th>
-		</xpath>
-		<xpath expr="//table[3]/tbody[1]/tr[1]//td[1]" position="replace">
-			<td>
-				<span t-field="move_line.lot_id" />
-				<t t-if="not move_line.lot_id">
-					<span t-field="move_line.lot_name" />
-				</t>
-			</td>
-			<td name="lot_qty">
-				<t t-if="move_line.product_qty">
-					<span t-field="move_line.product_qty" />
-				</t>
-			</td>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][2]/thead/tr/th" position="after">
-			<th>
-				<div>Nb Pièces/</div>
-				<div>Catégorie</div>
-			</th>
-			<th>
-				<div>Nb Colis/</div>
-				<div>Origine</div>
-			</th>
-			<th>
-				<div>Type Colis/</div>
-				<div>Marque</div>
-			</th>
-			<th>
-				<div>Poids Net/</div>
-				<div>Calibre</div>
-			</th>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][2]/thead/tr" position="inside">
-			<t t-if="di_pres_bl == 'CHIFFRE'">
-				<th>Prix Unitaire</th>
-				<th>Unité Prix</th>
-				<th>Montant</th>
-			</t>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][2]/tbody/tr/td" position="after">
-			<td>				
-				<!-- on masque le nb pièces si prix au kg -->				
-				<t t-if="move_line.move_id.sale_line_id.di_un_prix != 'KG'">
-					<div t-field="move_line.di_nb_pieces" />
-					<div t-field="move_line.product_id.product_tmpl_id.di_categorie_id" />
-				</t>
-				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'KG'">
-					<div>&amp;nbsp;</div>
-					<div t-field="move_line.product_id.product_tmpl_id.di_categorie_id" />
-				</t>				
-			</td>
-			<td>
-				<div t-field="move_line.di_nb_colis" />
-				<div t-field="move_line.product_id.product_tmpl_id.di_origine_id" />
-			</td>
-			<td>
-				<div t-field="move_line.move_id.di_product_packaging_id" />
-				<div t-field="move_line.product_id.product_tmpl_id.di_marque_id" />
-			</td>
-			<td>
-				<div t-field="move_line.di_poin" />
-				<div t-field="move_line.product_id.product_tmpl_id.di_calibre_id" />
-			</td>
-		</xpath>
-		<xpath expr="//table[@class='table table-sm mt48'][2]/tbody/tr" position="inside">
-			<t t-if="di_pres_bl == 'CHIFFRE'">
-				<td>
-					<span t-field="move_line.move_id.sale_line_id.price_unit" />
-				</td>
-				<td>
-					<span t-field="move_line.move_id.sale_line_id.di_un_prix" />
-				</td>
-				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PIECE'">
-					<td class="text-right">
-						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_pieces"
-							t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}" />
-					</td>
-				</t>
-				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'COLIS'">
-					<td class="text-right">
-						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_colis"
-							t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}" />
-					</td>
-				</t>
-				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PALETTE'">
-					<td class="text-right">
-						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_palette"
-							t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}" />
-					</td>
-				</t>
-				<t t-if="move_line.move_id.sale_line_id.di_un_prix == 'KG'">
-					<td class="text-right">
-						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_poin"
-							t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}" />
-					</td>
-				</t>
-				<t
-					t-if="move_line.move_id.sale_line_id.di_un_prix == False or move_line.move_id.sale_line_id.di_un_prix == ''">
-					<td class="text-right">
-						<span t-esc="move_line.move_id.sale_line_id.price_unit * move_line.quantity_done"
-							t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}" />
-					</td>
-				</t>
-			</t>
-		</xpath>
-	</template>
-<!-- surcharge pour intervenir sur le nombre d'exemple du bl
+        </xpath>
+        <xpath expr="//table[3]/tbody[1]/tr[1]//td[1]" position="replace">
+            <td>
+                <span t-field="move_line.lot_id"/>
+                <t t-if="not move_line.lot_id">
+                    <span t-field="move_line.lot_name"/>
+                </t>
+            </td>
+            <td name="lot_qty">
+                <t t-if="move_line.product_qty">
+                    <span t-field="move_line.product_qty"/>
+                </t>
+            </td>
+        </xpath>
+        <xpath expr="//table[3]/thead/tr/th" position="after">
+            <th>
+                <div>Nb Pièces/</div>
+                <div>Catégorie</div>
+            </th>
+            <th>
+                <div>Nb Colis/</div>
+                <div>Origine</div>
+            </th>
+            <th>
+                <div>Type Colis/</div>
+                <div>Marque</div>
+            </th>
+            <th>
+                <div>Poids Net/</div>
+                <div>Calibre</div>
+            </th>
+        </xpath>
+        <xpath expr="//table[3]/thead/tr" position="inside">
+            <t t-if="di_pres_bl == 'CHIFFRE'">
+                <th>Prix Unitaire</th>
+                <th>Unité Prix</th>
+                <th>Montant</th>
+            </t>
+        </xpath>
+        <xpath expr="//table[3]/tbody/tr/td" position="after">
+            <td>
+                <!-- on masque le nb pièces si prix au kg -->
+                <t t-if="move_line.move_id.sale_line_id.di_un_prix != 'KG'">
+                    <div t-field="move_line.di_nb_pieces"/>
+                    <div t-field="move_line.product_id.product_tmpl_id.di_categorie_id"/>
+                </t>
+                <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'KG'">
+                    <div>&amp;nbsp;</div>
+                    <div t-field="move_line.product_id.product_tmpl_id.di_categorie_id"/>
+                </t>
+            </td>
+            <td>
+                <div t-field="move_line.di_nb_colis"/>
+                <div t-field="move_line.product_id.product_tmpl_id.di_origine_id"/>
+            </td>
+            <td>
+                <div t-field="move_line.move_id.di_product_packaging_id"/>
+                <div t-field="move_line.product_id.product_tmpl_id.di_marque_id"/>
+            </td>
+            <td>
+                <div t-field="move_line.di_poin"/>
+                <div t-field="move_line.product_id.product_tmpl_id.di_calibre_id"/>
+            </td>
+        </xpath>
+        <xpath expr="//table[3]/tbody/tr" position="inside">
+            <t t-if="di_pres_bl == 'CHIFFRE'">
+                <td>
+                    <span t-field="move_line.move_id.sale_line_id.price_unit"/>
+                </td>
+                <td>
+                    <span t-field="move_line.move_id.sale_line_id.di_un_prix"/>
+                </td>
+                <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PIECE'">
+                    <td class="text-right">
+                        <span
+                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_pieces" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                    </td>
+                </t>
+                <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'COLIS'">
+                    <td class="text-right">
+                        <span
+                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_colis" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                    </td>
+                </t>
+                <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PALETTE'">
+                    <td class="text-right">
+                        <span
+                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_palette" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                    </td>
+                </t>
+                <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'KG'">
+                    <td class="text-right">
+                        <span
+                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_poin" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                    </td>
+                </t>
+                <t t-if="move_line.move_id.sale_line_id.di_un_prix == False or move_line.move_id.sale_line_id.di_un_prix == ''">
+                    <td class="text-right">
+                        <span
+                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.quantity_done" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                    </td>
+                </t>
+            </t>
+        </xpath>
+    </template>
+    <!-- surcharge pour intervenir sur le nombre d'exemple du bl
 	<template id="di_report_deliveryslip" inherit_id="stock.report_deliveryslip">
 		<xpath expr="//t/t" position="replace">
 			<t t-set="o" t-value="o"/>
 			<t t-call="stock.report_delivery_document" t-lang="o.partner_id.lang"/>
 		</xpath>
 	</template> -->
-	<template id="stock.report_deliveryslip">
-        <t t-foreach="docs" t-as="o">
-            <t t-foreach="range(o.di_nbex)" t-as="n">
+    <template id="stock.report_deliveryslip">
+        <t t-as="o" t-foreach="docs">
+            <t t-as="n" t-foreach="range(o.di_nbex)">
                 <t t-call="stock.report_delivery_document" t-lang="o.partner_id.lang"/>
-            </t>                
+            </t>
         </t>
     </template>
-	<!-- surcharge du bon de prépa/réception  -->
-	<template id="di_report_shipping2" inherit_id="stock.report_picking">
-		<!-- ajout titre du document -->
-		<xpath expr="//h1" position="replace">
-			<t t-if="o.picking_type_id.code == 'incoming'">
-				<h1 class="mt0 pull-left">
-					<span>Bon de Réception</span>
-					<span t-field="o.name"/>
-				</h1>
-			</t>
-			<t t-if="o.picking_type_id.code == 'outgoing'">
-				<h1 class="mt0 pull-left">
-					<span>Bon de Préparation</span>
-					<span t-field="o.name"/>
-				</h1>
-			</t>
-			<t t-if="o.picking_type_id.code == 'internal'">
-				<h1 class="mt0 pull-left">
-					<span>Bon de Préparation</span>
-					<span t-field="o.name"/>
-				</h1>
-			</t>
-		</xpath>
-		<!-- traduction adresse fournisseur -->
-		<xpath expr="//div/div/div[2]/div[1]/span[1]" position="replace">
-			<span><strong>Adresse fournisseur:</strong></span>
-		</xpath>
-	</template>
-	
-	<template id="di_report_picking">
-        <t t-foreach="docs" t-as="o">
-            <t t-foreach="range(o.di_nbex)" t-as="n">
+    <!-- surcharge du bon de prépa/réception  -->
+    <template id="di_report_shipping2" inherit_id="stock.report_picking">
+        <!-- ajout titre du document -->
+        <xpath expr="//h1" position="replace">
+            <t t-if="o.picking_type_id.code == 'incoming'">
+                <h1 class="mt0 pull-left">
+                    <span>Bon de Réception</span>
+                    <span t-field="o.name"/>
+                </h1>
+            </t>
+            <t t-if="o.picking_type_id.code == 'outgoing'">
+                <h1 class="mt0 pull-left">
+                    <span>Bon de Préparation</span>
+                    <span t-field="o.name"/>
+                </h1>
+            </t>
+            <t t-if="o.picking_type_id.code == 'internal'">
+                <h1 class="mt0 pull-left">
+                    <span>Bon de Préparation</span>
+                    <span t-field="o.name"/>
+                </h1>
+            </t>
+        </xpath>
+        <!-- traduction adresse fournisseur -->
+        <xpath expr="//div/div/div[2]/div[1]/span[1]" position="replace">
+            <span>
+                <strong>Adresse fournisseur:</strong>
+            </span>
+        </xpath>
+    </template>
+    <template id="di_report_picking">
+        <t t-as="o" t-foreach="docs">
+            <t t-as="n" t-foreach="range(o.di_nbex)">
                 <t t-call="stock.report_picking" t-lang="o.partner_id.lang"/>
-            </t>                
+            </t>
         </t>
     </template>
-	 <report
-            string="Picking Operations"
-            id="stock.action_report_picking"
-            model="stock.picking"
-            report_type="qweb-pdf"
-            name="difodoo_ventes.di_report_picking"
-            file="difodoo_ventes.di_report_picking_operations"
-            print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
-        />
+    <report file="difodoo_ventes.di_report_picking_operations"
+        id="stock.action_report_picking" model="stock.picking"
+        name="difodoo_ventes.di_report_picking"
+        print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
+        report_type="qweb-pdf" string="Picking Operations"/>
 </odoo>

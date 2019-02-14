@@ -469,6 +469,8 @@
                             <field name="di_label_id"/>
                             <field name="di_printer_ach_id"/>
                             <field name="di_label_ach_id"/>
+                            <field name="di_opt_imp"/>
+                            
                         </group>
                         <group string="Comptabilité">
                             <field name="di_compta_prg"/>
