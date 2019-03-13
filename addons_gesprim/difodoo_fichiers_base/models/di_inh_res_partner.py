@@ -28,6 +28,10 @@ class ResPartner(models.Model):
     di_nbex_cde = fields.Integer("Nombre exemplaires commande",help="""Nombre d'exemplaires d'une impression de commande.""",default=1)
     di_nbex_bl = fields.Integer("Nombre exemplaires BL",help="""Nombre d'exemplaires,d'une impression de BL.""",default=1)
     di_nbex_fac = fields.Integer("Nombre exemplaires facture",help="""Nombre d'exemplaires, d'une impression de facture.""",default=1)
+    di_type_releve = fields.Selection([('JOUR','Jour'),('DEMANDE','Demande'),('SEMAINE','Semaine'),('QUINZAINE','Quinzaine'),('DECADE','Décade'),('MOIS','Mois'),('AUCUN','Aucun')], default="AUCUN", string="Relevé",
+                                   help="Choix de la périodicité des relevés.")
+    
+    
     
 
     @api.onchange('di_iban')

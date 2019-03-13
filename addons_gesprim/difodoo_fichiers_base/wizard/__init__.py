@@ -9,3 +9,5 @@ from . import di_saisie_code_wizard
 from . import di_popup_wizard
 from . import di_maj_codedest
 from . import di_etiquette_lot_wizard
+from . import di_product_resserre
+from . import di_imprim_resserre_wiz

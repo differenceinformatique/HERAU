@@ -31,13 +31,19 @@
                     <field name="di_product_packaging_id"  string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />
                     <field name="di_nb_palette" readonly="1" string="Nb palettes"/>
                     <field name="di_type_palette_id"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />
-                    <field name="di_poin" readonly="1" string="Poids net"/> 
+                    <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
                     <field name="di_tare" string="Tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-                    <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>                                                   
+                    <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/> 
+                                                                       
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
                 </xpath>  
+                <xpath expr="//page/field[@name='invoice_line_ids']" position="after">
+                    <group>
+                        <field name="di_nb_lig" string="Nombre de ligne saisies" readonly="1"/>
+                    </group>                        
+                </xpath>
                 <xpath expr="//div[@class='oe_chatter']" position="replace"/>
                 <xpath expr="//sheet/notebook" position="after">
                     <div class="oe_chatter">
@@ -81,13 +87,19 @@
                     <field name="di_product_packaging_id"  string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]"  />
                     <field name="di_nb_palette" readonly="1" string="Nb palettes"/>
                     <field name="di_type_palette_id"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />
-                    <field name="di_poin" readonly="1" string="Poids net"/>
+                    <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
                     <field name="di_tare" string="Tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-                    <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>                                                           
+                    <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/>
+                                                                               
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
                 </xpath> 
+                <xpath expr="//page/field[@name='invoice_line_ids']" position="after">
+                    <group>
+                        <field name="di_nb_lig" string="Nombre de ligne saisies" readonly="1"/>
+                    </group>                        
+                </xpath>
                 <xpath expr="//div[@class='oe_chatter']" position="replace"/>
                 <xpath expr="//sheet/notebook" position="after">
                     <div class="oe_chatter">

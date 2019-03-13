@@ -51,6 +51,7 @@
         "views/di_inh_delivery_view.xml",
         "views/di_livrebord_view.xml",       
         "report/di_impression_tarifs.xml",
+        "report/di_impression_resserre.xml",
         "report/di_tarifs_report.xml",
         "report/di_etiquettes.xml",
         "wizard/di_wiz_referencer_article.xml",
@@ -62,6 +63,8 @@
         "wizard/di_popup_wizard.xml",
         "wizard/di_maj_codedest.xml",
         "wizard/di_etiquette_lot_wizard.xml",
+        "wizard/di_product_resserre.xml",
+        "wizard/di_imprim_resserre_wiz.xml",
         "security/ir.model.access.csv",
         "data/di_param_data.xml",
         "data/di.code.dest.csv"               

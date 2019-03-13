@@ -405,14 +405,12 @@ class StockMoveLine(models.Model):
     di_poib = fields.Float(string='Poids brut', store=True)
     di_tare = fields.Float(string='Tare', store=True)#,compute="_compute_tare")    
     di_flg_modif_uom = fields.Boolean(default=False)
+    di_flg_cloture = fields.Boolean(default=False)
+    di_usage_loc = fields.Selection(related='location_id.usage', store=True)    
+    di_usage_loc_dest = fields.Selection(related='location_dest_id.usage', store=True)
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
-    
-    @api.multi
-    @api.onchange('move_id.di_type_palette_id','move_id.di_product_packaging_id','di_nb_colis','di_nb_palette')
-    def _compute_tare(self):        
-        self.di_tare = (self.move_id.di_type_palette_id.di_poids * self.di_nb_palette) + (self.move_id.di_product_packaging_id.di_poids * self.di_nb_colis)
-        
+
     @api.multi
     @api.depends('product_id.di_spe_saisissable')
     def _di_compute_spe_saisissable(self):   
@@ -421,7 +419,7 @@ class StockMoveLine(models.Model):
      
         
     @api.multi    
-    @api.depends('di_poib','di_tare','di_nb_colis','di_nb_pieces','di_nb_palette')
+    @api.depends('di_poin','di_tare','di_nb_colis','di_nb_pieces','di_nb_palette')
     def _compute_qte_un_saisie(self):
         #recalcule la quantité en unité de saisie
         for sml in self:
@@ -438,7 +436,7 @@ class StockMoveLine(models.Model):
                 elif move.di_un_saisie == "PALETTE":
                     sml.di_qte_un_saisie = sml.di_nb_palette
                 elif move.di_un_saisie == "KG":
-                    sml.di_qte_un_saisie = sml.di_poib
+                    sml.di_qte_un_saisie = sml.di_poin
                 else:
                     sml.di_qte_un_saisie = sml.qty_done   
                        
@@ -456,7 +454,7 @@ class StockMoveLine(models.Model):
             self.di_nb_colis = ceil(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf)
             self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
             self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
-            self.di_poin = self.qty_done * move.product_id.weight 
+            self.di_poin = self.qty_done  
             self.di_poib = self.di_poin + self.di_tare 
       
       
@@ -475,67 +473,50 @@ class StockMoveLine(models.Model):
                 self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
             else:
                 self.di_nb_palette = self.di_nb_colis
-            self.di_poin = self.qty_done * move.product_id.weight 
+            self.di_poin = self.qty_done  
             self.di_poib = self.di_poin + self.di_tare
-#     @api.multi                     
-#     @api.onchange('di_nb_pieces')
-#     def _di_change_nb_pieces(self):
-#         if self.ensure_one():
-#             if self._context.get('di_move_id'):
-#                 move = self.env['stock.move'].browse(self._context['di_move_id'])
-#             else:
-#                 move = self.move_id
-#             if move.di_un_saisie == "PIECE":                           
-#                 self.qty_done = self.product_id.di_get_type_piece().qty * self.di_nb_pieces                  
-#                 if move.di_product_packaging_id.qty != 0.0 :
-#                     self.di_nb_colis = ceil(self.qty_done / move.di_product_packaging_id.qty)
-#                 else:      
-#                     self.di_nb_colis = ceil(self.qty_done)             
-#                 if move.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                     self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#                 else:
-#                     self.di_nb_palette = self.di_nb_colis
-#                 self.di_poin = self.qty_done * move.product_id.weight 
-#                 self.di_poib = self.di_poin + self.di_tare
-    @api.multi                     
+
+
+    @api.multi 
     @api.onchange('di_poib')
-    def _di_change_poib(self):
+    def _di_onchange_poib(self):
         if self.ensure_one()and not self.move_id.inventory_id:
-            self.di_tare = self.di_poib - self.di_poin
-    @api.multi                     
+            self.di_poin = self.di_poib - self.di_tare
+            if self._context.get('di_move_id'):
+                move = self.env['stock.move'].browse(self._context['di_move_id'])
+            else:
+                move = self.move_id                 
+            if move.product_uom.name.lower() == 'kg':
+                self.qty_done = self.di_poin
+                                
+   
+    @api.multi 
     @api.onchange('di_tare')
-    def _di_change_tare(self):
-        if self.ensure_one()and not self.move_id.inventory_id:
-            self.di_poib = self.di_poin + self.di_tare
-            
-            
-    @api.multi                     
+    def _di_onchange_tare(self):
+        if self.ensure_one()and not self.move_id.inventory_id:    
+            self.di_poin = self.di_poib - self.di_tare  
+            if self._context.get('di_move_id'):
+                move = self.env['stock.move'].browse(self._context['di_move_id'])
+            else:
+                move = self.move_id         
+            if move.product_uom.name.lower() == 'kg':
+                self.qty_done = self.di_poin
+                    
+    @api.multi 
     @api.onchange('di_poin')
-    def _di_change_poin(self):
-        if self.ensure_one()and not self.move_id.inventory_id:  
+    def _di_onchange_poin(self):
+        if self.ensure_one() and not self.move_id.inventory_id:      
             if self._context.get('di_move_id'):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
                 move = self.move_id    
-#             if move.di_un_saisie == "KG":
-            self.di_poib = self.di_poin + self.di_tare
-            
-            
+                      
             if move.product_uom.name.lower() == 'kg':
                 self.qty_done = self.di_poin
             
-#             self.qty_done = self.di_poin
-#             if move.di_product_packaging_id.qty != 0.0:
-#                 self.di_nb_colis = ceil(self.qty_done / move.di_product_packaging_id.qty)
-#             else:
-#                 self.di_nb_colis = ceil(self.qty_done)
-#             if move.di_type_palette_id.di_qte_cond_inf != 0.0:    
-#                 self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#             else:  
-#                 self.di_nb_palette = self.di_nb_colis
-#             self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
-             
-             
+            self.di_poib = self.di_poin+self.di_tare
+            
+    
     @api.multi                     
     @api.onchange('qty_done')
     def _di_change_qty_done(self):
@@ -556,15 +537,7 @@ class StockMoveLine(models.Model):
             if vals['picking_id']!=False:                  
                 picking = self.env['stock.picking'].browse(vals['picking_id'])
                 if picking.picking_type_id.code=='incoming': 
-                    
-#                     if vals.get('move_id') : # si on a une commande liée
-#                         if vals['move_id']!=False:            
-#                             move = self.env['stock.move'].browse(vals['move_id'])
-#                             if move.purchase_line_id:                       
-#                                 vals["di_tare"] = move.purchase_line_id.di_tare   
-#                                 vals["di_un_saisie"] = move.purchase_line_id.di_un_saisie
-#                                 vals["di_type_palette_id"] = move.purchase_line_id.di_type_palette_id.id
-#                                 vals["di_product_packaging_id"] = move.purchase_line_id.product_packaging.id                                                                                             
+                                                                                     
                             
                                        
                     if not vals.get('lot_id'): #si pas de lot saisi
@@ -615,30 +588,12 @@ class StockMoveLine(models.Model):
         nbpiece =0.0
         poids = 0.0
         qte_std = 0.0    
-        if date:
-#             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','!=',False)]).filtered(lambda mv: mv.move_id.picking_id.date_done.date() <= date)
-        else:
-            mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('picking_id','!=',False)])
-             
-        for mouv in mouvs:
-            if mouv.move_id.picking_type_id.code=='incoming':                
-                nbcol = nbcol + mouv.di_nb_colis
-                nbpal = nbpal + mouv.di_nb_palette
-                nbpiece = nbpiece + mouv.di_nb_pieces
-                poids = poids + mouv.di_poin
-                qte_std = qte_std + mouv.qty_done  				              
-            else:                
-                nbcol = nbcol - mouv.di_nb_colis
-                nbpal = nbpal - mouv.di_nb_palette
-                nbpiece = nbpiece - mouv.di_nb_pieces
-                poids = poids - mouv.di_poin
-                qte_std = qte_std - mouv.qty_done  				                        
+                       
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)]).filtered(lambda mv: mv.move_id.inventory_id.date.date() <= date)
+            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done')]).filtered(lambda mv: mv.move_id.inventory_id.date.date() <= date)
         else:
-            mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done'),('move_id.picking_id','=',False)])
+            mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done')])
              
         for mouv in mouvs:
 #             if mouv.move_id.remaining_qty:

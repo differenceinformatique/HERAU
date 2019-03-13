@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_imprimer_tarifs_wiz" model="ir.ui.view">
+        <field name="name">di.imprimer.tarifs.form</field>
+        <field name="model">di.imp.tar.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Impression Tarifs de vente">                
+                <div>        
+                    <group>
+                        <group>                                                                       
+                            <field name="di_date_effet" string="Date d'application"/>
+                            <field name="di_notImp_Un_vide" string="Ne pas imprimer tarifs sans unité de prix."/>
+                        </group>
+                        <group>                                                                    
+                            <field name="di_category" string="Famille article"/>
+                        </group>        
+                    </group>              
+                </div>                                   
+                <separator />
+                <label for="di_codes_tarifs_ids" string="Code tarifs à imprimer" />
+                <field name="di_codes_tarifs_ids">
+                    <tree order="name">
+                        <field name="name" />
+                        <field name="di_des" />                                             
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Imprimer les tarifs" type="object" name="imprimer_tarifs"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- <act_window
+        id="action_di_imprimer_tarifs_di_tarifs_wiz"
+        context="{'di_prg_orig': 'di.tarifs'}"
+        multi="False"
+        key2="client_action_multi"
+        name="Impression tarifs"
+        res_model="di.imp.tar.wiz"
+        src_model="di.tarifs"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_imprimer_tarifs_wiz">    
+    </act_window> -->
+    <act_window
+        id="action_di_imprimer_tarifs_di_code_tarif_wiz"
+        context="{'di_prg_orig': 'di.code.tarif'}"
+        multi="False"
+        key2="client_action_multi"
+        name="Impression Tarifs de vente"
+        res_model="di.imp.tar.wiz"
+        src_model="di.code.tarif"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_imprimer_tarifs_wiz">    
+    </act_window>
+    <act_window
+        id="action_di_imprimer_tarifs_menu_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Impression Tarifs de vente"
+        res_model="di.imp.tar.wiz"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_imprimer_tarifs_wiz">    
+    </act_window>
+    
+
+</odoo>

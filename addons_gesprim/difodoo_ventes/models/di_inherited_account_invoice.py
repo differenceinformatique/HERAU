@@ -13,6 +13,18 @@ class AccountInvoice(models.Model):
     
     di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
     
+    di_nb_lig = fields.Integer(string='Nb lignes saisies', compute="_compute_nb_lignes")
+    
+    di_rlvno = fields.Integer("Numéro de relevé", default=0)
+    
+    
+    
+    @api.multi
+    @api.depends("invoice_line_ids")
+    def _compute_nb_lignes(self):
+        for invoice in self:
+            invoice.di_nb_lig = len(invoice.invoice_line_ids)
+    
     @api.model
     def create(self,vals):        
         res = super(AccountInvoice, self).create(vals)        
@@ -101,12 +113,14 @@ class AccountInvoice(models.Model):
         if line.product_id.purchase_method == 'purchase':
             qty = line.product_qty - line.qty_invoiced
             di_qte_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
-            di_poib = line.di_poib - line.di_poib_fac            
+            di_poib = line.di_poib - line.di_poib_fac 
+            di_poin = line.di_poin - line.di_poin_fac    
         #ajout difodoo
         else:
             qty = line.qty_received - line.qty_invoiced
             di_qte_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
             di_poib = line.di_poib_liv - line.di_poib_fac
+            di_poin = line.di_poin_liv - line.di_poin_fac
         #ajout difodoo
         if float_compare(qty, 0.0, precision_rounding=line.product_uom.rounding) <= 0:
             qty = 0.0
@@ -133,7 +147,8 @@ class AccountInvoice(models.Model):
             'di_product_packaging_id':line.product_packaging,
             'di_un_prix':line.di_un_prix,
             'di_qte_un_saisie':di_qte_un_saisie,
-            'di_poib':di_poib
+            'di_poib':di_poib,
+            'di_poin':di_poin,
                                
         }
         account = invoice_line.get_invoice_line_account('in_invoice', line.product_id, line.order_id.fiscal_position_id, self.env.user.company_id)
@@ -152,7 +167,7 @@ class AccountInvoiceLine(models.Model):
     di_nb_pieces = fields.Integer(string='Nb pièces', compute="_compute_qte_aff", store=True)
     di_nb_colis = fields.Integer(string='Nb colis' ,compute="_compute_qte_aff", store=True)
     di_nb_palette = fields.Float(string='Nb palettes' ,compute="_compute_qte_aff", store=True)
-    di_poin = fields.Float(string='Poids net' ,compute="_compute_qte_aff", store=True)
+    di_poin = fields.Float(string='Poids net' , store=True)
     di_poib = fields.Float(string='Poids brut', store=True)
     di_tare = fields.Float(string='Tare', store=True)#,compute="_compute_tare")
     di_product_packaging_id = fields.Many2one('product.packaging', string='Package', default=False, store=True)
@@ -160,12 +175,7 @@ class AccountInvoiceLine(models.Model):
     di_flg_modif_uom = fields.Boolean(default=False)
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
-    
-    @api.multi
-    @api.onchange('di_type_palette_id','di_product_packaging_id','di_nb_colis','di_nb_palette')
-    def _compute_tare(self):        
-        self.di_tare = (self.di_type_palette_id.di_poids * self.di_nb_palette) + (self.di_product_packaging_id.di_poids * self.di_nb_colis)
-        
+ 
     def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date,typecol,typepal):    
         prixFinal = 0.0       
         prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date,typecol,typepal)
@@ -282,13 +292,32 @@ class AccountInvoiceLine(models.Model):
                     self.di_spe_saisissable = self.product_id.di_spe_saisissable                                    
                 
                 
-    @api.multi
+    @api.multi 
     @api.onchange('di_poib')
-    def _di_recalcule_tare(self):
+    def _di_onchange_poib(self):
         if self.ensure_one():
-            self.di_tare = self.di_poib - self.di_poin            
-                 
-                 
+            self.di_poin = self.di_poib - self.di_tare
+            if self.di_un_saisie == 'KG':
+                self.di_qte_un_saisie = self.di_poin
+                                
+    @api.multi 
+    @api.onchange('di_poin')
+    def _di_onchange_poin(self):
+        if self.ensure_one():            
+            if self.di_un_saisie == 'KG':
+                self.di_qte_un_saisie = self.di_poin
+            else:
+                self.di_poib = self.di_poin+self.di_tare
+    
+    @api.multi 
+    @api.onchange('di_tare')
+    def _di_onchange_tare(self):
+        if self.ensure_one():    
+            self.di_poin = self.di_poib - self.di_tare        
+            if self.di_un_saisie == 'KG':
+                self.di_qte_un_saisie = self.di_poin
+                
+              
                  
     @api.multi    
     @api.onchange('quantity')
@@ -297,7 +326,7 @@ class AccountInvoiceLine(models.Model):
             if AccountInvoiceLine.modifparprg == False:
                 if self.uom_id:
                     if self.uom_id.name.lower() == 'kg':
-                        self.di_poin=self.quantity * self.product_id.weight
+                        self.di_poin=self.quantity 
                         self.di_poib = self.di_poin + self.di_tare
                     elif self.uom_id.name.lower() != 'kg':    
                         if self.product_id.di_get_type_piece().qty != 0.0:
@@ -311,18 +340,17 @@ class AccountInvoiceLine(models.Model):
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis
-                        self.di_poin = self.quantity * self.product_id.weight 
-                        self.di_poib = self.di_poin + self.di_tare
+                            self.di_nb_palette = self.di_nb_colis                        
                     self.di_flg_modif_uom = True
             AccountInvoiceLine.modifparprg=False
             
             
     @api.multi            
-    @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_tare', 'di_product_packaging_id')
+    @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_product_packaging_id')
     def _di_recalcule_quantites(self):
         if self.ensure_one():
             if self.di_flg_modif_uom == False:
+                AccountInvoiceLine.modifparprg=True
                 if self.di_un_saisie == "PIECE":
                     self.di_nb_pieces = ceil(self.di_qte_un_saisie)
                     self.quantity = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
@@ -388,7 +416,7 @@ class AccountInvoiceLine(models.Model):
                     self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
                     
     @api.multi
-    @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_tare', 'di_product_packaging_id')
+    @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_product_packaging_id')
     def _compute_qte_aff(self):
         #recalcule des quantités non modifiables pour qu'elles soient enregistrées même si on met en readonly dans les masques.
         for aol in self:
@@ -403,7 +431,7 @@ class AccountInvoiceLine(models.Model):
                         aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
                     else:
                         aol.di_nb_palette = aol.di_nb_colis
-                    aol.di_poin = aol.quantity * aol.product_id.weight             
+                                
                             
                 elif aol.di_un_saisie == "COLIS":
                     aol.di_nb_colis = ceil(aol.di_qte_un_saisie)            
@@ -411,8 +439,7 @@ class AccountInvoiceLine(models.Model):
                     if aol.di_type_palette_id.di_qte_cond_inf != 0.0:                
                         aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
                     else:
-                        aol.di_nb_palette = aol.di_nb_colis
-                    aol.di_poin = aol.quantity * aol.product_id.weight             
+                        aol.di_nb_palette = aol.di_nb_colis                    
                                            
                 elif aol.di_un_saisie == "PALETTE":            
                     aol.di_nb_palette = aol.di_qte_un_saisie
@@ -421,10 +448,10 @@ class AccountInvoiceLine(models.Model):
                     else:
                         aol.di_nb_colis = ceil(aol.di_nb_palette)
                     aol.di_nb_pieces = ceil(aol.di_product_packaging_id.di_qte_cond_inf * aol.di_nb_colis)            
-                    aol.di_poin = aol.quantity * aol.product_id.weight             
+                              
                       
                 elif aol.di_un_saisie == "KG":
-                    aol.di_poin = aol.di_qte_un_saisie                        
+                                            
                     if aol.di_product_packaging_id.qty != 0.0:
                         aol.di_nb_colis = ceil(aol.quantity / aol.di_product_packaging_id.qty)
                     else:
@@ -435,9 +462,7 @@ class AccountInvoiceLine(models.Model):
                         aol.di_nb_palette = aol.di_nb_colis
                     aol.di_nb_pieces = ceil(aol.di_product_packaging_id.di_qte_cond_inf * aol.di_nb_colis)
                       
-                else:
-                    aol.di_poin = aol.di_qte_un_saisie            
-                    aol.quantity = aol.di_poin
+                else:                                            
                     if aol.di_product_packaging_id.qty != 0.0:
                         aol.di_nb_colis = ceil(aol.quantity / aol.di_product_packaging_id.qty)
                     else:
@@ -459,9 +484,7 @@ class AccountInvoiceLine(models.Model):
                 if aol.di_type_palette_id.di_qte_cond_inf != 0.0:
                     aol.di_nb_palette = aol.di_nb_colis / aol.di_type_palette_id.di_qte_cond_inf
                 else:
-                    aol.di_nb_palette = aol.di_nb_colis
-                aol.di_poin = aol.quantity * aol.product_id.weight 
-                aol.di_poib = aol.di_poin + aol.di_tare
+                    aol.di_nb_palette = aol.di_nb_colis                
                
     @api.model
     def create(self, vals):               
@@ -473,6 +496,7 @@ class AccountInvoiceLine(models.Model):
         if di_avec_sale_line_ids == True:
             qte_a_fac = 0.0
             poib = 0.0
+            poin = 0.0
             for id_ligne in vals["sale_line_ids"][0][2]:
                 Disaleorderline = self.env['sale.order.line'].search([('id', '=', id_ligne)], limit=1)                                 
                 if Disaleorderline.id != False:               
@@ -485,9 +509,11 @@ class AccountInvoiceLine(models.Model):
                     vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom
                     qte_a_fac += Disaleorderline.di_qte_a_facturer_un_saisie   
                     poib += Disaleorderline.di_poib
+                    poin += Disaleorderline.di_poin
                      
             vals["di_qte_un_saisie"] = qte_a_fac
-            vals["di_poib"] = poib            
+            vals["di_poib"] = poib
+            vals["di_poin"] = poin             
             
         di_avec_purchase_line_ids = False  # initialisation d'une variable       
         di_ctx = dict(self._context or {})  # chargement du contexte
@@ -508,9 +534,11 @@ class AccountInvoiceLine(models.Model):
                     vals["di_un_prix"] = Dipurchaseorderline.di_un_prix
                     qte_a_fac += Dipurchaseorderline.di_qte_un_saisie   
                     poib += Dipurchaseorderline.di_poib
+                    poin += Dipurchaseorderline.di_poin
                      
             vals["di_qte_un_saisie"] = qte_a_fac
             vals["di_poib"] = poib
+            vals["di_poin"] = poin
   
         res = super(AccountInvoiceLine, self).create(vals)                           
         return res

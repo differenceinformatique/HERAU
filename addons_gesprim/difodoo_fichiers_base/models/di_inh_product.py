@@ -5,6 +5,7 @@ from odoo import models, fields, api
 from xlrd.formula import FMLA_TYPE_COND_FMT
 from suds import null
 from odoo.tools.float_utils import float_round
+import time
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
@@ -129,10 +130,279 @@ class ProductTemplate(models.Model):
     
 class ProductProduct(models.Model):
     _inherit = "product.product"
+    
     default_code = fields.Char('Internal Reference', index=True)
         
     di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')
     di_tarifs_ids = fields.One2many('di.tarifs', 'id',string='Tarifs de l\'article')
+    
+        
+    di_date_to = fields.Date(compute='_di_compute_resserre_values', string='Au')
+    
+    di_prix_vente_moyen = fields.Float(compute='_di_compute_resserre_values', string='Prix de vente moyen')
+    di_prix_achat_moyen = fields.Float(compute='_di_compute_resserre_values', string="Prix d'achat moyen")
+    
+    di_val_ven = fields.Float(string='Valeur vente', compute='_di_compute_resserre_values')
+    di_val_stock = fields.Float(string='Valeur stock', compute='_di_compute_resserre_values')
+    di_val_marge = fields.Float(string='Valeur marge', compute='_di_compute_resserre_values')
+    di_marge_prc = fields.Float(compute='_di_compute_resserre_values', string='Marge %')
+    
+    di_col_stock = fields.Float(string='Colis en stock', compute='_di_compute_resserre_values')
+    di_qte_stock = fields.Float(string='Quantité en stock', compute='_di_compute_resserre_values')
+    di_poib_stock = fields.Float(string='Poids brut en stock', compute='_di_compute_resserre_values')
+    di_poin_stock = fields.Float(string='Poids net en stock', compute='_di_compute_resserre_values')
+    
+    di_col_ven = fields.Float(string='Colis vendus', compute='_di_compute_resserre_values')
+    di_qte_ven = fields.Float(string='Quantité vendue', compute='_di_compute_resserre_values')
+    di_poib_ven = fields.Float(string='Poids brut vendu', compute='_di_compute_resserre_values')
+    di_poin_ven = fields.Float(string='Poids net vendu', compute='_di_compute_resserre_values')  
+    
+    di_col_ach = fields.Float(string='Colis achetés', compute='_di_compute_resserre_values')
+    di_qte_ach = fields.Float(string='Quantité achetée', compute='_di_compute_resserre_values')
+    di_poib_ach = fields.Float(string='Poids brut acheté', compute='_di_compute_resserre_values')
+    di_poin_ach = fields.Float(string='Poids net acheté', compute='_di_compute_resserre_values')  
+    
+    di_col_regul_entree = fields.Float(string='Colis régul.entrée', compute='_di_compute_resserre_values')
+    di_qte_regul_entree = fields.Float(string='Quantité régul. entrée', compute='_di_compute_resserre_values')
+    di_poib_reg_ent = fields.Float(string='Poids brut régul. entrée', compute='_di_compute_resserre_values')
+    di_poin_reg_ent = fields.Float(string='Poids net régul. entrée', compute='_di_compute_resserre_values')
+    
+      
+    di_col_regul_sortie = fields.Float(string='Colis régul. sortie', compute='_di_compute_resserre_values')
+    di_qte_regul_sortie = fields.Float(string='Quantité régul. sortie', compute='_di_compute_resserre_values')
+    di_poib_reg_sort = fields.Float(string='Poids brut régul. sortie', compute='_di_compute_resserre_values')
+    di_poin_reg_sort = fields.Float(string='Poids net régul. sortie', compute='_di_compute_resserre_values')
+
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        """
+            Inherit read_group to calculate the sum of the non-stored fields, as it is not automatically done anymore through the XML.
+        """
+        res = super(ProductProduct, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+        fields_list = ['di_prix_vente_moyen', 'di_prix_achat_moyen', 'di_val_stock', 'di_val_ven', 'di_val_marge',
+                       'di_marge_prc', 'di_col_stock', 'di_qte_stock', 'di_poib_stock', 'di_poin_stock', 'di_col_ven',
+                       'di_qte_ven', 'di_poib_ven', 'di_poin_ven','di_col_ach','di_qte_ach', 'di_poib_ach', 'di_poin_ach',
+                       'di_col_regul_entree', 'di_qte_regul_entree', 'di_poib_reg_ent', 'di_poin_reg_ent',
+                       'di_col_regul_sortie', 'di_qte_regul_sortie', 'di_poib_reg_sort', 'di_poin_reg_sort']
+        if any(x in fields for x in fields_list):
+            # Calculate first for every product in which line it needs to be applied
+            re_ind = 0
+            prod_re = {}
+            tot_products = self.browse([])
+            for re in res:
+                if re.get('__domain'):
+                    products = self.search(re['__domain'])
+                    tot_products |= products
+                    for prod in products:
+                        prod_re[prod.id] = re_ind
+                re_ind += 1
+            res_val = tot_products._di_compute_resserre_values(field_names=[x for x in fields if fields in fields_list])
+            for key in res_val:
+                for l in res_val[key]:
+                    re = res[prod_re[key]]
+                    if re.get(l):
+                        re[l] += res_val[key][l]
+                    else:
+                        re[l] = res_val[key][l]
+        return res
+
+    def _di_compute_resserre_values(self, field_names=None):
+        res = {}
+        if field_names is None:
+            field_names = []
+        for val in self:
+            res[val.id] = {}            
+            di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
+                        
+            res[val.id]['di_date_to'] = di_date_to
+            
+           
+            sqlstr = """
+                select
+                    SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                    SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                    SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                    SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                    
+                    SUM ( Case when stock_type.usage = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
+                    
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_nb_colis else 0 end) AS di_col_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done else 0 end) AS di_qte_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poib else 0 end) AS di_poib_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poin else 0 end) AS di_poin_ven,
+                    
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,
+                                                            
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis else 0 end) AS di_col_ach,
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.qty_done else 0 end) AS di_qte_ach,
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poib else 0 end) AS di_poib_ach,
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poin else 0 end) AS di_poin_ach,
+                    
+                    SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis else 0 end) AS di_col_regul_entree,
+                    SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.qty_done else 0 end) AS di_qte_regul_entree,
+                    SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
+                    SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
+                    
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.qty_done else 0 end) AS di_qte_regul_sortie,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_poib else 0 end) AS di_poib_reg_sort,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
+                                                      
+                from stock_move_line sml                
+                LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
+                LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout order by di_date desc limit 1) cmp on cmp.di_product_id = sml.product_id
+                LEFT JOIN stock_move sm on sm.id = sml.move_id
+                LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
+                where sml.product_id = %s and sml.state ='done' and sml.date <=%s and sml.di_flg_cloture is not true
+                """
+            
+            self.env.cr.execute(sqlstr, (val.id, di_date_to))
+            result = self.env.cr.fetchall()[0]
+            res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
+            res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
+            res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
+            res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
+            res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
+            res[val.id]['di_col_ven'] = result[5] and result[5] or 0.0
+            res[val.id]['di_qte_ven'] = result[6] and result[6] or 0.0
+            res[val.id]['di_poib_ven'] = result[7] and result[7] or 0.0
+            res[val.id]['di_poin_ven'] = result[8] and result[8] or 0.0
+            res[val.id]['di_val_ven'] = result[9] and result[9] or 0.0
+            res[val.id]['di_col_ach'] = result[10] and result[10] or 0.0
+            res[val.id]['di_qte_ach'] = result[11] and result[11] or 0.0
+            res[val.id]['di_poib_ach'] = result[12] and result[12] or 0.0
+            res[val.id]['di_poin_ach'] = result[13] and result[13] or 0.0
+            res[val.id]['di_col_regul_entree'] = result[14] and result[14] or 0.0
+            res[val.id]['di_qte_regul_entree'] = result[15] and result[15] or 0.0
+            res[val.id]['di_poib_reg_ent'] = result[16] and result[16] or 0.0
+            res[val.id]['di_poin_reg_ent'] = result[17] and result[17] or 0.0
+            res[val.id]['di_col_regul_sortie'] = result[18] and result[18] or 0.0
+            res[val.id]['di_qte_regul_sortie'] = result[19] and result[19] or 0.0
+            res[val.id]['di_poib_reg_sort'] = result[20] and result[20] or 0.0
+            res[val.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
+            
+            
+            res[val.id]['di_val_marge'] = res[val.id]['di_val_ven'] - res[val.id]['di_val_stock']
+            
+            if res[val.id]['di_qte_stock'] != 0.0:
+                res[val.id]['di_prix_achat_moyen'] = res[val.id]['di_val_stock'] / res[val.id]['di_qte_stock']
+            else:
+                res[val.id]['di_prix_achat_moyen'] =0.0
+                
+            if res[val.id]['di_qte_ven'] != 0.0:
+                res[val.id]['di_prix_vente_moyen'] = res[val.id]['di_val_ven'] / res[val.id]['di_qte_ven']
+            else:
+                res[val.id]['di_prix_vente_moyen'] =0.0
+                
+            if res[val.id]['di_val_ven'] != 0.0:    
+                res[val.id]['di_marge_prc'] = res[val.id]['di_val_marge'] * 100 / res[val.id]['di_val_ven']
+            else:
+                res[val.id]['di_marge_prc'] = 0.0
+                                                          
+            for k, v in res[val.id].items():
+                setattr(val, k, v)
+                
+#                 
+#         total = self.env['product.product']        
+#         res[total.id] = {}            
+#         di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
+#                     
+#         res[total.id]['di_date_to'] = di_date_to
+#         
+#        
+#         sqlstr = """
+#             select
+#                 SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+#                 SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+#                 SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+#                 SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+#                 
+#                 SUM ( Case when stock_type.usage = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
+#                 
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_nb_colis else 0 end) AS di_col_ven,
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done else 0 end) AS di_qte_ven,
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poib else 0 end) AS di_poib_ven,
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poin else 0 end) AS di_poin_ven,
+#                 
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,
+#                                                         
+#                 SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis else 0 end) AS di_col_ach,
+#                 SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.qty_done else 0 end) AS di_qte_ach,
+#                 SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poib else 0 end) AS di_poib_ach,
+#                 SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poin else 0 end) AS di_poin_ach,
+#                 
+#                 SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis else 0 end) AS di_col_regul_entree,
+#                 SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.qty_done else 0 end) AS di_qte_regul_entree,
+#                 SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
+#                 SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
+#                 
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.qty_done else 0 end) AS di_qte_regul_sortie,
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_poib else 0 end) AS di_poib_reg_sort,
+#                 SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
+#                                                   
+#             from stock_move_line sml                
+#             LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
+#             LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+#             LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout order by di_date desc limit 1) cmp on cmp.di_product_id = sml.product_id
+#             LEFT JOIN stock_move sm on sm.id = sml.move_id
+#             LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
+#             where sml.state ='done' and sml.date <=%s 
+#             """
+#         
+#         self.env.cr.execute(sqlstr, (total.id, di_date_to))
+#         result = self.env.cr.fetchall()[0]
+#         res[total.id]['di_col_stock'] = result[0] and result[0] or 0.0
+#         res[total.id]['di_qte_stock'] = result[1] and result[1] or 0.0
+#         res[total.id]['di_poib_stock'] = result[2] and result[2] or 0.0
+#         res[total.id]['di_poin_stock'] = result[3] and result[3] or 0.0
+#         res[total.id]['di_val_stock'] = result[4] and result[4] or 0.0
+#         res[total.id]['di_col_ven'] = result[5] and result[5] or 0.0
+#         res[total.id]['di_qte_ven'] = result[6] and result[6] or 0.0
+#         res[total.id]['di_poib_ven'] = result[7] and result[7] or 0.0
+#         res[total.id]['di_poin_ven'] = result[8] and result[8] or 0.0
+#         res[total.id]['di_val_ven'] = result[9] and result[9] or 0.0
+#         res[total.id]['di_col_ach'] = result[10] and result[10] or 0.0
+#         res[total.id]['di_qte_ach'] = result[11] and result[11] or 0.0
+#         res[total.id]['di_poib_ach'] = result[12] and result[12] or 0.0
+#         res[total.id]['di_poin_ach'] = result[13] and result[13] or 0.0
+#         res[total.id]['di_col_regul_entree'] = result[14] and result[14] or 0.0
+#         res[total.id]['di_qte_regul_entree'] = result[15] and result[15] or 0.0
+#         res[total.id]['di_poib_reg_ent'] = result[16] and result[16] or 0.0
+#         res[total.id]['di_poin_reg_ent'] = result[17] and result[17] or 0.0
+#         res[total.id]['di_col_regul_sortie'] = result[18] and result[18] or 0.0
+#         res[total.id]['di_qte_regul_sortie'] = result[19] and result[19] or 0.0
+#         res[total.id]['di_poib_reg_sort'] = result[20] and result[20] or 0.0
+#         res[total.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
+#         
+#         
+#         res[total.id]['di_val_marge'] = res[total.id]['di_val_ven'] - res[total.id]['di_val_stock']
+#         
+#         if res[total.id]['di_qte_stock'] != 0.0:
+#             res[total.id]['di_prix_achat_moyen'] = res[total.id]['di_val_stock'] / res[total.id]['di_qte_stock']
+#         else:
+#             res[total.id]['di_prix_achat_moyen'] =0.0
+#             
+#         if res[total.id]['di_qte_ven'] != 0.0:
+#             res[total.id]['di_prix_vente_moyen'] = res[total.id]['di_val_ven'] / res[total.id]['di_qte_ven']
+#         else:
+#             res[total.id]['di_prix_vente_moyen'] =0.0
+#             
+#         if res[total.id]['di_val_ven'] != 0.0:    
+#             res[total.id]['di_marge_prc'] = res[total.id]['di_val_marge'] * 100 / res[total.id]['di_val_ven']
+#         else:
+#             res[total.id]['di_marge_prc'] = 0.0
+#                                                   
+#         res[total.id]['name'] = 'Total'
+#         for k, v in res[total.id].items():
+#             setattr(total, k, v)
+#                 
+        
+        return res
+    
+    
+    
     
 #     def di_action_afficher_cond(self):
 #         self.ensure_one()        

@@ -106,10 +106,14 @@
     <menuitem id="menu_gesprim_achats_factures" name="Factures fournisseur" sequence="10" parent="menu_gesprim_achats_fact" action="account.action_invoice_tree2"/>    
     <menuitem id="menu_gesprim_achats_avoirs" name="Avoirs fournisseur" sequence="20" parent="menu_gesprim_achats_fact" action="account.action_invoice_in_refund"/> -->
     <!-- ***Menu Stock -->    
-    <menuitem id="menu_gesprim_stock_inv" name="Resserre" sequence="10" parent="menu_gesprim_stock" action="stock.action_inventory_form"/>
+    <menuitem id="menu_gesprim_stock_inv" name="Régul de stock" sequence="10" parent="menu_gesprim_stock" action="stock.action_inventory_form"/>
     <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="20" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
-    <menuitem id="menu_gesprim_stock_visu_stock" name="Visualiser stock" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
-    <menuitem id="menu_gesprim_stock_pertes" name="Pertes" sequence="40" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_stock_report_all"/>
+    <menuitem id="menu_gesprim_stock_visu_stock" name="Resserre après vente" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/>
+    <!-- <menuitem id="menu_gesprim_stock_ress_ap_ven_det" name="Resserre après vente détaillée" sequence="40" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_resserre_ap_vente_det"/> -->
+    <menuitem id="menu_gesprim_stock_ress_ap_ven_det" name="Resserre après vente détaillée" sequence="40" parent="menu_gesprim_stock" action="difodoo_fichiers_base.di_product_resserre_act_window"/>
+    <menuitem id="menu_gesprim_stock_imp_ress_ap_ven_det" sequence="41" parent="menu_gesprim_stock" action="difodoo_fichiers_base.action_di_imprimer_resserre_menu_wiz" />
+    <menuitem id="menu_gesprim_stock_pertes" name="Pertes" sequence="50" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_stock_report_all"/>
+    <menuitem id="menu_gesprim_stock_clot_ven" name="Clôture ventes" sequence="60" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_cloturerventes"/>
     <!-- ***Menu Compta -->       
     <menuitem id="menu_gesprim_compta_cpt" name="Plan comptable" sequence="10" parent="menu_gesprim_compta" action="account.action_account_form" />
     <!-- <menuitem id="menu_gesprim_compta_tax" name="Taxes" sequence="20" parent="menu_gesprim_compta" action="account.action_tax_form" /> -->

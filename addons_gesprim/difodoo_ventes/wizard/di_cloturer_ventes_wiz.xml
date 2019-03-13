@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <record id="di_cloturer_ventes_wiz_form" model="ir.ui.view">
+        <field name="name">di.cloturer.ventes.wiz.form</field>
+        <field name="model">di.cloturer.ventes.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Clôture des ventes">
+                <separator string="Date de clôture"/>
+                <group>                    
+                    <field name="date_cloture"/>                    
+                </group>                                
+                <footer>
+                    <button string="Clôturer" type="object" name="cloturer_ventes"
+                        default_focus="1" class="oe_link"/>                    
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="di_action_cloturerventes" model="ir.actions.act_window">
+        <field name="name">Clôturer ventes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.cloturer.ventes.wiz</field>
+        <field name="view_type">form</field>            
+        <field name="view_id" ref="di_cloturer_ventes_wiz_form"/>        
+        <field name="view_mode">tree,form</field>
+        <field name="target">new</field>
+    </record> 
+    
+    </data>
+ 
+</odoo>

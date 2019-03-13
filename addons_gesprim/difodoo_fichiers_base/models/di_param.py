@@ -37,6 +37,8 @@ class DiParam(models.Model):
     di_opt_imp = fields.Selection([("STD", "Standard"), ("ONG", "Nouvel onglet"),("DIR", "Impression directe")], string="Option d'impression",
                                            help="Paramétrage de l'impression par défaut, pour savoir si on télécharge, on ouvre dans un nouvel onglet ou si on envoie à l'imprimante (nécessite chrome en mode kiosk-printing)",
                                            default="STD")
+    
+    di_rlvno = fields.Integer("Dernier numéro de relevé", default=0)
          
                        
     #unicité 
