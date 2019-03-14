@@ -141,7 +141,7 @@
                     <label string="Niveau de confiance" />
                     <field name="trust" groups="base.group_no_one" nolabel="1" />
                     <field name="di_period_fact"/>
-                    <field name="di_regr_fact"/>
+                    <field name="di__fact"/>
                 </xpath> -->
                
                 <xpath expr="//div[@class='oe_chatter']" position="replace"/>
@@ -157,7 +157,8 @@
                     <label string="Conditions paiement" for="property_payment_term_id"/>
                     <field name="property_payment_term_id" nolabel="1" widget="selection"/>
                     <field name="di_period_fact"/>
-                    <field name="di_regr_fact"/> 
+                    <field name="di_regr_fact"/>
+                    <field name="di_type_releve"/>                     
                 </xpath> 
                <xpath
                     expr="//field[@name='property_supplier_payment_term_id']" position="replace">

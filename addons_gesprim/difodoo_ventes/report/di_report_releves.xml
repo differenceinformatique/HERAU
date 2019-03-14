@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="di_layout_releve_std">         
+        <div class="article o_report_layout_standard"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">            
+            <t t-raw="0"/>
+        </div>        
+        
+    </template>
+
+
+
+    <template id="di_layout_releve">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+
+        <t t-call="difodoo_ventes.di_layout_releve_std"><t t-raw="0"/></t>        
+
+    </template>
+    
+    <template id="di_impression_releve">        
+        <t t-call="difodoo_ventes.di_layout_releve">             
+            <t t-set="di_client_id" t-value="0"/>        
+            <t t-foreach="wiz.di_rlv_ids" t-as="releve"> 
+                <t t_if="releve.di_partner_id.id != di_client_id">
+                    <p style="page-break-before: always;"/>                    
+                </t>
+                <t t-set="di_client_id" t-value="releve.di_partner_id.id" />    
+                <div name="company_address" class="col-5 offset-1" >
+                    <ul class="list-unstyled">
+                        <strong><li t-if="releve.di_company_id.name"><span t-field="releve.di_company_id.name"/></li></strong>                        
+                        <li t-if="releve.di_company_id.street"><span t-field="releve.di_company_id.street"/></li>
+                        <li t-if="releve.di_company_id.street2"><span t-field="releve.di_company_id.street2"/></li>
+                        <li><span t-field="releve.di_company_id.zip"/>&amp;nbsp;<span t-field="releve.di_company_id.city"/></li>                        
+                        <li t-if="releve.di_company_id.country_id.name"><span t-field="releve.di_company_id.country_id.name"/></li>                        
+                    </ul>
+                </div>                       
+                <div name="client_address" class="col-5 offset-8" >
+                    <ul class="list-unstyled">
+                        <strong><li t-if="releve.di_partner_id.name"><span t-field="releve.di_partner_id.name"/></li></strong>                        
+                        <li t-if="releve.di_partner_id.street"><span t-field="releve.di_partner_id.street"/></li>
+                        <li t-if="releve.di_partner_id.street2"><span t-field="releve.di_partner_id.street2"/></li>
+                        <li><span t-field="releve.di_partner_id.zip"/>&amp;nbsp;<span t-field="releve.di_partner_id.city"/></li>                        
+                        <li t-if="releve.di_partner_id.country_id.name"><span t-field="releve.di_partner_id.country_id.name"/></li>                        
+                    </ul>
+                </div>
+                
+                <div class="page">                                                                
+                    <t t-set="TotHT" t-value="0.0" />
+                    <t t-set="TotTax" t-value="0.0" />
+                    <t t-set="TotTTC" t-value="0.0" /> 
+                    <h5 style="text-align: left">
+                        <span>Référence client : &amp;nbsp;</span>
+                        <span t-field="releve.di_partner_id.ref" />                        
+                    </h5>
+                     <!-- impression du titre du document -->
+                    <h2 style="text-align: center">
+                        <span>Relevé &amp;nbsp;</span>
+                        <span t-field="releve.di_rlvno" />
+                        <span> &amp;nbsp; Le &amp;nbsp; </span>
+                        <span t-field="releve.di_date_releve" />
+                    </h2>
+                    <!-- impression des entêtes de colonnes -->
+                    <table class="table table-condensed table-bordered" width="100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <h4 style="text-align: center">Date</h4>
+                                </th>
+                                <th>
+                                    <h4 style="text-align: center">Facture</h4>
+                                </th>
+                                <th>
+                                    <h4 style="text-align: center">Total H.T</h4>
+                                </th>
+                                <th>
+                                    <h4 style="text-align: center">Taxes</h4>
+                                </th>     
+                                <th>
+                                    <h4 style="text-align: center">Total T.T.C</h4>
+                                </th>                                                                                   
+                            </tr>
+                        </thead>                    
+                        <tbody>
+                            <t t-foreach="releve.di_fac_ids.sorted(key= lambda f: (f.date_invoice))" t-as="fac">
+                               
+                                <tr>
+                                    <td>
+                                        <span t-esc="fac.date_invoice" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td>
+                                        <span t-field="fac.number"/>
+                                    </td>
+                                    <td>
+                                       <span t-field="fac.amount_untaxed_signed"/>
+                                    </td> 
+                                    <td>
+                                        <t t-if="fac.amount_untaxed_signed > 0"  >
+                                            <t t-set="tax_signed" t-value="fac.amount_tax" />
+                                        </t>
+                                        <t t-else="else"> 
+                                            <t t-set="tax_signed" t-value="-1*fac.amount_tax"  />                                            
+                                        </t>
+                                        <span t-esc="tax_signed"/>
+                                       
+                                    </td> 
+                                    <td>
+                                       <span t-field="fac.amount_total_signed"/>
+                                    </td>                                   
+                                    <t t-set="TotHT" t-value="TotHT + fac.amount_untaxed_signed" />
+                                    <t t-set="TotTTC" t-value="TotTTC + fac.amount_total_signed" />
+                                    <t t-set="TotTax" t-value="TotTax + tax_signed" />                                                            
+                                </tr>                       
+                               
+                            </t>
+                            <tr>
+                                <td></td>
+                                <td><span>TOTAL</span></td>
+                                <td><span t-esc="TotHT"/></td>
+                                <td><span t-esc="TotTax"/></td>  
+                                <td><span t-esc="TotTTC"/></td>                          
+                            </tr>
+                        </tbody>
+                    </table>                    
+                    En votre règlement<t t-if="releve.di_partner_id.property_payment_term_id.note"> par <span t-field="releve.di_partner_id.property_payment_term_id.note"/> </t> au plus tard le <span t-esc="releve._get_date_ech()"/>.
+                    <br></br>
+                    Règlement sans escompte, délais maximum de règlement : 30 jours fin décade.
+                    <br></br>
+                    Au delà, une pénalité égale à 3 fois le taux de l'intérêt légal sera appliquée.
+                </div>
+            </t>
+         </t> 
+    </template>
+
+
+    <template id="di_impression_wiz_releves">
+        <t t-call="web.html_container">            
+            <t t-foreach="docs" t-as="wiz">                                    
+                <t t-call="difodoo_ventes.di_impression_releve" />                                                                                
+            </t>            
+        </t>
+    </template>
+  
+     <report 
+            id="di_action_report_releves"
+            string="Relevé"
+            model="di.imp.rel.wiz" 
+            report_type="qweb-html"
+            file="difodoo_ventes.di_impression_wiz_releves" 
+            name="difodoo_ventes.di_impression_wiz_releves"
+            print_report_name="'Relevés'"            
+        />
+ 
+</odoo>

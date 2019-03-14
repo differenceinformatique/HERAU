@@ -47,7 +47,8 @@
         "wizard/di_bord_trp_wiz.xml",
         "wizard/di_ctrl_trp_wiz.xml",
         "wizard/di_supp_lig_zero_wiz.xml",
-        "wizard/di_cloturer_ventes_wiz.xml",                        
+        "wizard/di_cloturer_ventes_wiz.xml",
+        "wizard/di_imprim_releves_wiz.xml",                          
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
@@ -62,6 +63,7 @@
         "report/di_resserre_ap_vente.xml",
         "report/di_report_bordtrp.xml",
         "report/di_report_ctrltrp.xml",
+        "report/di_report_releves.xml",
         "security/ir.model.access.csv"
               
     ],

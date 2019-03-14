@@ -1,73 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="di_imprimer_tarifs_wiz" model="ir.ui.view">
-        <field name="name">di.imprimer.tarifs.form</field>
-        <field name="model">di.imp.tar.wiz</field>
+    <record id="di_imprimer_releves_wiz" model="ir.ui.view">
+        <field name="name">di.imprimer.releves.form</field>
+        <field name="model">di.imp.rel.wiz</field>
         <field name="arch" type="xml">
-            <form string="Impression Tarifs de vente">                
+            <form string="Impression Relevés">
+                <div>
+                    <group>                                                                       
+                        <field name="di_reimp" string="Réimpression des relevés"/>
+                        <field name="di_date_releve" string="Date de relevé"/>
+                    </group>
+                </div>                
                 <div>        
+                                            
                     <group>
-                        <group>                                                                       
-                            <field name="di_date_effet" string="Date d'application"/>
-                            <field name="di_notImp_Un_vide" string="Ne pas imprimer tarifs sans unité de prix."/>
+                        <group string="Périodicité" attrs="{'invisible': [('di_reimp', '=', True)]}" >                                                                    
+                            <field name="di_demande" string="A la demande"/>
+                            <field name="di_jour" string="Jour"/>
+                            <field name="di_semaine" string="Semaine"/>
+                            <field name="di_decade" string="Décade"/>
+                            <field name="di_quinzaine" string="Quinzaine"/>
+                            <field name="di_mois" string="Mois"/>
                         </group>
-                        <group>                                                                    
-                            <field name="di_category" string="Famille article"/>
-                        </group>        
-                    </group>              
-                </div>                                   
-                <separator />
-                <label for="di_codes_tarifs_ids" string="Code tarifs à imprimer" />
-                <field name="di_codes_tarifs_ids">
-                    <tree order="name">
-                        <field name="name" />
-                        <field name="di_des" />                                             
-                    </tree>
-                </field>
+                        <group>
+                            <field name="di_cli_deb" string="Client"/>
+                            <field name="di_cli_fin" string="à"/>
+                            
+                            <field name="di_date_deb" string="Période du"/>
+                            <field name="di_date_fin" string="au"/>   
+                            
+                            <field name="di_fac_deb" string="Facture de" attrs="{'invisible': [('di_reimp', '=', True)]}" />
+                            <field name="di_fac_fin" string="à" attrs="{'invisible': [('di_reimp', '=', True)]}" />  
+                            
+                            <field name="di_rlv_deb" string="Relevé de" attrs="{'invisible': [('di_reimp', '=', False)]}" />
+                            <field name="di_rlv_fin" string="à" attrs="{'invisible': [('di_reimp', '=', False)]}" />  
+                                
+                        </group>
+                    </group>                                
+                </div>                          
+
                 <footer>
-                    <button string="Imprimer les tarifs" type="object" name="imprimer_tarifs"
+                    <button string="Imprimer les relevés" type="object" name="imprimer_releves"
                         default_focus="1" />
                     <button string="Annuler" class="oe_link" special="cancel" />
                 </footer>
             </form>
         </field>
     </record>
-    <!-- <act_window
-        id="action_di_imprimer_tarifs_di_tarifs_wiz"
-        context="{'di_prg_orig': 'di.tarifs'}"
-        multi="False"
-        key2="client_action_multi"
-        name="Impression tarifs"
-        res_model="di.imp.tar.wiz"
-        src_model="di.tarifs"
-        view_mode="form"
-        target="new"
-        view_type="form"
-        view_id="di_imprimer_tarifs_wiz">    
-    </act_window> -->
+ 
     <act_window
-        id="action_di_imprimer_tarifs_di_code_tarif_wiz"
-        context="{'di_prg_orig': 'di.code.tarif'}"
+        id="action_di_imprimer_releves_menu_wiz"        
         multi="False"
         key2="client_action_multi"
-        name="Impression Tarifs de vente"
-        res_model="di.imp.tar.wiz"
-        src_model="di.code.tarif"
+        name="Impression relevés"
+        res_model="di.imp.rel.wiz"
         view_mode="form"
         target="new"
         view_type="form"
-        view_id="di_imprimer_tarifs_wiz">    
-    </act_window>
-    <act_window
-        id="action_di_imprimer_tarifs_menu_wiz"        
-        multi="False"
-        key2="client_action_multi"
-        name="Impression Tarifs de vente"
-        res_model="di.imp.tar.wiz"
-        view_mode="form"
-        target="new"
-        view_type="form"
-        view_id="di_imprimer_tarifs_wiz">    
+        view_id="di_imprimer_releves_wiz">    
     </act_window>
     
 

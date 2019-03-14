@@ -8,3 +8,4 @@ from . import di_ctrl_trp_wiz
 from . import di_supp_lig_zero_wiz
 from . import di_lig_zero_wiz
 from . import di_cloturer_ventes_wiz
+from . import di_imprim_releves_wiz
