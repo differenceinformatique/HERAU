@@ -1,0 +1,95 @@
+.di_o_fixe_footer, .di_o_fixe_header, .di_o_report_layout_fixe {
+    font-family: 'Lato';
+    color: gray('700');
+    font-size: 12px;
+}
+.di_o_fixe_header {
+    border-bottom: 1px solid gray('200');
+    img {
+        max-height: 100px;
+    }
+    h4 {
+        color: $o-we-color-text-normal;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+}
+.di_o_fixe_footer {
+    margin-top: 200px;
+    white-space: nowrap;
+    border-top: 3px solid gray('700');
+    ul {
+        margin: 4px 0;
+    }
+}
+.di_o_report_layout_fixe {
+    > h2 {
+        text-transform: uppercase;
+    }
+    table {
+        border: 1px solid gray('700');
+        thead {
+            border-bottom: 2px solid gray('700');
+            tr th {
+                text-transform: uppercase;
+                border: 1px solid gray('700');
+            }
+        }
+        tbody {
+            color: gray('700');
+            tr {
+                td {
+                    // remove border-top from standard layout
+                    border-top: none;
+                    border-right: 1px solid gray('700');
+                }
+                &.di_o_line_section td,
+                &.di_o_line_note td,
+                &.is-subtotal td {
+                    border-top: 1px solid gray('700');
+                    border-bottom: 1px solid gray('700');
+                }
+                &.di_o_line_section td {
+                    background-color: gray('700');
+                    color: #fff;
+                }
+                &.is-subtotal,
+                td.di_o_price_total {
+                    background-color: gray('200');
+                }
+            }
+        }
+    }
+    /* compat 12.0 */
+    .page > table:not(.di_o_main_table) tr td:last-child {
+        background-color: gray('200');
+    }
+    /* compat 12.0 */
+    .row:not(#total) > div > table tr:not(:first-child):not(:last-child) td:last-child {
+        background-color: gray('200');
+    }
+    /*Total table*/
+    /* row div rule compat 12.0 */
+    .row > div > table,
+    div#total table {
+        tr {
+            &:first-child,
+            &.di_o_subtotal {
+                border-bottom: 1px solid gray('700');
+
+                td:first-child {
+                    border-right: none;
+                }
+            }
+            &:last-child td,
+            &.di_o_total td {
+                background-color: gray('700');
+                color: #fff;
+
+                &:first-child {
+                    border-right: none;
+                }
+            }
+        }
+    }
+}

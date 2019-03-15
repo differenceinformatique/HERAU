@@ -63,6 +63,7 @@
         "report/di_resserre_ap_vente.xml",
         "report/di_report_bordtrp.xml",
         "report/di_report_ctrltrp.xml",
+        "report/di_report_invoice_preimp.xml",
         "report/di_report_releves.xml",
         "security/ir.model.access.csv"
               

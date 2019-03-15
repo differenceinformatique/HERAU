@@ -9,7 +9,7 @@ class ResPartner(models.Model):
     #référencement article 
     di_refarticle_ids = fields.Many2many('product.product', 'di_referencement_article_tiers', 'partner_id','product_id', string='Référencement article')
     di_code_tarif_id = fields.Many2one('di.code.tarif', string="Code tarif", help="Sans code tarif, c'est le tarif de la fiche article qui est repris")
-    ref = fields.Char(string='Internal Reference', index=True, help="Code Tiers")  # modif attribut copy + ajout help
+    ref = fields.Char(string='Internal Reference', index=True, help="Code Tiers",store=True)  # modif attribut copy + ajout help
     di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", default=True, help="Permet de filtrer lors de la facturation")

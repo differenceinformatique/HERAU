@@ -17,7 +17,7 @@
                     <h1>
                         <field
                             attrs="{'required':[('di_ref_required', '==', True)], 'readonly':[('ref','!=',False)]}"
-                            name="ref" placeholder="Code tiers"/>
+                            name="ref" placeholder="Code tiers" force_save="1" />
                     </h1>
                 </xpath>
                 <!-- masquage des éléments client en fournisseur et inversement -->

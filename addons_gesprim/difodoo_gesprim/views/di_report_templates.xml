@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Assets for reports -->
+    
+     <template id="di_report_assets_common" inherit_id="web.report_assets_common">    
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/difodoo_gesprim/static/css/di_layout_fixe.scss"/>
+        </xpath>        
+    </template>
+    
+    
+    <template id="di_layout_fixe">
+        <div class="header">
+            <div class="di_o_fixe_header">
+            <div class="row mb8">
+                <div class="col-6">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                </div>
+                <div class="col-6 text-right mb4">
+                    <h4 class="mt0" t-field="company.report_header"/>
+                    <div name="company_address" class="mb4">
+                        <span class="company_address" t-field="company.partner_id"
+                            t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="article di_o_report_layout_fixe" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer di_o_fixe_footer">
+            <div class="text-center">
+                <ul class="list-inline">
+                    <li t-if="company.phone" class="list-inline-item">Tel: <span t-field="company.phone"/></li>
+                    <li t-if="company.email" class="list-inline-item">Mail: <span t-field="company.email"/></li>
+                    <li t-if="company.website" class="list-inline-item">Web: <span t-field="company.website"/></li>
+                    <li t-if="company.vat" class="list-inline-item"><t t-esc="company.country_id.vat_label or 'TVA intracom.'"/>: <span t-field="company.vat"/></li>
+                </ul>
+                <div t-field="company.report_footer"/>
+                <div t-if="report_type == 'pdf'">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    
+    <template id="di_external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            Multicompany
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+
+        <t t-call="difodoo_gesprim.di_layout_fixe">            
+            <t t-raw="0"/>
+        </t>
+        
+    </template>
+    
+    <template id="di_report_layout" name="Report layout">&lt;!DOCTYPE html&gt;
+        <html t-att-lang="lang and lang.replace('_', '-')"
+              t-att-data-editable="'1' if editable else None"
+              t-att-data-translatable="'1' if translatable else None"
+              t-att-data-edit_translations="'1' if edit_translations else None"
+              t-att-data-main-object="repr(main_object) if editable else None"
+              t-att-data-report-margin-top="data_report_margin_top"
+              t-att-data-report-header-spacing="data_report_header_spacing"
+              t-att-data-report-dpi="data_report_dpi"
+              t-att-data-report-landscape="data_report_landscape"
+              t-att-web-base-url="web_base_url">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="initial-scale=1"/>
+                <title><t t-esc="title or 'Odoo Report'"/></title>
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.report_assets_common" t-js="false"/>
+                <t t-if="editable">
+                    <t t-call-assets="web_editor.summernote" t-js="false"/>
+                    <t t-call-assets="web_editor.assets_editor" t-js="false"/>
+                    <t t-call-assets="web.report_assets_editor" t-js="false"/>
+                </t>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.report_assets_common" t-css="false"/>
+                <t t-if="editable">
+                    <t t-call-assets="web_editor.summernote" t-css="false"/>
+                    <t t-call-assets="web_editor.assets_editor" t-css="false"/>
+                    <t t-call-assets="web.report_assets_editor" t-css="false"/>
+
+                    <script type="text/javascript" src="/web_editor/static/src/js/iframe.js"></script>
+                    <script t-if="enable_editor and inline_mode" type="text/javascript" src="/web_editor/static/src/js/inline.js"></script>
+                </t>
+            </head>
+            <body>
+                <div id="wrapwrap">
+                    <main t-att-class="'container' if not full_width else 'container-fluid'">
+                        <t t-raw="0"/>
+                    </main>
+                </div>
+            </body>
+        </html>
+    </template>
+    
+     <template id="di_html_container">
+        <t t-set="body_classname" t-value="'container'"/>
+        <t t-call="difodoo_gesprim.di_report_layout">
+            <t t-raw="0"/>
+        </t>
+    </template>
+
+    </odoo>
