@@ -252,7 +252,8 @@ class ProductProduct(models.Model):
                 from stock_move_line sml                
                 LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
                 LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
-                LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout order by di_date desc limit 1) cmp on cmp.di_product_id = sml.product_id
+                LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
                 LEFT JOIN stock_move sm on sm.id = sml.move_id
                 LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
                 where sml.product_id = %s and sml.state ='done'  and sml.di_flg_cloture is not true and sml.date <=%s
