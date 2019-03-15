@@ -360,13 +360,13 @@ class StockMove(models.Model):
                 if mouv.purchase_line_id:
                     di_qte_prix = 0.0
                     if mouv.purchase_line_id.di_un_prix == "PIECE":
-                        di_qte_prix = mouv.purchase_line_id.di_nb_pieces
+                        di_qte_prix = mouv.purchase_line_id.di_nb_pieces_liv
                     elif mouv.purchase_line_id.di_un_prix == "COLIS":
-                        di_qte_prix = mouv.purchase_line_id.di_nb_colis
+                        di_qte_prix = mouv.purchase_line_id.di_nb_colis_liv
                     elif mouv.purchase_line_id.di_un_prix == "PALETTE":
-                        di_qte_prix = mouv.purchase_line_id.di_nb_palette
+                        di_qte_prix = mouv.purchase_line_id.di_nb_palette_liv
                     elif mouv.purchase_line_id.di_un_prix == "KG":
-                        di_qte_prix = mouv.purchase_line_id.di_poin
+                        di_qte_prix = mouv.purchase_line_id.di_poin_liv
                     elif mouv.purchase_line_id.di_un_prix == False or mouv.purchase_line_id.di_un_prix == '':
                         di_qte_prix = mouv.purchase_line_id.qty_received
                     
@@ -375,13 +375,13 @@ class StockMove(models.Model):
                     
                     di_qte_prix = 0.0
                     if mouv.sale_line_id.di_un_prix == "PIECE":
-                        di_qte_prix = mouv.sale_line_id.di_nb_pieces
+                        di_qte_prix = mouv.sale_line_id.di_nb_pieces_liv
                     elif mouv.sale_line_id.di_un_prix == "COLIS":
-                        di_qte_prix = mouv.sale_line_id.di_nb_colis
+                        di_qte_prix = mouv.sale_line_id.di_nb_colis_liv
                     elif mouv.sale_line_id.di_un_prix == "PALETTE":
-                        di_qte_prix = mouv.sale_line_id.di_nb_palette
+                        di_qte_prix = mouv.sale_line_id.di_nb_palette_liv
                     elif mouv.sale_line_id.di_un_prix == "KG":
-                        di_qte_prix = mouv.sale_line_id.di_poin
+                        di_qte_prix = mouv.sale_line_id.di_poin_liv
                     elif mouv.sale_line_id.di_un_prix == False or mouv.sale_line_id.di_un_prix == '':
                         di_qte_prix = mouv.sale_line_id.qty_received
                         
