@@ -213,7 +213,8 @@ class ProductProduct(models.Model):
         for val in self:
             res[val.id] = {}            
             di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
-#             di_date_to  =  val.di_date_to.strftime('%Y-%m-%d')          
+#             di_date_to  =  val.di_date_to.strftime('%Y-%m-%d')      
+            di_date_to = di_date_to + ' 23:59:59'   
             res[val.id]['di_date_to'] =di_date_to
             
            
@@ -254,7 +255,7 @@ class ProductProduct(models.Model):
                 LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout order by di_date desc limit 1) cmp on cmp.di_product_id = sml.product_id
                 LEFT JOIN stock_move sm on sm.id = sml.move_id
                 LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
-                where sml.product_id = %s and sml.state ='done' and sml.date <=%s and sml.di_flg_cloture is not true
+                where sml.product_id = %s and sml.state ='done'  and sml.di_flg_cloture is not true and sml.date <=%s
                 """
             
             self.env.cr.execute(sqlstr, (val.id, di_date_to))

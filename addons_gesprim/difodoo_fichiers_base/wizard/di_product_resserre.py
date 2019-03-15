@@ -28,7 +28,7 @@ class DiProductResserre(models.TransientModel):
         model, tree_view_id = ref('difodoo_fichiers_base', 'di_view_product_resserre_tree')
 
         if self.di_to_date:
-            context.update(date_to=self.di_to_date)
+            context.update(di_date_to=self.di_to_date)
 
         views = [
             (tree_view_id, 'tree'),     
