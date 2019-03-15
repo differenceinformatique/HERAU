@@ -618,7 +618,7 @@ class StockMoveLine(models.Model):
                        
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done')]).filtered(lambda mv: mv.move_id.inventory_id.date.date() <= date)
+            mouvs=self.env['stock.move.line'].search(['&',('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done')]).filtered(lambda mv: mv.move_id.date.date() <= date)
         else:
             mouvs=self.env['stock.move.line'].search([('product_id','=',product_id.id),('lot_id','=',lot.id),('move_id.state','=','done')])
              
