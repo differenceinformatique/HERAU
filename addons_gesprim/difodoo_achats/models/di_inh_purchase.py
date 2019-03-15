@@ -59,7 +59,7 @@ class PurchaseOrderLine(models.Model):
     @api.onchange('product_qty')
     def _di_modif_qte_un_mesure(self):
         if self.ensure_one():
-            if SaleOrderLine.modifparprg == False:
+            if PurchaseOrderLine.modifparprg == False:
                 if self.product_uom:
                     if self.product_uom.name.lower() == 'kg':
                         self.di_poin=self.product_qty
@@ -406,6 +406,11 @@ class PurchaseOrderLine(models.Model):
             self.di_poin = self.di_poib - self.di_tare
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poin
+            else:
+                 if self.product_uom:
+                    if self.product_uom.name.lower() == 'kg':
+                        PurchaseOrderLine.modifparprg=True
+                        self.product_qty = self.di_poin
                                 
     @api.multi 
     @api.onchange('di_poin')
@@ -415,6 +420,10 @@ class PurchaseOrderLine(models.Model):
                 self.di_qte_un_saisie = self.di_poin
             else:
                 self.di_poib = self.di_poin+self.di_tare
+                if self.product_uom:
+                    if self.product_uom.name.lower() == 'kg':
+                        PurchaseOrderLine.modifparprg=True
+                        self.product_qty = self.di_poin
     
     @api.multi 
     @api.onchange('di_tare')
@@ -423,6 +432,11 @@ class PurchaseOrderLine(models.Model):
             self.di_poin = self.di_poib - self.di_tare        
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poin
+            else:
+                if self.product_uom:
+                    if self.product_uom.name.lower() == 'kg':
+                        PurchaseOrderLine.modifparprg=True
+                        self.product_qty = self.di_poin
                 
       
     @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.quantity','invoice_lines.di_qte_un_saisie','invoice_lines.di_nb_pieces','invoice_lines.di_nb_colis','invoice_lines.di_nb_palette','invoice_lines.di_poin','invoice_lines.di_poib')

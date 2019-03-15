@@ -296,9 +296,14 @@ class AccountInvoiceLine(models.Model):
     @api.onchange('di_poib')
     def _di_onchange_poib(self):
         if self.ensure_one():
-            self.di_poin = self.di_poib - self.di_tare
+            self.di_poin = self.di_poib - self.di_tare           
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poin
+            else:
+                 if self.uom_id:
+                    if self.uom_id.name.lower() == 'kg':
+                        AccountInvoiceLine.modifparprg=True
+                        self.quantity = self.di_poin
                                 
     @api.multi 
     @api.onchange('di_poin')
@@ -308,6 +313,10 @@ class AccountInvoiceLine(models.Model):
                 self.di_qte_un_saisie = self.di_poin
             else:
                 self.di_poib = self.di_poin+self.di_tare
+                if self.uom_id:
+                    if self.uom_id.name.lower() == 'kg':
+                        AccountInvoiceLine.modifparprg=True
+                        self.quantity = self.di_poin
     
     @api.multi 
     @api.onchange('di_tare')
@@ -316,6 +325,11 @@ class AccountInvoiceLine(models.Model):
             self.di_poin = self.di_poib - self.di_tare        
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poin
+            else:
+                if self.uom_id:
+                    if self.uom_id.name.lower() == 'kg':
+                        AccountInvoiceLine.modifparprg=True
+                        self.quantity = self.di_poin
                 
               
                  

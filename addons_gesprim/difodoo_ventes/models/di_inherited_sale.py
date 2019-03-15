@@ -69,9 +69,14 @@ class SaleOrderLine(models.Model):
     @api.onchange('di_poib')
     def _di_onchange_poib(self):
         if self.ensure_one():
-            self.di_poin = self.di_poib - self.di_tare
+            self.di_poin = self.di_poib - self.di_tare           
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poin
+            else:
+                 if self.product_uom:
+                    if self.product_uom.name.lower() == 'kg':
+                        SaleOrderLine.modifparprg=True
+                        self.product_uom_qty = self.di_poin
                                 
     @api.multi 
     @api.onchange('di_poin')
@@ -81,6 +86,10 @@ class SaleOrderLine(models.Model):
                 self.di_qte_un_saisie = self.di_poin
             else:
                 self.di_poib = self.di_poin+self.di_tare
+                if self.product_uom:
+                    if self.product_uom.name.lower() == 'kg':
+                        SaleOrderLine.modifparprg=True
+                        self.product_uom_qty = self.di_poin
     
     @api.multi 
     @api.onchange('di_tare')
@@ -89,6 +98,11 @@ class SaleOrderLine(models.Model):
             self.di_poin = self.di_poib - self.di_tare        
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poin
+            else:
+                if self.product_uom:
+                    if self.product_uom.name.lower() == 'kg':
+                        SaleOrderLine.modifparprg=True
+                        self.product_uom_qty = self.di_poin
                 
                         
     @api.multi    

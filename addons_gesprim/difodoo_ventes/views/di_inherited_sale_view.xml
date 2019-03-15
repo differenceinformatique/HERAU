@@ -145,6 +145,7 @@
 				<xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="after">				
 				    <field name="di_marge_inf_seuil" invisible="1" force_save="1" />
 					<field name="di_spe_saisissable" invisible="1" force_save="1" />
+					<!-- <field name="name" widget="section_and_note_text" style="width:0px !important;" string=' '/> -->
 					<field name="di_qte_un_saisie" string="Qté unité saisie"
 						attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
 					<field name="di_un_saisie"
