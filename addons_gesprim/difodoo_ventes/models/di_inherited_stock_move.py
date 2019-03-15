@@ -350,6 +350,7 @@ class StockMove(models.Model):
                 mouvs=self.env['stock.move'].search([('product_id','=',product_id),('state','=','done'),('picking_id','!=',False)])
              
         for mouv in mouvs:
+            
             if mouv.picking_type_id.code=='incoming':
                 qte = qte + mouv.product_uom_qty
                 nbcol = nbcol + mouv.di_nb_colis
@@ -357,9 +358,35 @@ class StockMove(models.Model):
                 nbpiece = nbpiece + mouv.di_nb_pieces
                 poids = poids + mouv.di_poin
                 if mouv.purchase_line_id:
-                    mont = mont + mouv.purchase_line_id.price_subtotal
+                    di_qte_prix = 0.0
+                    if mouv.purchase_line_id.di_un_prix == "PIECE":
+                        di_qte_prix = mouv.purchase_line_id.di_nb_pieces
+                    elif mouv.purchase_line_id.di_un_prix == "COLIS":
+                        di_qte_prix = mouv.purchase_line_id.di_nb_colis
+                    elif mouv.purchase_line_id.di_un_prix == "PALETTE":
+                        di_qte_prix = mouv.purchase_line_id.di_nb_palette
+                    elif mouv.purchase_line_id.di_un_prix == "KG":
+                        di_qte_prix = mouv.purchase_line_id.di_poin
+                    elif mouv.purchase_line_id.di_un_prix == False or mouv.purchase_line_id.di_un_prix == '':
+                        di_qte_prix = mouv.purchase_line_id.qty_received
+                    
+                    mont = mont + (di_qte_prix * mouv.purchase_line_id.price_unit)
                 elif mouv.sale_line_id:
-                    mont = mont + (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
+                    
+                    di_qte_prix = 0.0
+                    if mouv.sale_line_id.di_un_prix == "PIECE":
+                        di_qte_prix = mouv.sale_line_id.di_nb_pieces
+                    elif mouv.sale_line_id.di_un_prix == "COLIS":
+                        di_qte_prix = mouv.sale_line_id.di_nb_colis
+                    elif mouv.sale_line_id.di_un_prix == "PALETTE":
+                        di_qte_prix = mouv.sale_line_id.di_nb_palette
+                    elif mouv.sale_line_id.di_un_prix == "KG":
+                        di_qte_prix = mouv.sale_line_id.di_poin
+                    elif mouv.sale_line_id.di_un_prix == False or mouv.sale_line_id.di_un_prix == '':
+                        di_qte_prix = mouv.sale_line_id.qty_received
+                        
+                        
+                    mont = mont + (di_qte_prix * mouv.sale_line_id.purchase_price)
             else:
                 qte = qte - mouv.product_uom_qty
                 nbcol = nbcol - mouv.di_nb_colis
