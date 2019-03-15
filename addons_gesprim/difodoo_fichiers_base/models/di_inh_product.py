@@ -212,9 +212,9 @@ class ProductProduct(models.Model):
             field_names = []
         for val in self:
             res[val.id] = {}            
-#             di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
-                        
-            res[val.id]['di_date_to'] = val.di_date_to
+            di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
+#             di_date_to  =  val.di_date_to.strftime('%Y-%m-%d')          
+            res[val.id]['di_date_to'] =di_date_to
             
            
             sqlstr = """
@@ -257,7 +257,7 @@ class ProductProduct(models.Model):
                 where sml.product_id = %s and sml.state ='done' and sml.date <=%s and sml.di_flg_cloture is not true
                 """
             
-            self.env.cr.execute(sqlstr, (val.id, val.di_date_to))
+            self.env.cr.execute(sqlstr, (val.id, di_date_to))
             result = self.env.cr.fetchall()[0]
             res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
             res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
