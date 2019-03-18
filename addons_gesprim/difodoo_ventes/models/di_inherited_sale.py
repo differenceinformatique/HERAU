@@ -878,6 +878,7 @@ class SaleOrder(models.Model):
         for order in self:
             order.action_confirm()
             livraison = order.mapped('picking_ids')
+            livraison.action_assign()
             livraison.button_validate()
             order.action_invoice_create(grouped=False)
             invoice = order.mapped('invoice_ids')

@@ -190,6 +190,17 @@
 				</search>
 			</field>
 		</record>
+		
+		<record id="di_product_search_form_view" model="ir.ui.view">
+            <field name="name">di.product.packaging.search.form.view</field>
+            <field name="model">product.product</field>
+            <field eval="15" name="priority" />
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Resserre" name="resserre" domain="[('type', '!=', 'service')]" />                    
+                </search>
+            </field>
+        </record>
 		<!-- mode liste en priorité - tous les articles -->
 		<record id="product.product_template_action_all" model="ir.actions.act_window">
 			<field name="name">Products</field>

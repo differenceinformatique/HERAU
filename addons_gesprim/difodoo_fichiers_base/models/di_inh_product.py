@@ -227,17 +227,17 @@ class ProductProduct(models.Model):
                     
                     SUM ( Case when stock_type.usage = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
                     
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_nb_colis else 0 end) AS di_col_ven,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done else 0 end) AS di_qte_ven,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poib else 0 end) AS di_poib_ven,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poin else 0 end) AS di_poin_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_nb_colis when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.di_nb_colis  else   0 end) AS di_col_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.qty_done else 0 end) AS di_qte_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poib when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1* sml.di_poib else 0 end) AS di_poib_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poin when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.di_poin else 0 end) AS di_poin_ven,
                     
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done*sol.price_unit when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,
                                                             
-                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis else 0 end) AS di_col_ach,
-                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.qty_done else 0 end) AS di_qte_ach,
-                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poib else 0 end) AS di_poib_ach,
-                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poin else 0 end) AS di_poin_ach,
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis when orig_type.usage = 'internal' and  stock_type.usage = 'supplier' then -1*sml.di_nb_colis else 0 end) AS di_col_ach,
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.qty_done when orig_type.usage = 'internal' and  stock_type.usage = 'supplier' then -1*sml.qty_done  else 0 end) AS di_qte_ach,
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poib when orig_type.usage = 'internal' and  stock_type.usage = 'supplier' then -1*sml.di_poib  else 0 end) AS di_poib_ach,
+                    SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poin when orig_type.usage = 'internal' and  stock_type.usage = 'supplier' then -1*sml.di_poin  else 0 end) AS di_poin_ach,
                     
                     SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis else 0 end) AS di_col_regul_entree,
                     SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.qty_done else 0 end) AS di_qte_regul_entree,

@@ -155,7 +155,7 @@
             id="di_action_report_resserre"
             string="Impression ressere après vente détaillée"
             model="di.imp.ress.wiz" 
-            report_type="qweb-pdf"
+            report_type="qweb-html"
             file="difodoo_fichiers_base.di_impression_resserre" 
             name="difodoo_fichiers_base.di_impression_resserre"
             print_report_name="'Resserre après vente détaillée'"            

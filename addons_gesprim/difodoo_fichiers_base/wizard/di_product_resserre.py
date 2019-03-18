@@ -17,6 +17,7 @@ class DiProductResserre(models.TransientModel):
     def action_open_window(self):
         self.ensure_one()
         context = dict(self.env.context or {})
+        domain = []
 
         def ref(module, xml_id):
             proxy = self.env['ir.model.data']
@@ -28,7 +29,8 @@ class DiProductResserre(models.TransientModel):
         model, tree_view_id = ref('difodoo_fichiers_base', 'di_view_product_resserre_tree')
 
         if self.di_to_date:
-            context.update(di_date_to=self.di_to_date)
+            context.update(di_date_to=self.di_to_date)                
+            domain="[('type','!=','service')]"         
 
         views = [
             (tree_view_id, 'tree'),     
@@ -36,6 +38,7 @@ class DiProductResserre(models.TransientModel):
         return {
             'name': _('Resserre après vente détaillée'),
             'context': context,
+            'domain':domain,
             'view_type': 'form',
             "view_mode": 'tree',
             'res_model': 'product.product',
