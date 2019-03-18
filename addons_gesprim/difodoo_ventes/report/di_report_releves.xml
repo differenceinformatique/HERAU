@@ -156,7 +156,7 @@
             id="di_action_report_releves"
             string="Relevé"
             model="di.imp.rel.wiz" 
-            report_type="qweb-html"
+            report_type="qweb-pdf"
             file="difodoo_ventes.di_impression_wiz_releves" 
             name="difodoo_ventes.di_impression_wiz_releves"
             print_report_name="'Relevés'"            
