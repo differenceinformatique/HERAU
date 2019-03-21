@@ -69,7 +69,7 @@ class SaleOrderLine(models.Model):
     di_tare_un      = fields.Float(string='Tare unitaire')
          
     @api.multi    
-    @api.onchange('di_nb_colis', 'di_tare_un')
+    @api.onchange('di_nb_colis', 'di_tare_un','di_qte_un_saisie')
     def _di_recalcule_tare(self):
         if self.ensure_one():
             self.di_tare = self.di_tare_un * self.di_nb_colis            
