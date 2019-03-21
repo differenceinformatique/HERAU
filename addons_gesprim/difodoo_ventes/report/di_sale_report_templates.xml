@@ -102,7 +102,7 @@
                 <t t-else="">
                     <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
                         <span t-if="doc.state not in ['draft','sent']">Commande # </span>
-                        <span t-if="doc.state in ['draft','sent']">Devis # </span>
+                        <span t-if="doc.state in ['draft','sent']">Commande # </span>
                     </t>
                     <t t-if="env.context.get('proforma', False) or is_pro_forma">
                         <span>Facture Pro-Forma # </span>
