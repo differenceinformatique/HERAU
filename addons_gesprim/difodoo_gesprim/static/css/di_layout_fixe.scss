@@ -3,10 +3,12 @@
     color: gray('700');
     font-size: 12px;
 }
+//90ppp = 1050 px pour 29,7cm
 .di_o_fixe_header {
+    height : 120px !important;
     border-bottom: 1px solid gray('200');
     img {
-        max-height: 100px;
+        height: 100px;
     }
     h4 {
         color: $o-we-color-text-normal;
@@ -14,36 +16,178 @@
         text-transform: uppercase;
     }
 }
+.di_o_titre_fac{
+//     position: fixed !important;
+    top : 10px !important;
+    left : 10px !important;    
+}
+.di_o_informations{
+//     position: fixed !important;
+    top : 80px !important;
+    left : 20px !important;    
+    }
+.di_o_description_fac{
+    left : 20px !important;
+    width: 100px !important;
+    }
+.di_o_date_fac{
+    left : 130px !important;
+    width: 100px !important;
+    }
+.di_o_date_ech{
+    left : 240px !important;
+    width: 100px !important;
+    }
+.di_o_doc_orig{
+    left : 350px !important;
+    width: 100px !important;
+    }
+.di_o_code_cli{
+    left : 460px !important;
+    width: 100px !important;
+    }
+.di_o_ref_fac{
+    left : 570px !important;
+    width: 100px !important;
+    }
+
+.di_o_adr_tiers{
+//     position: fixed !important;
+    top : 10px !important;
+    left : 620px !important;    
+}
+
+.page{    
+//     margin-top : 150px !important;
+    height:500px !important;
+//     width: 900px !important;
+}
+
 .di_o_fixe_footer {
+    position:relative;
     margin-top: 200px;
-    white-space: nowrap;
-    border-top: 3px solid gray('700');
+    min-height : 300px !important;
+    margin-bottom: 10px !important;
+//     white-space: nowrap;
+//     border-top: 3px solid gray('700');
     ul {
         margin: 4px 0;
     }
-}
-.di_o_report_layout_fixe {
-    
-    > h2 {
-        text-transform: uppercase;
-    }
-    table {
-        border: 1px solid gray('700');
-        thead {
+    thead {
             border-bottom: 2px solid gray('700');
             tr th {
                 text-transform: uppercase;
                 border: 1px solid gray('700');
             }
-        }
+        }          
         tbody {
             color: gray('700');
             tr {
                 td {
                     // remove border-top from standard layout
                     border-top: none;
+                    border-left: 1px solid gray('700');
                     border-right: 1px solid gray('700');
+                    border-bottom: 1px solid gray('700');
+                }                               
+            }
+        }
+}
+.di_pied{
+    position: relative !important;
+    top:0px !important;
+    height:auto;
+    width :900px !important;  
+    }
+.di_o_table_pied{
+//     position: absolute !important;
+//     bottom : 0px !important;
+    left : 0px !important;
+    border: 1px solid gray('700');
+    height : 100px !important;
+    width :900px !important;   
+    }
+.di_o_col_ht{
+    width: 180px !important;
+    }
+.di_o_col_base_taxe{
+    width: 180px !important;
+    }
+.di_o_col_taxe{
+    width: 180px !important;
+    }
+.di_o_col_mt_taxe{
+    width: 180px !important;
+    }
+.di_o_col_ttc{
+    width: 180px !important;
+    }
+
+.di_o_col_des{
+    width: 250px !important;
+    }
+.di_o_col_piece{
+    width: 70px !important;
+    }
+.di_o_col_colis{
+    width: 70px !important;
+    }
+.di_o_col_typcol{
+    width: 70px !important;
+    }
+.di_o_col_poin{
+    width: 70px !important;
+    }
+.di_o_col_qte{
+    width: 70px !important;
+    }
+.di_o_col_pu{
+    width: 70px !important;
+    }
+.di_o_col_tax{
+    width: 80px !important;
+    }
+.di_o_col_unprix{
+    width: 70px !important;
+    }
+.di_o_col_mont{
+    width: 80px !important;
+    }
+ 
+ 
+.di_o_report_layout_fixe {
+    > h2 {
+        text-transform: uppercase;
+    }
+    table {   
+        &.o_main_table{
+//             position : absolute !important;
+//             top : 150px !important;
+            margin-bottom : 100px !important;
+            left : 0px !important;
+//             max-height:600px !important;
+//             margin-top : 150px !important;            
+//             margin-left : 0px !important;
+            width :900px !important;         
+            }  
+        thead {
+            border-bottom: 2px solid gray('700');
+            tr th {
+                text-transform: uppercase;
+                border: 1px solid gray('700');
+            }
+        }          
+        tbody {
+            color: gray('700');
+            tr {
+                td {
+                    // remove border-top from standard layout
+                    border-top: none;
+                    border-left: 1px solid gray('700');
+                    border-right: 1px solid gray('700');
+                    border-bottom: 1px solid gray('700');
                 }
+                
                 &.di_o_line_section td,
                 &.di_o_line_note td,
                 &.is-subtotal td {
@@ -61,14 +205,7 @@
             }
         }
     }
-    /* compat 12.0 */
-    .page > table:not(.di_o_main_table) tr td:last-child {
-        background-color: gray('200');
-    }
-    /* compat 12.0 */
-    .row:not(#total) > div > table tr:not(:first-child):not(:last-child) td:last-child {
-        background-color: gray('200');
-    }
+
     /*Total table*/
     /* row div rule compat 12.0 */
     .row > div > table,
@@ -82,15 +219,7 @@
                     border-right: none;
                 }
             }
-            &:last-child td,
-            &.di_o_total td {
-                background-color: gray('700');
-                color: #fff;
-
-                &:first-child {
-                    border-right: none;
-                }
-            }
+          
         }
     }
 }

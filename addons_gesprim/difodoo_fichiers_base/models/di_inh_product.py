@@ -285,12 +285,14 @@ class ProductProduct(models.Model):
             res[val.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
             
             
-            res[val.id]['di_val_marge'] = res[val.id]['di_val_ven'] - res[val.id]['di_val_stock']
+            
             
             if res[val.id]['di_qte_stock'] != 0.0:
                 res[val.id]['di_prix_achat_moyen'] = res[val.id]['di_val_stock'] / res[val.id]['di_qte_stock']
             else:
                 res[val.id]['di_prix_achat_moyen'] =0.0
+                
+            res[val.id]['di_val_marge'] = res[val.id]['di_val_ven'] - (res[val.id]['di_qte_ven']*res[val.id]['di_prix_achat_moyen'])
                 
             if res[val.id]['di_qte_ven'] != 0.0:
                 res[val.id]['di_prix_vente_moyen'] = res[val.id]['di_val_ven'] / res[val.id]['di_qte_ven']

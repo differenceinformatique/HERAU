@@ -22,27 +22,27 @@ class DiGenCoutsWiz(models.TransientModel):
         cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
         
         if not cout_jour:
-            premier_mouv_vente = self.env['sale.order.line'].new()
-            premier_mouv_achat = self.env['purchase.order.line'].new()
+#             premier_mouv_vente = self.env['sale.order.line'].new()
+#             premier_mouv_achat = self.env['purchase.order.line'].new()
             date_veille = di_date + timedelta(days=-1)
-            
-#             mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted('order_id.date_order')
-            mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.order_id.date_order )
-            for premier_mouv_achat in mouvs_achat:
+            mouvs = self.env['stock.move'].search([('product_id','=',di_product_id),('picking_id','!=',False)]).sorted(key=lambda m: m.picking_id.date )
+#             mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted('picking_id.date')
+#             mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.picking_id.date )
+#             for premier_mouv_achat in mouvs_achat:
+#                 break
+#             mouvs_vente = self.env['sale.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.picking_id.date )
+            for premier_mouv in mouvs:
                 break
-            mouvs_vente = self.env['sale.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.order_id.date_order )
-            for premier_mouv_vente in mouvs_vente:
-                break
             
-            if premier_mouv_achat.order_id.date_order and not premier_mouv_vente.order_id.date_order:
-                premier_mouv = premier_mouv_achat
-            elif premier_mouv_vente.order_id.date_order and not premier_mouv_achat.order_id.date_order:
-                premier_mouv = premier_mouv_vente
-            else:
-                if premier_mouv_achat.order_id.date_order > premier_mouv_vente.order_id.date_order:
-                    premier_mouv = premier_mouv_vente
-                else:
-                    premier_mouv = premier_mouv_achat
+#             if premier_mouv_achat.picking_id.date and not premier_mouv_vente.picking_id.date:
+#                 premier_mouv = premier_mouv_achat
+#             elif premier_mouv_vente.picking_id.date and not premier_mouv_achat.picking_id.date:
+#                 premier_mouv = premier_mouv_vente
+#             else:
+#                 if premier_mouv_achat.picking_id.date > premier_mouv_vente.picking_id.date:
+#                     premier_mouv = premier_mouv_vente
+#                 else:
+#                     premier_mouv = premier_mouv_achat
                               
             cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
             
@@ -53,7 +53,7 @@ class DiGenCoutsWiz(models.TransientModel):
             nbpiece=0.0
             poids=0.0
             (qte,mont,nbcol,nbpal,nbpiece,poids) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach)       
-            if not cout_veille and premier_mouv.order_id.date_order and  date_veille >= premier_mouv.order_id.date_order.date() :
+            if not cout_veille and premier_mouv.picking_id.date and  date_veille >= premier_mouv.picking_id.date.date() :
                 self.di_generer_cmp(di_product_id,date_veille)
                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
 

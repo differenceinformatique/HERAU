@@ -14,7 +14,7 @@ class Wizard_transfert_compta(models.TransientModel):
     
     date_start = fields.Date('Start Date', help="Starting date for the creation of invoices", default=lambda self: self._default_start())
     date_end = fields.Date('End Date', help="Ending valid for the the creation of invoices", default=lambda self: fields.Date.today())
-    journal_ids = fields.Many2many(comodel_name='account.journal', string="Journals", default=lambda self: self.env['account.journal'].search([('type', 'in', ['sale', 'purchase'])]), required=True)        
+    journal_ids = fields.Many2many(comodel_name='account.journal', string="Journals", default=lambda self: self.env['account.journal'].search([('type', 'in', ['sale', 'purchase','cash','bank'])]), required=True)        
     writing_file_transfer = fields.Char(string='File For Writing Transfer', default=lambda self : self.env['di.param'].search([('di_company_id', '=', self.env.user.company_id.id)]).di_nom_exp_ecr_compta)
     compta_data = fields.Binary('Compta File', readonly=True)
     filename = fields.Char(string='Filename', size=256, readonly=True)            

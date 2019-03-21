@@ -456,6 +456,7 @@
                                 name="di_company_id" readonly="1"/>
                             <group string="Ventes">
                                 <field name="di_horizon"/>
+                                <field name="di_del_liv"/>
                                 <field name="di_seuil_marge_prc"/>
                             </group>
                             <group string="Achats">                            

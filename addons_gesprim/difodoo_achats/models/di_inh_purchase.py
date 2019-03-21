@@ -47,12 +47,46 @@ class PurchaseOrderLine(models.Model):
     di_tare_fac          = fields.Float(string='Tare facturée',store=True)
     di_product_packaging_fac_id=fields.Many2one('product.packaging', string='Colis facturé',store=True)
     di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix facturé",store=True)
+    
+    di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_di_get_to_invoice_qty')
+    di_poin_a_facturer = fields.Float(string='Poids net à facturer',compute='_di_get_to_invoice_qty')
+    di_poib_a_facturer = fields.Float(string='Poids brut à facturer',compute='_di_get_to_invoice_qty')
  
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     
     di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)
     
     di_flg_modif_uom = fields.Boolean(store=True)
+    di_tare_un      = fields.Float(string='Tare unitaire')
+         
+    @api.multi    
+    @api.onchange('di_qte_un_saisie', 'di_tare_un')
+    def _di_recalcule_tare(self):
+        if self.ensure_one():
+            self.di_tare = self.di_tare_un * self.di_qte_un_saisie   
+    
+    @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state',"di_poin_liv","di_poin_fac","di_poib_liv","di_poib_fac")
+    def _di_get_to_invoice_qty(self):
+        
+        """
+        Compute the quantity to invoice. If the invoice policy is order, the quantity to invoice is
+        calculated from the ordered quantity. Otherwise, the quantity delivered is used.
+        """
+        for line in self:
+            if line.order_id.state in ['sale', 'done']:
+                if line.product_id.purchase_method == 'purchase':
+                    line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
+                    line.di_poin_a_facturer = line.di_poin - line.di_poin_fac
+                    line.di_poib_a_facturer = line.di_poib - line.di_poib_fac
+                else:
+                    line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
+                    line.di_poin_a_facturer = line.di_poin_liv - line.di_poin_fac
+                    line.di_poib_a_facturer = line.di_poib_liv - line.di_poib_fac
+            else:
+                line.di_qte_a_facturer_un_saisie = 0
+                line.di_poin_a_facturer = 0
+                line.di_poib_a_facturer = 0
+        
     
     
     @api.multi    

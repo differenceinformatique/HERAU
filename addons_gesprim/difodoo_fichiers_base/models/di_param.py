@@ -12,6 +12,7 @@ class DiParam(models.Model):
     name = fields.Char(string='Name',readonly=True,default=lambda self: self.env.user.company_id.name)
 #     di_act_grille_vente = fields.Boolean(string="Activer la grille de vente",help="""Permet l'activation de la grille de vente pour 
 #     une saisie plus rapide sur cadencier.""", default=False)
+    di_del_liv = fields.Integer(string="Délai livraison",help="""Délai de livairon par défaut """, default=0)
     di_horizon = fields.Integer(string="Horizon",help="""Horizon en jours pour la grille de vente. """)
     di_mode_grille_ach = fields.Selection([("HORIZON", "Horizon"), ("NBCDE", "Nombre de commande")], string="Mode recherche grille achat",
                                            help="Sélectionne le mode de recherche pour la grille d'achat. Sur un horizon ou sur un nombre de commande.",default="HORIZON")

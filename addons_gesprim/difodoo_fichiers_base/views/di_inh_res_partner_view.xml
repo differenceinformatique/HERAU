@@ -14,9 +14,10 @@
                 <!-- ajout du code interne juste avant le nom - obligatoire pour les clients/fournisseurs-->
                 <xpath expr="//field[@name='name']" position="before">
                     <field invisible="1" name="di_ref_required"/>
+                    <field invisible="1" name="di_ref_readonly"/>
                     <h1>
                         <field
-                            attrs="{'required':[('di_ref_required', '==', True)], 'readonly':[('ref','!=',False)]}"
+                            attrs="{'required':[('di_ref_required', '==', True)], 'readonly':[('di_ref_readonly','==',True)]}"
                             name="ref" placeholder="Code tiers" force_save="1" />
                     </h1>
                 </xpath>

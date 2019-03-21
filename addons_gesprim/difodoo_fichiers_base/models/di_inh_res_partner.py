@@ -21,6 +21,7 @@ class ResPartner(models.Model):
     di_param_seq_cli = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_clifou',store=False)
     di_param_seq_fou = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_clifou',store=False)
     di_ref_required = fields.Boolean(string='Code article obligatoire',compute='_di_compute_ref_required',store=False)
+    di_ref_readonly = fields.Boolean(string='Code article readonly',compute='_di_compute_ref_readonly',store=False)
     di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
     di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
     di_iban = fields.Char(string='IBAN',help="Saisir l'IBAN ",size=34)
@@ -105,7 +106,22 @@ class ResPartner(models.Model):
                     partner.di_ref_required=True
             else:
                 partner.di_ref_required=False
-                 
+    @api.multi
+    @api.depends('di_param_seq_cli','di_param_seq_fou')
+    def _di_compute_ref_readonly(self):
+        for partner in self:
+            if partner.customer:
+                if partner.di_param_seq_cli:
+                    partner.di_ref_readonly=True
+                else:
+                    partner.di_ref_required=False
+            elif partner.supplier:
+                if partner.di_param_seq_fou:
+                    partner.di_ref_required=True
+                else:
+                    partner.di_ref_required=False
+            else:
+                partner.di_ref_required=False
     #unicité du code tiers
     @api.multi
     @api.constrains('ref')
@@ -219,13 +235,30 @@ class ResPartner(models.Model):
     @api.multi
     def copy(self, default=None):
         default = dict(default or {})
-
-        copied_count = self.search_count(
-            [('ref', '=like', u"{}%_Copie".format(self.ref))])
-        if not copied_count:
-            new_name = u"{}_Copie".format(self.ref)            
+        if not self.di_ref_readonly:
+            copied_count = self.search_count(
+                [('ref', '=like', u"{}%_Copie".format(self.ref))])
+            if not copied_count:
+                new_name = u"{}_Copie".format(self.ref)            
+            else:
+                new_name = u"{}_Copie({})".format(self.ref, copied_count)
+    
+            default['ref'] = new_name
         else:
-            new_name = u"{}_Copie({})".format(self.ref, copied_count)
-
-        default['ref'] = new_name
+            if self.customer:
+            # si client, séquence client              
+                if (self.di_param_seq_cli):            
+                    if self.company_id:
+                        default['ref'] = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code('CLI_SEQ') or _('New')
+                    else:
+                        default['ref']= self.env['ir.sequence'].next_by_code('CLI_SEQ') or _('New')
+            if self.supplier:
+            # si fournisseur, séquence fournisseur
+                if (self.di_param_seq_fou):            
+                    if self.company_id:
+                        default['ref']= self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code('FOU_SEQ') or _('New')
+                    else:
+                        default['ref']= self.env['ir.sequence'].next_by_code('FOU_SEQ') or _('New')
+            
+        
         return super(ResPartner, self).copy(default)

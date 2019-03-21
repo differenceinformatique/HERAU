@@ -26,7 +26,7 @@ class SaleOrderLine(models.Model):
     di_nb_palette   = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True)
     di_poin         = fields.Float(string='Poids net',store=True)
     di_poib         = fields.Float(string='Poids brut',store=True)
-    di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")
+    di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")    
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
     di_flg_modif_uom = fields.Boolean(store=True)
@@ -55,6 +55,8 @@ class SaleOrderLine(models.Model):
     di_un_prix_fac      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix facturé",store=True)
     
     di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_get_to_invoice_qty')
+    di_poin_a_facturer = fields.Float(string='Poids net à facturer',compute='_get_to_invoice_qty')
+    di_poib_a_facturer = fields.Float(string='Poids brut à facturer',compute='_get_to_invoice_qty')
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=True,compute='_di_compute_spe_saisissable',store=True)
           
@@ -63,8 +65,15 @@ class SaleOrderLine(models.Model):
     di_marge_prc = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)
     
     di_marge_inf_seuil = fields.Boolean(string='Marge inférieure au seuil',default = False, compute='_di_compute_marge_seuil',store=True)
+    
+    di_tare_un      = fields.Float(string='Tare unitaire')
          
-
+    @api.multi    
+    @api.onchange('di_qte_un_saisie', 'di_tare_un')
+    def _di_recalcule_tare(self):
+        if self.ensure_one():
+            self.di_tare = self.di_tare_un * self.di_qte_un_saisie            
+            
     @api.multi 
     @api.onchange('di_poib')
     def _di_onchange_poib(self):
@@ -590,7 +599,7 @@ class SaleOrderLine(models.Model):
                     return {'warning': warning_mess}
         return {}
     
-    @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state')
+    @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state',"di_poin_liv","di_poin_fac","di_poib_liv","di_poib_fac")
     def _get_to_invoice_qty(self):
         
         """
@@ -601,10 +610,16 @@ class SaleOrderLine(models.Model):
             if line.order_id.state in ['sale', 'done']:
                 if line.product_id.invoice_policy == 'order':
                     line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
+                    line.di_poin_a_facturer = line.di_poin - line.di_poin_fac
+                    line.di_poib_a_facturer = line.di_poib - line.di_poib_fac
                 else:
                     line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
+                    line.di_poin_a_facturer = line.di_poin_liv - line.di_poin_fac
+                    line.di_poib_a_facturer = line.di_poib_liv - line.di_poib_fac
             else:
                 line.di_qte_a_facturer_un_saisie = 0
+                line.di_poin_a_facturer = 0
+                line.di_poib_a_facturer = 0
         super(SaleOrderLine, self)._get_to_invoice_qty()
                 
     @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.di_qte_un_saisie')
@@ -634,7 +649,7 @@ class SaleOrder(models.Model):
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", related='partner_id.di_regr_fact')#,store=True)
     di_ref = fields.Char(string='Code Tiers', related='partner_id.ref')#,store=True)
     di_livdt = fields.Date(string='Date de livraison', copy=False, help="Date de livraison souhaitée",
-                           default=lambda wdate : datetime.today().date()+timedelta(days=1))
+                           default=lambda self : datetime.today().date()+timedelta(days=self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)]).di_del_liv))
     di_prepdt = fields.Date(string='Date de préparation', copy=False, help="Date de préparation",
                            default=lambda wdate : datetime.today().date())    
     di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
@@ -849,7 +864,7 @@ class SaleOrder(models.Model):
     def modif_livdt(self):
         if self.di_livdt<datetime.today().date():
             return {'warning': {'Erreur date livraison': _('Error'), 'message': _('La date de livraison ne peut être inférieure à la date du jour !'),},}       
-        self.di_prepdt = self.di_livdt + timedelta(days=-1)
+        self.di_prepdt = self.di_livdt + timedelta(days=-self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)]).di_del_liv)
         if self.di_prepdt<datetime.today().date():
             self.di_prepdt=datetime.today().date()
         self.requested_date = self.di_livdt
@@ -859,7 +874,7 @@ class SaleOrder(models.Model):
     def modif_prepdt(self):
         if self.di_prepdt<datetime.today().date():
             return {'warning': {'Erreur date préparation': _('Error'), 'message': _('La date de préparation ne peut être inférieure à la date du jour !'),},}
-        self.di_livdt = self.di_prepdt + timedelta(days=1)
+        self.di_livdt = self.di_prepdt + timedelta(days=self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)]).di_del_liv)
         self.requested_date = self.di_livdt
      
     def _force_lines_to_invoice_policy_order(self):

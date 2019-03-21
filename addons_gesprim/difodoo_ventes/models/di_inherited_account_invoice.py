@@ -515,19 +515,20 @@ class AccountInvoiceLine(models.Model):
                 Disaleorderline = self.env['sale.order.line'].search([('id', '=', id_ligne)], limit=1)                                 
                 if Disaleorderline.id != False:               
                     #on attribue par défaut les valeurs de la ligne de commande   
-                    vals["di_tare"] = Disaleorderline.di_tare  
+#                     vals["di_tare"] = Disaleorderline.di_tare  
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id 
                     vals["di_un_prix"] = Disaleorderline.di_un_prix
                     vals["di_flg_modif_uom"]=Disaleorderline.di_flg_modif_uom
                     qte_a_fac += Disaleorderline.di_qte_a_facturer_un_saisie   
-                    poib += Disaleorderline.di_poib
-                    poin += Disaleorderline.di_poin
+                    poib += Disaleorderline.di_poib_a_facturer
+                    poin += Disaleorderline.di_poin_a_facturer
                      
             vals["di_qte_un_saisie"] = qte_a_fac
             vals["di_poib"] = poib
-            vals["di_poin"] = poin             
+            vals["di_poin"] = poin       
+            vals["di_tare"] = poib-poin      
             
         di_avec_purchase_line_ids = False  # initialisation d'une variable       
         di_ctx = dict(self._context or {})  # chargement du contexte
@@ -541,18 +542,24 @@ class AccountInvoiceLine(models.Model):
                 Dipurchaseorderline = self.env['purchase.order.line'].search([('id', '=', id_ligne)], limit=1)                                 
                 if Dipurchaseorderline.id != False:               
                     #on attribue par défaut les valeurs de la ligne de commande   
-                    vals["di_tare"] = Dipurchaseorderline.di_tare  
+#                     vals["di_tare"] = Dipurchaseorderline.di_tare  
                     vals["di_un_saisie"] = Dipurchaseorderline.di_un_saisie
                     vals["di_type_palette_id"] = Dipurchaseorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Dipurchaseorderline.product_packaging.id 
                     vals["di_un_prix"] = Dipurchaseorderline.di_un_prix
-                    qte_a_fac += Dipurchaseorderline.di_qte_un_saisie   
-                    poib += Dipurchaseorderline.di_poib
-                    poin += Dipurchaseorderline.di_poin
+                    
+                    qte_a_fac += Dipurchaseorderline.di_qte_a_facturer_un_saisie   
+                    poib += Dipurchaseorderline.di_poib_a_facturer
+                    poin += Dipurchaseorderline.di_poin_a_facturer
+                    
+#                     qte_a_fac += Dipurchaseorderline.di_qte_un_saisie   
+#                     poib += Dipurchaseorderline.di_poib
+#                     poin += Dipurchaseorderline.di_poin
                      
             vals["di_qte_un_saisie"] = qte_a_fac
             vals["di_poib"] = poib
             vals["di_poin"] = poin
+            vals["di_tare"] = poib-poin 
   
         res = super(AccountInvoiceLine, self).create(vals)                           
         return res
