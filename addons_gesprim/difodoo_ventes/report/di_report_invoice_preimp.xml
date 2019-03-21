@@ -64,24 +64,23 @@
                         <tr>
                             <t t-set="colspan" t-value="10"/>
                             <th class="di_o_col_des"><span>Désignation</span></th>
-                            <th class="di_o_col_piece">
-                                <div>Nb Pièces/</div>
-                                <div>Catégorie</div>
-                            </th>
                             <th class="di_o_col_colis">
-                                <div>Nb Colis/</div>
-                                <div>Origine</div>
+                                <div>Nb Colis</div>                                
+                            </th>
+                            <th class="di_o_col_piece">
+                                <div>Nb Pièces</div>                                
+                            </th>
+                                                      
+                            <th class="di_o_col_poib">
+                                <div>Poids brut</div>                                
+                            </th>
+                            <th class="di_o_col_tare">
+                                <div>Tare</div>                                
                             </th>
                             <th class="di_o_col_poin">
-                                <div>Type Colis/</div>
-                                <div>Marque</div>
-                            </th>
-                            <th class="di_o_col_poin">
-                                <div>Poids Net/</div>
-                                <div>Calibre</div>
-                            </th>
-                            
-                            <th class="di_o_col_qte"><span>Quantité</span></th>
+                                <div>Poids net</div>                                
+                            </th>                          
+                                                        
                             <th class="di_o_col_pu"><span>P.U.</span></th>                           
                             <th class="di_o_col_tax"><span>Taxes</span></th>
                             <th class="di_o_col_unprix">UN Prix</th>
@@ -103,34 +102,21 @@
                                 <t t-if="not line.display_type" name="account_invoice_line_accountable">
                                     <td name="account_invoice_line_name"><span t-field="line.name"/></td>
                                     <td>
-                                        <!-- on masque le nb pièces si prix au kg -->
-                                        <t t-if="line.di_un_prix != 'KG'">
-                                            <div t-field="line.di_nb_pieces" />
-                                            <div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
-                                        </t>
-                                        <t t-if="line.di_un_prix == 'KG'">
-                                            <div>&amp;nbsp;</div>
-                                            <div t-field="line.product_id.product_tmpl_id.di_categorie_id" />
-                                        </t>
+                                        <div t-field="line.di_nb_colis" />                                        
+                                    </td>
+                                    <td>                                                                            
+                                        <div t-field="line.di_nb_pieces" />                                                                                    
                                     </td>
                                     <td>
-                                        <div t-field="line.di_nb_colis" />
-                                        <div t-field="line.product_id.product_tmpl_id.di_origine_id" />
+                                        <div t-field="line.di_poib" />                                        
                                     </td>
                                     <td>
-                                        <div t-field="line.di_product_packaging_id" />
-                                        <div t-field="line.product_id.product_tmpl_id.di_marque_id" />
-                                    </td>
+                                        <div t-field="line.di_tare" />                                        
+                                    </td>                                
                                     <td>
-                                        <div t-field="line.di_poin" />
-                                        <div t-field="line.product_id.product_tmpl_id.di_calibre_id" />
+                                        <div t-field="line.di_poin" />                                        
                                     </td>
-                                    
-                                    
-                                    <td>
-                                        <span t-field="line.quantity"/>
-                                        <span t-field="line.uom_id"  groups="uom.group_uom"/>
-                                    </td>
+                                                                        
                                     <td>
                                         <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                     </td>
