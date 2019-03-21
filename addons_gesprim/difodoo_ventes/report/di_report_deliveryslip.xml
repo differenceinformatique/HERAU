@@ -269,13 +269,7 @@
                                 </th>
                                 <th name="td_sched_date_h">
                                     <strong>Date</strong>
-                                </th>
-                                <th>
-                                    <strong>Nb Colis</strong>
                                 </th>                               
-                                <th>
-                                    <strong>Poids brut</strong>
-                                </th>
                                 
                                 
                             </tr>
@@ -299,13 +293,7 @@
                                    <t t-if="o.state != 'done'">
                                         <span t-field="o.scheduled_date"/>
                                    </t>
-                                </td>
-                                <td>
-                                    <span t-field="o.di_nbcol"/>
-                                </td>                           
-                                <td>
-                                    <span t-field="o.di_poib"/>
-                                </td>
+                                </td>                                
                             </tr>
                         </tbody>
                     </table>
