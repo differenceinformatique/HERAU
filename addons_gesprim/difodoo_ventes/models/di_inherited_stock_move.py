@@ -370,28 +370,28 @@ class StockMove(models.Model):
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.di_nb_pieces_liv
                         else:
-                            di_qte_prix = mouv.purchase_line_id.di_nb_pieces
+                            di_qte_prix = mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
                             
                     elif mouv.purchase_line_id.di_un_prix == "COLIS":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.di_nb_colis_liv
                         else:
-                            di_qte_prix = mouv.purchase_line_id.di_nb_colis
+                            di_qte_prix = mouv.purchase_line_id.di_nb_colis - mouv.purchase_line_id.di_nb_colis_liv
                     elif mouv.purchase_line_id.di_un_prix == "PALETTE":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.di_nb_palette_liv
                         else:
-                            di_qte_prix = mouv.purchase_line_id.di_nb_palette
+                            di_qte_prix = mouv.purchase_line_id.di_nb_palette - mouv.purchase_line_id.di_nb_palette_liv
                     elif mouv.purchase_line_id.di_un_prix == "KG":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.di_poin_liv
                         else:
-                            di_qte_prix = mouv.purchase_line_id.di_poin
+                            di_qte_prix = mouv.purchase_line_id.di_poin -mouv.purchase_line_id.di_poin_liv
                     elif mouv.purchase_line_id.di_un_prix == False or mouv.purchase_line_id.di_un_prix == '':
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.qty_received
                         else:
-                            di_qte_prix = mouv.purchase_line_id.product_uom_qty
+                            di_qte_prix = mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
                             
                     
                     mont = mont + (di_qte_prix * mouv.purchase_line_id.price_unit)
@@ -402,27 +402,27 @@ class StockMove(models.Model):
                         if mouv.state == 'done':
                             di_qte_prix = mouv.sale_line_id.di_nb_pieces_liv
                         else:
-                            di_qte_prix = mouv.sale_line_id.di_nb_pieces
+                            di_qte_prix = mouv.sale_line_id.di_nb_pieces - mouv.sale_line_id.di_nb_pieces_liv
                     elif mouv.sale_line_id.di_un_prix == "COLIS":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.sale_line_id.di_nb_colis_liv
                         else:
-                            di_qte_prix = mouv.sale_line_id.di_nb_colis
+                            di_qte_prix = mouv.sale_line_id.di_nb_colis - mouv.sale_line_id.di_nb_colis_liv
                     elif mouv.sale_line_id.di_un_prix == "PALETTE":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.sale_line_id.di_nb_palette_liv
                         else:
-                            di_qte_prix = mouv.sale_line_id.di_nb_palette
+                            di_qte_prix = mouv.sale_line_id.di_nb_palette - mouv.sale_line_id.di_nb_palette_liv
                     elif mouv.sale_line_id.di_un_prix == "KG":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.sale_line_id.di_poin_liv
                         else:
-                            di_qte_prix = mouv.sale_line_id.di_poin
+                            di_qte_prix = mouv.sale_line_id.di_poin - mouv.sale_line_id.di_poin_liv
                     elif mouv.sale_line_id.di_un_prix == False or mouv.sale_line_id.di_un_prix == '':
                         if mouv.state == 'done':
-                            di_qte_prix = mouv.sale_line_id.qty_received
+                            di_qte_prix = mouv.sale_line_id.qty_delivered
                         else:
-                            di_qte_prix = mouv.sale_line_id.product_uom_qty
+                            di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
                         
                     mont = mont + (di_qte_prix * mouv.sale_line_id.purchase_price)
             else:
@@ -432,9 +432,67 @@ class StockMove(models.Model):
                 nbpiece = nbpiece - mouv.di_nb_pieces
                 poids = poids - mouv.di_poin
                 if mouv.purchase_line_id:
-                    mont = mont - mouv.purchase_line_id.price_subtotal
+                    di_qte_prix = 0.0
+                    if mouv.purchase_line_id.di_un_prix == "PIECE":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.purchase_line_id.di_nb_pieces_liv
+                        else:
+                            di_qte_prix = mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
+                            
+                    elif mouv.purchase_line_id.di_un_prix == "COLIS":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.purchase_line_id.di_nb_colis_liv
+                        else:
+                            di_qte_prix = mouv.purchase_line_id.di_nb_colis - mouv.purchase_line_id.di_nb_colis_liv
+                    elif mouv.purchase_line_id.di_un_prix == "PALETTE":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.purchase_line_id.di_nb_palette_liv
+                        else:
+                            di_qte_prix = mouv.purchase_line_id.di_nb_palette - mouv.purchase_line_id.di_nb_palette_liv
+                    elif mouv.purchase_line_id.di_un_prix == "KG":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.purchase_line_id.di_poin_liv
+                        else:
+                            di_qte_prix = mouv.purchase_line_id.di_poin -mouv.purchase_line_id.di_poin_liv
+                    elif mouv.purchase_line_id.di_un_prix == False or mouv.purchase_line_id.di_un_prix == '':
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.purchase_line_id.qty_received
+                        else:
+                            di_qte_prix = mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
+                            
+                    
+                    mont = mont - (di_qte_prix * mouv.purchase_line_id.price_unit)
+                
+                    
                 elif mouv.sale_line_id:
-                    mont = mont - (mouv.sale_line_id.product_uom_qty * mouv.sale_line_id.purchase_price)
+                    di_qte_prix = 0.0
+                    if mouv.sale_line_id.di_un_prix == "PIECE":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.sale_line_id.di_nb_pieces_liv
+                        else:
+                            di_qte_prix = mouv.sale_line_id.di_nb_pieces - mouv.sale_line_id.di_nb_pieces_liv
+                    elif mouv.sale_line_id.di_un_prix == "COLIS":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.sale_line_id.di_nb_colis_liv
+                        else:
+                            di_qte_prix = mouv.sale_line_id.di_nb_colis - mouv.sale_line_id.di_nb_colis_liv
+                    elif mouv.sale_line_id.di_un_prix == "PALETTE":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.sale_line_id.di_nb_palette_liv
+                        else:
+                            di_qte_prix = mouv.sale_line_id.di_nb_palette - mouv.sale_line_id.di_nb_palette_liv
+                    elif mouv.sale_line_id.di_un_prix == "KG":
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.sale_line_id.di_poin_liv
+                        else:
+                            di_qte_prix = mouv.sale_line_id.di_poin - mouv.sale_line_id.di_poin_liv
+                    elif mouv.sale_line_id.di_un_prix == False or mouv.sale_line_id.di_un_prix == '':
+                        if mouv.state == 'done':
+                            di_qte_prix = mouv.sale_line_id.qty_delivered
+                        else:
+                            di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
+                        
+                    mont = mont - (di_qte_prix * mouv.sale_line_id.purchase_price)                    
           
         if date:
 

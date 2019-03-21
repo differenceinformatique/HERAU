@@ -355,34 +355,34 @@
                                             <t t-if="move.sale_line_id.di_un_prix == 'PIECE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_pieces" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_pieces" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.di_nb_pieces"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'COLIS'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_colis" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_colis" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.di_nb_colis"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'PALETTE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_palette" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_palette" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.di_nb_palette"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'KG'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_poin" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.di_poin" />
                                                     <t t-set="montant_total" t-value="move.sale_line_id.price_unit * move.di_poin"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == False or move.sale_line_id.di_un_prix == ''">
                                                 <td class="text-right">                                                
-                                                    <span t-esc="move.sale_line_id.price_unit * move.quantity_done" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                    <span t-esc="move.sale_line_id.price_unit * move.quantity_done" />
                                                     <t t-set="montant_total" t-value="move.sale_line_id.price_unit * move.quantity_done"/>                                               
                                                 </td>
                                             </t>                                        
@@ -424,34 +424,34 @@
                                             <t t-if="move.sale_line_id.di_un_prix == 'PIECE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_pieces" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_pieces" />
                                                     <t t-set="montant_total" t-value="move.sale_line_id.price_unit * move.sale_line_id.di_nb_pieces"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'COLIS'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_colis" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_colis" />
                                                     <t t-set="montant_total" t-value="move.sale_line_id.price_unit * move.sale_line_id.di_nb_colis"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'PALETTE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_palette" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_palette" />
                                                     <t t-set="montant_total" t-value="move.sale_line_id.price_unit * move.sale_line_id.di_nb_palette"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'KG'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_poin" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_poin" />
                                                     <t t-set="montant_total" t-value="move.sale_line_id.price_unit * move.sale_line_id.di_poin"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == False or move.sale_line_id.di_un_prix == ''">
                                                 <td class="text-right">                                                
-                                                    <span t-esc="move.sale_line_id.price_unit * move.product_uom_qty" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                                                    <span t-esc="move.sale_line_id.price_unit * move.product_uom_qty" />
                                                     <t t-set="montant_total" t-value="move.sale_line_id.price_unit * move.product_uom_qty"/>                                               
                                                 </td>
                                             </t>                                                                                
@@ -461,6 +461,7 @@
                             </tr>
                             <t t-if="di_pres_bl == 'CHIFFRE'">
                                 <tr>
+                                    <td>Total</td> 
                                     <td></td> 
                                     <td></td> 
                                     <td></td> 
@@ -468,8 +469,7 @@
                                     <td></td> 
                                     <td></td> 
                                     <td></td> 
-                                    <td></td> 
-                                    <td><span t-esc="montant_total" t-options="{'widget': 'monetary', 'display_currency': move.sale_line_id.order_id.pricelist_id.currency_id}"/></td>                                   
+                                    <td><span t-esc="montant_total" /></td>                                   
                                 </tr>
                             </t>
                         </tbody>
@@ -539,7 +539,7 @@
             string="Delivery Slip"
             id="stock.action_report_delivery"
             model="stock.picking"
-            report_type="qweb-html"
+            report_type="qweb-pdf"
             name="stock.report_deliveryslip"
             file="stock.report_deliveryslip"
             print_report_name="'Bon de livraison - %s - %s' % (object.partner_id.name or '', object.name)"
