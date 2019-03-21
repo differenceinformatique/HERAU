@@ -405,8 +405,8 @@ class PurchaseOrderLine(models.Model):
                     
                 elif self.di_un_saisie == "KG":
                     
-                    self.di_poin = self.di_qte_un_saisie
-                    self.di_poib = self.di_poin + self.di_tare
+                    self.di_poib = self.di_qte_un_saisie
+                    self.di_poin = self.di_poib - self.di_tare
 #                     self.product_uom_qty = self.di_poin
                     if self.product_id.weight  != 0.0:
                         self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
@@ -428,8 +428,8 @@ class PurchaseOrderLine(models.Model):
                              
                     
                 else:
-                    self.di_poin = self.di_qte_un_saisie
-                    self.di_poib = self.di_poin + self.di_tare
+                    self.di_poib = self.di_qte_un_saisie
+                    self.di_poin = self.di_poib - self.di_tare
 #                     self.product_uom_qty = self.di_poin
                     if self.product_id.weight  != 0.0:
                         self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
@@ -452,12 +452,12 @@ class PurchaseOrderLine(models.Model):
     @api.multi 
     @api.onchange('di_poib')
     def _di_onchange_poib(self):
-        if self.ensure_one():
-            self.di_poin = self.di_poib - self.di_tare
+        if self.ensure_one():                    
             if self.di_un_saisie == 'KG':
-                self.di_qte_un_saisie = self.di_poin
+                self.di_qte_un_saisie = self.di_poib
             else:
-                 if self.product_uom:
+                self.di_poin = self.di_poib - self.di_tare
+                if self.product_uom:
                     if self.product_uom.name.lower() == 'kg':
                         PurchaseOrderLine.modifparprg=True
                         self.product_qty = self.di_poin
@@ -465,11 +465,13 @@ class PurchaseOrderLine(models.Model):
     @api.multi 
     @api.onchange('di_poin')
     def _di_onchange_poin(self):
-        if self.ensure_one():            
-            if self.di_un_saisie == 'KG':
-                self.di_qte_un_saisie = self.di_poin
-            else:
-                self.di_poib = self.di_poin+self.di_tare
+        if self.ensure_one():
+            self.di_tare = self.di_poib-self.di_poin      
+#             self.di_poib = self.di_poin+self.di_tare       
+#             if self.di_un_saisie == 'KG':
+#                 self.di_qte_un_saisie = self.di_poib
+#             else:       
+            if self.di_un_saisie != 'KG':         
                 if self.product_uom:
                     if self.product_uom.name.lower() == 'kg':
                         PurchaseOrderLine.modifparprg=True
@@ -481,7 +483,7 @@ class PurchaseOrderLine(models.Model):
         if self.ensure_one():    
             self.di_poin = self.di_poib - self.di_tare        
             if self.di_un_saisie == 'KG':
-                self.di_qte_un_saisie = self.di_poin
+                self.di_qte_un_saisie = self.di_poib
             else:
                 if self.product_uom:
                     if self.product_uom.name.lower() == 'kg':
