@@ -404,33 +404,49 @@ class PurchaseOrderLine(models.Model):
                     self.di_poib = self.di_poin + self.di_tare
                     
                 elif self.di_un_saisie == "KG":
-    
+                    
                     self.di_poin = self.di_qte_un_saisie
                     self.di_poib = self.di_poin + self.di_tare
-                    self.product_qty = self.di_poin
-                    if self.product_packaging.qty !=0.0:
-                        self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
+#                     self.product_uom_qty = self.di_poin
+                    if self.product_id.weight  != 0.0:
+                        self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
                     else:
-                        self.di_nb_colis = ceil(self.product_qty)
+                        self.di_nb_pieces = ceil(self.di_poin)    
+                                        
+                    if self.product_packaging.qty !=0.0:
+                        self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                    else:
+                        self.di_nb_colis = ceil(self.di_nb_pieces)
+                        
+                    self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                        
                     if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                         self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                     else:  
                         self.di_nb_palette = self.di_nb_colis
-                    self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                        
+                             
                     
                 else:
                     self.di_poin = self.di_qte_un_saisie
                     self.di_poib = self.di_poin + self.di_tare
-                    self.product_qty = self.di_poin
-                    if self.product_packaging.qty !=0.0:
-                        self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
+#                     self.product_uom_qty = self.di_poin
+                    if self.product_id.weight  != 0.0:
+                        self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
                     else:
-                        self.di_nb_colis = ceil(self.product_qty)
+                        self.di_nb_pieces = ceil(self.di_poin)    
+                                        
+                    if self.product_packaging.qty !=0.0:
+                        self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                    else:
+                        self.di_nb_colis = ceil(self.di_nb_pieces)
+                        
+                    self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                        
                     if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                         self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                     else:  
-                        self.di_nb_palette = self.di_nb_colis
-                    self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                        self.di_nb_palette = self.di_nb_colis    
   
   
     @api.multi 

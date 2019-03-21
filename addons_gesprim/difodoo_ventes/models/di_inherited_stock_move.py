@@ -681,6 +681,7 @@ class StockPicking(models.Model):
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', digits=dp.get_precision('Product Unit of Measure'))
     di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol')
     di_poin = fields.Float(compute='_compute_di_nbpal_nbcol', digits=dp.get_precision('Product Unit of Measure'))
+    di_poib = fields.Float(compute='_compute_di_nbpal_nbcol', digits=dp.get_precision('Product Unit of Measure'))
     di_tournee = fields.Char(string="Tournée", compute='_compute_tournee', store=True)
     di_rangtournee = fields.Char(string="Rang dans la tournée", compute='_compute_tournee', store=True)
     di_nbex = fields.Integer("Nombre exemplaires", help="""Nombre d'exemplaires d'une impression.""", default=0)
@@ -691,9 +692,11 @@ class StockPicking(models.Model):
         wnbpal = sum([move.di_nb_palette for move in self.move_lines if move.state != 'cancel'])
         wnbcol = sum([move.di_nb_colis for move in self.move_lines if move.state != 'cancel'])
         wpoin = sum([move.di_poin for move in self.move_lines if move.state != 'cancel'])
+        wpoib = sum([move.di_poib for move in self.move_lines if move.state != 'cancel'])
         self.di_nbpal = wnbpal
         self.di_nbcol = ceil(wnbcol)
         self.di_poin = wpoin
+        self.di_poib = wpoib
             
     @api.model
     def create(self, vals):        
