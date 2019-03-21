@@ -69,6 +69,7 @@
   <template id="di_report_po_bp">
     <t t-call="web.html_container">
       <t t-foreach="docs" t-as="o">
+        <t t-set="order_ref" t-value="o.client_order_ref" />
         <t t-if="o.state == 'draft'">
             <t t-foreach="o" t-as="doc">
                 <t t-foreach="range(doc.di_nbex)" t-as="n">
@@ -81,9 +82,10 @@
             <t t-set="so_picking" t-value="picking.search([('origin', '=', o.name)])" />
             <t t-foreach="so_picking" t-as="pick">
                 <t t-foreach="range(pick.di_nbex)" t-as="n">
-                  <t t-call="stock.report_picking">
-                    <t t-set="docs" t-value="pick" />
-                  </t>
+                    <t t-set="di_bp" t-value="1" />
+                    <t t-call="stock.report_deliveryslip">
+                        <t t-set="docs" t-value="pick" />
+                    </t>
                 </t>
             </t>
         </t>

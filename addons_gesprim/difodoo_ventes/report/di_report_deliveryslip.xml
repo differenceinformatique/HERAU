@@ -245,39 +245,52 @@
                 </t>
                 <div class="page">
                     <h2>
-                        <t t-if="o.picking_type_id.code == 'incoming'">                            
-                            <span>Bon d'entrée</span>                            
+                        <t t-if="di_bp">
+                            <span>Bon de préparation</span>
                         </t>
-                        <t t-if="o.picking_type_id.code == 'outgoing'">                          
-                            <span>Bon de livraison</span>                          
-                        </t>
-                        <t t-if="o.picking_type_id.code == 'internal'">                            
-                            <span>Bon de livraison</span>                                                            
+                        <t t-else="">
+                            <t t-if="o.picking_type_id.code == 'incoming'">                            
+                                <span>Bon d'entrée</span>                            
+                            </t>
+                            <t t-if="o.picking_type_id.code == 'outgoing'">                          
+                                <span>Bon de livraison</span>                          
+                            </t>
+                            <t t-if="o.picking_type_id.code == 'internal'">                            
+                                <span>Bon de livraison</span>                                                            
+                            </t>
                         </t>
                         <span t-field="o.name"/>
                     </h2>
                     <table class="table table-sm">
                         <thead>
                             <tr>
-                                <th t-if="o.origin"><strong>Commande</strong></th>
+                                <th t-if="o.origin">                                    
+                                    <strong>Commande</strong>                                    
+                                </th>
                                 <th name="td_sched_date_h">
                                     <strong>Date</strong>
                                 </th>
                                 <th>
                                     <strong>Nb Colis</strong>
-                                </th>
-                                <th>
-                                    <strong>Nb Palettes</strong>
-                                </th>
+                                </th>                               
                                 <th>
                                     <strong>Poids brut</strong>
                                 </th>
+                                
+                                
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td t-if="o.origin">
-                                    <span t-field="o.origin"/>
+                                    <div>
+                                        <span t-field="o.origin"/>                                        
+                                        <t t-if="order_ref">
+                                            <br></br>
+                                            <span t-esc="order_ref"/>
+                                        </t>
+                                    </div>
+                                    
                                 </td>
                                 <td name="td_sched_date">
                                    <t t-if="o.state == 'done'">
@@ -289,21 +302,22 @@
                                 </td>
                                 <td>
                                     <span t-field="o.di_nbcol"/>
-                                </td>
-                                <td>
-                                    <span t-field="o.di_nbpal"/>
-                                </td>
+                                </td>                           
                                 <td>
                                     <span t-field="o.di_poib"/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <t t-if="o.partner_id.parent_id">
-                        <t t-set="di_pres_bl" t-value="o.partner_id.parent_id.di_pres_bl"/>
+                    <t t-if="di_bp">
                     </t>
-                    <t t-if="not o.partner_id.parent_id">
-                        <t t-set="di_pres_bl" t-value="o.partner_id.di_pres_bl"/>
+                    <t t-else="">
+                        <t t-if="o.partner_id.parent_id">
+                            <t t-set="di_pres_bl" t-value="o.partner_id.parent_id.di_pres_bl"/>
+                        </t>
+                        <t t-if="not o.partner_id.parent_id">
+                            <t t-set="di_pres_bl" t-value="o.partner_id.di_pres_bl"/>
+                        </t>
                     </t>
                     <t t-set="montant_total" t-value="0"/>
                     <table class="table table-sm mt48">
@@ -469,7 +483,7 @@
                                     <td></td> 
                                     <td></td> 
                                     <td></td> 
-                                    <td><span t-esc="montant_total" /></td>                                   
+                                    <td class="text-right"><span t-esc="montant_total" /></td>                                   
                                 </tr>
                             </t>
                         </tbody>

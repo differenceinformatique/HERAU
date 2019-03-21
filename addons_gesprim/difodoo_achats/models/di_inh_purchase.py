@@ -60,10 +60,10 @@ class PurchaseOrderLine(models.Model):
     di_tare_un      = fields.Float(string='Tare unitaire')
          
     @api.multi    
-    @api.onchange('di_qte_un_saisie', 'di_tare_un')
+    @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * self.di_qte_un_saisie   
+            self.di_tare = self.di_tare_un * self.di_nb_colis   
     
     @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state',"di_poin_liv","di_poin_fac","di_poib_liv","di_poib_fac")
     def _di_get_to_invoice_qty(self):
