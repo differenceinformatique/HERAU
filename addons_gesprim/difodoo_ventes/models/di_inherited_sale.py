@@ -920,6 +920,17 @@ class SaleOrder(models.Model):
                 invoice.action_invoice_open()
         
         return self.action_view_invoice() 
+    
+    @api.multi
+    def di_action_livrer(self):
+        for order in self:
+            order.action_confirm()
+            livraison = order.mapped('picking_ids')
+            livraison.action_assign()
+            livraison.button_validate()
+                        
+        
+        return livraison 
                 
     @api.multi
     def di_action_grille_vente(self):
