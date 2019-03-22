@@ -827,7 +827,7 @@ class StockQuant(models.Model):
                     SUM (sml.di_nb_palettes ) AS nbpal,
                     SUM (sml.di_poin ) AS poin,
                     SUM (sml.di_poib) AS poib,
-                    SUM (sml.di_tare) AS tare,                                                                                                       
+                    SUM (sml.di_tare) AS tare                                                                                                      
                 from stock_move_line sml                                             
                 where sml.product_id = %s and sml.state ='done'  and sml.date = %s and sml.location_dest_id = %s and lot_id = %s and package_id = %s and owner_id = %s
                 """
