@@ -143,6 +143,8 @@ class SaleOrderLine(models.Model):
     def _di_recalcule_quantites(self):
         if self.ensure_one():            
             if self.di_flg_modif_uom == False:
+                self.di_tare_un = 0.0
+                self.di_tare = 0.0
                 SaleOrderLine.modifparprg=True
                 if self.di_un_saisie == "PIECE":
                     self.di_nb_pieces = ceil(self.di_qte_un_saisie)

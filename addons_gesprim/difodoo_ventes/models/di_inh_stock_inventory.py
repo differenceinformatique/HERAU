@@ -13,7 +13,8 @@ class Inventory(models.Model):
         self.mapped('line_ids').write({'di_nb_colis': 0})
         self.mapped('line_ids').write({'di_nb_pieces': 0}) 
         self.mapped('line_ids').write({'di_nb_palette': 0}) 
-        self.mapped('line_ids').write({'di_poin': 0})                                 
+        self.mapped('line_ids').write({'di_poin': 0})
+        self.mapped('line_ids').write({'di_poib': 0})                                   
         return ret
     
     def _get_inventory_lines_values(self):
@@ -80,15 +81,17 @@ class Inventory(models.Model):
             poids=0.0   
             lot = self.env['stock.production.lot'].browse(product_data['prod_lot_id'])    
             article = self.env['product.product'].browse(product_data['product_id']) 
-            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(article,self.date.date(),lot)#        
+            (nbcol,nbpal,nbpiece,poids,qte_std,poib) = self.env['stock.move.line'].di_qte_spe_en_stock(article,self.date.date(),lot)#        
             product_data['di_nb_colis']=nbcol
             product_data['di_nb_pieces']= nbpiece 
             product_data['di_nb_palette']=  nbpal
-            product_data['di_poin']=  poids 
+            product_data['di_poin']=  poids
+            product_data['di_poib']=  poib  
             product_data['di_nb_colis_theo']=nbcol
             product_data['di_nb_pieces_theo']= nbpiece 
             product_data['di_nb_palette_theo']=  nbpal
-            product_data['di_poin_theo']=  poids 
+            product_data['di_poin_theo']=  poids
+            product_data['di_poib_theo']=  poib  
             #fin surcharge
             vals.append(product_data)
         if self.exhausted:
@@ -103,12 +106,14 @@ class InventoryLine(models.Model):
     di_nb_pieces = fields.Integer(string='Nb pièces', store=True)#, compute='_di_compute_qte_spe')
     di_nb_colis = fields.Integer(string='Nb colis' , store=True)#, compute='_di_compute_qte_spe')
     di_nb_palette = fields.Float(string='Nb palettes' , store=True)#, compute='_di_compute_qte_spe')
-    di_poin = fields.Float(string='Poids' , store=True)#, compute='_di_compute_qte_spe')        
+    di_poin = fields.Float(string='Poids net' , store=True)#, compute='_di_compute_qte_spe')
+    di_poib = fields.Float(string='Poids brut' , store=True)        
     
     di_nb_pieces_theo = fields.Integer(string='Nb pièces théorique', store=True, compute='_compute_theoretical_qty')
     di_nb_colis_theo = fields.Integer(string='Nb colis théorique' , store=True, compute='_compute_theoretical_qty')
     di_nb_palette_theo = fields.Float(string='Nb palettes théorique' , store=True, compute='_compute_theoretical_qty')
-    di_poin_theo = fields.Float(string='Poids théorique' , store=True, compute='_compute_theoretical_qty')   
+    di_poin_theo = fields.Float(string='Poids net théorique' , store=True, compute='_compute_theoretical_qty')
+    di_poib_theo = fields.Float(string='Poids brut théorique' , store=True, compute='_compute_theoretical_qty')   
     
     di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')       
     
@@ -128,11 +133,13 @@ class InventoryLine(models.Model):
         nbpal = 0.0
         nbpiece = 0.0
         poids = 0.0
+        poib = 0.0
         if self.product_id and self.inventory_id.date:
-            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(self.product_id,self.inventory_id.date.date(),self.prod_lot_id)#            
+            (nbcol,nbpal,nbpiece,poids,qte_std,poib) = self.env['stock.move.line'].di_qte_spe_en_stock(self.product_id,self.inventory_id.date.date(),self.prod_lot_id)#            
         self.di_nb_colis_theo = nbcol 
         self.di_nb_palette_theo = nbpal
         self.di_poin_theo = poids
+        self.di_poib_theo = poib
         self.di_nb_pieces_theo = nbpiece                          
                                                                 
                                                                 
@@ -147,6 +154,7 @@ class InventoryLine(models.Model):
             self.di_nb_palette = self.di_nb_palette_theo
             self.di_nb_pieces = self.di_nb_pieces_theo
             self.di_poin = self.di_poin_theo
+            self.di_poib = self.di_poib_theo
             
             
             
@@ -253,6 +261,41 @@ class InventoryLine(models.Model):
                 'di_poin': qty                
                 #fin surcharge
             })]
+        } 
+        
+    def _di_get_move_values_poids_brut(self, qty, location_id, location_dest_id, out):
+        #je dois surcharger en copiant le standard
+        self.ensure_one()
+        return {
+            'name': _('INV:') + (self.inventory_id.name or ''),
+            'product_id': self.product_id.id,
+            'product_uom': self.product_uom_id.id,
+            'product_uom_qty': 0.0,
+            'date': self.inventory_id.date,
+            'company_id': self.inventory_id.company_id.id,
+            'inventory_id': self.inventory_id.id,
+            'state': 'confirmed',
+            'restrict_partner_id': self.partner_id.id,
+            'location_id': location_id,
+            'location_dest_id': location_dest_id,
+            #surcharge                      
+            'di_poib': qty,            
+            #fin surcharge                        
+            'move_line_ids': [(0, 0, {
+                'product_id': self.product_id.id,
+                'lot_id': self.prod_lot_id.id,
+                'product_uom_qty': 0,  # bypass reservation here
+                'product_uom_id': self.product_uom_id.id,
+                'qty_done': 1.0,
+                'package_id': out and self.package_id.id or False,
+                'result_package_id': (not out) and self.package_id.id or False,
+                'location_id': location_id,
+                'location_dest_id': location_dest_id,
+                'owner_id': self.partner_id.id,
+                #surcharge                            
+                'di_poib': qty                
+                #fin surcharge
+            })]
         }        
          
     def _di_get_move_values_pal(self, qty, location_id, location_dest_id, out):
@@ -300,13 +343,15 @@ class InventoryLine(models.Model):
             and float_utils.float_compare(line.di_nb_palette_theo, line.di_nb_palette, precision_rounding=line.product_id.uom_id.rounding) == 0 \
             and float_utils.float_compare(line.di_nb_colis_theo, line.di_nb_colis, precision_rounding=line.product_id.uom_id.rounding) == 0 \
             and float_utils.float_compare(line.di_nb_pieces_theo, line.di_nb_pieces, precision_rounding=line.product_id.uom_id.rounding) == 0 \
-            and float_utils.float_compare(line.di_poin_theo, line.di_poin, precision_rounding=line.product_id.uom_id.rounding) == 0 :                                    
+            and float_utils.float_compare(line.di_poin_theo, line.di_poin, precision_rounding=line.product_id.uom_id.rounding) == 0 \
+            and float_utils.float_compare(line.di_poib_theo, line.di_poib, precision_rounding=line.product_id.uom_id.rounding) == 0 :                                      
                 continue
             diff = line.theoretical_qty - line.product_qty
             di_diff_pal = line.di_nb_palette_theo - line.di_nb_palette
             di_diff_col = line.di_nb_colis_theo - line.di_nb_colis
             di_diff_piece = line.di_nb_pieces_theo - line.di_nb_pieces
             di_diff_poids = line.di_poin_theo - line.di_poin
+            di_diff_poib = line.di_poib_theo - line.di_poib
                         
             
             if di_diff_pal < 0:  # found more than expected
@@ -342,6 +387,15 @@ class InventoryLine(models.Model):
             else:
                 diff = diff - 1
                 vals = line._di_get_move_values_poids(abs(di_diff_poids), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+#             moves |= self.env['stock.move'].create(vals)# v11
+            vals_list.append(vals)#v12
+            
+            if di_diff_poib < 0:  # found more than expected
+                diff = diff + 1
+                vals = line._di_get_move_values_poids_brut(abs(di_diff_poib), line.product_id.property_stock_inventory.id, line.location_id.id, False)
+            else:
+                diff = diff - 1
+                vals = line._di_get_move_values_poids_brut(abs(di_diff_poib), line.location_id.id, line.product_id.property_stock_inventory.id, True)
 #             moves |= self.env['stock.move'].create(vals)# v11
             vals_list.append(vals)#v12
             

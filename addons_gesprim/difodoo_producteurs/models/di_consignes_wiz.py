@@ -69,7 +69,7 @@ class DiConsignesWiz(models.TransientModel):
                  
         for sml in sml_ids:   
             #calcul de la quantité en stock sur le lot
-            (nbcol,nbpal,nbpiece,poids,qte_std) = self.env['stock.move.line'].di_qte_spe_en_stock(sml.product_id,False,sml.lot_id)
+            (nbcol,nbpal,nbpiece,poids,qte_std,poib) = self.env['stock.move.line'].di_qte_spe_en_stock(sml.product_id,False,sml.lot_id)
             if qte_std <=0.0:   # si le stock est négatif, cela veut dire que l'article se trouve encore chez le client, on va l'afficher     
                 cons_line.create({
                     'di_lot_id' :sml.lot_id.id, 

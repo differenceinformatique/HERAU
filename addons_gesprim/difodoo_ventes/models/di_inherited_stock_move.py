@@ -316,6 +316,8 @@ class StockMove(models.Model):
                 vals["di_poib"] = purchaseline.di_poib 
                 vals["di_nb_palette"] = purchaseline.di_nb_palette 
                 vals["di_qte_un_saisie"] = purchaseline.di_qte_un_saisie 
+                vals["di_product_packaging_id"] = purchaseline.product_packaging.id
+                
                                                         
                                                      
         res = super(StockMove, self).create(vals)    
@@ -714,6 +716,7 @@ class StockMoveLine(models.Model):
         nbpiece = 0.0
         poids = 0.0
         qte_std = 0.0    
+        poib = 0.0
                        
         if date:
 #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
@@ -728,15 +731,17 @@ class StockMoveLine(models.Model):
                 nbpal = nbpal + mouv.di_nb_palette
                 nbpiece = nbpiece + mouv.di_nb_pieces
                 poids = poids + mouv.di_poin
+                poib = poib + mouv.di_poib
                 qte_std = qte_std + mouv.qty_done	                
             else:                
                 nbcol = nbcol - mouv.di_nb_colis
                 nbpal = nbpal - mouv.di_nb_palette
                 nbpiece = nbpiece - mouv.di_nb_pieces
                 poids = poids - mouv.di_poin
+                poib = poib - mouv.di_poib
                 qte_std = qte_std - mouv.qty_done                       				
                 
-        return (nbcol, nbpal, nbpiece, poids, qte_std)
+        return (nbcol, nbpal, nbpiece, poids, qte_std,poib)
     
     
 class StockPicking(models.Model):

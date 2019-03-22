@@ -55,10 +55,10 @@
                                     <span t-field="art.di_poin_stock"/>
                                 </td>   
                                 <td>
-                                    <span t-field="art.di_prix_achat_moyen"/>
+                                    <span t-esc="'%.2f'%  art.di_prix_achat_moyen"/>                                    
                                 </td> 
                                 <td>
-                                    <span t-field="art.di_val_stock"/>
+                                    <span t-esc="'%.2f'% art.di_val_stock"/>
                                 </td>
                                 
                                 <td>

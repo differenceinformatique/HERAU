@@ -59,11 +59,7 @@ class PurchaseOrderLine(models.Model):
     di_flg_modif_uom = fields.Boolean(store=True)
     di_tare_un      = fields.Float(string='Tare unitaire')
          
-    @api.multi    
-    @api.onchange('di_nb_colis', 'di_tare_un','di_qte_un_saisie')
-    def _di_recalcule_tare(self):
-        if self.ensure_one():
-            self.di_tare = self.di_tare_un * self.di_nb_colis   
+    
     
     @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state',"di_poin_liv","di_poin_fac","di_poib_liv","di_poib_fac")
     def _di_get_to_invoice_qty(self):
@@ -359,13 +355,15 @@ class PurchaseOrderLine(models.Model):
                     self.product_packaging = self.product_id.di_type_colis_id    
                     self.di_un_prix = self.product_id.di_un_prix    
                     self.di_spe_saisissable = self.product_id.di_spe_saisissable                
-                                     
-
+                         
+ 
     @api.multi    
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
     def _di_recalcule_quantites(self):
         if self.ensure_one():
             if self.di_flg_modif_uom == False:
+                self.di_tare_un = 0.0
+                self.di_tare = 0.0
                 PurchaseOrderLine.modifparprg=True
                 if self.di_un_saisie == "PIECE":
                     self.di_nb_pieces = ceil(self.di_qte_un_saisie)
@@ -373,7 +371,11 @@ class PurchaseOrderLine(models.Model):
                     if self.product_packaging.qty != 0.0 :
                         self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
                     else:      
-                        self.di_nb_colis = ceil(self.product_qty)             
+                        self.di_nb_colis = ceil(self.product_qty)  
+                    
+                    self.di_tare = self.di_tare_un*self.di_nb_colis
+                
+                                       
                     if self.di_type_palette_id.di_qte_cond_inf != 0.0:
                         self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                     else:
@@ -383,6 +385,8 @@ class PurchaseOrderLine(models.Model):
                           
                 elif self.di_un_saisie == "COLIS":
                     self.di_nb_colis = ceil(self.di_qte_un_saisie)
+                    self.di_tare = self.di_tare_un*self.di_nb_colis
+                        
                     self.product_qty = self.product_packaging.qty * self.di_nb_colis
                     self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                     if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
@@ -398,14 +402,15 @@ class PurchaseOrderLine(models.Model):
                         self.di_nb_colis = ceil(self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf)
                     else:
                         self.di_nb_colis = ceil(self.di_nb_palette)
+                    self.di_tare = self.di_tare_un*self.di_nb_colis
                     self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                     self.product_qty = self.product_packaging.qty * self.di_nb_colis
                     self.di_poin = self.product_qty * self.product_id.weight 
                     self.di_poib = self.di_poin + self.di_tare
                     
                 elif self.di_un_saisie == "KG":
-                    
-                    self.di_poib = self.di_qte_un_saisie
+                                                           
+                    self.di_poib = self.di_qte_un_saisie                                                            
                     self.di_poin = self.di_poib - self.di_tare
 #                     self.product_uom_qty = self.di_poin
                     if self.product_id.weight  != 0.0:
@@ -448,6 +453,11 @@ class PurchaseOrderLine(models.Model):
                     else:  
                         self.di_nb_palette = self.di_nb_colis    
   
+    @api.multi    
+    @api.onchange('di_nb_colis', 'di_tare_un')
+    def _di_recalcule_tare(self):
+        if self.ensure_one():
+            self.di_tare = self.di_tare_un * self.di_nb_colis   
   
     @api.multi 
     @api.onchange('di_poib')
@@ -481,6 +491,11 @@ class PurchaseOrderLine(models.Model):
     @api.onchange('di_tare')
     def _di_onchange_tare(self):
         if self.ensure_one():    
+            if self.di_nb_colis != 0.0:
+                self.di_tare_un = self.di_tare / self.di_nb_colis
+            else:
+                self.di_tare_un = 0.0
+              
             self.di_poin = self.di_poib - self.di_tare        
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poib

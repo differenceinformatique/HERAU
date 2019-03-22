@@ -38,7 +38,7 @@
                                     <span t-field="tarif.di_code_tarif_id"/>
                                 </td>
                                 <td>
-                                    <span t-field="tarif.di_prix"/>
+                                    <span t-field="tarif.di_prix" t-options="{'widget': 'monetary', 'display_currency': tarif.di_company_id.currency_id}" />
                                 </td>
                                 <td>
                                     <span t-field="tarif.di_date_fin" t-field-options="{'format':'dd/MM/YYYY'}"/>
