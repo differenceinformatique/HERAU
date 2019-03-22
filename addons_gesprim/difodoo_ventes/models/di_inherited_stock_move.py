@@ -829,10 +829,10 @@ class StockQuant(models.Model):
                     SUM (sml.di_poib) AS poib,
                     SUM (sml.di_tare) AS tare                                                                                                      
                 from stock_move_line sml                                             
-                where sml.product_id = %s and sml.state ='done'  and sml.location_dest_id = %s and lot_id = %s and package_id = %s and owner_id = %s
+                where sml.product_id = %s and sml.state ='done'  and sml.location_dest_id = %s and lot_id = %s
                 """
             
-            self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0, quant.package_id.id or 0, quant.owner_id.id or 0))
+            self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
             result = self.env.cr.fetchall()[0]
             
             quant.di_nb_colis  = result[0] and result[0] or 0.0
@@ -841,6 +841,29 @@ class StockQuant(models.Model):
             quant.di_poin  = result[3] and result[3] or 0.0
             quant.di_poib  = result[4] and result[4] or 0.0
             quant.di_tare  = result[5] and result[5] or 0.0
+            
+            
+            sqlstr = """
+                select
+                    SUM (sml.di_nb_colis ) AS nbcol,                    
+                    SUM (sml.di_nb_pieces ) AS nbpieces,
+                    SUM (sml.di_nb_palette ) AS nbpal,
+                    SUM (sml.di_poin ) AS poin,
+                    SUM (sml.di_poib) AS poib,
+                    SUM (sml.di_tare) AS tare                                                                                                      
+                from stock_move_line sml                                             
+                where sml.product_id = %s and sml.state ='done'  and sml.location_id = %s and lot_id = %s
+                """
+            
+            self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
+            result = self.env.cr.fetchall()[0]
+            
+            quant.di_nb_colis  -= result[0] and result[0] or 0.0
+            quant.di_nb_pieces  -= result[1] and result[1] or 0.0
+            quant.di_nb_palettes  -= result[2] and result[2] or 0.0
+            quant.di_poin  -= result[3] and result[3] or 0.0
+            quant.di_poib  -= result[4] and result[4] or 0.0
+            quant.di_tare  -= result[5] and result[5] or 0.0
             
           
                    
