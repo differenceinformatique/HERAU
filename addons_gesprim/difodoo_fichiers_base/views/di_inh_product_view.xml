@@ -327,8 +327,9 @@
             <field name="priority" eval="50"/>
             <field name="arch" type="xml">
                 <tree string="Resserre" limit = "10000" >
-                    <field name="name"/>
+                    <field name="name"/>                    
                     <field name="default_code"/>
+                    <field name="uom_id"/>
                     <field name="di_col_stock" sum="Nombre de colis en stock"/>
                     <field name="di_poib_stock" sum="Poids brut en stock" />
                     <field name="di_poin_stock" sum="Poids net en stock"/>

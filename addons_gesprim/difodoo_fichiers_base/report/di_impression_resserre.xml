@@ -9,6 +9,7 @@
                         <tr>
                             <th>Article</th>
                             <th>Désignation</th>
+                            <th>Unité de mesure</th>
                             <th>Nombre de colis en stock</th>
                             <th>Poids brut en stock</th>
                             <th>Poids net en stock</th>
@@ -19,7 +20,7 @@
                             <th>Nombre de colis vendus</th>
                             <th>Poids brut vendu</th>
                             <th>Poids net vendu</th>
-                            <th>Quantité venduek</th>
+                            <th>Quantité vendue</th>
                             <th>Prix vente moyen</th>
                             <th>Valeur HT</th>
                             <th>Valeur marge</th>
@@ -48,6 +49,9 @@
                                 </td>
                                 <td>
                                     <span t-field="art.name"/>
+                                </td>
+                                <td>
+                                    <span t-field="art.uom_id"/>
                                 </td>
                                 <td>
                                     <span t-field="art.di_col_stock"/>
@@ -111,6 +115,9 @@
                         <tr>
                                 <td>
                                     <span>TOTAL</span>
+                                </td>
+                                <td>
+                                    
                                 </td>
                                 <td>
                                     
