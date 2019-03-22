@@ -824,7 +824,7 @@ class StockQuant(models.Model):
                 select
                     SUM (sml.di_nb_colis ) AS nbcol,                    
                     SUM (sml.di_nb_pieces ) AS nbpieces,
-                    SUM (sml.di_nb_palettes ) AS nbpal,
+                    SUM (sml.di_nb_palette ) AS nbpal,
                     SUM (sml.di_poin ) AS poin,
                     SUM (sml.di_poib) AS poib,
                     SUM (sml.di_tare) AS tare                                                                                                      
