@@ -6,7 +6,8 @@
             <field name="arch" type="xml">
                 <form string="Propriétés">
                     <group col="4" string="Informations">                        
-                        <field name="di_to_date" />                        
+                        <field name="di_to_date" />  
+                        <field name="di_aff_ven" />                                            
                     </group>
                     <footer>
                         <button name="action_open_window" string="Afficher la resserre" type="object" class="btn-primary"/>

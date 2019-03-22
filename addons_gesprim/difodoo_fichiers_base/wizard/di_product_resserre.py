@@ -11,6 +11,7 @@ class DiProductResserre(models.TransientModel):
     _name = 'di.product.resserre'
     _description = 'Resserre produit'
     
+    di_aff_ven = fields.Boolean("Masquer les ventes",default = True)
     di_to_date = fields.Date('Le', default=time.strftime('%Y-%m-%d') )
    
     @api.multi
@@ -27,10 +28,12 @@ class DiProductResserre(models.TransientModel):
 #         model, graph_view_id = ref('product_margin', 'view_product_margin_graph')
 #         model, form_view_id = ref('product_margin', 'view_product_margin_form')
         model, tree_view_id = ref('difodoo_fichiers_base', 'di_view_product_resserre_tree')
-
+        
+        context.update(di_aff_ven=self.di_aff_ven) 
         if self.di_to_date:
             context.update(di_date_to=self.di_to_date)                
-            domain="[('type','!=','service')]"         
+            domain="[('type','!=','service')]" 
+                
 
         views = [
             (tree_view_id, 'tree'),     

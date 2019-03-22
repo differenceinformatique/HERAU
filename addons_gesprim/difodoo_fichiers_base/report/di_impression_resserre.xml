@@ -12,12 +12,14 @@
                             <th>Nombre de colis en stock</th>
                             <th>Poids brut en stock</th>
                             <th>Poids net en stock</th>
+                            <th>Quantité en stock</th>
                             <th>Prix d'achat moyen</th>
                             <th>Valeur du stock</th>
                             
                             <th>Nombre de colis vendus</th>
                             <th>Poids brut vendu</th>
                             <th>Poids net vendu</th>
+                            <th>Quantité venduek</th>
                             <th>Prix vente moyen</th>
                             <th>Valeur HT</th>
                             <th>Valeur marge</th>
@@ -27,11 +29,13 @@
                         <t t-set="TotColStock" t-value="0" />
                         <t t-set="TotPoibStock" t-value="0.0" />
                         <t t-set="TotPoinStock" t-value="0.0" />
+                        <t t-set="TotQteStock" t-value="0.0" />
                         <t t-set="TotValStock" t-value="0.0" />
                         
                         <t t-set="TotColVen" t-value="0" />
                         <t t-set="TotPoibVen" t-value="0.0" />
                         <t t-set="TotPoinVen" t-value="0.0" />
+                        <t t-set="TotQteVen" t-value="0.0" />
                         <t t-set="TotValVen" t-value="0.0" />
                         
                         <t t-set="TotValMarge" t-value="0.0" />
@@ -54,6 +58,9 @@
                                 <td>
                                     <span t-field="art.di_poin_stock"/>
                                 </td>   
+                                 <td>
+                                    <span t-field="art.di_qte_stock"/>
+                                </td>   
                                 <td>
                                     <span t-esc="'%.2f'%  art.di_prix_achat_moyen"/>                                    
                                 </td> 
@@ -71,6 +78,9 @@
                                     <span t-field="art.di_poin_ven"/>
                                 </td>
                                 <td>
+                                    <span t-field="art.di_qte_ven"/>
+                                </td>
+                                <td>
                                     <span t-esc="'%.2f'% art.di_prix_vente_moyen"/>
                                 </td>
                                 <td>
@@ -86,11 +96,13 @@
                                 <t t-set="TotColStock" t-value="TotColStock + art.di_col_stock" />
                                 <t t-set="TotPoibStock" t-value="TotPoibStock + art.di_poib_stock" />
                                 <t t-set="TotPoinStock" t-value="TotPoinStock + art.di_poin_stock" />
+                                <t t-set="TotQteStock" t-value="TotQteStock + art.di_qte_stock" />
                                 <t t-set="TotValStock" t-value="TotValStock + art.di_val_stock" />
                                 
                                 <t t-set="TotColVen" t-value="TotColVen + art.di_col_ven" />
                                 <t t-set="TotPoibVen" t-value="TotPoibVen + art.di_poib_ven" />
                                 <t t-set="TotPoinVen" t-value="TotPoinVen + art.di_poin_ven" />
+                                <t t-set="TotQteVen" t-value="TotQteVen + art.di_qte_ven" />
                                 <t t-set="TotValVen" t-value="TotValVen + art.di_val_ven" />                                                        
                                 
                                 <t t-set="TotValMarge" t-value="TotValMarge + art.di_val_marge" />                            
@@ -113,6 +125,9 @@
                                     <span t-esc="TotPoinStock"/>
                                 </td>   
                                 <td>
+                                    <span t-esc="TotQteStock"/>
+                                </td> 
+                                <td>
                                     
                                 </td> 
                                 <td>
@@ -127,6 +142,9 @@
                                 </td>
                                 <td>
                                     <span t-esc="TotPoinVen"/>
+                                </td>
+                                <td>
+                                    <span t-esc="TotQteVen"/>
                                 </td>
                                 <td>
                                     
