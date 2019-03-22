@@ -120,6 +120,8 @@
     <menuitem id="menu_gesprim_stock_ress_ap_ven_det" name="Resserre après vente détaillée" sequence="40" parent="menu_gesprim_stock" action="difodoo_fichiers_base.di_product_resserre_act_window"/>
     <menuitem id="menu_gesprim_stock_imp_ress_ap_ven_det" sequence="41" parent="menu_gesprim_stock" action="difodoo_fichiers_base.action_di_imprimer_resserre_menu_wiz" />
     <menuitem id="menu_gesprim_stock_pertes" name="Pertes" sequence="50" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_stock_report_all"/>
+    <menuitem id="menu_gesprim_stock_pertes" name="Mouvements de produit" sequence="51" parent="menu_gesprim_stock" action="stock.stock_move_line_action"/>
+    
     <menuitem id="menu_gesprim_stock_clot_ven" name="Clôture ventes" sequence="60" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_cloturerventes"/>
     <!-- ***Menu Compta -->       
     <menuitem id="menu_gesprim_compta_cpt" name="Plan comptable" sequence="10" parent="menu_gesprim_compta" action="account.action_account_form" />
@@ -137,3 +139,5 @@
 	<menuitem id="menu_gesprim_imprimantes" sequence="10" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_printer" />
 	<menuitem id="menu_gesprim_etiquettes" sequence="20" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_labelmodel" />
 </odoo>
+
+    
