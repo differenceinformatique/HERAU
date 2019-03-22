@@ -832,7 +832,7 @@ class StockQuant(models.Model):
                 where sml.product_id = %s and sml.state ='done'  and sml.date = %s and sml.location_dest_id = %s and lot_id = %s and package_id = %s and owner_id = %s
                 """
             
-            self.env.cr.execute(sqlstr, (quant.product_id.id or '', quant.in_date , quant.location_id.id or '', quant.lot_id.id or '', quant.package_id.id or '', quant.owner_id.id or ''))
+            self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.in_date , quant.location_id.id or 0, quant.lot_id.id or 0, quant.package_id.id or 0, quant.owner_id.id or 0))
             result = self.env.cr.fetchall()[0]
             
             quant.di_nb_colis  = result[0] and result[0] or 0.0
