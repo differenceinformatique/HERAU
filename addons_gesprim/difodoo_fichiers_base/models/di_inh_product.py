@@ -227,13 +227,13 @@ class ProductProduct(models.Model):
                     
                     SUM ( Case when stock_type.usage = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
                     
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_nb_colis when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.di_nb_colis  else   0 end) AS di_col_ven,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.qty_done else 0 end) AS di_qte_ven,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poib when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1* sml.di_poib else 0 end) AS di_poib_ven,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.di_poin when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.di_poin else 0 end) AS di_poin_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' and sml.di_flg_cloture is not true then sml.di_nb_colis when orig_type.usage = 'customer' and stock_type.usage = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_nb_colis  else   0 end) AS di_col_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' and sml.di_flg_cloture is not true then sml.qty_done when orig_type.usage = 'customer' and stock_type.usage = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done else 0 end) AS di_qte_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' and sml.di_flg_cloture is not true then sml.di_poib when orig_type.usage = 'customer' and stock_type.usage = 'internal' and sml.di_flg_cloture is not true then -1* sml.di_poib else 0 end) AS di_poib_ven,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' and sml.di_flg_cloture is not true then sml.di_poin when orig_type.usage = 'customer' and stock_type.usage = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_poin else 0 end) AS di_poin_ven,
                     
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' then sml.qty_done*sol.price_unit when orig_type.usage = 'customer' and stock_type.usage = 'internal' then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,
-                                                            
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage = 'customer' and sml.di_flg_cloture is not true then sml.qty_done*sol.price_unit when orig_type.usage = 'customer' and stock_type.usage = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,
+                                                                                
                     SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_nb_colis when orig_type.usage = 'internal' and  stock_type.usage = 'supplier' then -1*sml.di_nb_colis else 0 end) AS di_col_ach,
                     SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.qty_done when orig_type.usage = 'internal' and  stock_type.usage = 'supplier' then -1*sml.qty_done  else 0 end) AS di_qte_ach,
                     SUM ( Case when orig_type.usage = 'supplier' and  stock_type.usage = 'internal' then sml.di_poib when orig_type.usage = 'internal' and  stock_type.usage = 'supplier' then -1*sml.di_poib  else 0 end) AS di_poib_ach,
@@ -256,7 +256,7 @@ class ProductProduct(models.Model):
                 (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
                 LEFT JOIN stock_move sm on sm.id = sml.move_id
                 LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
-                where sml.product_id = %s and sml.state ='done'  and sml.di_flg_cloture is not true and sml.date <=%s
+                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s
                 """
             
             self.env.cr.execute(sqlstr, (val.id, di_date_to))

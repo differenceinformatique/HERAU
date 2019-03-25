@@ -38,7 +38,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
         # on filtre sur la date
         sale_orders_2 = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin)
         # on filtre sur le code client
-        sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin)
+        sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact )
         wPartnerId = 0
         wRegr = True
         # on les parcourt, triées par partner_id
@@ -59,6 +59,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
         # on met à jour la date de facture    
         invoices = sale_orders.mapped('invoice_ids')
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+        sale_orders.action_done()
         for invoice in invoices:
             invoice.date_invoice=self.date_fact
             if param.di_autovalid_fact_ven:

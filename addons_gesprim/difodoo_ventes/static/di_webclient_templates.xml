@@ -7,6 +7,9 @@
                 <script type="text/javascript" src="/difodoo_ventes/static/di_form_controller.js"></script>
                 <!--<script type="text/javascript" src="/difodoo_fichiers_base/script/di_impression_client.js"></script>      --> 
             </xpath> 
+            <xpath expr="." position="inside">
+              <link rel="stylesheet" href="/difodoo_ventes/static/src/css/web_sheet_full_width.less" />
+            </xpath>
         </template>
     </data>
 </odoo> 

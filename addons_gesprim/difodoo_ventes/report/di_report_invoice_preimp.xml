@@ -6,7 +6,7 @@
             <t t-set="address">
                 <div class="di_o_adr_tiers">
                     <address t-field="o.partner_id"  t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
-                    <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TVA intracom.'"/>: <span t-field="o.partner_id.vat"/></div>
+                    <div t-if="o.partner_id.vat" class="mt16">TVA : <span t-field="o.partner_id.vat"/></div>
                 </div>
             </t>
             <div class="page">

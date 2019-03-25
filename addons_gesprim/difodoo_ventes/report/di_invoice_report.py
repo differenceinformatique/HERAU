@@ -14,6 +14,19 @@ class DiInvoiceReport(models.Model):
     product_id = fields.Many2one('product.product', string='Article', readonly=True)
     di_qte_achat = fields.Float(string='Quantité achat', readonly=True)
     di_qte_vente = fields.Float(string='Quantité vente', readonly=True)
+    
+    di_nbcol_achat = fields.Float(string='Colis achat', readonly=True)
+    di_nbcol_vente = fields.Float(string='Colis vente', readonly=True)
+    
+    di_nbpiece_achat = fields.Float(string='Pièces achat', readonly=True)
+    di_nbpiece_vente = fields.Float(string='Pièces vente', readonly=True)
+    
+    di_poin_achat = fields.Float(string='Poids net achat', readonly=True)
+    di_poin_vente = fields.Float(string='Poids net vente', readonly=True)
+    
+    di_poib_achat = fields.Float(string='Poids brut achat', readonly=True)
+    di_poib_vente = fields.Float(string='Poids brut vente', readonly=True)
+    
     categ_id = fields.Many2one('product.category', string='Catégorie article', readonly=True)
     partner_id = fields.Many2one('res.partner', string='Tiers', readonly=True)    
     company_id = fields.Many2one('res.company', string='Société', readonly=True)
@@ -60,7 +73,18 @@ class DiInvoiceReport(models.Model):
                 sub.company_id,  sub.type, sub.state,
                 sub.categ_id,
                 sub.di_qte_achat as di_qte_achat,
-                sub.di_qte_vente as di_qte_vente,sub.di_mt_achat as di_mt_achat, sub.di_mt_vente as di_mt_vente,                
+                sub.di_qte_vente as di_qte_vente,
+                
+                sub.di_nbcol_achat as di_nbcol_achat,
+                sub.di_nbcol_vente as di_nbcol_vente,
+                sub.di_nbpiece_achat as di_nbpiece_achat,
+                sub.di_nbpiece_vente as di_nbpiece_vente,
+                sub.di_poin_achat as di_poin_achat,
+                sub.di_poin_vente as di_poin_vente,
+                sub.di_poib_achat as di_poib_achat,
+                sub.di_poib_vente as di_poib_vente,
+                
+                sub.di_mt_achat as di_mt_achat, sub.di_mt_vente as di_mt_vente,                
                 sub.di_marge_mt as di_marge_mt                
         """
 #         sub.di_prix_achat as di_prix_achat, sub.di_prix_vente as di_prix_vente,
@@ -77,6 +101,15 @@ class DiInvoiceReport(models.Model):
                     ai.type, ai.state, pt.categ_id,
                     SUM ( Case when invoice_type.sign <> 1 then ail.quantity else 0 end) AS di_qte_achat,
                     SUM ( Case when invoice_type.sign = 1 then ail.quantity  else 0 end) AS di_qte_vente,
+                    SUM ( Case when invoice_type.sign <> 1 then ail.di_nb_colis else 0 end) AS di_nbcol_achat,
+                    SUM ( Case when invoice_type.sign = 1 then ail.di_nb_colis  else 0 end) AS di_nbcol_vente,
+                    SUM ( Case when invoice_type.sign <> 1 then ail.di_nb_pieces else 0 end) AS di_nbpiece_achat,
+                    SUM ( Case when invoice_type.sign = 1 then ail.di_nb_pieces  else 0 end) AS di_nbpiece_vente,
+                    SUM ( Case when invoice_type.sign <> 1 then ail.di_poin else 0 end) AS di_poin_achat,
+                    SUM ( Case when invoice_type.sign = 1 then ail.di_poin  else 0 end) AS di_poin_vente,
+                    SUM ( Case when invoice_type.sign <> 1 then ail.di_poib else 0 end) AS di_poib_achat,
+                    SUM ( Case when invoice_type.sign = 1 then ail.di_poib  else 0 end) AS di_poib_vente,
+                    
                     SUM (case when invoice_type.sign <> 1 then ail.price_subtotal_signed else 0 end ) AS di_mt_achat,
                     SUM (case when invoice_type.sign = 1 then ail.price_subtotal_signed else 0 end ) AS di_mt_vente,                                        
                     (SUM (case when invoice_type.sign = 1 then ail.price_subtotal_signed else 0 end ) - SUM (case when invoice_type.sign <> 1 then ail.price_subtotal_signed else 0 end )) as di_marge_mt

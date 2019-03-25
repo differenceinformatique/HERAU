@@ -992,7 +992,7 @@ class SaleOrder(models.Model):
         lines = False        
         order = self.env['sale.order'].browse(id)
         if order.state == 'draft' :                
-            lines = self.env['sale.order.line'].search(['&', ('order_id', '=', id), ('price_subtotal', '=', 0.0)])        
+            lines = self.env['sale.order.line'].search(['&', ('order_id', '=', id), ('price_subtotal', '=', 0.0), ('display_type', 'not in', ('line_section','line_note'))])        
             if lines:
                 return True        
         return False
@@ -1002,7 +1002,7 @@ class SaleOrder(models.Model):
         lines = False        
         order = self.env['sale.order'].browse(id)
         if order.state == 'draft' :                
-            lines = self.env['sale.order.line'].search(['&', ('order_id', '=', id), ('product_uom_qty', '=', 0.0)])        
+            lines = self.env['sale.order.line'].search(['&', ('order_id', '=', id), ('product_uom_qty', '=', 0.0), ('display_type', 'not in', ('line_section','line_note'))])        
             if lines:
                 return True        
         return False

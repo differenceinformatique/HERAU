@@ -10,6 +10,19 @@
                  <field name="date" type="col"/>
                  <field name="di_qte_achat" type="measure"/>
                  <field name="di_qte_vente" type="measure"/>
+                 
+                 <field name="di_nbcol_achat" type="measure"/>
+                 <field name="di_nbcol_vente" type="measure"/>
+                 
+                 <field name="di_nbpiece_achat" type="measure"/>
+                 <field name="di_nbpiece_vente" type="measure"/>
+                 
+                 <field name="di_poin_achat" type="measure"/>
+                 <field name="di_poin_vente" type="measure"/>
+                 
+                 <field name="di_poib_achat" type="measure"/>
+                 <field name="di_poib_vente" type="measure"/>
+                 
                  <field name="di_mt_achat" type="measure"/>
                  <field name="di_mt_vente" type="measure"/>
                  <!-- <field name="di_prix_achat" type="measure"/>
@@ -27,6 +40,17 @@
                  <field name="categ_id"/>
                  <field name="di_qte_achat" type="measure"/>
                  <field name="di_qte_vente" type="measure"/>
+                 <field name="di_nbcol_achat" type="measure"/>
+                 <field name="di_nbcol_vente" type="measure"/>
+                 
+                 <field name="di_nbpiece_achat" type="measure"/>
+                 <field name="di_nbpiece_vente" type="measure"/>
+                 
+                 <field name="di_poin_achat" type="measure"/>
+                 <field name="di_poin_vente" type="measure"/>
+                 
+                 <field name="di_poib_achat" type="measure"/>
+                 <field name="di_poib_vente" type="measure"/>
                  <field name="di_mt_achat" type="measure"/>
                  <field name="di_mt_vente" type="measure"/>
                 <!--  <field name="di_prix_achat" type="measure"/>

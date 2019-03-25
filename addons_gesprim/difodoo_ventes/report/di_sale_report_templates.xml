@@ -74,7 +74,7 @@
             <t t-set="address">
                 <div t-field="doc.partner_id"
                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
-                <p t-if="doc.partner_id.vat"><t t-esc="doc.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="doc.partner_id.vat"/></p>
+                <p t-if="doc.partner_id.vat">TVA : <span t-field="doc.partner_id.vat"/></p>
             </t>
             <t t-if="doc.partner_shipping_id == doc.partner_invoice_id
                                  and doc.partner_invoice_id != doc.partner_id
@@ -288,7 +288,7 @@
                                         <t t-if="amount_by_group[3] == 1 and doc.amount_untaxed == amount_by_group[2]">
                                             <td>
                                                 <span t-esc="amount_by_group[0]"/>
-                                                <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>
+                                                <span>&amp;nbsp;<span>sur</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>
                                             </td>
                                             <td class="text-right o_price_total">
                                                 <span t-esc="amount_by_group[1]"

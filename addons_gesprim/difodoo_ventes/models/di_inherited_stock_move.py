@@ -574,16 +574,18 @@ class StockMoveLine(models.Model):
             else:
                 move = self.move_id
 #             if move.di_un_saisie == "PALETTE":                                         
-            
-            self.di_nb_colis = ceil(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf)
-            
-            if move.product_uom.name.lower() != 'kg':       
-                self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
-            else:                                  
-                self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
-            self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
-            self.di_poin = self.qty_done  
-            self.di_poib = self.di_poin + self.di_tare
+            if move.di_type_palette_id:
+                self.di_nb_colis = ceil(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf)
+                
+                if move.product_uom.name.lower() == 'kg':       
+                    self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                    self.di_poin = self.qty_done 
+                else:                                  
+                    self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
+                    self.di_poin = self.qty_done  * self.product_id.weight
+                self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
+                 
+                self.di_poib = self.di_poin + self.di_tare
       
     @api.multi                     
     @api.onchange('di_nb_colis')
@@ -594,17 +596,48 @@ class StockMoveLine(models.Model):
             else:
                 move = self.move_id
 #             if move.di_un_saisie == "COLIS":      
-            if move.product_uom.name.lower() != 'kg':       
-                self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
-            else:                                  
-                self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
-            self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
-            if move.di_type_palette_id.di_qte_cond_inf != 0.0:                
-                self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+            if move.di_product_packaging_id: 
+                if move.product_uom.name.lower() == 'kg':       
+                    self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                    self.di_poin = self.qty_done  
+                else:                                  
+                    self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
+                    self.di_poin = self.qty_done  * self.product_id.weight
+                      
+                self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+                if move.di_type_palette_id.di_qte_cond_inf != 0.0:                
+                    self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+                else:
+                    self.di_nb_palette = self.di_nb_colis
+                
+                self.di_poib = self.di_poin + self.di_tare
+                
+    @api.multi                     
+    @api.onchange('di_nb_pieces')
+    def _di_change_nb_pieces(self):
+        if self.ensure_one()and not self.move_id.inventory_id:      
+            if self._context.get('di_move_id'):
+                move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
-                self.di_nb_palette = self.di_nb_colis
-            self.di_poin = self.qty_done  
+                move = self.move_id
+#             if move.di_un_saisie == "COLIS":      
+             
+            if move.product_uom.name.lower() == 'kg':       
+                self.qty_done = self.di_nb_pieces * self.product_id.weight 
+                self.di_poin = self.qty_done  
+            else:         
+                                         
+                self.qty_done =self.di_nb_pieces
+                self.di_poin = self.qty_done  * self.product_id.weight
+                   
+#             self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+#             if move.di_type_palette_id.di_qte_cond_inf != 0.0:                
+#                 self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+#             else:
+#                 self.di_nb_palette = self.di_nb_colis
+             
             self.di_poib = self.di_poin + self.di_tare
+
 
     @api.multi 
     @api.onchange('di_poib')

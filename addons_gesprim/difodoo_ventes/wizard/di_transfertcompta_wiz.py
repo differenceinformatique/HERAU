@@ -150,11 +150,11 @@ class Wizard_transfert_compta(models.TransientModel):
       
         # Transfert Invoices
 
-        sql = """SELECT aml.id,am.name as move_name, account_journal.code as journal,account_account.code as compte,
-                res_partner.name as partner, aml.name as move_line_name,
+        sql = """SELECT am.name as move_name, account_journal.code as journal,account_account.code as compte,
+                res_partner.name as partner, account_account.name as libelle,
                 to_char(am.date,'YYYYMMDD') as date_ecr,
                 to_char(aml.date_maturity,'YYYYMMDD') as date_ech,
-                aml.debit, aml.credit, res_currency.name as currency
+                sum(aml.debit), sum(aml.credit), res_currency.name as currency
                 from account_move_line as aml
                 INNER JOIN account_move as am on am.id = aml.move_id
                 INNER JOIN account_journal on account_journal.id = am.journal_id
@@ -165,13 +165,15 @@ class Wizard_transfert_compta(models.TransientModel):
                 AND to_char(am.date,'YYYYMMDD') BETWEEN %s AND %s
                 AND am.journal_id IN %s
                 AND aml.di_transfere is not true
-                ORDER BY account_journal.code, am.id, account_account.code"""
+                group by am.name, account_journal.code,account_account.code,
+                res_partner.name, account_account.name, am.date, aml.date_maturity,res_currency.name
+                ORDER BY account_journal.code, am.name, account_account.code"""
 
         self.env.cr.execute(sql, (date_d, date_f, tuple(self.journal_ids.ids),))
         
         nb_lig = 0
-        ids = [(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10]) for r in self.env.cr.fetchall()]
-        for line_id, move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency in ids:
+        ids = [(r[0],r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]) for r in self.env.cr.fetchall()]
+        for move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency in ids:
             nb_lig += 1
 
             listrow = list()
@@ -180,7 +182,25 @@ class Wizard_transfert_compta(models.TransientModel):
                 listrow = self.di_ecrire_ligne_divalto(move_name, journal, compte, partner_name, move_line_name, date_ecr, date_ech, debit, credit, currency, param.di_dos_compt, param.di_etb_compt)
                 
             w.writerow(listrow)
-            line = self.env['account.move.line'].browse(line_id)
+            
+            
+        sql = """SELECT aml.id
+                from account_move_line as aml
+                INNER JOIN account_move as am on am.id = aml.move_id
+                INNER JOIN account_journal on account_journal.id = am.journal_id
+                INNER JOIN res_currency on res_currency.id = am.currency_id
+                INNER JOIN res_partner on res_partner.id = am.partner_id 
+                INNER JOIN account_account on account_account.id = aml.account_id                
+                WHERE am.state = 'posted' 
+                AND to_char(am.date,'YYYYMMDD') BETWEEN %s AND %s
+                AND am.journal_id IN %s
+                AND aml.di_transfere is not true               
+                ORDER BY account_journal.code, am.name, account_account.code"""
+
+        self.env.cr.execute(sql, (date_d, date_f, tuple(self.journal_ids.ids),))
+        ids = [(r[0]) for r in self.env.cr.fetchall()]
+        for id in ids:    
+            line = self.env['account.move.line'].browse(id)
             
             line.update({'di_transfere': True})
 

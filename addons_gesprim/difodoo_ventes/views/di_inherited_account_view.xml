@@ -15,13 +15,15 @@
                 <xpath expr="//field[@name='fiscal_position_id']/.." position="inside">
                     <field name="di_nbex" />    
                 </xpath>
-                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="attributes">
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="replace" />
+                <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>  
+                </xpath>   -->
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">
                 	<attribute name="invisible">1</attribute>
                 </xpath>                         
                 <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='quantity']" position="before">
+                    <field name="name"/>
                     <field name="di_spe_saisissable" invisible="1"/>
                     <field name="di_flg_modif_uom"  invisible="1"/>
                     <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>

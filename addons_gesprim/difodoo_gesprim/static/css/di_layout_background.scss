@@ -1,0 +1,37 @@
+.o_background_footer, .o_background_header, .o_report_layout_background {
+    font-size: 15px;
+    font-family: 'Arial', 'Helvetica', 'sans-serif';
+}
+.o_report_layout_background {
+    background-image:none;    
+    .table th {
+        border-bottom: 1px solid gray('300');
+    }
+    tbody {
+        
+        tr {
+            &:nth-child(odd) {
+                background-color: transparent !important;
+            }
+            &.o_line_section {
+                color: $o-brand-odoo;
+                background-color: rgba(73, 80, 87, 0.2) !important;
+            }
+        }
+    }
+}
+
+
+.o_background_header {     
+    .di_nom_soc{
+        font-size: 25px;  
+        }     
+    border-bottom: none;
+    min-height : 200px;
+    img {
+        max-height: 200px;
+        max-width: 300px;        
+    }
+}
+
+

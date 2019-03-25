@@ -5,10 +5,23 @@
      <template id="di_report_assets_common" inherit_id="web.report_assets_common">    
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/difodoo_gesprim/static/css/di_layout_fixe.scss"/>
+            <link rel="stylesheet" type="text/scss" href="/difodoo_gesprim/static/css/di_layout_background.scss"/>
         </xpath>        
     </template>
+        
+    <template id="di_external_layout_background" inherit_id="web.external_layout_background">
+        <xpath expr="//div[contains(@class,o_background_header)]/div/div/strong" position="attributes">
+             <attribute name="class">di_nom_soc</attribute>                   
+        </xpath> 
+        
+        <xpath expr="//div[contains(@class,o_background_footer)]/div/ul/li[4]" position="replace">
+            <li t-if="company.vat" class="list-inline-item"><i class="fa fa-building-o" role="img" aria-label="Fiscal number"/>TVA : <span t-field="company.vat"/></li>
+            <li t-if="company.company_registry" class="list-inline-item"><span t-field="company.company_registry"/></li>            
+        </xpath>          
+    </template>
     
-    
+             
+
     <template id="di_layout_fixe">
         <div class="header">
             <div class="di_o_fixe_header">
@@ -113,7 +126,7 @@
                     <li t-if="company.phone" class="list-inline-item">Tel: <span t-field="company.phone"/></li>
                     <li t-if="company.email" class="list-inline-item">Mail: <span t-field="company.email"/></li>
                     <li t-if="company.website" class="list-inline-item">Web: <span t-field="company.website"/></li>
-                    <li t-if="company.vat" class="list-inline-item"><t t-esc="company.country_id.vat_label or 'TVA intracom.'"/>: <span t-field="company.vat"/></li>
+                    <li t-if="company.vat" class="list-inline-item">TVA : <span t-field="company.vat"/></li>
                 </ul>
                 <div t-field="company.report_footer"/>               
             </div>

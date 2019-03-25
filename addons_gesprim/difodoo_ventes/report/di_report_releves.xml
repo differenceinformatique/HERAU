@@ -103,7 +103,7 @@
                                         <span t-field="fac.number"/>
                                     </td>
                                     <td>
-                                       <span t-field="fac.amount_untaxed_signed"/>
+                                       <span t-field="fac.amount_untaxed_signed" t-options="{'widget': 'monetary', 'display_currency': releve.di_company_id.currency_id}" />
                                     </td> 
                                     <td>
                                         <t t-if="fac.amount_untaxed_signed > 0"  >
@@ -112,11 +112,11 @@
                                         <t t-else="else"> 
                                             <t t-set="tax_signed" t-value="-1*fac.amount_tax"  />                                            
                                         </t>
-                                        <span t-esc="tax_signed"/>
+                                        <span t-esc="tax_signed" t-options="{'widget': 'monetary', 'display_currency': releve.di_company_id.currency_id}"/>
                                        
                                     </td> 
                                     <td>
-                                       <span t-field="fac.amount_total_signed"/>
+                                       <span t-field="fac.amount_total_signed" t-options="{'widget': 'monetary', 'display_currency': releve.di_company_id.currency_id}"/>
                                     </td>                                   
                                     <t t-set="TotHT" t-value="TotHT + fac.amount_untaxed_signed" />
                                     <t t-set="TotTTC" t-value="TotTTC + fac.amount_total_signed" />
@@ -127,13 +127,13 @@
                             <tr>
                                 <td></td>
                                 <td><span>TOTAL</span></td>
-                                <td><span t-esc="TotHT"/></td>
-                                <td><span t-esc="TotTax"/></td>  
-                                <td><span t-esc="TotTTC"/></td>                          
+                                <td><span t-esc="TotHT" t-options="{'widget': 'monetary', 'display_currency': releve.di_company_id.currency_id}"/></td>
+                                <td><span t-esc="TotTax" t-options="{'widget': 'monetary', 'display_currency': releve.di_company_id.currency_id}"/></td>  
+                                <td><span t-esc="TotTTC" t-options="{'widget': 'monetary', 'display_currency': releve.di_company_id.currency_id}"/></td>                          
                             </tr>
                         </tbody>
                     </table>                    
-                    En votre règlement<t t-if="releve.di_partner_id.property_payment_term_id.note"> par <span t-field="releve.di_partner_id.property_payment_term_id.note"/> </t> au plus tard le <span t-esc="releve._get_date_ech()"/>.
+                    En votre règlement<t t-if="releve.di_partner_id.property_payment_term_id.note"> par <span t-field="releve.di_partner_id.property_payment_term_id.note"/> </t> au plus tard le <span t-esc="releve._get_date_ech()" t-options='{"widget": "date"}' />.
                     <br></br>
                     Règlement sans escompte, délais maximum de règlement : 30 jours fin décade.
                     <br></br>

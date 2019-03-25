@@ -300,8 +300,8 @@ class AccountInvoiceLine(models.Model):
                 self.di_qte_un_saisie = self.di_poib
             else:
                 self.di_poin = self.di_poib - self.di_tare
-                if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                if self.uom_id:
+                    if self.uom_id.name.lower() == 'kg':
                         AccountInvoiceLine.modifparprg=True
                         self.product_uom_qty = self.di_poin
                                 
@@ -315,8 +315,8 @@ class AccountInvoiceLine(models.Model):
 #                 self.di_qte_un_saisie = self.di_poib
 #             else:       
             if self.di_un_saisie != 'KG':         
-                if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                if self.uom_id:
+                    if self.uom_id.name.lower() == 'kg':
                         AccountInvoiceLine.modifparprg=True
                         self.product_uom_qty = self.di_poin
     @api.multi 
@@ -327,8 +327,8 @@ class AccountInvoiceLine(models.Model):
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poib
             else:
-                if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                if self.uom_id:
+                    if self.uom_id.name.lower() == 'kg':
                         AccountInvoiceLine.modifparprg=True
                         self.product_uom_qty = self.di_poin
               
@@ -411,12 +411,12 @@ class AccountInvoiceLine(models.Model):
                     else:
                         self.di_nb_pieces = ceil(self.di_poin)    
                                         
-                    if self.product_packaging.qty !=0.0:
-                        self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                    if self.di_product_packaging_id.qty !=0.0:
+                        self.di_nb_colis = ceil(self.di_nb_pieces / self.di_product_packaging_id.qty)
                     else:
                         self.di_nb_colis = ceil(self.di_nb_pieces)
                         
-                    self.quantity = self.product_packaging.qty * self.di_nb_colis
+                    self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
                         
                     if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                         self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
@@ -435,12 +435,12 @@ class AccountInvoiceLine(models.Model):
                     else:
                         self.di_nb_pieces = ceil(self.di_poin)    
                                         
-                    if self.product_packaging.qty !=0.0:
-                        self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                    if self.di_product_packaging_id.qty !=0.0:
+                        self.di_nb_colis = ceil(self.di_nb_pieces / self.di_product_packaging_id.qty)
                     else:
                         self.di_nb_colis = ceil(self.di_nb_pieces)
                         
-                    self.quantity = self.product_packaging.qty * self.di_nb_colis
+                    self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
                         
                     if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                         self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf

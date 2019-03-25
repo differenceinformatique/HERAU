@@ -8,12 +8,12 @@
                     <table class="table table-bordered">
                         <tr>
                             <th>Article</th>
-                            <th>Désignation</th>
-                            <th>Unité de mesure</th>
+                            <th>Désignation</th>                            
                             <th>Nombre de colis en stock</th>
                             <th>Poids brut en stock</th>
                             <th>Poids net en stock</th>
                             <th>Quantité en stock</th>
+                            <th>Unité de mesure</th>
                             <th>Prix d'achat moyen</th>
                             <th>Valeur du stock</th>
                             
@@ -21,6 +21,7 @@
                             <th>Poids brut vendu</th>
                             <th>Poids net vendu</th>
                             <th>Quantité vendue</th>
+                            <th>Unité de mesure</th>
                             <th>Prix vente moyen</th>
                             <th>Valeur HT</th>
                             <th>Valeur marge</th>
@@ -49,10 +50,7 @@
                                 </td>
                                 <td>
                                     <span t-field="art.name"/>
-                                </td>
-                                <td>
-                                    <span t-field="art.uom_id"/>
-                                </td>
+                                </td>                                
                                 <td>
                                     <span t-field="art.di_col_stock"/>
                                 </td>
@@ -65,6 +63,9 @@
                                  <td>
                                     <span t-field="art.di_qte_stock"/>
                                 </td>   
+                                <td>
+                                    <span t-field="art.uom_id"/>
+                                </td>
                                 <td>
                                     <span t-esc="'%.2f'%  art.di_prix_achat_moyen"/>                                    
                                 </td> 
@@ -83,6 +84,9 @@
                                 </td>
                                 <td>
                                     <span t-field="art.di_qte_ven"/>
+                                </td>
+                                <td>
+                                    <span t-field="art.uom_id"/>
                                 </td>
                                 <td>
                                     <span t-esc="'%.2f'% art.di_prix_vente_moyen"/>
@@ -118,10 +122,7 @@
                                 </td>
                                 <td>
                                     
-                                </td>
-                                <td>
-                                    
-                                </td>
+                                </td>                               
                                 <td>
                                     <span t-esc="TotColStock"/>
                                 </td>
@@ -134,6 +135,9 @@
                                 <td>
                                     <span t-esc="TotQteStock"/>
                                 </td> 
+                                 <td>
+                                    
+                                </td>
                                 <td>
                                     
                                 </td> 
@@ -152,6 +156,9 @@
                                 </td>
                                 <td>
                                     <span t-esc="TotQteVen"/>
+                                </td>
+                                 <td>
+                                    
                                 </td>
                                 <td>
                                     
@@ -183,6 +190,7 @@
             report_type="qweb-pdf"
             file="difodoo_fichiers_base.di_impression_resserre" 
             name="difodoo_fichiers_base.di_impression_resserre"
-            print_report_name="'Resserre après vente détaillée'"            
+            print_report_name="'Resserre après vente détaillée'" 
+            paperformat="difodoo_ventes.di_A4_Paysage"           
         />
 </odoo>
