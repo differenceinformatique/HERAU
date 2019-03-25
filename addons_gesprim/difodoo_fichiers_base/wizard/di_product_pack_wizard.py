@@ -39,15 +39,27 @@ class DiProdPackWiz(models.TransientModel):
     @api.multi
     def di_gen_cond(self):
         # parcours des conditionnement de la liste pour les enregistrer
-        products = self.env['product.product'].search([('product_tmpl_id', 'in', self.product_ids.ids)])
+        products = self.env['product.product'].search([('product_tmpl_id', 'in', self.product_ids.ids)])        
         if self.cond_ids and products:
             for product in products: 
                 for Cond in self.cond_ids:            
                     Existe = self.env['product.packaging'].search(['&', ('product_id', '=', product.id), ('name', '=', Cond.name)])
                     if not Existe:                
                         if Cond.di_type_cond=='PIECE':
-                            self.env['product.packaging'].create({'name' : Cond.name,'di_des':Cond.di_des, 'product_id' : product.id, 'di_type_cond' : Cond.di_type_cond, 'di_qte_cond_inf' : 1, 'qty' : self.QtePiece})
+                            product.update({'packaging_ids':[(4,self.env['product.packaging'].create({'name' : Cond.name,'di_des':Cond.di_des, 'product_id' : product.id, 'di_type_cond' : Cond.di_type_cond, 'di_qte_cond_inf' : 1, 'qty' : self.QtePiece}).id)]})
+                            ProductPack = product.packaging_ids.filtered(lambda l: l.di_type_cond=="COLIS")
+                            condpiece = product.packaging_ids.filtered(lambda l: l.di_type_cond=="PIECE") 
+                            if ProductPack and not ProductPack.di_type_cond_inf_id :                                
+                                ProductPack.update({'di_type_cond_inf_id':condpiece.id})
+                                    
                         else:
-                            self.env['product.packaging'].create({'name' : Cond.name,'di_des':Cond.di_des , 'product_id' : product.id, 'di_type_cond' : Cond.di_type_cond, 'di_qte_cond_inf' : 1})
+                            if Cond.di_type_cond=='COLIS':   
+                                condpiece = product.packaging_ids.filtered(lambda l: l.di_type_cond=="PIECE")
+                                product.update({'packaging_ids':[(4,self.env['product.packaging'].create({'name' : Cond.name,'di_des':Cond.di_des , 'product_id' : product.id, 'di_type_cond' : Cond.di_type_cond, 'di_qte_cond_inf' : 1, 'qty' : self.QtePiece,'di_type_cond_inf_id':condpiece.id}).id)]})                                                                                             
+                            else:
+                                product.update({'packaging_ids':[(4,self.env['product.packaging'].create({'name' : Cond.name,'di_des':Cond.di_des , 'product_id' : product.id, 'di_type_cond' : Cond.di_type_cond, 'di_qte_cond_inf' : 1, 'qty' : self.QtePiece}).id)]})
+                                
+                                                                    
+            
         res = self.message = "Génération terminée."        
         return res

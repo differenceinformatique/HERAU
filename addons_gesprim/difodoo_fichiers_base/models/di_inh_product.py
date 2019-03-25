@@ -540,13 +540,22 @@ class ProductPackaging(models.Model):
                 if not product.di_type_colis_id :
                     product.update({                
                     'di_type_colis_id': prodpack.id
-                })                                                       
+                })     
+#                 condinf = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])                
+#                 if not prodpack.di_type_cond_inf_id:
+#                     prodpack.update({'di_type_cond_inf_id' : condinf.id})                                                  
             elif prodpack.di_type_cond=='PALETTE':
                 product = self.env['product.template'].browse(prodpack.product_id.product_tmpl_id.id)
                 if not product.di_type_palette_id :
                     product.update({                
                     'di_type_palette_id': prodpack.id
                 })
+            
+#             else:
+#                 ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'COLIS')])
+#                 if not ProductPack.di_type_cond_inf_id:
+#                     ProductPack.update({'di_type_cond_inf_id' : prodpack.id})
+                
 
         return res
     
@@ -559,13 +568,23 @@ class ProductPackaging(models.Model):
                 if not product.di_type_colis_id :
                     product.update({                
                     'di_type_colis_id': prodpack.id
-                })                                                       
+                }) 
+#                 condinf = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'PIECE')])  
+#                 condinf = self.product_id.packaging_ids.filtered(lambda l: l.di_type_cond=='PIECE')              
+#                 if not prodpack.di_type_cond_inf_id and condinf:
+#                     vals['di_type_cond_inf_id']= condinf.id
+# #                     prodpack.update({'di_type_cond_inf_id' : condinf.id})                                                        
             elif prodpack.di_type_cond=='PALETTE':
                 product = self.env['product.template'].browse(prodpack.product_id.product_tmpl_id.id)
                 if not product.di_type_palette_id :
                     product.update({                
                     'di_type_palette_id': prodpack.id
                 })
+#             else:
+# #                 ProductPack = self.env['product.packaging'].search(['&',('product_id', '=', self.id),('di_type_cond', '=', 'COLIS')])
+#                 ProductPack = self.product_id.packaging_ids.filtered(lambda l: l.di_type_cond=='COLIS')
+#                 if ProductPack and not ProductPack.di_type_cond_inf_id:
+#                     ProductPack.update({'di_type_cond_inf_id' : prodpack.id})
 
         return res
     
