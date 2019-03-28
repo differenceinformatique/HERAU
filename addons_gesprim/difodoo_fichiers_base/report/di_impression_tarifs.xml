@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <template id="di_impression_tarifs">
-        <t t-call="web.basic_layout">
-            <t t-as="wiz" t-foreach="docs">
+        
+        <t t-as="wiz" t-foreach="docs">
+            
+            <t t-set="company" t-value="wiz.di_company_id"/>
+            <t t-call="difodoo_gesprim.di_layout_interne">  
+                          
                 <div class="page">
                     <h2>Tarifs</h2>
-                    <h3>Effectif au : <span t-field="docs.di_date_effet"/>
+                    <h3>Effectif au : <span t-field="wiz.di_date_effet"/>
                     </h3>
-                    <table class="table table-bordered">
+                    <table class="table table-condensed">
                         <tr>
                             <th>Article</th>
                             <th>Unité de prix</th>
@@ -31,18 +35,14 @@
                                 <td>
                                     <span t-field="tarif.di_un_prix"/>
                                 </td>
-                                <td>
-                                    <span t-field="tarif.di_qte_seuil"/>
-                                </td>
+                                
                                 <td>
                                     <span t-field="tarif.di_code_tarif_id"/>
                                 </td>
                                 <td>
                                     <span t-field="tarif.di_prix" t-options="{'widget': 'monetary', 'display_currency': tarif.di_company_id.currency_id}" />
                                 </td>
-                                <td>
-                                    <span t-field="tarif.di_date_fin" t-field-options="{'format':'dd/MM/YYYY'}"/>
-                                </td>
+                               
                             </tr>
                             <t t-set="di_sauv_fam" t-value="tarif.di_product_id.product_tmpl_id.categ_id.complete_name"/>
                         </t>

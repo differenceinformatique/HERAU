@@ -12,6 +12,7 @@ class DiProductResserre(models.TransientModel):
     _description = 'Resserre produit'
     
     di_aff_ven = fields.Boolean("Masquer les ventes",default = True)
+    di_aff_pertes = fields.Boolean("Masquer les pertes",default = True)
     di_to_date = fields.Date('Le', default=time.strftime('%Y-%m-%d') )
    
     @api.multi
@@ -24,15 +25,16 @@ class DiProductResserre(models.TransientModel):
             proxy = self.env['ir.model.data']
             return proxy.get_object_reference(module, xml_id)
 # 
-        model, search_view_id = ref('product', 'product_search_form_view')
+        model, search_view_id = ref('difodoo_fichiers_base', 'di_product_search_form_view')
 #         model, graph_view_id = ref('product_margin', 'view_product_margin_graph')
 #         model, form_view_id = ref('product_margin', 'view_product_margin_form')
         model, tree_view_id = ref('difodoo_fichiers_base', 'di_view_product_resserre_tree')
         
-        context.update(di_aff_ven=self.di_aff_ven) 
+        context.update(di_aff_ven=self.di_aff_ven)
+        context.update(di_aff_pertes=self.di_aff_pertes)  
         if self.di_to_date:
             context.update(di_date_to=self.di_to_date)                
-            domain="[('type','!=','service')]" 
+            domain="[('type','!=','service'),('qty_available','>',0.0)]" 
                 
 
         views = [

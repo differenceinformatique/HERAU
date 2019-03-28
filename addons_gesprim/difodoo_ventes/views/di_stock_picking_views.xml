@@ -407,4 +407,109 @@
             <p/>
         </field>
     </record>
+    
+
+    <record id="di_view_move_line_tree" model="ir.ui.view">
+        <field name="name">di.stock.move.line.tree</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='qty_done']" position="before">
+                <field name="di_entrees_sorties" string="Sens" />
+                <field name="di_partner" string="Tiers"/>
+                <field name="di_nb_colis" string="Nb colis"/>
+                <field name="di_nb_pieces" string="Nb pièces"/>    
+                <field name="di_poib" string="Poids brut"/>    
+                <field name="di_tare" string="Tare"/>    
+                <field name="di_poin" string="Poids net"/>        
+            </xpath>
+            <xpath expr="//field[@name='location_id']" position="replace"/>
+            <xpath expr="//field[@name='location_dest_id']" position="replace"/>
+            
+        </field>
+    </record>
+    
+     <record id="di_view_move_line_form" model="ir.ui.view">
+        <field name="name">di.stock.move.line.form</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_form"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_dest_id']" position="after">
+                <field name="di_partner" string="Tiers"/>    
+            </xpath>
+            <xpath expr="//field[@name='qty_done']" position="before">
+                <field name="di_nb_colis" string="Nb colis"/>
+                <field name="di_nb_pieces" string="Nb pièces"/>    
+                <field name="di_poib" string="Poids brut"/>    
+                <field name="di_tare" string="Tare"/>    
+                <field name="di_poin" string="Poids net"/>        
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="di_stock_move_line_view_search" model="ir.ui.view">
+        <field name="name">di.stock.move.line.search</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.stock_move_line_view_search"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_dest_id']" position="after">
+                <field name="di_partner" string="Tiers"/>
+                <separator/>
+                <filter string="Entrées" name="entrees" domain="[('di_entrees_sorties','=','entree')]"/>
+                <filter string="Sorties" name="sorties" domain="[('di_entrees_sorties','=','sortie')]"/>    
+            </xpath>
+            <xpath expr="//filter[@name='groupby_product_id']" position="after">
+                <filter string="Tiers" name="groupby_tiers" domain="[]" context="{'group_by': 'di_partner'}"/>
+            </xpath>
+            
+            
+        </field>
+    </record>
+    
+    <record id="di_view_stock_move_line_kanban" model="ir.ui.view">
+        <field name="name">di.stock.move.line.kanban</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_kanban"/>
+        <field eval="80" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_name']" position="after">
+                <field name="di_partner" string="Tiers"/>    
+            </xpath>
+            <!-- <xpath expr="//field[@name='qty_done']" position="before">
+                <field name="di_nb_colis" string="Nb colis"/>
+                <field name="di_nb_pieces" string="Nb pièces"/>    
+                <field name="di_poib" string="Poids brut"/>    
+                <field name="di_tare" string="Tare"/>    
+                <field name="di_poin" string="Poids net"/>        
+            </xpath> -->
+        </field>
+    </record>
+    
+    <record id="di_view_stock_move_line_pivot" model="ir.ui.view">
+         <field name="name">di.view.stock.move.line.pivot</field>
+         <field name="model">stock.move.line</field>
+         <field name="arch" type="xml">
+             <pivot string="Mouvements de produits" >
+                 <field name="product_id" type="row"/>
+                 <!-- <field name="di_partner" string="Tiers" type="col"/> -->
+                 <field name="date" type="col"/>
+                  
+                <field name="di_nb_colis" string="Nb colis" type="measure"/>
+                <field name="di_nb_pieces" string="Nb pièces" type="measure"/>    
+                <field name="di_poib" string="Poids brut" type="measure"/>    
+                <field name="di_tare" string="Tare" type="measure"/>    
+                <field name="di_poin" string="Poids net" type="measure"/>
+                
+               
+                 <!-- <field name="lot_id" string="Lot"/> -->
+                
+                 
+             </pivot>
+         </field>
+    </record>
+    
+  
 </odoo>

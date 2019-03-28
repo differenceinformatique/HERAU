@@ -5,9 +5,9 @@
         <field name="model">di.imp.ress.wiz</field>
         <field name="arch" type="xml">
             <form string="Impression Resserre">     
-                <!-- <group col="4" string="Informations">                        
-                        <field name="di_to_date" />                        
-                </group>                                                                        -->
+                <group col="4" string="Informations">                        
+                        <field name="di_liste_comptage" />                        
+                </group>                                                                        
                 <footer>
                     <button string="Imprimer la resserre" type="object" name="imprimer_resserre"
                         default_focus="1" />

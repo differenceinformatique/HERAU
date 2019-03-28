@@ -18,7 +18,7 @@ class DiCloturerVentes(models.TransientModel):
     def cloturer_ventes(self):
         self.ensure_one()  
         
-        smlines = self.env['stock.move.line'].search(['&', ('di_flg_cloture', '=', False), ('state', '=', 'done'), ('di_usage_loc', '=', 'internal'), ('di_usage_loc_dest', '=', 'customer')]).filtered(lambda l: l.date.date() <= self.date_cloture)
+        smlines = self.env['stock.move.line'].search(['&', ('di_flg_cloture', '=', False), ('state', '=', 'done'), ('di_usage_loc', '=', 'internal'), ('di_usage_loc_dest', 'in', ('customer','inventory'))]).filtered(lambda l: l.date.date() <= self.date_cloture)
         
         
         smlines.update({

@@ -10,22 +10,27 @@
                             <th>Article</th>
                             <th>Désignation</th>                            
                             <th>Nombre de colis en stock</th>
-                            <th>Poids brut en stock</th>
-                            <th>Poids net en stock</th>
-                            <th>Quantité en stock</th>
-                            <th>Unité de mesure</th>
-                            <th>Prix d'achat moyen</th>
-                            <th>Valeur du stock</th>
-                            
-                            <th>Nombre de colis vendus</th>
-                            <th>Poids brut vendu</th>
-                            <th>Poids net vendu</th>
-                            <th>Quantité vendue</th>
-                            <th>Unité de mesure</th>
-                            <th>Prix vente moyen</th>
-                            <th>Valeur HT</th>
-                            <th>Valeur marge</th>
-                            <th>% Marge</th>
+                            <t t-if="not wiz.di_liste_comptage">
+                                <th>Poids brut en stock</th>
+                                <th>Poids net en stock</th>
+                                <th>Quantité en stock</th>
+                                <th>Unité de mesure</th>
+                                <th>Prix d'achat moyen</th>
+                                <th>Valeur du stock</th>
+                                
+                                <th>Nombre de colis vendus</th>
+                                <th>Poids brut vendu</th>
+                                <th>Poids net vendu</th>
+                                <th>Quantité vendue</th>
+                                <th>Unité de mesure</th>
+                                <th>Prix vente moyen</th>
+                                <th>Valeur HT</th>
+                                <th>Valeur marge</th>
+                                <th>% Marge</th>
+                            </t>
+                            <t t-else="">
+                                <th>Colis comptés</th>
+                            </t>
                         </tr>
                         
                         <t t-set="TotColStock" t-value="0" />
@@ -54,69 +59,75 @@
                                 <td>
                                     <span t-field="art.di_col_stock"/>
                                 </td>
-                                <td>
-                                    <span t-field="art.di_poib_stock"/>
-                                </td>
-                                <td>
-                                    <span t-field="art.di_poin_stock"/>
-                                </td>   
-                                 <td>
-                                    <span t-field="art.di_qte_stock"/>
-                                </td>   
-                                <td>
-                                    <span t-field="art.uom_id"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'%  art.di_prix_achat_moyen"/>                                    
-                                </td> 
-                                <td>
-                                    <span t-esc="'%.2f'% art.di_val_stock"/>
-                                </td>
-                                
-                                <td>
-                                    <span t-field="art.di_col_ven"/>
-                                </td>
-                                <td>
-                                    <span t-field="art.di_poib_ven"/>
-                                </td>
-                                <td>
-                                    <span t-field="art.di_poin_ven"/>
-                                </td>
-                                <td>
-                                    <span t-field="art.di_qte_ven"/>
-                                </td>
-                                <td>
-                                    <span t-field="art.uom_id"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'% art.di_prix_vente_moyen"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'% art.di_val_ven"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'% art.di_val_marge"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'% art.di_marge_prc"/>
-                                </td>    
-                                                                                        
-                                <t t-set="TotColStock" t-value="TotColStock + art.di_col_stock" />
-                                <t t-set="TotPoibStock" t-value="TotPoibStock + art.di_poib_stock" />
-                                <t t-set="TotPoinStock" t-value="TotPoinStock + art.di_poin_stock" />
-                                <t t-set="TotQteStock" t-value="TotQteStock + art.di_qte_stock" />
-                                <t t-set="TotValStock" t-value="TotValStock + art.di_val_stock" />
-                                
-                                <t t-set="TotColVen" t-value="TotColVen + art.di_col_ven" />
-                                <t t-set="TotPoibVen" t-value="TotPoibVen + art.di_poib_ven" />
-                                <t t-set="TotPoinVen" t-value="TotPoinVen + art.di_poin_ven" />
-                                <t t-set="TotQteVen" t-value="TotQteVen + art.di_qte_ven" />
-                                <t t-set="TotValVen" t-value="TotValVen + art.di_val_ven" />                                                        
-                                
-                                <t t-set="TotValMarge" t-value="TotValMarge + art.di_val_marge" />                            
+                                <t t-if="not wiz.di_liste_comptage">
+                                    <td>
+                                        <span t-field="art.di_poib_stock"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="art.di_poin_stock"/>
+                                    </td>   
+                                     <td>
+                                        <span t-field="art.di_qte_stock"/>
+                                    </td>   
+                                    <td>
+                                        <span t-field="art.uom_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'%  art.di_prix_achat_moyen"/>                                    
+                                    </td> 
+                                    <td>
+                                        <span t-esc="'%.2f'% art.di_val_stock"/>
+                                    </td>
+                                    
+                                    <td>
+                                        <span t-field="art.di_col_ven"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="art.di_poib_ven"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="art.di_poin_ven"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="art.di_qte_ven"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="art.uom_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'% art.di_prix_vente_moyen"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'% art.di_val_ven"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'% art.di_val_marge"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'% art.di_marge_prc"/>
+                                    </td>    
+                                                                                            
+                                    <t t-set="TotColStock" t-value="TotColStock + art.di_col_stock" />
+                                    <t t-set="TotPoibStock" t-value="TotPoibStock + art.di_poib_stock" />
+                                    <t t-set="TotPoinStock" t-value="TotPoinStock + art.di_poin_stock" />
+                                    <t t-set="TotQteStock" t-value="TotQteStock + art.di_qte_stock" />
+                                    <t t-set="TotValStock" t-value="TotValStock + art.di_val_stock" />
+                                    
+                                    <t t-set="TotColVen" t-value="TotColVen + art.di_col_ven" />
+                                    <t t-set="TotPoibVen" t-value="TotPoibVen + art.di_poib_ven" />
+                                    <t t-set="TotPoinVen" t-value="TotPoinVen + art.di_poin_ven" />
+                                    <t t-set="TotQteVen" t-value="TotQteVen + art.di_qte_ven" />
+                                    <t t-set="TotValVen" t-value="TotValVen + art.di_val_ven" />                                                        
+                                    
+                                    <t t-set="TotValMarge" t-value="TotValMarge + art.di_val_marge" />     
+                                </t>
+                                <t t-else="">
+                                    <td></td>
+                                </t>                       
                             </tr>  
                         </t> 
-                        <tr>
+                        <t t-if="not wiz.di_liste_comptage">
+                            <tr>
                                 <td>
                                     <span>TOTAL</span>
                                 </td>
@@ -124,16 +135,16 @@
                                     
                                 </td>                               
                                 <td>
-                                    <span t-esc="TotColStock"/>
+                                    <span t-esc="'%.2f'%  TotColStock"/>
                                 </td>
                                 <td>
-                                    <span t-esc="TotPoibStock"/>
+                                    <span t-esc="'%.2f'%  TotPoibStock"/>
                                 </td>
                                 <td>
-                                    <span t-esc="TotPoinStock"/>
+                                    <span t-esc="'%.2f'%  TotPoinStock"/>
                                 </td>   
                                 <td>
-                                    <span t-esc="TotQteStock"/>
+                                    <span t-esc="'%.2f'% TotQteStock"/>
                                 </td> 
                                  <td>
                                     
@@ -146,16 +157,16 @@
                                 </td>
                                 
                                 <td>
-                                    <span t-esc="TotColVen"/>
+                                    <span t-esc="'%.2f'% TotColVen"/>
                                 </td>
                                 <td>
-                                    <span t-esc="TotPoibVenk"/>
+                                    <span t-esc="'%.2f'% TotPoibVenk"/>
                                 </td>
                                 <td>
-                                    <span t-esc="TotPoinVen"/>
+                                    <span t-esc="'%.2f'% TotPoinVen"/>
                                 </td>
                                 <td>
-                                    <span t-esc="TotQteVen"/>
+                                    <span t-esc="'%.2f'% TotQteVen"/>
                                 </td>
                                  <td>
                                     
@@ -175,7 +186,8 @@
                                     </t>
                                     <span t-esc="'%.2f'% TotPrcMarge"/>
                                 </td>  
-                            </tr>                                                                                                         
+                            </tr>      
+                        </t>                                                                                                   
                     </table>                                           
                 </div>
             </t>

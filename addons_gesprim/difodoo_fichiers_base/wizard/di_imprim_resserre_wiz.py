@@ -13,13 +13,14 @@ class DiImpRessWiz(models.TransientModel):
  
     di_product_ids = fields.Many2many("product.product")
     di_to_date = fields.Date('Le', default=time.strftime('%Y-%m-%d') )
+    di_liste_comptage = fields.Boolean("Liste de comptage", default=False)
     
     @api.multi
     def imprimer_resserre(self):
         context = dict(self.env.context or {})
         if self.di_to_date:
             context.update(di_date_to=self.di_to_date) 
-        self.di_product_ids=self.env['product.product'].search([('type','!=','service')]).with_context(context)  
+        self.di_product_ids=self.env['product.product'].search([('type','!=','service'),('qty_available','>',0.0)])
         
         
                                                     

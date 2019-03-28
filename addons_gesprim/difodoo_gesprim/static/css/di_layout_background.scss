@@ -3,7 +3,9 @@
     font-family: 'Arial', 'Helvetica', 'sans-serif';
 }
 .o_report_layout_background {
-    background-image:none;    
+    position:relative;
+    top : 50px;
+    background-image:none;        
     .table th {
         border-bottom: 1px solid gray('300');
     }
@@ -21,11 +23,15 @@
     }
 }
 
+// #information_block{
+//     margin-top:400px !important;
+//     }
 
 .o_background_header {     
     .di_nom_soc{
         font-size: 25px;  
         }     
+    background-color: transparent !important;
     border-bottom: none;
     min-height : 200px;
     img {

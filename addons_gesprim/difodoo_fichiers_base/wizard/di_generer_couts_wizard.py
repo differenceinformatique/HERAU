@@ -22,17 +22,35 @@ class DiGenCoutsWiz(models.TransientModel):
         cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
         
         if not cout_jour:
+            premier_mouv_assigned = False
+            premier_mouv_done = False
 #             premier_mouv_vente = self.env['sale.order.line'].new()
 #             premier_mouv_achat = self.env['purchase.order.line'].new()
             date_veille = di_date + timedelta(days=-1)
-            mouvs = self.env['stock.move'].search([('product_id','=',di_product_id),('picking_id','!=',False)]).sorted(key=lambda m: m.picking_id.date )
+            mouvs = self.env['stock.move'].search([('product_id','=',di_product_id),('picking_id','!=',False),('state','=','done')]).sorted(key=lambda m: m.picking_id.date_done)
+            
 #             mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted('picking_id.date')
 #             mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.picking_id.date )
 #             for premier_mouv_achat in mouvs_achat:
 #                 break
 #             mouvs_vente = self.env['sale.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.picking_id.date )
-            for premier_mouv in mouvs:
+            for premier_mouv_done in mouvs:
                 break
+            
+            mouvs = self.env['stock.move'].search([('product_id','=',di_product_id),('picking_id','!=',False),('state','=','assigned')]).sorted(key=lambda m: m.picking_id.scheduled_date)
+            premier_mouv = False
+            for premier_mouv_assigned in mouvs:
+                break
+            if premier_mouv_done:
+                premier_mouv = premier_mouv_done            
+                
+            
+            if self.di_cde_ach: 
+                if premier_mouv_assigned:                                   
+                    if  not premier_mouv or  premier_mouv_assigned.picking_id.scheduled_date < premier_mouv.picking_id.date_done:
+                        premier_mouv = premier_mouv_assigned
+            
+                
             
 #             if premier_mouv_achat.picking_id.date and not premier_mouv_vente.picking_id.date:
 #                 premier_mouv = premier_mouv_achat
@@ -53,7 +71,7 @@ class DiGenCoutsWiz(models.TransientModel):
             nbpiece=0.0
             poids=0.0
             (qte,mont,nbcol,nbpal,nbpiece,poids) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach)       
-            if not cout_veille and premier_mouv.picking_id.date and  date_veille >= premier_mouv.picking_id.date.date() :
+            if not cout_veille and ( (self.di_cde_ach and (premier_mouv.picking_id.scheduled_date and  date_veille >= premier_mouv.picking_id.scheduled_date.date()))or(not self.di_cde_ach and (premier_mouv.picking_id.date_done and  date_veille >= premier_mouv.picking_id.date_done.date()))) :
                 self.di_generer_cmp(di_product_id,date_veille)
                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
 
@@ -63,8 +81,8 @@ class DiGenCoutsWiz(models.TransientModel):
             nbpal = cout_veille.di_nbpal + nbpal
             nbpiece = cout_veille.di_nbpiece + nbpiece
             poids = cout_veille.di_poin + poids             
-            if qte !=0.0:
-                cmp=mont/qte
+            if qte !=0.0:                
+                cmp=round(mont/qte,2)
             else:
                 nbcol = 0
                 nbpal = 0
@@ -94,7 +112,8 @@ class DiGenCoutsWiz(models.TransientModel):
     
     def di_generer_couts(self):        
         articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
-        date_lancement = datetime.today().date()
+#         articles = self.env['product.product'].browse(5110)               
+        date_lancement = datetime.today().date() #+ timedelta(days=-12)
 #         pour tests
 #         date_lancement=date_lancement.replace(month=3)
 #         date_lancement=date_lancement.replace(day=19)
@@ -125,29 +144,29 @@ class DiGenCoutsWiz(models.TransientModel):
                     code_tarif = self.env['di.code.tarif'].search([('name','=','CMP')])
                     
                 #création tarif uom
-                data = {'di_product_id': di_cout.di_product_id.id,
-                                'di_code_tarif_id': code_tarif.id,                                                        
-                                'di_prix': di_cout.di_cmp,
-                                'di_qte_seuil': 0.0,
-                                'di_date_effet': di_cout.di_date                                                            
-                                }      
-                                 
-                #recherche si tarif existant                                    
-                tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
-                                                               ('di_date_effet','=',di_cout.di_date),
-                                                               ('di_company_id','=',self.env.user.company_id.id),
-                                                               ('di_product_id','=',di_cout.di_product_id.id),
-                                                               ('di_partner_id','=',False),
-                                                               ('di_un_prix','=',False),
-                                                               ('di_qte_seuil','=',0.0)
-                                                               ])
-                        
-                if tarif_existant:
-                    # si il existe, on le met à jour
-                    tarif_existant.update(data)     
-                else:
-                    #sinon on le créé
-                    self.env["di.tarifs"].create(data)
+#                 data = {'di_product_id': di_cout.di_product_id.id,
+#                                 'di_code_tarif_id': code_tarif.id,                                                        
+#                                 'di_prix': di_cout.di_cmp,
+#                                 'di_qte_seuil': 0.0,
+#                                 'di_date_effet': di_cout.di_date                                                            
+#                                 }      
+#                                  
+#                 #recherche si tarif existant                                    
+#                 tarif_existant = self.env["di.tarifs"].search(['&',('di_code_tarif_id', '=', code_tarif.id),
+#                                                                ('di_date_effet','=',di_cout.di_date),
+#                                                                ('di_company_id','=',self.env.user.company_id.id),
+#                                                                ('di_product_id','=',di_cout.di_product_id.id),
+#                                                                ('di_partner_id','=',False),
+#                                                                ('di_un_prix','=',False),
+#                                                                ('di_qte_seuil','=',0.0)
+#                                                                ])
+#                         
+#                 if tarif_existant:
+#                     # si il existe, on le met à jour
+#                     tarif_existant.update(data)     
+#                 else:
+#                     #sinon on le créé
+#                     self.env["di.tarifs"].create(data)
                     
                     
                     

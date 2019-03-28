@@ -16,9 +16,9 @@ class SaleAdvancePaymentInv(models.TransientModel):
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
     date_debut = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
     date_fin = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date Fin")
-    ref_debut = fields.Char(required=True, default="C", string="Code Tiers Début")
-    ref_fin = fields.Char(required=True, default="Czzzzzzz", string="Code Tiers Fin")
-     
+    ref_debut = fields.Char(required=True, default=" ", string="Code Tiers Début")
+    ref_fin = fields.Char(required=True, default="ZZZZZZZZZZ", string="Code Tiers Fin")
+    
      
     
     @api.multi

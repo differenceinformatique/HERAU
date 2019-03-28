@@ -7,7 +7,8 @@
                 <form string="Propriétés">
                     <group col="4" string="Informations">                        
                         <field name="di_to_date" />  
-                        <field name="di_aff_ven" />                                            
+                        <field name="di_aff_ven" />
+                        <field name="di_aff_pertes" />                                             
                     </group>
                     <footer>
                         <button name="action_open_window" string="Afficher la resserre" type="object" class="btn-primary"/>

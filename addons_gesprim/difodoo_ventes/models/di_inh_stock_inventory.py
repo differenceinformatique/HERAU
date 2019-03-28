@@ -107,6 +107,7 @@ class InventoryLine(models.Model):
     di_nb_colis = fields.Integer(string='Nb colis' , store=True)#, compute='_di_compute_qte_spe')
     di_nb_palette = fields.Float(string='Nb palettes' , store=True)#, compute='_di_compute_qte_spe')
     di_poin = fields.Float(string='Poids net' , store=True)#, compute='_di_compute_qte_spe')
+    di_tare_un = fields.Float(string='Tare unitaire' , store=True)
     di_poib = fields.Float(string='Poids brut' , store=True)        
     
     di_nb_pieces_theo = fields.Integer(string='Nb pièces théorique', store=True, compute='_compute_theoretical_qty')
@@ -115,7 +116,12 @@ class InventoryLine(models.Model):
     di_poin_theo = fields.Float(string='Poids net théorique' , store=True, compute='_compute_theoretical_qty')
     di_poib_theo = fields.Float(string='Poids brut théorique' , store=True, compute='_compute_theoretical_qty')   
     
-    di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')       
+    di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')   
+    
+    @api.onchange('di_poib','di_tare_un')
+    def di_onchange_poib_tare(self):
+        self.di_poin = self.di_poib - (self.di_tare_un*self.di_nb_colis)
+   
     
     @api.multi
     @api.depends('product_qty', 'theoretical_qty')

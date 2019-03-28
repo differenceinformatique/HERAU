@@ -61,5 +61,5 @@ class DiProdPackWiz(models.TransientModel):
                                 
                                                                     
             
-        res = self.message = "Génération terminée."        
+        res = "Génération terminée."        
         return res

@@ -149,6 +149,7 @@ class ProductProduct(models.Model):
     
     di_col_stock = fields.Float(string='Colis en stock', compute='_di_compute_resserre_values')
     di_qte_stock = fields.Float(string='Quantité en stock', compute='_di_compute_resserre_values')
+
     di_poib_stock = fields.Float(string='Poids brut en stock', compute='_di_compute_resserre_values')
     di_poin_stock = fields.Float(string='Poids net en stock', compute='_di_compute_resserre_values')
     
@@ -172,6 +173,25 @@ class ProductProduct(models.Model):
     di_qte_regul_sortie = fields.Float(string='Quantité régul. sortie', compute='_di_compute_resserre_values')
     di_poib_reg_sort = fields.Float(string='Poids brut régul. sortie', compute='_di_compute_resserre_values')
     di_poin_reg_sort = fields.Float(string='Poids net régul. sortie', compute='_di_compute_resserre_values')
+    
+    
+#     def _qte_stock_search(self, operator, value):
+#         domain = [('di_qte_stock', operator, value)]
+#         product_ids = self.env['product.product'].search(domain)
+#         return [('product_ids', 'in', product_ids.ids)]   
+#     
+#     @api.multi
+#     def _qte_stock_search(self, operator, value):
+#         recs = self.search([]).filtered(lambda x : x.di_qte_stock >= 0.0 )    
+#         if recs:
+#             return [('id', 'in', [x.id for x in recs])]
+#         
+#     def _search_qte_stock(self, operator, value):       
+#         product_ids = self.env['product.product']._get_ids_avec_stock()
+#         return [('id','in', product_ids)]    
+#     
+#     def _get_ids_avec_stock(self):
+#             
 
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
@@ -244,10 +264,10 @@ class ProductProduct(models.Model):
                     SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
                     SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
                     
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.qty_done else 0 end) AS di_qte_regul_sortie,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_poib else 0 end) AS di_poib_reg_sort,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.qty_done else 0 end) AS di_qte_regul_sortie,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.di_poib else 0 end) AS di_poib_reg_sort,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
                                                       
                 from stock_move_line sml                
                 LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
@@ -405,8 +425,47 @@ class ProductProduct(models.Model):
         
         return res
     
+    def di_get_dernier_cmp(self,date):
+        couts=self.env['di.cout'].search([('di_product_id', '=', self.id)]).filtered(lambda c: c.di_date<=date).sorted(key=lambda k: k.di_date,reverse=True)
+        dernier_cmp = 0.0
+        for cout in couts:
+            dernier_cmp = cout.di_cmp
+            break
+        if dernier_cmp == 0.0 :
+            achats=self.env['purchase.order.line'].search(['&',('product_id','=',self.id),('price_unit','>',0.0)]).filtered(lambda a: a.order_id.date_order.date()<=date).sorted(key=lambda k: k.order_id.date_order,reverse=True)
+            for achat in achats:
+                if achat.product_uom_qty != 0.0:
+                    dernier_cmp = round((achat.price_subtotal / achat.product_uom_qty),2)
+#                 if achat.di_un_prix =="PIECE":
+#                     if achat.di_nb_pieces != 0.0:
+#                         dernier_cmp = achat.price_subtotal / achat.di_nb_pieces
+#                     else:
+#                         dernier_cmp = achat.price_unit
+#                 elif achat.di_un_prix == "COLIS":
+#                     if achat.di_nb_colis != 0.0:
+#                         dernier_cmp = achat.price_subtotal / achat.di_nb_colis
+#                     else:
+#                         dernier_cmp = achat.price_unit
+#                 elif achat.di_un_prix == "PALETTE":
+#                     if achat.di_nb_palette != 0.0:
+#                         dernier_cmp = achat.price_subtotal / achat.di_nb_palette
+#                     else:
+#                         dernier_cmp = achat.price_unit
+#                 elif achat.di_un_prix == "KG":
+#                     if achat.di_poin != 0.0:
+#                         dernier_cmp = achat.price_subtotal / achat.di_poin
+#                     else:
+#                         dernier_cmp = achat.price_unit
+#                 elif achat.di_un_prix == False or achat.di_un_prix == '':                    
+#                     dernier_cmp = achat.price_unit
+                break
+        if dernier_cmp == 0.0 :
+            dernier_cmp = self.standard_price
+        
     
+        return dernier_cmp
     
+                           
     
 #     def di_action_afficher_cond(self):
 #         self.ensure_one()        

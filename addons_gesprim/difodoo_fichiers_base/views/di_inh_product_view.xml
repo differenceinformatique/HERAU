@@ -197,7 +197,8 @@
             <field eval="15" name="priority" />
             <field name="arch" type="xml">
                 <search>
-                    <filter string="Resserre" name="resserre" domain="[('type', '!=', 'service')]" />                    
+                    <filter string="Resserre" name="resserre" domain="[('type', '!=', 'service')]" />  
+                    <filter name="en_stock" string="En stock" domain="[('di_qte_stock','&gt;',0)]"/>                            
                 </search>
             </field>
         </record>
@@ -346,6 +347,11 @@
                     <field name="di_val_ven" sum="Chiffre d'affaire hors taxes"  invisible="context.get('di_aff_ven',True)" />
                     <field name="di_val_marge" sum="Valeur totale de la marge"  invisible="context.get('di_aff_ven',True)" />
                     <field name="di_marge_prc" avg="Pourcentage de marge moyenne"  invisible="context.get('di_aff_ven',True)" />
+                                        
+                    <field name="di_col_regul_sortie" sum="Nombre de colis perdus" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_poib_reg_sort" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_poin_reg_sort" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_qte_regul_sortie" sum="Quantité perdue" invisible="context.get('di_aff_pertes',True)" />
               
             </tree>
             </field>
