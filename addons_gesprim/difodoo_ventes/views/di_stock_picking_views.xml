@@ -424,6 +424,12 @@
                 <field name="di_tare" string="Tare"/>    
                 <field name="di_poin" string="Poids net"/>        
             </xpath>
+            <xpath expr="//field[@name='product_uom_id']" position="after">
+                <field name="di_prix" string="Prix" />
+                <field name="di_un_prix" string="Unité de prix"/>
+                <field name="di_valo" string="Valorisation"/>
+            </xpath>                    
+    
             <xpath expr="//field[@name='location_id']" position="replace"/>
             <xpath expr="//field[@name='location_dest_id']" position="replace"/>
             
@@ -502,6 +508,10 @@
                 <field name="di_poib" string="Poids brut" type="measure"/>    
                 <field name="di_tare" string="Tare" type="measure"/>    
                 <field name="di_poin" string="Poids net" type="measure"/>
+                
+                <field name="di_prix" string="Prix" type="measure"/>
+                <field name="di_un_prix" string="Unité de prix" type="measure"/>
+                <field name="di_valo" string="Valorisation" type="measure"/>
                 
                
                  <!-- <field name="lot_id" string="Lot"/> -->

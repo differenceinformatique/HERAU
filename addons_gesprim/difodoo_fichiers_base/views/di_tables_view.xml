@@ -483,6 +483,7 @@
                             <group string="Ventes">
                                 <field name="di_autovalid_fact_ven"/>
                                 <field name="di_autoimp_fact_ven" invisible = "1"/>
+                                <!-- <field name="property_account_position_id" options="{'no_create': True, 'no_open': True}"/> -->
                             </group>                           
                         </group>
                         <group>

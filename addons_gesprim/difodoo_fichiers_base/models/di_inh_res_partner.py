@@ -31,10 +31,24 @@ class ResPartner(models.Model):
     di_nbex_fac = fields.Integer("Nombre exemplaires facture",help="""Nombre d'exemplaires, d'une impression de facture.""",default=1)
     di_type_releve = fields.Selection([('JOUR','Jour'),('DEMANDE','Demande'),('SEMAINE','Semaine'),('QUINZAINE','Quinzaine'),('DECADE','Décade'),('MOIS','Mois'),('AUCUN','Aucun')], default="AUCUN", string="Relevé",
                                    help="Choix de la périodicité des relevés.")
+        
+    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict',default=lambda self : self._di_get_pays_fr())
+#     property_account_position_id = fields.Many2one('account.fiscal.position' , default=lambda self : self._di_get_posfisc_fr(), company_dependent=True,
+#         string="Fiscal Position",
+#         help="The fiscal position determines the taxes/accounts used for this contact.", oldname="property_account_position")
+#      
     
+    def _di_get_pays_fr(self):
+        pays = self.env['res.country'].search([('code','=','FR')])
+        return pays
     
-    
-
+#     def _di_get_posfisc_fr(self):        
+#         if self.customer:       
+#             param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])                 
+#             return param.property_account_position_id
+#         else:
+#             return False
+         
     @api.onchange('di_iban')
     def _di_controle_iban(self):
         if self.di_iban:

@@ -550,8 +550,40 @@ class StockMoveLine(models.Model):
     di_partner = fields.Many2one(related="move_id.picking_id.partner_id" , string="Tiers",store=True)
 #     di_entree_sortie = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
     di_entrees_sorties = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
-    di_calc_es = fields.Boolean(string="Calc ES",  compute='_di_compute_es')
+#     di_calc_es = fields.Boolean(string="Calc ES",  compute='_di_compute_es')
+    di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
+    di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
 
+    @api.multi
+    def _di_compute_valo(self):
+        for sml in self:
+            if sml.move_id.purchase_line_id:
+                sml.di_prix = sml.move_id.purchase_line_id.price_unit
+                sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
+            elif sml.move_id.sale_line_id:
+                sml.di_prix = sml.move_id.sale_line_id.price_unit
+                sml.di_un_prix = sml.move_id.sale_line_id.di_un_prix
+            else:
+                sml.di_prix = sml.product_id.di_get_dernier_cmp(sml.date.date())
+                sml.di_un_prix = False
+            if sml.di_un_prix:
+                if sml.di_un_prix == 'PIECE':
+                    sml.di_valo = sml.di_prix * sml.di_nb_pieces
+                elif sml.di_un_prix == 'COLIS':
+                    sml.di_valo = sml.di_prix * sml.di_nb_colis
+                elif sml.di_un_prix == 'PALETTE':
+                    sml.di_valo = sml.di_prix * sml.di_nb_palette
+                elif sml.di_un_prix == 'KG':
+                    sml.di_valo = sml.di_prix * sml.di_poin
+            else:
+                if sml.state == 'done':
+                    sml.di_valo = sml.di_prix * sml.qty_done
+                else:
+                    sml.di_valo = sml.di_prix * sml.product_uom_qty  
+                
+        
+        
     @api.multi
     @api.depends('di_usage_loc_dest')
     def _di_compute_entree_sortie(self):   

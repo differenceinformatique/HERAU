@@ -40,6 +40,9 @@ class DiParam(models.Model):
                                            default="STD")
     
     di_rlvno = fields.Integer("Dernier numéro de relevé", default=0)
+    
+    property_account_position_id = fields.Many2one('account.fiscal.position', string="Position fiscale par défaut des clients")
+     
          
                        
     #unicité 
