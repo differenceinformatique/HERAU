@@ -64,17 +64,24 @@ class DiGenCoutsWiz(models.TransientModel):
                               
             cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
             
+                  
+            if not cout_veille and ( (self.di_cde_ach and (premier_mouv.picking_id.scheduled_date and  date_veille >= premier_mouv.picking_id.scheduled_date.date()))or(not self.di_cde_ach and (premier_mouv.picking_id.date_done and  date_veille >= premier_mouv.picking_id.date_done.date()))) :
+                self.di_generer_cmp(di_product_id,date_veille)
+                cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
+            
             qte = 0.0
             mont =0.0
             nbcol=0.0
             nbpal=0.0
             nbpiece=0.0
             poids=0.0
-            (qte,mont,nbcol,nbpal,nbpiece,poids) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach)       
-            if not cout_veille and ( (self.di_cde_ach and (premier_mouv.picking_id.scheduled_date and  date_veille >= premier_mouv.picking_id.scheduled_date.date()))or(not self.di_cde_ach and (premier_mouv.picking_id.date_done and  date_veille >= premier_mouv.picking_id.date_done.date()))) :
-                self.di_generer_cmp(di_product_id,date_veille)
-                cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
-
+            
+            dernier_id_cout_veille = 0
+            if cout_veille:
+                dernier_id_cout_veille = cout_veille.dernier_id
+            dernier_id = 0    
+            (qte,mont,nbcol,nbpal,nbpiece,poids,dernier_id) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach,dernier_id_cout_veille)
+            
             qte = cout_veille.di_qte + qte
             mont = cout_veille.di_mont+ mont
             nbcol = cout_veille.di_nbcol + nbcol
@@ -103,7 +110,8 @@ class DiGenCoutsWiz(models.TransientModel):
                         'di_nbpiece' : nbpiece,
                         'di_poin' : poids,
                         'di_mont' : mont,
-                        'di_cmp' : cmp        
+                        'di_cmp' : cmp,
+                        'dernier_id':dernier_id        
                         }
               
             cout_jour.create(data)
@@ -112,8 +120,8 @@ class DiGenCoutsWiz(models.TransientModel):
     
     def di_generer_couts(self):        
         articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
-#         articles = self.env['product.product'].browse(5110)               
-        date_lancement = datetime.today().date() #+ timedelta(days=-12)
+#         articles = self.env['product.product'].browse(5114)               
+        date_lancement = datetime.today().date()#+ timedelta(days=-7)
 #         pour tests
 #         date_lancement=date_lancement.replace(month=3)
 #         date_lancement=date_lancement.replace(day=19)

@@ -19,6 +19,7 @@ class DiCout(models.Model):
     di_poin = fields.Float(string="Poids théorique en stock")     
     di_mont = fields.Float(string="Valorisation du stock")
     di_date = fields.Date(string="Date coût")
+    dernier_id = fields.Integer("Id du dernier stock.move pris en compte",help="""Permet de prendre en compte les mouvement de la veille si certains ont été effectués après la génération du cout.""")
     
     @api.multi
     @api.depends('di_product_id', 'di_date')
