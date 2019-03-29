@@ -173,7 +173,8 @@ class ProductProduct(models.Model):
     di_qte_regul_sortie = fields.Float(string='Quantité régul. sortie', compute='_di_compute_resserre_values')
     di_poib_reg_sort = fields.Float(string='Poids brut régul. sortie', compute='_di_compute_resserre_values')
     di_poin_reg_sort = fields.Float(string='Poids net régul. sortie', compute='_di_compute_resserre_values')
-    
+    di_val_regul_sortie = fields.Float(string='Valeur régul. sortie', compute='_di_compute_resserre_values')
+    di_val_marge_ap_regul_sortie = fields.Float(string='Valeur marge après régul. sortie', compute='_di_compute_resserre_values')
     
 #     def _qte_stock_search(self, operator, value):
 #         domain = [('di_qte_stock', operator, value)]
@@ -203,7 +204,8 @@ class ProductProduct(models.Model):
                        'di_marge_prc', 'di_col_stock', 'di_qte_stock', 'di_poib_stock', 'di_poin_stock', 'di_col_ven',
                        'di_qte_ven', 'di_poib_ven', 'di_poin_ven','di_col_ach','di_qte_ach', 'di_poib_ach', 'di_poin_ach',
                        'di_col_regul_entree', 'di_qte_regul_entree', 'di_poib_reg_ent', 'di_poin_reg_ent',
-                       'di_col_regul_sortie', 'di_qte_regul_sortie', 'di_poib_reg_sort', 'di_poin_reg_sort']
+                       'di_col_regul_sortie', 'di_qte_regul_sortie', 'di_poib_reg_sort', 'di_poin_reg_sort','di_val_regul_sortie','di_val_marge_ap_regul_sortie']
+            
         if any(x in fields for x in fields_list):
             # Calculate first for every product in which line it needs to be applied
             re_ind = 0
@@ -323,6 +325,11 @@ class ProductProduct(models.Model):
                 res[val.id]['di_marge_prc'] = res[val.id]['di_val_marge'] * 100 / res[val.id]['di_val_ven']
             else:
                 res[val.id]['di_marge_prc'] = 0.0
+                
+            res[val.id]['di_val_regul_sortie'] =  res[val.id]['di_prix_achat_moyen'] *  res[val.id]['di_qte_regul_sortie']
+            res[val.id]['di_val_marge_ap_regul_sortie'] =  res[val.id]['di_val_marge'] -  res[val.id]['di_val_regul_sortie']
+                    
+    
                                                           
             for k, v in res[val.id].items():
                 setattr(val, k, v)

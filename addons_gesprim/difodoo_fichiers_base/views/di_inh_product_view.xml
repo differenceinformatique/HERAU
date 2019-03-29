@@ -342,7 +342,7 @@
                     <field name="di_poib_ven" invisible="context.get('di_aff_ven',True)" />
                     <field name="di_poin_ven" invisible="context.get('di_aff_ven',True)" />
                     <field name="di_qte_ven" sum="Quantité vente" invisible="context.get('di_aff_ven',True)" />
-                    <field name="uom_id"/>
+                    <!-- <field name="uom_id"/> -->
                     <field name="di_prix_vente_moyen"  invisible="context.get('di_aff_ven',True)" />
                     <field name="di_val_ven" sum="Chiffre d'affaire hors taxes"  invisible="context.get('di_aff_ven',True)" />
                     <field name="di_val_marge" sum="Valeur totale de la marge"  invisible="context.get('di_aff_ven',True)" />
@@ -352,6 +352,8 @@
                     <field name="di_poib_reg_sort" invisible="context.get('di_aff_pertes',True)" />
                     <field name="di_poin_reg_sort" invisible="context.get('di_aff_pertes',True)" />
                     <field name="di_qte_regul_sortie" sum="Quantité perdue" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_val_regul_sortie" sum="Valeur régul. sortie" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_val_marge_ap_regul_sortie" sum="Valeur marge après régul. sortie" invisible="context.get('di_aff_pertes',True)" />
               
             </tree>
             </field>

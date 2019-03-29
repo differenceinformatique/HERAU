@@ -22,11 +22,13 @@
                                 <th>Poids brut vendu</th>
                                 <th>Poids net vendu</th>
                                 <th>Quantité vendue</th>
-                                <th>Unité de mesure</th>
+                                <!-- <th>Unité de mesure</th> -->
                                 <th>Prix vente moyen</th>
                                 <th>Valeur HT</th>
                                 <th>Valeur marge</th>
                                 <th>% Marge</th>
+                                <th>Valeur régul. sortie</th>
+                                <th>Marge après régul sortie</th>
                             </t>
                             <t t-else="">
                                 <th>Colis comptés</th>
@@ -47,6 +49,9 @@
                         
                         <t t-set="TotValMarge" t-value="0.0" />
                         <t t-set="TotPrcMarge" t-value="0.0" />
+                        
+                        <t t-set="TotValPerte" t-value="0.0" />
+                        <t t-set="TotValMargeApPerte" t-value="0.0" />
                         
                         <t t-as="art" t-foreach="wiz.di_product_ids">  
                             <tr>
@@ -91,9 +96,9 @@
                                     <td>
                                         <span t-field="art.di_qte_ven"/>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <span t-field="art.uom_id"/>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <span t-esc="'%.2f'% art.di_prix_vente_moyen"/>
                                     </td>
@@ -106,6 +111,12 @@
                                     <td>
                                         <span t-esc="'%.2f'% art.di_marge_prc"/>
                                     </td>    
+                                     <td>
+                                        <span t-esc="'%.2f'% art.di_val_regul_sortie"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'% art.di_val_marge_ap_regul_sortie"/>
+                                    </td> 
                                                                                             
                                     <t t-set="TotColStock" t-value="TotColStock + art.di_col_stock" />
                                     <t t-set="TotPoibStock" t-value="TotPoibStock + art.di_poib_stock" />
@@ -119,7 +130,11 @@
                                     <t t-set="TotQteVen" t-value="TotQteVen + art.di_qte_ven" />
                                     <t t-set="TotValVen" t-value="TotValVen + art.di_val_ven" />                                                        
                                     
-                                    <t t-set="TotValMarge" t-value="TotValMarge + art.di_val_marge" />     
+                                    <t t-set="TotValMarge" t-value="TotValMarge + art.di_val_marge" />    
+                                    
+                                    <t t-set="TotValPerte" t-value="TotValPerte + art.di_val_regul_sortie" />
+                                                                          
+                                    <t t-set="TotValMargeApPerte" t-value="TotValMargeApPerte + art.di_val_marge_ap_regul_sortie" /> 
                                 </t>
                                 <t t-else="">
                                     <td></td>
@@ -160,7 +175,7 @@
                                     <span t-esc="'%.2f'% TotColVen"/>
                                 </td>
                                 <td>
-                                    <span t-esc="'%.2f'% TotPoibVenk"/>
+                                    <span t-esc="'%.2f'% TotPoibVen"/>
                                 </td>
                                 <td>
                                     <span t-esc="'%.2f'% TotPoinVen"/>
@@ -168,9 +183,9 @@
                                 <td>
                                     <span t-esc="'%.2f'% TotQteVen"/>
                                 </td>
-                                 <td>
+                                 <!-- <td>
                                     
-                                </td>
+                                </td> -->
                                 <td>
                                     
                                 </td>
@@ -186,6 +201,14 @@
                                     </t>
                                     <span t-esc="'%.2f'% TotPrcMarge"/>
                                 </td>  
+                                
+                                 <td>
+                                    <span t-esc=" '%.2f'% TotValPerte"/>
+                                </td>
+                                <td>                                    
+                                    <span t-esc="'%.2f'% TotValMargeApPerte"/>
+                                </td> 
+                                                                
                             </tr>      
                         </t>                                                                                                   
                     </table>                                           

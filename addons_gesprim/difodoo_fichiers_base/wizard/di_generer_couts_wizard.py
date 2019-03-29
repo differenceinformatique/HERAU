@@ -13,10 +13,7 @@ class DiGenCoutsWiz(models.TransientModel):
     
     di_generer_tous_tar = fields.Boolean(string="Générer tous les tarifs ?",default=False)
     di_cde_ach = fields.Boolean(string="Prendre en compte les commandes d'achat dans le calcul.",default=False)
-   
-#     def afficher_message_fin(self):
-#         return self.env['di.popup.wiz'].afficher_message("Traitement terminé.",True,False,False,False)
-        
+
     def di_generer_cmp(self,di_product_id,di_date):
         
         cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
@@ -24,16 +21,10 @@ class DiGenCoutsWiz(models.TransientModel):
         if not cout_jour:
             premier_mouv_assigned = False
             premier_mouv_done = False
-#             premier_mouv_vente = self.env['sale.order.line'].new()
-#             premier_mouv_achat = self.env['purchase.order.line'].new()
+
             date_veille = di_date + timedelta(days=-1)
             mouvs = self.env['stock.move'].search([('product_id','=',di_product_id),('picking_id','!=',False),('state','=','done')]).sorted(key=lambda m: m.picking_id.date_done)
-            
-#             mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted('picking_id.date')
-#             mouvs_achat = self.env['purchase.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.picking_id.date )
-#             for premier_mouv_achat in mouvs_achat:
-#                 break
-#             mouvs_vente = self.env['sale.order.line'].search([('product_id','=',di_product_id)]).sorted(key=lambda m: m.picking_id.date )
+      
             for premier_mouv_done in mouvs:
                 break
             
@@ -50,72 +41,60 @@ class DiGenCoutsWiz(models.TransientModel):
                     if  not premier_mouv or  premier_mouv_assigned.picking_id.scheduled_date < premier_mouv.picking_id.date_done:
                         premier_mouv = premier_mouv_assigned
             
-                
-            
-#             if premier_mouv_achat.picking_id.date and not premier_mouv_vente.picking_id.date:
-#                 premier_mouv = premier_mouv_achat
-#             elif premier_mouv_vente.picking_id.date and not premier_mouv_achat.picking_id.date:
-#                 premier_mouv = premier_mouv_vente
-#             else:
-#                 if premier_mouv_achat.picking_id.date > premier_mouv_vente.picking_id.date:
-#                     premier_mouv = premier_mouv_vente
-#                 else:
-#                     premier_mouv = premier_mouv_achat
-                              
-            cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
-            
-                  
-            if not cout_veille and ( (self.di_cde_ach and (premier_mouv.picking_id.scheduled_date and  date_veille >= premier_mouv.picking_id.scheduled_date.date()))or(not self.di_cde_ach and (premier_mouv.picking_id.date_done and  date_veille >= premier_mouv.picking_id.date_done.date()))) :
-                self.di_generer_cmp(di_product_id,date_veille)
+            if premier_mouv:                  
                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
-            
-            qte = 0.0
-            mont =0.0
-            nbcol=0.0
-            nbpal=0.0
-            nbpiece=0.0
-            poids=0.0
-            
-            dernier_id_cout_veille = 0
-            if cout_veille:
-                dernier_id_cout_veille = cout_veille.dernier_id
-            dernier_id = 0    
-            (qte,mont,nbcol,nbpal,nbpiece,poids,dernier_id) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach,dernier_id_cout_veille)
-            
-            qte = cout_veille.di_qte + qte
-            mont = cout_veille.di_mont+ mont
-            nbcol = cout_veille.di_nbcol + nbcol
-            nbpal = cout_veille.di_nbpal + nbpal
-            nbpiece = cout_veille.di_nbpiece + nbpiece
-            poids = cout_veille.di_poin + poids             
-            if qte !=0.0:                
-                cmp=round(mont/qte,2)
-            else:
-                nbcol = 0
-                nbpal = 0
-                nbpiece = 0
-                poids = 0
-                mont = 0
-                cmp=mont
                 
-#             if  qte !=0.0 or mont != 0.0 or nbcol!=0.0 or nbpal!=0.0 or nbpiece!=0.0 or poids!=0.0:   
-#                 self    
+                      
+                if not cout_veille and ( (self.di_cde_ach and (premier_mouv.picking_id.scheduled_date and  date_veille >= premier_mouv.picking_id.scheduled_date.date()))or(not self.di_cde_ach and (premier_mouv.picking_id.date_done and  date_veille >= premier_mouv.picking_id.date_done.date()))) :
+                    self.di_generer_cmp(di_product_id,date_veille)
+                    cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
+                
+                qte = 0.0
+                mont =0.0
+                nbcol=0.0
+                nbpal=0.0
+                nbpiece=0.0
+                poids=0.0
+                
+                dernier_id_cout_veille = 0
+                if cout_veille:
+                    dernier_id_cout_veille = cout_veille.dernier_id
+                dernier_id = 0    
+                (qte,mont,nbcol,nbpal,nbpiece,poids,dernier_id) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach,dernier_id_cout_veille)
+                
+                qte = cout_veille.di_qte + qte
+                mont = cout_veille.di_mont+ mont
+                nbcol = cout_veille.di_nbcol + nbcol
+                nbpal = cout_veille.di_nbpal + nbpal
+                nbpiece = cout_veille.di_nbpiece + nbpiece
+                poids = cout_veille.di_poin + poids             
+                if qte !=0.0:                
+                    cmp=round(mont/qte,2)
+                else:
+                    nbcol = 0
+                    nbpal = 0
+                    nbpiece = 0
+                    poids = 0
+                    mont = 0
+                    cmp=mont
                     
-            data ={
-                        'di_date': di_date,  
-                        'di_product_id' : di_product_id,
-                        'di_qte' : qte,
-                        'di_nbcol' : nbcol,
-                        'di_nbpal' : nbpal,
-                        'di_nbpiece' : nbpiece,
-                        'di_poin' : poids,
-                        'di_mont' : mont,
-                        'di_cmp' : cmp,
-                        'dernier_id':dernier_id        
-                        }
-              
-            cout_jour.create(data)
-            self.env.cr.commit()                        
+    #     
+                        
+                data ={
+                            'di_date': di_date,  
+                            'di_product_id' : di_product_id,
+                            'di_qte' : qte,
+                            'di_nbcol' : nbcol,
+                            'di_nbpal' : nbpal,
+                            'di_nbpiece' : nbpiece,
+                            'di_poin' : poids,
+                            'di_mont' : mont,
+                            'di_cmp' : cmp,
+                            'dernier_id':dernier_id        
+                            }
+                  
+                cout_jour.create(data)
+                self.env.cr.commit()                        
                                     
     
     def di_generer_couts(self):        
@@ -313,22 +292,9 @@ class DiGenCoutsWiz(models.TransientModel):
                         #sinon on le créé
                         self.env["di.tarifs"].create(data)
                 
-        #raise Warning("Traitement terminé")  
-#         self.afficher_message_fin()
+ 
         return self.env['di.popup.wiz'].afficher_message("Traitement terminé.",True,False,False,False) 
-#         return {                    
-#             'name':'Traitement terminé',            
-#             'button_ok':True,
-#             'button_yes':False,
-#             'button_no':False,
-#             'button_cancel':False,
-#             'type': 'ir.actions.act_window',
-#             'view_type': 'form',
-#             'view_mode': 'form',
-#             'res_model': 'di.popup.wiz',
-#             'target':'new'                    
-#             }     
-            
+
         
     @api.model
     def default_get(self, fields):
