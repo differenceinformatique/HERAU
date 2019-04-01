@@ -199,7 +199,7 @@
                 <search>
                     <filter string="Resserre" name="resserre" domain="[('type', '!=', 'service')]" />  
                     <filter name="en_stock" string="En stock" domain="[('di_qte_stock','&gt;',0)]"/>
-                    <field name="name" string="Product" filter_domain="['|', '|', ('product_variant_ids.default_code', 'ilike', self),('name', 'ilike', self), ('barcode', 'ilike', self)]"/>                            
+                    <field name="name" string="Article" filter_domain="['|', '|', ('product_variant_ids.default_code', 'ilike', self),('name', 'ilike', self), ('barcode', 'ilike', self)]"/>                            
                 </search>
             </field>
         </record>
