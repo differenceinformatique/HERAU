@@ -114,13 +114,15 @@ class AccountInvoice(models.Model):
             qty = line.product_qty - line.qty_invoiced
             di_qte_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
             di_poib = line.di_poib - line.di_poib_fac 
-            di_poin = line.di_poin - line.di_poin_fac    
+            di_poin = line.di_poin - line.di_poin_fac                
         #ajout difodoo
         else:
             qty = line.qty_received - line.qty_invoiced
             di_qte_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
             di_poib = line.di_poib_liv - line.di_poib_fac
             di_poin = line.di_poin_liv - line.di_poin_fac
+            
+        di_tare = di_poib - di_poin
         #ajout difodoo
         if float_compare(qty, 0.0, precision_rounding=line.product_uom.rounding) <= 0:
             qty = 0.0
@@ -141,7 +143,7 @@ class AccountInvoice(models.Model):
             'analytic_tag_ids': line.analytic_tag_ids.ids,
             'invoice_line_tax_ids': invoice_line_tax_ids.ids,
             #Ajout des éléments difodoo
-            'di_tare':line.di_tare,  
+            'di_tare':di_tare,  
             'di_un_saisie':line.di_un_saisie,
             'di_type_palette_id':line.di_type_palette_id,
             'di_product_packaging_id':line.product_packaging,

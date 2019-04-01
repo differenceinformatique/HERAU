@@ -61,6 +61,24 @@ class PurchaseOrderLine(models.Model):
          
     
     
+    @api.model
+    def _get_date_planned(self, seller, po=False):
+        date_dem = datetime.combine(po.di_demdt,datetime.min.time()) if po else  datetime.combine(self.order_id.di_demdt,datetime.min.time())    
+        if date_dem:
+            return date_dem
+        else:
+            return super(PurchaseOrderLine, self)._get_date_planned(seller)    
+        
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        result = super(PurchaseOrderLine, self).onchange_product_id()
+        self.date_planned = datetime.combine(self.order_id.di_demdt,datetime.min.time())                
+        return result
+    
+    def _onchange_quantity(self):
+        super(PurchaseOrderLine, self)._onchange_quantity()
+        self.date_planned = datetime.combine(self.order_id.di_demdt,datetime.min.time()) 
+               
     @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state',"di_poin_liv","di_poin_fac","di_poib_liv","di_poib_fac")
     def _di_get_to_invoice_qty(self):
         
@@ -537,6 +555,7 @@ class PurchaseOrderLine(models.Model):
             line.di_nb_colis_fac = nbcol
             line.di_nb_palette_fac = nbpal
             line.di_poin_fac = poin
+            line.di_tare = line.di_poib_fac - line.di_poin_fac
                      
         super(PurchaseOrderLine, self)._compute_qty_invoiced()
 

@@ -156,6 +156,8 @@ class StockMove(models.Model):
                     else:
                         line.di_qte_un_saisie = ceil(move.sale_line_id.di_qte_un_saisie * ratio)
                     line.di_tare = line.di_poib - line.di_poin
+                    if line.di_nb_colis != 0.0:
+                        line.di_tare_un = line.di_tare / line.di_nb_colis 
     
 #                 if move.di_un_saisie =="PIECE":
 #                     
@@ -554,7 +556,10 @@ class StockMoveLine(models.Model):
     di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
     di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
-
+    di_tare_un      = fields.Float(string='Tare unitaire')
+    
+    
+    
     @api.multi
     def _di_compute_valo(self):
         for sml in self:
@@ -647,6 +652,8 @@ class StockMoveLine(models.Model):
     @api.onchange('di_nb_colis')
     def _di_change_nb_colis(self):
         if self.ensure_one()and not self.move_id.inventory_id:      
+            self.di_tare_un = 0.0
+            self.di_tare = 0.0
             if self._context.get('di_move_id'):
                 move = self.env['stock.move'].browse(self._context['di_move_id'])
             else:
@@ -667,6 +674,12 @@ class StockMoveLine(models.Model):
                     self.di_nb_palette = self.di_nb_colis
                 
                 self.di_poib = self.di_poin + self.di_tare
+                
+    @api.multi    
+    @api.onchange('di_nb_colis', 'di_tare_un')
+    def _di_recalcule_tare(self):
+        if self.ensure_one():
+            self.di_tare = self.di_tare_un * self.di_nb_colis
                 
     @api.multi                     
     @api.onchange('di_nb_pieces')
@@ -745,8 +758,9 @@ class StockMoveLine(models.Model):
                 self.di_poin = self.qty_done
             
     @api.model
-    def create(self, vals):
-        if vals.get('picking_id') :
+    def create(self, vals):        
+        orig = self.env['stock.location'].browse(vals.get('location_id'))        
+        if vals.get('picking_id') and orig.usage != 'customer' :
             if vals['picking_id'] != False:                  
                 picking = self.env['stock.picking'].browse(vals['picking_id'])
                 if picking.picking_type_id.code == 'incoming': 
@@ -761,7 +775,8 @@ class StockMoveLine(models.Model):
                                 vals["di_poib"] =  move.purchase_line_id.di_poib 
                                 vals["di_nb_palette"] =  move.purchase_line_id.di_nb_palette 
                                 vals["di_qte_un_saisie"] =  move.purchase_line_id.di_qte_un_saisie
-                                vals["di_tare"] =  move.purchase_line_id.di_tare 
+                                vals["di_tare"] =  move.purchase_line_id.di_tare
+                                vals["di_tare_un"] =  move.purchase_line_id.di_tare_un 
                                 if move.product_id.tracking != 'none':
                                     if move.purchase_line_id.order_id.id != False:
                                         lotexist = self.env['stock.production.lot'].search(['&', ('name', '=', move.purchase_line_id.order_id.name), ('product_id', '=', move.product_id.id)])

@@ -175,7 +175,7 @@
                 <field name="di_nb_palette" readonly="1" string="Nb palette"/>
                 <field
                     attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_type_palette_id"/>
-                <field name="di_poib" readonly="1" string="Poids brut"/>                
+                <field name="di_poib" readonly="1" string="Poids brut"/>                                
                 <field name="di_tare" readonly="1" string="Tare"/>                
                 <field name="di_poin" readonly="1" string="Poids net"/>
             </xpath>
@@ -284,6 +284,8 @@
                     attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_nb_pieces"/>
                 <field
                     attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_poib"/>
+                <field
+                    attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_tare_un"/>
                 <field
                     attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" name="di_tare"/>
                 <field
@@ -420,7 +422,7 @@
                 <field name="di_partner" string="Tiers"/>
                 <field name="di_nb_colis" string="Nb colis"/>
                 <field name="di_nb_pieces" string="Nb pièces"/>    
-                <field name="di_poib" string="Poids brut"/>    
+                <field name="di_poib" string="Poids brut"/>                
                 <field name="di_tare" string="Tare"/>    
                 <field name="di_poin" string="Poids net"/>        
             </xpath>
@@ -448,7 +450,7 @@
             <xpath expr="//field[@name='qty_done']" position="before">
                 <field name="di_nb_colis" string="Nb colis"/>
                 <field name="di_nb_pieces" string="Nb pièces"/>    
-                <field name="di_poib" string="Poids brut"/>    
+                <field name="di_poib" string="Poids brut"/>                
                 <field name="di_tare" string="Tare"/>    
                 <field name="di_poin" string="Poids net"/>        
             </xpath>
