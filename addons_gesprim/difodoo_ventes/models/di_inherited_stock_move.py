@@ -351,15 +351,15 @@ class StockMove(models.Model):
         if cde_ach:
             if date:                                
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-                mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)]).filtered(lambda mv: (mv.state =='done' and mv.picking_id.date_done.date() <= date and mv.id>dernier_id) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() <= date and mv.id>dernier_id))
+                mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)]).filtered(lambda mv: (mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() < date and mv.id>dernier_id) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() == date ))
             else:
                 mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)])
         else:
             if date:
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-                mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id),('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)]).filtered(lambda mv: (mv.state =='done' and mv.picking_id.date_done.date() <= date and mv.id>dernier_id) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() <= date and mv.id>dernier_id))
+                mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)]).filtered(lambda mv: (mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date))
             else:
-                mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)])
+                mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '!=', False)])
              
         for mouv in mouvs:
             if mouv.id > dernier_id_lu:
@@ -503,8 +503,7 @@ class StockMove(models.Model):
                     mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))                
           
         if date:
-
-            mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: mv.inventory_id.date.date() <= date and mv.id>dernier_id)
+            mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: (mv.inventory_id.date.date() < date and mv.id>dernier_id) or (mv.inventory_id.date.date() == date))
         else:
             mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: mv.id>dernier_id)
              

@@ -13,6 +13,7 @@ class DiGenCoutsWiz(models.TransientModel):
     
     di_generer_tous_tar = fields.Boolean(string="Générer tous les tarifs ?",default=False)
     di_cde_ach = fields.Boolean(string="Prendre en compte les commandes d'achat dans le calcul.",default=False)
+    di_date_gen = fields.Date('Date de génération', default=datetime.today().date() )
 
     def di_generer_cmp(self,di_product_id,di_date):
         
@@ -62,6 +63,9 @@ class DiGenCoutsWiz(models.TransientModel):
                 dernier_id = 0    
                 (qte,mont,nbcol,nbpal,nbpiece,poids,dernier_id) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach,dernier_id_cout_veille)
                 
+                
+                if dernier_id == 0:
+                    dernier_id=dernier_id_cout_veille
                 qte = cout_veille.di_qte + qte
                 mont = cout_veille.di_mont+ mont
                 nbcol = cout_veille.di_nbcol + nbcol
@@ -100,7 +104,9 @@ class DiGenCoutsWiz(models.TransientModel):
     def di_generer_couts(self):        
         articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
 #         articles = self.env['product.product'].browse(5114)               
-        date_lancement = datetime.today().date()#+ timedelta(days=-7)
+#         date_lancement = datetime.today().date()#+ timedelta(days=-7)
+        
+        date_lancement = self.di_date_gen
 #         pour tests
 #         date_lancement=date_lancement.replace(month=3)
 #         date_lancement=date_lancement.replace(day=19)

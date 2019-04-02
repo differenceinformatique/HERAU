@@ -9,10 +9,11 @@
                 <group>                     
                     <div name="question">
                                 Voulez-vous lancer la génération des coûts ?
-                             </div>                    
+                             </div>
+                    <field name="di_date_gen" string="Générer les coûts au :"/>
                 </group>
                 <group>
-                    <field name="di_generer_tous_tar" string="Générer tous les tarifs"/>
+                    <field name="di_generer_tous_tar" string="Générer tous les tarifs"/>                    
                     <field name="di_cde_ach" string="Prendre en compte les commandes d'achat dans le calcul."/>
                 </group>
             </group>

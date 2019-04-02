@@ -131,12 +131,14 @@ class PurchaseOrderLine(models.Model):
    
     def _get_dernier_prix(self):
         prix = 0.0
-        lignes = self.search(['&', ('product_id', '=', self.product_id.id), ('partner_id', '=', self.partner_id.id),('date_order','<',self.date_order)]).sorted(key=lambda t: t.date_order,reverse=True)
-        if lignes:
-            for l in lignes:
-                break
-            if l.price_unit:
-                prix = l.price_unit            
+        prix = self.product_id.di_get_dernier_cmp(self.date_order.date())
+        if prix == 0.0:
+            lignes = self.search(['&', ('product_id', '=', self.product_id.id), ('partner_id', '=', self.partner_id.id),('date_order','<',self.date_order)]).sorted(key=lambda t: t.date_order,reverse=True)
+            if lignes:
+                for l in lignes:
+                    break
+                if l.price_unit:
+                    prix = l.price_unit            
         return prix
     
     @api.multi
