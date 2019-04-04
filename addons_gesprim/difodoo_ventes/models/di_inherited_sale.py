@@ -662,6 +662,14 @@ class SaleOrderLine(models.Model):
             line.di_qte_un_saisie_fac = qty_invoiced
         super(SaleOrderLine, self)._get_invoice_qty()
         
+    @api.multi
+    def unlink(self):
+        for line in self:
+            if line.order_id.carrier_id:
+                line.order_id.get_delivery_price() # on recalcul le prix du transport si on supprime une ligne
+        res = super(SaleOrderLine, self).unlink()
+        return res
+        
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -1034,11 +1042,11 @@ class SaleOrder(models.Model):
         return cde
 
      
-    @api.multi
-    def unlink(self):        
-        self.get_delivery_price() # on recalcul le prix du transport si on supprime une ligne
-        res = super(SaleOrder, self).unlink()
-        return res
+#     @api.multi    # morvan, on n'est pas en suppression de ligne mais en suppression de commande (SaleOrder), déplacement dans SaleOrderLine
+#     def unlink(self):        
+#         self.get_delivery_price() # on recalcul le prix du transport si on supprime une ligne
+#         res = super(SaleOrder, self).unlink()
+#         return res
        
     
     @api.multi
