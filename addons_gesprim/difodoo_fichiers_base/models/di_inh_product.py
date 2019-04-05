@@ -147,11 +147,11 @@ class ProductProduct(models.Model):
     di_val_marge = fields.Float(string='Valeur marge', compute='_di_compute_resserre_values')
     di_marge_prc = fields.Float(compute='_di_compute_resserre_values', string='Marge %')
     
-    di_col_stock = fields.Float(string='Colis en stock', compute='_di_compute_resserre_values')
-    di_qte_stock = fields.Float(string='Quantité en stock', compute='_di_compute_resserre_values')
+    di_col_stock = fields.Float(string='Colis en stock', compute='_di_compute_resserre_values', store=True)
+    di_qte_stock = fields.Float(string='Quantité en stock', compute='_di_compute_resserre_values', store=True)
 
-    di_poib_stock = fields.Float(string='Poids brut en stock', compute='_di_compute_resserre_values')
-    di_poin_stock = fields.Float(string='Poids net en stock', compute='_di_compute_resserre_values')
+    di_poib_stock = fields.Float(string='Poids brut en stock', compute='_di_compute_resserre_values', store=True)
+    di_poin_stock = fields.Float(string='Poids net en stock', compute='_di_compute_resserre_values', store=True)
     
     di_col_ven = fields.Float(string='Colis vendus', compute='_di_compute_resserre_values')
     di_qte_ven = fields.Float(string='Quantité vendue', compute='_di_compute_resserre_values')
