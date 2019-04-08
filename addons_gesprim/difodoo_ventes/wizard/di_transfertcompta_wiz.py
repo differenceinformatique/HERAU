@@ -58,7 +58,7 @@ class Wizard_transfert_compta(models.TransientModel):
         libelle = self.replace_accent(libelle)
                          
         if move_name:
-            n_piece = move_name
+            n_piece = move_name.rjust(20)   # ajout d'espaces devant pour compléter à 20 caractères.
                 
         if debit == 0:
             # crédit
