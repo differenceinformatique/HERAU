@@ -44,7 +44,8 @@ class Wizard_transfert_compta(models.TransientModel):
         
         # temporaire herau, compte par défaut adresse manuelle (client divers)
         if compte=='411100':
-            compte='C0009999'
+            compte = 'C0009999'
+            libelle = 'DIVERS'
                 
         compte_gen = compte
         
@@ -56,6 +57,10 @@ class Wizard_transfert_compta(models.TransientModel):
                 libelle = move_line_name  
         
         libelle = self.replace_accent(libelle)
+        
+        #temporaire herau, pas le n° de pièce pour les caisses
+        if journal[0]=='T':
+            move_name=''
                          
         if move_name:
             n_piece = move_name.rjust(20)   # ajout d'espaces devant pour compléter à 20 caractères.
@@ -176,6 +181,44 @@ class Wizard_transfert_compta(models.TransientModel):
                 ORDER BY account_journal.code, am.name, account_account.code"""
 
         self.env.cr.execute(sql, (date_d, date_f, tuple(self.journal_ids.ids),))
+        
+        listrow_entete = list()
+        listrow_entete.append("{}".format('ce1'))
+        listrow_entete.append("{}".format('dos'))
+        listrow_entete.append( "{}".format('ce2'))
+        listrow_entete.append( "{}".format('etb'))
+        listrow_entete.append( "{}".format('cpt'))
+        listrow_entete.append( "{}".format('ecrdt'))
+        listrow_entete.append( "{}".format('lib'))
+        listrow_entete.append( "{}".format('jnl'))         
+        listrow_entete.append( "{}".format('ecrno'))
+        listrow_entete.append( "{}".format('ecrlg'))
+        listrow_entete.append( "{}".format('axe(1)'))
+        listrow_entete.append( "{}".format('axe(2)'))
+        listrow_entete.append( "{}".format('axe(3)'))
+        listrow_entete.append( "{}".format('axe(4)'))
+        listrow_entete.append( "{}".format('cp'))
+        listrow_entete.append( "{}".format('reg'))
+        listrow_entete.append( "{}".format('lett'))
+        listrow_entete.append( "{}".format('point'))
+        listrow_entete.append( "{}".format('lot'))
+        listrow_entete.append( "{}".format('piece'))
+        listrow_entete.append( "{}".format('echdt'))
+        listrow_entete.append( "{}".format('chqno'))
+        listrow_entete.append( "{}".format('dev'))
+        listrow_entete.append( "{}".format('regtyp')) # aml.payment_id.paymentmethod_id.code ???
+        listrow_entete.append( "{}".format('pinotiers'))  # pinotiers
+        listrow_entete.append( "{}".format('mt'))
+        listrow_entete.append( "{}".format('mtdev'))
+        listrow_entete.append( "{}".format('mtbis'))
+        listrow_entete.append( "{}".format('sens'))
+        listrow_entete.append( "{}".format('lettdt'))
+        listrow_entete.append( "{}".format('pointdt'))
+        listrow_entete.append( "{}".format('devp'))
+        listrow_entete.append( "{}".format('ecrvalno'))
+        listrow_entete.append( "{}".format('cptcol'))
+        listrow_entete.append( "{}".format('natpai'))
+        w.writerow(listrow_entete)
         
         nb_lig = 0
         ids = [(r[0],r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]) for r in self.env.cr.fetchall()]
