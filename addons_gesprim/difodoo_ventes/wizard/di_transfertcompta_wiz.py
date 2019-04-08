@@ -41,6 +41,10 @@ class Wizard_transfert_compta(models.TransientModel):
         listrow = list()        
         libelle = ""
         n_piece = ""
+        
+        # temporaire herau, compte par défaut adresse manuelle (client divers)
+        if compte=='411100':
+            compte='C0009999'
                 
         compte_gen = compte
         
@@ -57,11 +61,13 @@ class Wizard_transfert_compta(models.TransientModel):
             n_piece = move_name
                 
         if debit == 0:
+            # crédit
             montant = credit
-            sens = "1"
-        else:         
-            montant = debit
             sens = "2"
+        else:
+            # débit         
+            montant = debit
+            sens = "1"
         
         ce1 = "8"
         
