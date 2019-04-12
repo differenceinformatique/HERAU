@@ -2,7 +2,8 @@
 <odoo>
     <template id="di_report_intrastatinvoice_document">
         <t t-call="web.external_layout">
-            <t t-set="o" t-value="o.with_context(lang = o.partner_id.lang)"/>
+            <!-- <t t-set="o" t-value="o.with_context(lang = o.partner_id.lang)"/> -->
+            <t t-set="o" t-value="o.with_context(lang = 'fr_FR')"/>
             <div class="page">
                 <div class="row">
                     <div class="col-xs-5 col-xs-offset-7">

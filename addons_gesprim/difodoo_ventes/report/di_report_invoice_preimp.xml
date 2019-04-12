@@ -2,7 +2,8 @@
 <odoo>
     <template id="di_report_invoice_fixe">
         <t t-call="difodoo_gesprim.di_external_layout">
-            <t t-set="o" t-value="o.with_context({'lang': lang})"/>
+            <!-- <t t-set="o" t-value="o.with_context({'lang': lang})"/> -->
+            <t t-set="o" t-value="o.with_context(lang = 'fr_FR')"/>
             <t t-set="address">
                 <div class="di_o_adr_tiers">
                     <address t-field="o.partner_id"  t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
