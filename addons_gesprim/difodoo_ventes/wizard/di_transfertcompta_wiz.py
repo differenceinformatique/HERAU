@@ -206,8 +206,8 @@ class Wizard_transfert_compta(models.TransientModel):
         listrow_entete.append( "{}".format('echdt'))
         listrow_entete.append( "{}".format('chqno'))
         listrow_entete.append( "{}".format('dev'))
-        listrow_entete.append( "{}".format('regtyp')) # aml.payment_id.paymentmethod_id.code ???
-        listrow_entete.append( "{}".format('pinotiers'))  # pinotiers
+        listrow_entete.append( "{}".format('regtyp')) 
+        listrow_entete.append( "{}".format('pinotiers')) 
         listrow_entete.append( "{}".format('mt'))
         listrow_entete.append( "{}".format('mtdev'))
         listrow_entete.append( "{}".format('mtbis'))
