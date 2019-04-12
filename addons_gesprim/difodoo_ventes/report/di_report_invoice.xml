@@ -2,8 +2,7 @@
 <odoo>
     <template id="di_report_intrastatinvoice_document">
         <t t-call="web.external_layout">
-            <!-- <t t-set="o" t-value="o.with_context(lang = o.partner_id.lang)"/> -->
-            <t t-set="o" t-value="o.with_context(lang = 'fr_FR')"/>
+            <t t-set="o" t-value="o.with_context(lang = o.partner_id.lang)"/>
             <div class="page">
                 <div class="row">
                     <div class="col-xs-5 col-xs-offset-7">
@@ -211,8 +210,7 @@
 	
 	<template id="di_imp_fac">
             <t t-call="web.external_layout">
-                <!-- <t t-set="o" t-value="o.with_context({'lang': lang})"/> -->
-                <t t-set="o" t-value="o.with_context({'lang': 'fr_FR'"/>
+                <t t-set="o" t-value="o.with_context({'lang': lang})"/>
                 <t t-set="address">
                     <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
                     <div t-if="o.partner_id.vat" class="mt16">TVA : <span t-field="o.partner_id.vat"/></div>
@@ -236,13 +234,12 @@
                         <div class="col-auto mw-100 mb-2" t-if="o.date_invoice" name="invoice_date">
                             <strong>Date de facture:</strong>
                             <!-- <p class="m-0" t-field="o.date_invoice"/> -->
-                            <p t-esc="time.strftime('%d-%m-%Y', time.strptime(o.date_invoice,'%Y-%m-%d'))"/>
-                            
+                            <p class="m-0" t-field="o.date_invoice" t-options="{&quot;format&quot;: &quot;dd/mm/yyyy&quot;}"/>
                         </div>
                         <div class="col-auto mw-100 mb-2" t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')" name="due_date">
                             <strong>Date d'échéance:</strong>
-                           <!--  <p class="m-0" t-field="o.date_due"/> -->
-                            <p t-esc="time.strftime('%d-%m-%Y', time.strptime(o.date_due,'%Y-%m-%d'))"/>
+                            <!-- <p class="m-0" t-field="o.date_due"/> -->
+                            <p class="m-0" t-field="o.date_due" t-options="{&quot;format&quot;: &quot;dd/mm/yyyy&quot;}"/>
                         </div>
                         <div class="col-auto mw-100 mb-2" t-if="o.origin" name="origin">
                             <strong>Origine:</strong>
@@ -437,8 +434,7 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-foreach="range(o.di_nbex)" t-as="n">
-                    <!-- <t t-call="difodoo_ventes.di_imp_fac" t-lang="o.partner_id.lang"/> -->
-                    <t t-call="difodoo_ventes.di_imp_fac" t-lang="fr_FR"/>
+                    <t t-call="difodoo_ventes.di_imp_fac" t-lang="o.partner_id.lang"/>
                 </t>
             </t>
         </t>
@@ -448,8 +444,7 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-foreach="range(o.di_nbex)" t-as="n">
-                 	<!-- <t t-call="account.report_invoice_document_with_payments" t-lang="o.partner_id.lang"/> -->
-                    <t t-call="account.report_invoice_document_with_payments" t-lang="fr_FR"/>
+                 	<t t-call="account.report_invoice_document_with_payments" t-lang="o.partner_id.lang"/>
                 </t>
             </t>
         </t>
@@ -458,8 +453,7 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-foreach="range(o.di_nbex)" t-as="n">
-                    <!-- <t t-call="difodoo_ventes.di_report_intrastatinvoice_document" t-lang="o.partner_id.lang"/> -->
-                    <t t-call="difodoo_ventes.di_report_intrastatinvoice_document" t-lang="fr_FR"/>
+                    <t t-call="difodoo_ventes.di_report_intrastatinvoice_document" t-lang="o.partner_id.lang"/>
                 </t>                
             </t>
         </t>
