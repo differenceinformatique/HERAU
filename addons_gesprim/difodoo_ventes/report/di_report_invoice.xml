@@ -234,12 +234,12 @@
                         <div class="col-auto mw-100 mb-2" t-if="o.date_invoice" name="invoice_date">
                             <strong>Date de facture:</strong>
                             <!-- <p class="m-0" t-field="o.date_invoice"/> -->
-                            <p class="m-0" t-field="o.date_invoice" t-options="{&quot;format&quot;: &quot;dd/mm/yyyy&quot;}"/>
+                            <p class="m-0" t-field="o.date_invoice" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/>
                         </div>
                         <div class="col-auto mw-100 mb-2" t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')" name="due_date">
                             <strong>Date d'échéance:</strong>
                             <!-- <p class="m-0" t-field="o.date_due"/> -->
-                            <p class="m-0" t-field="o.date_due" t-options="{&quot;format&quot;: &quot;dd/mm/yyyy&quot;}"/>
+                            <p class="m-0" t-field="o.date_due" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/>
                         </div>
                         <div class="col-auto mw-100 mb-2" t-if="o.origin" name="origin">
                             <strong>Origine:</strong>
