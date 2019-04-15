@@ -17,11 +17,14 @@ class PurchaseOrderLine(models.Model):
     di_qte_un_saisie= fields.Float(string='Quantité en unité de saisie',store=True)
     di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie",store=True)
     di_type_palette_id  = fields.Many2one('product.packaging', string='Palette',store=True) 
-    di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute ="_compute_qte_aff",store=True)
-    di_nb_colis     = fields.Integer(string='Nb colis',compute ="_compute_qte_aff",store=True)
-    di_nb_palette   = fields.Float(string='Nb palettes',compute ="_compute_qte_aff",store=True)
-    di_poin         = fields.Float(string='Poids net',store=True)
-    di_poib         = fields.Float(string='Poids brut',store=True)
+#     di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute ="_compute_qte_aff",store=True)# _compute_qte_aff doublon de _di_recalcule_quantites
+#     di_nb_colis     = fields.Integer(string='Nb colis',compute ="_compute_qte_aff",store=True)# _compute_qte_aff doublon de _di_recalcule_quantites
+#     di_nb_palette   = fields.Float(string='Nb palettes',compute ="_compute_qte_aff",store=True)# _compute_qte_aff doublon de _di_recalcule_quantites
+    di_nb_pieces    = fields.Integer(string='Nb pièces')     
+    di_nb_colis     = fields.Integer(string='Nb colis')    
+    di_nb_palette   = fields.Float(string='Nb palettes')    
+    di_poin         = fields.Float(string='Poids net')
+    di_poib         = fields.Float(string='Poids brut')
     di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
@@ -52,14 +55,11 @@ class PurchaseOrderLine(models.Model):
     di_poin_a_facturer = fields.Float(string='Poids net à facturer',compute='_di_get_to_invoice_qty')
     di_poib_a_facturer = fields.Float(string='Poids brut à facturer',compute='_di_get_to_invoice_qty')
  
-    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
-    
-    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)
-    
-    di_flg_modif_uom = fields.Boolean(store=True)
-    di_tare_un      = fields.Float(string='Tare unitaire')
-         
-    
+    di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)    
+    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)    
+    di_flg_modif_uom = fields.Boolean()    
+    di_tare_un = fields.Float(string='Tare unitaire')
+    di_flg_qty_suggest = fields.Boolean(store=False, default=False)
     
     @api.model
     def _get_date_planned(self, seller, po=False):
@@ -99,35 +99,51 @@ class PurchaseOrderLine(models.Model):
             else:
                 line.di_qte_a_facturer_un_saisie = 0
                 line.di_poin_a_facturer = 0
-                line.di_poib_a_facturer = 0
-        
+                line.di_poib_a_facturer = 0        
     
+    def _suggest_quantity(self):
+        super(PurchaseOrderLine, self)._suggest_quantity()
+        self.product_qty = 0                # pose trop de problème si pas à 0 en création
+        self.di_flg_qty_suggest = True     # pour éviter de flager modif qté uom si initialisation ligne
     
     @api.multi    
     @api.onchange('product_qty')
     def _di_modif_qte_un_mesure(self):
         if self.ensure_one():
-            if PurchaseOrderLine.modifparprg == False:
-                if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
-                        self.di_poin=self.product_qty
-                        self.di_poib = self.di_poin + self.di_tare
-                    elif self.product_uom.name.lower() != 'kg':    
-                        if self.product_id.di_get_type_piece().qty != 0.0:
-                            self.di_nb_pieces = ceil(self.product_qty/self.product_id.di_get_type_piece().qty)
-                        else:
-                            self.di_nb_pieces = ceil(self.product_qty)                                
-                        if self.product_packaging.qty != 0.0 :
-                            self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
-                        else:      
-                            self.di_nb_colis = ceil(self.product_qty)             
-                        if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                        else:
-                            self.di_nb_palette = self.di_nb_colis
-                        
-                    self.di_flg_modif_uom = True
-            PurchaseOrderLine.modifparprg=False
+            if self.product_id:
+                if self.di_flg_qty_suggest == False:     # pour éviter de flager modif qté uom si initialisation ligne
+                    if PurchaseOrderLine.modifparprg == False:
+                        if self.product_uom:
+                            if self.product_uom.name.lower() == 'kg':
+                                self.di_poin=self.product_qty
+                                self.di_poib = self.di_poin + self.di_tare
+                            elif self.product_uom.name.lower() != 'kg':    
+                                if self.product_id.di_get_type_piece().qty != 0.0:
+                                    self.di_nb_pieces = ceil(self.product_qty/self.product_id.di_get_type_piece().qty)
+                                else:
+                                    self.di_nb_pieces = ceil(self.product_qty)                                
+                                if self.product_packaging.qty != 0.0 :
+                                    self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
+                                else:      
+                                    self.di_nb_colis = ceil(self.product_qty)             
+                                if self.di_type_palette_id.di_qte_cond_inf != 0.0:
+                                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                                else:
+                                    self.di_nb_palette = self.di_nb_colis
+                                    
+                            if self.di_un_saisie == "PIECE":
+                                self.di_qte_un_saisie = self.di_nb_pieces
+                            elif self.di_un_saisie == "COLIS":
+                                self.di_qte_un_saisie = self.di_nb_colis
+                            elif self.di_un_saisie == "PALETTE":
+                                self.di_qte_un_saisie = self.di_nb_palette 
+                            elif self.di_un_saisie == "KG":
+                                self.di_qte_un_saisie = self.di_poib
+                                
+                            self.di_flg_modif_uom = True
+                    PurchaseOrderLine.modifparprg=False
+                else:
+                    self.di_flg_qty_suggest=False                                
    
     def _get_dernier_prix(self):
         prix = 0.0
@@ -283,75 +299,75 @@ class PurchaseOrderLine(models.Model):
             line.di_nb_colis_liv = total_nb_colis_liv
             line.di_nb_palette_liv = total_nb_palette_liv
             line.di_poin_liv = total_poin_liv
-            line.di_poib_liv = total_poib_liv  
-            
+            line.di_poib_liv = total_poib_liv             
            
-    @api.multi
-    @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
-    def _compute_qte_aff(self):
-        for pol in self:
-            if pol.di_flg_modif_uom == False:
-                if pol.di_un_saisie == "PIECE":
-                    pol.di_nb_pieces = ceil(pol.di_qte_un_saisie)            
-                    if pol.product_packaging.qty != 0.0 :
-                        pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
-                    else:      
-                        pol.di_nb_colis = ceil(pol.product_qty)             
-                    if pol.di_type_palette_id.di_qte_cond_inf != 0.0:
-                        pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
-                    else:
-                        pol.di_nb_palette = pol.di_nb_colis                               
-                            
-                elif pol.di_un_saisie == "COLIS":
-                    pol.di_nb_colis = ceil(pol.di_qte_un_saisie)            
-                    pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)
-                    if pol.di_type_palette_id.di_qte_cond_inf !=0.0:                
-                        pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
-                    else:
-                        pol.di_nb_palette = pol.di_nb_colis                              
-                                           
-                elif pol.di_un_saisie == "PALETTE":            
-                    pol.di_nb_palette = pol.di_qte_un_saisie
-                    if pol.di_type_palette_id.di_qte_cond_inf!=0.0:
-                        pol.di_nb_colis = ceil(pol.di_nb_palette * pol.di_type_palette_id.di_qte_cond_inf)
-                    else:
-                        pol.di_nb_colis = ceil(pol.di_nb_palette)
-                    pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)                                           
-                      
-                elif pol.di_un_saisie == "KG":                                          
-                    if pol.product_packaging.qty !=0.0:
-                        pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
-                    else:
-                        pol.di_nb_colis = ceil(pol.product_qty)
-                    if pol.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                        pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
-                    else:  
-                        pol.di_nb_palette = pol.di_nb_colis
-                    pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)
-                      
-                else:                                    
-                    if pol.product_packaging.qty !=0.0:
-                        pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
-                    else:
-                        pol.di_nb_colis = ceil(pol.product_qty)
-                    if pol.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                        pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
-                    else:  
-                        pol.di_nb_palette = pol.di_nb_colis
-                    pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)
-            else:           
-                if pol.product_id.di_get_type_piece().qty != 0.0:
-                    pol.di_nb_pieces = ceil(pol.product_qty/pol.product_id.di_get_type_piece().qty)
-                else:
-                    pol.di_nb_pieces = ceil(pol.product_qty)                                
-                if pol.product_packaging.qty != 0.0 :
-                    pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
-                else:      
-                    pol.di_nb_colis = ceil(pol.product_qty)             
-                if pol.di_type_palette_id.di_qte_cond_inf != 0.0:
-                    pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
-                else:
-                    pol.di_nb_palette = pol.di_nb_colis
+#     @api.multi        # _compute_qte_aff doublon de _di_recalcule_quantites
+#     @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging','di_flg_modif_uom')
+#     def _compute_qte_aff(self):
+#         for pol in self:
+#             if pol.product_id:
+#                 if pol.di_flg_modif_uom == False:
+#                     if pol.di_un_saisie == "PIECE":
+#                         pol.di_nb_pieces = ceil(pol.di_qte_un_saisie)            
+#                         if pol.product_packaging.qty != 0.0 :
+#                             pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
+#                         else:      
+#                             pol.di_nb_colis = ceil(pol.product_qty)             
+#                         if pol.di_type_palette_id.di_qte_cond_inf != 0.0:
+#                             pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
+#                         else:
+#                             pol.di_nb_palette = pol.di_nb_colis                               
+#                                 
+#                     elif pol.di_un_saisie == "COLIS":
+#                         pol.di_nb_colis = ceil(pol.di_qte_un_saisie)            
+#                         pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)
+#                         if pol.di_type_palette_id.di_qte_cond_inf !=0.0:                
+#                             pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
+#                         else:
+#                             pol.di_nb_palette = pol.di_nb_colis                              
+#                                                
+#                     elif pol.di_un_saisie == "PALETTE":            
+#                         pol.di_nb_palette = pol.di_qte_un_saisie
+#                         if pol.di_type_palette_id.di_qte_cond_inf!=0.0:
+#                             pol.di_nb_colis = ceil(pol.di_nb_palette * pol.di_type_palette_id.di_qte_cond_inf)
+#                         else:
+#                             pol.di_nb_colis = ceil(pol.di_nb_palette)
+#                         pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)                                           
+#                           
+#                     elif pol.di_un_saisie == "KG":                                          
+#                         if pol.product_packaging.qty !=0.0:
+#                             pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
+#                         else:
+#                             pol.di_nb_colis = ceil(pol.product_qty)
+#                         if pol.di_type_palette_id.di_qte_cond_inf !=0.0:    
+#                             pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
+#                         else:  
+#                             pol.di_nb_palette = pol.di_nb_colis
+#                         pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)
+#                           
+#                     else:                                    
+#                         if pol.product_packaging.qty !=0.0:
+#                             pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
+#                         else:
+#                             pol.di_nb_colis = ceil(pol.product_qty)
+#                         if pol.di_type_palette_id.di_qte_cond_inf !=0.0:    
+#                             pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
+#                         else:  
+#                             pol.di_nb_palette = pol.di_nb_colis
+#                         pol.di_nb_pieces = ceil(pol.product_packaging.di_qte_cond_inf * pol.di_nb_colis)
+#                 else:           
+#                     if pol.product_id.di_get_type_piece().qty != 0.0:
+#                         pol.di_nb_pieces = ceil(pol.product_qty/pol.product_id.di_get_type_piece().qty)
+#                     else:
+#                         pol.di_nb_pieces = ceil(pol.product_qty)                                
+#                     if pol.product_packaging.qty != 0.0 :
+#                         pol.di_nb_colis = ceil(pol.product_qty / pol.product_packaging.qty)
+#                     else:      
+#                         pol.di_nb_colis = ceil(pol.product_qty)             
+#                     if pol.di_type_palette_id.di_qte_cond_inf != 0.0:
+#                         pol.di_nb_palette = pol.di_nb_colis / pol.di_type_palette_id.di_qte_cond_inf
+#                     else:
+#                         pol.di_nb_palette = pol.di_nb_colis
      
     @api.multi
     @api.onchange('product_id')
@@ -378,100 +394,94 @@ class PurchaseOrderLine(models.Model):
                          
  
     @api.multi    
-    @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
+    @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging','di_flg_modif_uom')
     def _di_recalcule_quantites(self):
         if self.ensure_one():
-            if self.di_flg_modif_uom == False:
-                self.di_tare_un = 0.0
-                self.di_tare = 0.0
-                PurchaseOrderLine.modifparprg=True
-                if self.di_un_saisie == "PIECE":
-                    self.di_nb_pieces = ceil(self.di_qte_un_saisie)
-                    self.product_qty = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
-                    if self.product_packaging.qty != 0.0 :
-                        self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
-                    else:      
-                        self.di_nb_colis = ceil(self.product_qty)  
-                    
-                    self.di_tare = self.di_tare_un*self.di_nb_colis
-                
-                                       
-                    if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                        self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+            if self.product_id:
+                if self.di_flg_modif_uom == False:
+                    self.di_tare_un = 0.0
+                    self.di_tare = 0.0
+                    PurchaseOrderLine.modifparprg=True
+                    if self.di_un_saisie == "PIECE":
+                        self.di_nb_pieces = ceil(self.di_qte_un_saisie)
+                        self.product_qty = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
+                        if self.product_packaging.qty != 0.0 :
+                            self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
+                        else:      
+                            self.di_nb_colis = ceil(self.product_qty)                       
+                        self.di_tare = self.di_tare_un*self.di_nb_colis
+                        if self.di_type_palette_id.di_qte_cond_inf != 0.0:
+                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                        else:
+                            self.di_nb_palette = self.di_nb_colis
+                        self.di_poin = self.product_qty * self.product_id.weight 
+                        self.di_poib = self.di_poin + self.di_tare
+                              
+                    elif self.di_un_saisie == "COLIS":
+                        self.di_nb_colis = ceil(self.di_qte_un_saisie)
+                        self.di_tare = self.di_tare_un*self.di_nb_colis                            
+                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                        if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
+                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                        else:
+                            self.di_nb_palette = self.di_nb_colis
+                        self.di_poin = self.product_qty * self.product_id.weight 
+                        self.di_poib = self.di_poin + self.di_tare
+                                                                     
+                    elif self.di_un_saisie == "PALETTE":            
+                        self.di_nb_palette = self.di_qte_un_saisie
+                        if self.di_type_palette_id.di_qte_cond_inf!=0.0:
+                            self.di_nb_colis = ceil(self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf)
+                        else:
+                            self.di_nb_colis = ceil(self.di_nb_palette)
+                        self.di_tare = self.di_tare_un*self.di_nb_colis
+                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.di_poin = self.product_qty * self.product_id.weight 
+                        self.di_poib = self.di_poin + self.di_tare
+                                                
+                    elif self.di_un_saisie == "KG":                                                               
+                        self.di_poib = self.di_qte_un_saisie                                                            
+                        self.di_poin = self.di_poib - self.di_tare
+    #                     self.product_uom_qty = self.di_poin
+                        if self.product_id.weight  != 0.0:
+                            self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
+                        else:
+                            self.di_nb_pieces = ceil(self.di_poin)    
+                                            
+                        if self.product_packaging.qty !=0.0:
+                            self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                        else:
+                            self.di_nb_colis = ceil(self.di_nb_pieces)
+                            
+                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                            
+                        if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
+                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                        else:  
+                            self.di_nb_palette = self.di_nb_colis
+                            
                     else:
-                        self.di_nb_palette = self.di_nb_colis
-                    self.di_poin = self.product_qty * self.product_id.weight 
-                    self.di_poib = self.di_poin + self.di_tare
-                          
-                elif self.di_un_saisie == "COLIS":
-                    self.di_nb_colis = ceil(self.di_qte_un_saisie)
-                    self.di_tare = self.di_tare_un*self.di_nb_colis
-                        
-                    self.product_qty = self.product_packaging.qty * self.di_nb_colis
-                    self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
-                    if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
-                        self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                    else:
-                        self.di_nb_palette = self.di_nb_colis
-                    self.di_poin = self.product_qty * self.product_id.weight 
-                    self.di_poib = self.di_poin + self.di_tare
-                                         
-                elif self.di_un_saisie == "PALETTE":            
-                    self.di_nb_palette = self.di_qte_un_saisie
-                    if self.di_type_palette_id.di_qte_cond_inf!=0.0:
-                        self.di_nb_colis = ceil(self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf)
-                    else:
-                        self.di_nb_colis = ceil(self.di_nb_palette)
-                    self.di_tare = self.di_tare_un*self.di_nb_colis
-                    self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
-                    self.product_qty = self.product_packaging.qty * self.di_nb_colis
-                    self.di_poin = self.product_qty * self.product_id.weight 
-                    self.di_poib = self.di_poin + self.di_tare
-                    
-                elif self.di_un_saisie == "KG":
-                                                           
-                    self.di_poib = self.di_qte_un_saisie                                                            
-                    self.di_poin = self.di_poib - self.di_tare
-#                     self.product_uom_qty = self.di_poin
-                    if self.product_id.weight  != 0.0:
-                        self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
-                    else:
-                        self.di_nb_pieces = ceil(self.di_poin)    
-                                        
-                    if self.product_packaging.qty !=0.0:
-                        self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
-                    else:
-                        self.di_nb_colis = ceil(self.di_nb_pieces)
-                        
-                    self.product_qty = self.product_packaging.qty * self.di_nb_colis
-                        
-                    if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                        self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                    else:  
-                        self.di_nb_palette = self.di_nb_colis
-                        
-                             
-                    
-                else:
-                    self.di_poib = self.di_qte_un_saisie
-                    self.di_poin = self.di_poib - self.di_tare
-#                     self.product_uom_qty = self.di_poin
-                    if self.product_id.weight  != 0.0:
-                        self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
-                    else:
-                        self.di_nb_pieces = ceil(self.di_poin)    
-                                        
-                    if self.product_packaging.qty !=0.0:
-                        self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
-                    else:
-                        self.di_nb_colis = ceil(self.di_nb_pieces)
-                        
-                    self.product_qty = self.product_packaging.qty * self.di_nb_colis
-                        
-                    if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                        self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                    else:  
-                        self.di_nb_palette = self.di_nb_colis    
+                        self.di_poib = self.di_qte_un_saisie
+                        self.di_poin = self.di_poib - self.di_tare
+    #                     self.product_uom_qty = self.di_poin
+                        if self.product_id.weight  != 0.0:
+                            self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
+                        else:
+                            self.di_nb_pieces = ceil(self.di_poin)    
+                                            
+                        if self.product_packaging.qty !=0.0:
+                            self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                        else:
+                            self.di_nb_colis = ceil(self.di_nb_pieces)
+                            
+                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                            
+                        if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
+                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                        else:  
+                            self.di_nb_palette = self.di_nb_colis    
   
     @api.multi    
     @api.onchange('di_nb_colis', 'di_tare_un')
@@ -557,7 +567,7 @@ class PurchaseOrderLine(models.Model):
             line.di_nb_colis_fac = nbcol
             line.di_nb_palette_fac = nbpal
             line.di_poin_fac = poin
-            line.di_tare = line.di_poib_fac - line.di_poin_fac
+            line.di_tare_fac = line.di_poib_fac - line.di_poin_fac
                      
         super(PurchaseOrderLine, self)._compute_qty_invoiced()
 
