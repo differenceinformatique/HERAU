@@ -7,8 +7,6 @@ from odoo.addons import decimal_precision as dp
  
 class StockMove(models.Model):
     _inherit = "stock.move"
-    
-    modifparprg = False
 
     di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True, compute='_compute_quantites')
     di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("KG", "Kg")], string="Unité de saisie", store=True)
@@ -613,7 +611,7 @@ class StockMoveLine(models.Model):
                 elif move.di_un_saisie == "PALETTE":
                     sml.di_qte_un_saisie = sml.di_nb_palette
                 elif move.di_un_saisie == "KG":
-                    sml.di_qte_un_saisie = sml.di_poin
+                    sml.di_qte_un_saisie = sml.di_poib
                 else:
                     sml.di_qte_un_saisie = sml.qty_done   
     
@@ -744,9 +742,11 @@ class StockMoveLine(models.Model):
             if self.di_flg_modif_qty_spe == False:
                 if move.product_uom:
                     if move.product_uom.name.lower == 'kg':
+                        # si géré au kg, on ne modife que les champs poids
                         self.di_poin = self.qty_done
                         self.di_poib = self.di_poin + self.di_tare
-                    elif move.product_uom.name.lower != 'kg':    
+                    else:
+                        # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
                         if self.product_id.di_get_type_piece().qty != 0.0:
                             self.di_nb_pieces = ceil(self.qty_done/self.product_id.di_get_type_piece().qty)
                         else:
@@ -758,7 +758,11 @@ class StockMoveLine(models.Model):
                         if move.di_type_palette_id.di_qte_cond_inf != 0.0:
                             self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis                            
+                            self.di_nb_palette = self.di_nb_colis
+                            
+                    self.di_poin = self.qty_done * self.product_id.weight 
+                    self.di_poib = self.di_poin + self.di_tare
+                                                        
                     if move.di_un_saisie == "PIECE":
                         self.di_qte_un_saisie = self.di_nb_pieces
                     elif move.di_un_saisie == "COLIS":
@@ -766,7 +770,8 @@ class StockMoveLine(models.Model):
                     elif move.di_un_saisie == "PALETTE":
                         self.di_qte_un_saisie = self.di_nb_palette 
                     elif move.di_un_saisie == "KG":
-                        self.di_qte_un_saisie = self.di_poin                        
+                        self.di_qte_un_saisie = self.di_poib
+                                                
                     self.di_flg_modif_uom = True
             self.di_flg_modif_qty_spe=False
             

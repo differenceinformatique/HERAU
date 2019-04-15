@@ -79,7 +79,7 @@ class SaleOrderLine(models.Model):
             else:
                 self.di_poin = self.di_poib - self.di_tare
                 if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                    if self.product_uom.name.lower() == 'kg' and self.product_uom_qty != self.di_poin: # si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         SaleOrderLine.modifparprg=True
                         self.product_uom_qty = self.di_poin
                                 
@@ -94,7 +94,7 @@ class SaleOrderLine(models.Model):
 #             else:       
             if self.di_un_saisie != 'KG':         
                 if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                    if self.product_uom.name.lower() == 'kg' and self.product_uom_qty != self.di_poin: # si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         SaleOrderLine.modifparprg=True
                         self.product_uom_qty = self.di_poin
     
@@ -107,7 +107,7 @@ class SaleOrderLine(models.Model):
                 self.di_qte_un_saisie = self.di_poib
             else:
                 if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                    if self.product_uom.name.lower() == 'kg' and self.product_uom_qty != self.di_poin:# si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         SaleOrderLine.modifparprg=True
                         self.product_uom_qty = self.di_poin
                 
@@ -120,36 +120,41 @@ class SaleOrderLine(models.Model):
                 # par défaut la quantité est à 1, ce qui pose problème par la suite
                 self.product_uom_qty = 0
             if self.product_id:
-                    if SaleOrderLine.modifparprg == False:
-                        if self.product_uom:
-                            if self.product_uom.name.lower() == 'kg':
-                                self.di_poin=self.product_uom_qty
-                                self.di_poib = self.di_poin + self.di_tare
-                            elif self.product_uom.name.lower() != 'kg':    
-                                if self.product_id.di_get_type_piece().qty != 0.0:
-                                    self.di_nb_pieces = ceil(self.product_uom_qty/self.product_id.di_get_type_piece().qty)
-                                else:
-                                    self.di_nb_pieces = ceil(self.product_uom_qty)                                
-                                if self.product_packaging.qty != 0.0 :
-                                    self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
-                                else:      
-                                    self.di_nb_colis = ceil(self.product_uom_qty)             
-                                if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                                else:
-                                    self.di_nb_palette = self.di_nb_colis
-                                    
-                            if self.di_un_saisie == "PIECE":
-                                self.di_qte_un_saisie = self.di_nb_pieces
-                            elif self.di_un_saisie == "COLIS":
-                                self.di_qte_un_saisie = self.di_nb_colis
-                            elif self.di_un_saisie == "PALETTE":
-                                self.di_qte_un_saisie = self.di_nb_palette 
-                            elif self.di_un_saisie == "KG":
-                                self.di_qte_un_saisie = self.di_poib
+                if SaleOrderLine.modifparprg == False:
+                    if self.product_uom:
+                        if self.product_uom.name.lower() == 'kg':
+                            # si géré au kg, on ne modife que les champs poids
+                            self.di_poin = self.product_uom_qty
+                            self.di_poib = self.di_poin + self.di_tare
+                        else:
+                            # sinon on recalcule les autres unité à partir de la quantité en unité de mesure    
+                            if self.product_id.di_get_type_piece().qty != 0.0:
+                                self.di_nb_pieces = ceil(self.product_uom_qty/self.product_id.di_get_type_piece().qty)
+                            else:
+                                self.di_nb_pieces = ceil(self.product_uom_qty)                                
+                            if self.product_packaging.qty != 0.0 :
+                                self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
+                            else:      
+                                self.di_nb_colis = ceil(self.product_uom_qty)             
+                            if self.di_type_palette_id.di_qte_cond_inf != 0.0:
+                                self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            else:
+                                self.di_nb_palette = self.di_nb_colis
+
+                        self.di_poin = self.product_uom_qty * self.product_id.weight 
+                        self.di_poib = self.di_poin + self.di_tare
                                 
-                            self.di_flg_modif_uom = True
-                    SaleOrderLine.modifparprg=False
+                        if self.di_un_saisie == "PIECE":
+                            self.di_qte_un_saisie = self.di_nb_pieces
+                        elif self.di_un_saisie == "COLIS":
+                            self.di_qte_un_saisie = self.di_nb_colis
+                        elif self.di_un_saisie == "PALETTE":
+                            self.di_qte_un_saisie = self.di_nb_palette 
+                        elif self.di_un_saisie == "KG":
+                            self.di_qte_un_saisie = self.di_poib
+                            
+                        self.di_flg_modif_uom = True
+                SaleOrderLine.modifparprg=False
     
     @api.multi    
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
@@ -312,7 +317,6 @@ class SaleOrderLine(models.Model):
                  , 'move_ids.di_nb_pieces', 'move_ids.di_nb_colis', 'move_ids.di_nb_palette', 'move_ids.di_poin', 'move_ids.di_poib')
     def _compute_qty_delivered(self):
         super(SaleOrderLine, self)._compute_qty_delivered()
-
         for line in self:  # TODO: maybe one day, this should be done in SQL for performance sake
             if line.qty_delivered_method == 'stock_move':
                 qte_un_saisie = 0.0
@@ -320,8 +324,7 @@ class SaleOrderLine(models.Model):
                 colis = 0.0
                 palettes = 0.0
                 poib = 0.0
-                poin = 0.0
-                
+                poin = 0.0               
                 for move in line.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped and line.product_id == r.product_id):
                     if move.location_dest_id.usage == "customer":
                         if not move.origin_returned_move_id or (move.origin_returned_move_id and move.to_refund):
@@ -351,6 +354,27 @@ class SaleOrderLine(models.Model):
                 line.di_nb_palette_liv = palettes
                 line.di_poib_liv = poib
                 line.di_poin_liv = poin
+                
+                # c'est la quantité standard qui fait foi, on remplace la qté spé correspondant à l'unité de mesure
+                if line.product_uom:
+                    if line.product_uom.name.lower() == 'kg':
+                        line.di_poin_liv = line.qty_delivered
+                        line.di_poib_liv = line.di_poin_liv + line.di_tare_liv
+                        if line.di_un_saisie == "KG":
+                            line.di_qte_un_saisie = line.di_poib_liv
+                    else:
+                        if line.product_id.di_get_type_piece().qty == 1.0:  # si pas au kg, et coef 1, équivalent à l'unité de mesure, maj
+                            line.di_nb_pieces_liv = line.qty_delivered
+                            if line.di_un_saisie == "PIECE":
+                                line.di_qte_un_saisie = line.di_nb_pieces_liv
+                        if line.product_packaging.qty == 1.0:   # si pas au kg, et coef 1, équivalent à l'unité de mesure, maj
+                            line.di_nb_colis_liv = line.qty_delivered
+                            if line.di_un_saisie == "COLIS":
+                                line.di_qte_un_saisie = line.di_nb_colis_liv
+                        if line.di_type_palette_id.di_qte_cond_inf * line.product_packaging.qty == 1.0:   # si pas au kg, et coef 1, équivalent à l'unité de mesure, maj
+                            line.di_nb_palette_liv = line.qty_delivered
+                            if line.di_un_saisie == "PALETTE":
+                                line.di_qte_un_saisie = line.di_nb_palette_liv
                 
     @api.multi
     @api.depends('di_marge_prc','company_id.di_param_id.di_seuil_marge_prc')#,'di_param_id.di_seuil_marge_prc')

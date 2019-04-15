@@ -115,9 +115,11 @@ class PurchaseOrderLine(models.Model):
                     if PurchaseOrderLine.modifparprg == False:
                         if self.product_uom:
                             if self.product_uom.name.lower() == 'kg':
-                                self.di_poin=self.product_qty
+                                # si géré au kg, on ne modife que les champs poids
+                                self.di_poin = self.product_qty
                                 self.di_poib = self.di_poin + self.di_tare
-                            elif self.product_uom.name.lower() != 'kg':    
+                            else:
+                                # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
                                 if self.product_id.di_get_type_piece().qty != 0.0:
                                     self.di_nb_pieces = ceil(self.product_qty/self.product_id.di_get_type_piece().qty)
                                 else:
@@ -130,6 +132,9 @@ class PurchaseOrderLine(models.Model):
                                     self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                                 else:
                                     self.di_nb_palette = self.di_nb_colis
+                                    
+                            self.di_poin = self.product_qty * self.product_id.weight 
+                            self.di_poib = self.di_poin + self.di_tare
                                     
                             if self.di_un_saisie == "PIECE":
                                 self.di_qte_un_saisie = self.di_nb_pieces
@@ -498,7 +503,7 @@ class PurchaseOrderLine(models.Model):
             else:
                 self.di_poin = self.di_poib - self.di_tare
                 if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                    if self.product_uom.name.lower() == 'kg' and self.product_qty != self.di_poin:# si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         PurchaseOrderLine.modifparprg=True
                         self.product_qty = self.di_poin
                                 
@@ -513,7 +518,7 @@ class PurchaseOrderLine(models.Model):
 #             else:       
             if self.di_un_saisie != 'KG':         
                 if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                    if self.product_uom.name.lower() == 'kg' and self.product_qty != self.di_poin:# si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         PurchaseOrderLine.modifparprg=True
                         self.product_qty = self.di_poin
     
@@ -531,7 +536,7 @@ class PurchaseOrderLine(models.Model):
                 self.di_qte_un_saisie = self.di_poib
             else:
                 if self.product_uom:
-                    if self.product_uom.name.lower() == 'kg':
+                    if self.product_uom.name.lower() == 'kg' and self.product_qty != self.di_poin:# si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         PurchaseOrderLine.modifparprg=True
                         self.product_qty = self.di_poin
                 

@@ -303,9 +303,9 @@ class AccountInvoiceLine(models.Model):
             else:
                 self.di_poin = self.di_poib - self.di_tare
                 if self.uom_id:
-                    if self.uom_id.name.lower() == 'kg':
+                    if self.uom_id.name.lower() == 'kg' and self.quantity != self.di_poin: # si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         AccountInvoiceLine.modifparprg=True
-                        self.product_uom_qty = self.di_poin
+                        self.quantity = self.di_poin
                                 
     @api.multi 
     @api.onchange('di_poin')
@@ -318,9 +318,9 @@ class AccountInvoiceLine(models.Model):
 #             else:       
             if self.di_un_saisie != 'KG':         
                 if self.uom_id:
-                    if self.uom_id.name.lower() == 'kg':
+                    if self.uom_id.name.lower() == 'kg' and self.quantity != self.di_poin:# si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         AccountInvoiceLine.modifparprg=True
-                        self.product_uom_qty = self.di_poin
+                        self.quantity = self.di_poin
     @api.multi 
     @api.onchange('di_tare')
     def _di_onchange_tare(self):
@@ -330,9 +330,9 @@ class AccountInvoiceLine(models.Model):
                 self.di_qte_un_saisie = self.di_poib
             else:
                 if self.uom_id:
-                    if self.uom_id.name.lower() == 'kg':
+                    if self.uom_id.name.lower() == 'kg' and self.quantity != self.di_poin: # si la qté std n'est pas modifiée le flag modifparprg reste à vrai
                         AccountInvoiceLine.modifparprg=True
-                        self.product_uom_qty = self.di_poin
+                        self.quantity = self.di_poin
               
                  
     @api.multi    
@@ -343,9 +343,11 @@ class AccountInvoiceLine(models.Model):
                 if AccountInvoiceLine.modifparprg == False:
                     if self.uom_id:
                         if self.uom_id.name.lower() == 'kg':
-                            self.di_poin=self.quantity 
+                            # si géré au kg, on ne modife que les champs poids
+                            self.di_poin = self.quantity 
                             self.di_poib = self.di_poin + self.di_tare
-                        elif self.uom_id.name.lower() != 'kg':    
+                        else:
+                            # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
                             if self.product_id.di_get_type_piece().qty != 0.0:
                                 self.di_nb_pieces = ceil(self.quantity/self.product_id.di_get_type_piece().qty)
                             else:
@@ -357,8 +359,11 @@ class AccountInvoiceLine(models.Model):
                             if self.di_type_palette_id.di_qte_cond_inf != 0.0:
                                 self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                             else:
-                                self.di_nb_palette = self.di_nb_colis                                
+                                self.di_nb_palette = self.di_nb_colis
                                 
+                            self.di_poin = self.quantity * self.product_id.weight 
+                            self.di_poib = self.di_poin + self.di_tare
+                            
                             if self.di_un_saisie == "PIECE":
                                 self.di_qte_un_saisie = self.di_nb_pieces
                             elif self.di_un_saisie == "COLIS":
@@ -370,7 +375,6 @@ class AccountInvoiceLine(models.Model):
                                                        
                         self.di_flg_modif_uom = True
                 AccountInvoiceLine.modifparprg=False
-            
             
     @api.multi            
     @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_product_packaging_id')
@@ -418,7 +422,6 @@ class AccountInvoiceLine(models.Model):
                     elif self.di_un_saisie == "KG":                        
                         self.di_poib = self.di_qte_un_saisie
                         self.di_poin = self.di_poib - self.di_tare
-    #                     self.product_uom_qty = self.di_poin
                         if self.product_id.weight  != 0.0:
                             self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
                         else:
@@ -436,19 +439,15 @@ class AccountInvoiceLine(models.Model):
                     else:
                         self.di_poib = self.di_qte_un_saisie
                         self.di_poin = self.di_poib - self.di_tare
-    #                     self.product_uom_qty = self.di_poin
                         if self.product_id.weight  != 0.0:
                             self.di_nb_pieces = ceil(self.di_poin / self.product_id.weight )
                         else:
-                            self.di_nb_pieces = ceil(self.di_poin)    
-                                            
+                            self.di_nb_pieces = ceil(self.di_poin) 
                         if self.di_product_packaging_id.qty !=0.0:
                             self.di_nb_colis = ceil(self.di_nb_pieces / self.di_product_packaging_id.qty)
                         else:
                             self.di_nb_colis = ceil(self.di_nb_pieces)
-                            
                         self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
-                            
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                         else:  
