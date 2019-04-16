@@ -333,7 +333,7 @@ class StockMove(models.Model):
                 self.env['stock.move.line'].create(vals)
         return res
     
-    def di_somme_quantites_montants(self, product_id, date=False, cde_ach=False, dernier_id=0):
+    def di_somme_quantites_montants(self, product_id, date=False, cde_ach=False, dernier_id=0): # calcul cmp
         qte = 0.0
         mont = 0.0
         nbcol = 0.0

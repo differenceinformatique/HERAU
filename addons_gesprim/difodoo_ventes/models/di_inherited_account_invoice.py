@@ -11,14 +11,14 @@ from math import *
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
     
-    di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
-    
-    di_nb_lig = fields.Integer(string='Nb lignes saisies', compute="_compute_nb_lignes")
-    
+    di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)    
+    di_nb_lig = fields.Integer(string='Nb lignes saisies', compute="_compute_nb_lignes")    
     di_rlvno = fields.Integer("Numéro de relevé", default=0)
-    
-    
-    
+    di_amount_tax_signed = fields.Monetary(string='Tax Amount in Invoice Currency', currency_field='currency_id', store=True, readonly=True, compute='_compute_amount',
+                                           help="Tax amount in the currency of the invoice, negative for credit notes.")
+    di_amount_untaxed_signed = fields.Monetary(string='Total in Invoice Currency', currency_field='currency_id', store=True, readonly=True, compute='_compute_amount',    # en standard donnée en devise dossier
+                                             help="Total amount in the currency of the invoice, negative for credit notes.")
+
     @api.multi
     @api.depends("invoice_line_ids")
     def _compute_nb_lignes(self):
@@ -157,6 +157,18 @@ class AccountInvoice(models.Model):
         if account:
             data['account_id'] = account.id
         return data
+    
+    @api.one
+    @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount', 'tax_line_ids.amount_rounding',
+                 'currency_id', 'company_id', 'date_invoice', 'type')
+    def _compute_amount(self):      # on surcharge pour avoir des totaux signés pour chaque colonne + corriger le fait que le total ht soit en devise dossier (devise facture pour les autres)
+        super(AccountInvoice, self)._compute_amount()
+        round_curr = self.currency_id.round
+        di_amount_tax_signed = sum(round_curr(line.amount_total) for line in self.tax_line_ids)
+        di_amount_untaxed_signed = self.amount_untaxed
+        sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+        self.di_amount_tax_signed = di_amount_tax_signed * sign
+        self.di_amount_untaxed_signed = di_amount_untaxed_signed * sign
      
 class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
