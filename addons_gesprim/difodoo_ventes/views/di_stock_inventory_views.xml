@@ -7,6 +7,11 @@
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field eval="80" name="priority"/>
             <field name="arch" type="xml">
+            	<!-- Ajout critère filtres pour générer des inventaires réduits -->
+            	<xpath expr="//field[@name='category_id']" position="after">
+            		<field name="di_code_deb" attrs="{'invisible': [('filter', 'not in','category')]}"/>
+            		<field name="di_code_fin" attrs="{'invisible': [('filter', 'not in','category')]}"/>
+            	</xpath>
                 <xpath expr="//page/field[@name='line_ids']/tree" position="attributes">                                  
                     <attribute name="decoration-danger">di_ecart_qte &lt; 0</attribute>
                     <attribute name="decoration-success">di_ecart_qte &gt; 0</attribute>

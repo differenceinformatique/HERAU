@@ -8,6 +8,9 @@ from math import ceil
 class Inventory(models.Model):
     _inherit = "stock.inventory"
     
+    di_code_deb = fields.Char('Code article début', default=" ")
+    di_code_fin = fields.Char('Code article fin', default="zzzzzzzz")
+    
     def action_reset_product_qty(self):
         ret=super(Inventory, self).action_reset_product_qty()
         self.mapped('line_ids').write({'di_nb_colis': 0})
@@ -22,7 +25,7 @@ class Inventory(models.Model):
         # je n'ai pas réussi à surcharger proprement donc j'ai repris tout le standard
         # TDE CLEANME: is sql really necessary ? I don't think so
         locations = self.env['stock.location'].search([('id', 'child_of', [self.location_id.id])])
-        domain = ' location_id in %s'
+        domain = ' location_id in %s AND quantity != 0 AND active = TRUE'
         args = (tuple(locations.ids),)
 
         vals = []
@@ -56,13 +59,22 @@ class Inventory(models.Model):
             args += (self.package_id.id,)
         #case 5: Filter on One product category + Exahausted Products
         if self.category_id:
-            categ_products = Product.search([('categ_id', '=', self.category_id.id)])
+            # début spécifique
+            if self.di_code_deb == " " and self.di_code_fin == "zzzzzzzz":
+                # si filtres pas touchés, on conserve le standard
+                categ_products = Product.search([('categ_id', 'child_of', self.category_id.id)])
+            else:
+                # sinon on filtre aussi sur les références
+                categ_products = Product.search([('categ_id', 'child_of', self.category_id.id),('default_code','>=',self.di_code_deb),('default_code','<=',self.di_code_fin)])
+            # fin spécifique
             domain += ' AND product_id = ANY (%s)'
             args += (categ_products.ids,)
             products_to_filter |= categ_products
 
         self.env.cr.execute("""SELECT product_id, sum(quantity) as product_qty, location_id, lot_id as prod_lot_id, package_id, owner_id as partner_id
             FROM stock_quant
+            LEFT JOIN product_product
+            ON product_product.id = stock_quant.product_id
             WHERE %s
             GROUP BY product_id, location_id, lot_id, package_id, partner_id """ % domain, args)
 

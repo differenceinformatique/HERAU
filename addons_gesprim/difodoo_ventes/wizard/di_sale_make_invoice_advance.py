@@ -19,8 +19,6 @@ class SaleAdvancePaymentInv(models.TransientModel):
     ref_debut = fields.Char(required=True, default=" ", string="Code Tiers Début")
     ref_fin = fields.Char(required=True, default="ZZZZZZZZZZ", string="Code Tiers Fin")
     
-     
-    
     @api.multi
     def create_invoices(self):
         # on surcharge le widget de facturation pour permettre le regroupement de commande sur facture selon paramétrage client           

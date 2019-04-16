@@ -13,7 +13,6 @@ class InventoryLine(models.Model):
     _inherit = "stock.inventory.line"         
                    
     di_lot_prod = fields.Char(string="Lot producteur")
-    
             
     def _get_move_values(self, qty, location_id, location_dest_id, out):
         #je dois surcharger en copiant le standard
