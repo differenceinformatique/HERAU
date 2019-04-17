@@ -558,6 +558,7 @@ class AccountInvoiceLine(models.Model):
                 if Disaleorderline.id != False:               
                     #on attribue par défaut les valeurs de la ligne de commande   
 #                     vals["di_tare"] = Disaleorderline.di_tare  
+                    di_un_saisie = Disaleorderline.di_un_saisie
                     vals["di_un_saisie"] = Disaleorderline.di_un_saisie
                     vals["di_type_palette_id"] = Disaleorderline.di_type_palette_id.id
                     vals["di_product_packaging_id"] = Disaleorderline.product_packaging.id 
@@ -569,11 +570,20 @@ class AccountInvoiceLine(models.Model):
                     nbpieces += Disaleorderline.di_nb_pieces_a_facturer
                     nbcolis += Disaleorderline.di_nb_colis_a_facturer
                     nbpal += Disaleorderline.di_nb_palette_a_facturer
+                                        
+            # on met à jour la colonne colonne quantité en unité de saisie pour qu'elle soit égale à la colonne correspondante
+            if di_un_saisie == "KG":
+                qte_a_fac = poib
+            elif di_un_saisie == "PIECE":
+                qte_a_fac = nbpieces
+            elif di_un_saisie == "COLIS":
+                qte_a_fac = nbcolis
+            elif di_un_saisie == "PALETTE":
+                qte_a_fac = nbpal                     
                      
             vals["di_qte_un_saisie"] = qte_a_fac
             vals["di_poib"] = poib
-            vals["di_poin"] = poin
-            vals["di_poin"] = poin       
+            vals["di_poin"] = poin      
             vals["di_tare"] = poib-poin
             vals["di_nb_pieces"] = nbpieces
             vals["di_nb_colis"] = nbcolis

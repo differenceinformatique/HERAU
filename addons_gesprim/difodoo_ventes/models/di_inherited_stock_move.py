@@ -399,8 +399,7 @@ class StockMove(models.Model):
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.qty_received
                         else:
-                            di_qte_prix = mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
-                            
+                            di_qte_prix = mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received                            
                     
                     mont = mont + (di_qte_prix * mouv.purchase_line_id.price_unit)
                 elif mouv.sale_line_id:
@@ -420,33 +419,28 @@ class StockMove(models.Model):
                     if mouv.state == 'done':
                         di_qte_prix = mouv.sale_line_id.qty_delivered
                     else:
-                        di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
-                        
-                    mont = mont + (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))                    
+                        di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered                        
+                    mont = mont + (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date)) 
             else:
-                
-               
                 if mouv.purchase_line_id:
                     if mouv.state == 'done':
                         nbcol = nbcol - mouv.purchase_line_id.di_nb_colis_liv
                         nbpal = nbpal - mouv.purchase_line_id.di_nb_palette_liv
                         nbpiece = nbpiece - mouv.purchase_line_id.di_nb_pieces_liv
                         poids = poids - mouv.purchase_line_id.di_poin_liv                
-                        qte = qte -  mouv.purchase_line_id.qty_received                        
+                        qte = qte -  mouv.purchase_line_id.qty_received                                               
                     else:
                         nbcol = nbcol - mouv.purchase_line_id.di_nb_colis - mouv.purchase_line_id.di_nb_colis_liv
                         nbpal = nbpal - mouv.purchase_line_id.di_nb_palette - mouv.purchase_line_id.di_nb_palette_liv
                         nbpiece = nbpiece - mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
                         poids = poids - mouv.purchase_line_id.di_poin -mouv.purchase_line_id.di_poin_liv
-                        qte = qte - mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received                        
-                    
+                        qte = qte - mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
                     di_qte_prix = 0.0
                     if mouv.purchase_line_id.di_un_prix == "PIECE":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.di_nb_pieces_liv
                         else:
-                            di_qte_prix = mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
-                            
+                            di_qte_prix = mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv                            
                     elif mouv.purchase_line_id.di_un_prix == "COLIS":
                         if mouv.state == 'done':
                             di_qte_prix = mouv.purchase_line_id.di_nb_colis_liv
@@ -467,11 +461,7 @@ class StockMove(models.Model):
                             di_qte_prix = mouv.purchase_line_id.qty_received
                         else:
                             di_qte_prix = mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
-                            
-                    
-                    mont = mont - (di_qte_prix * mouv.purchase_line_id.price_unit)
-                
-                    
+                    mont = mont - (di_qte_prix * mouv.purchase_line_id.price_unit)    
                 elif mouv.sale_line_id:
                     if mouv.state == 'done':
                         nbcol = nbcol - mouv.sale_line_id.di_nb_colis_liv
@@ -486,20 +476,15 @@ class StockMove(models.Model):
                         poids = poids - mouv.sale_line_id.di_poin -mouv.sale_line_id.di_poin_liv
                         qte = qte - mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered 
                     di_qte_prix = 0.0
-
-
                     if mouv.state == 'done':
                         di_qte_prix = mouv.sale_line_id.qty_delivered
                     else:
                         di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
-                        
-                    mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))                
-          
+                    mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))    
         if date:
             mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: (mv.inventory_id.date.date() < date and mv.id>dernier_id) or (mv.inventory_id.date.date() == date))
         else:
-            mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: mv.id>dernier_id)
-             
+            mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: mv.id>dernier_id)    
         for mouv in mouvs:
             if mouv.id > dernier_id_lu:
                 dernier_id_lu = mouv.id
@@ -518,11 +503,9 @@ class StockMove(models.Model):
                     nbpal = nbpal - mouv.di_nb_palette
                     nbpiece = nbpiece - mouv.di_nb_pieces
                     poids = poids - mouv.di_poin  
-                    mont = mont - (mouv.product_uom_qty * mouv.product_id.di_get_dernier_cmp(date))                     
-                
+                    mont = mont - (mouv.product_uom_qty * mouv.product_id.di_get_dernier_cmp(date)) 
         mont  = round(mont,2)
         return (qte, mont, nbcol, nbpal, nbpiece, poids,dernier_id_lu)
-
                  
 class StockMoveLine(models.Model):
     _inherit = "stock.move.line"

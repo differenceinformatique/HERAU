@@ -360,21 +360,13 @@ class SaleOrderLine(models.Model):
                     if line.product_uom.name.lower() == 'kg':
                         line.di_poin_liv = line.qty_delivered
                         line.di_poib_liv = line.di_poin_liv + line.di_tare_liv
-                        if line.di_un_saisie == "KG":
-                            line.di_qte_un_saisie = line.di_poib_liv
                     else:
                         if line.product_id.di_get_type_piece().qty == 1.0:  # si pas au kg, et coef 1, équivalent à l'unité de mesure, maj
                             line.di_nb_pieces_liv = line.qty_delivered
-                            if line.di_un_saisie == "PIECE":
-                                line.di_qte_un_saisie = line.di_nb_pieces_liv
                         if line.product_packaging.qty == 1.0:   # si pas au kg, et coef 1, équivalent à l'unité de mesure, maj
                             line.di_nb_colis_liv = line.qty_delivered
-                            if line.di_un_saisie == "COLIS":
-                                line.di_qte_un_saisie = line.di_nb_colis_liv
                         if line.di_type_palette_id.di_qte_cond_inf * line.product_packaging.qty == 1.0:   # si pas au kg, et coef 1, équivalent à l'unité de mesure, maj
                             line.di_nb_palette_liv = line.qty_delivered
-                            if line.di_un_saisie == "PALETTE":
-                                line.di_qte_un_saisie = line.di_nb_palette_liv
                 
     @api.multi
     @api.depends('di_marge_prc','company_id.di_param_id.di_seuil_marge_prc')#,'di_param_id.di_seuil_marge_prc')
@@ -677,7 +669,7 @@ class SaleOrderLine(models.Model):
                 line.di_poib_a_facturer = 0.0
                 line.di_nb_pieces_a_facturer = 0
                 line.di_nb_colis_a_facturer = 0
-                line.di_nb_palette_a_facturer = 0.0
+                line.di_nb_palette_a_facturer = 0.0 
         super(SaleOrderLine, self)._get_to_invoice_qty()
                 
     @api.depends('invoice_lines.invoice_id.state', 'invoice_lines.di_qte_un_saisie')
