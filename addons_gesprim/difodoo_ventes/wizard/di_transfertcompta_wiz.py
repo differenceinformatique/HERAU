@@ -58,7 +58,7 @@ class Wizard_transfert_compta(models.TransientModel):
         
         libelle = self.replace_accent(libelle)
         
-        #temporaire herau, pas le n° de pièce pour les caisses
+        # temporaire herau, pas le n° de pièce pour les caisses
         if journal[0]=='T':
             move_name=''
                          

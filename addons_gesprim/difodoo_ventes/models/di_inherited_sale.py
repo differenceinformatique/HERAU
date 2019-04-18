@@ -144,14 +144,15 @@ class SaleOrderLine(models.Model):
                         self.di_poin = self.product_uom_qty * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                                 
-                        if self.di_un_saisie == "PIECE":
-                            self.di_qte_un_saisie = self.di_nb_pieces
-                        elif self.di_un_saisie == "COLIS":
-                            self.di_qte_un_saisie = self.di_nb_colis
-                        elif self.di_un_saisie == "PALETTE":
-                            self.di_qte_un_saisie = self.di_nb_palette 
-                        elif self.di_un_saisie == "KG":
-                            self.di_qte_un_saisie = self.di_poib
+# temporaire herau
+#                         if self.di_un_saisie == "PIECE":
+#                             self.di_qte_un_saisie = self.di_nb_pieces
+#                         elif self.di_un_saisie == "COLIS":
+#                             self.di_qte_un_saisie = self.di_nb_colis
+#                         elif self.di_un_saisie == "PALETTE":
+#                             self.di_qte_un_saisie = self.di_nb_palette 
+#                         elif self.di_un_saisie == "KG":
+#                             self.di_qte_un_saisie = self.di_poib
                             
                         self.di_flg_modif_uom = True
                 SaleOrderLine.modifparprg=False

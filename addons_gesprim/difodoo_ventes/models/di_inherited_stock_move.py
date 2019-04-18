@@ -587,16 +587,17 @@ class StockMoveLine(models.Model):
                 else:
                     move = sml.move_id
                  
-                if move.di_un_saisie == "PIECE":
-                    sml.di_qte_un_saisie = sml.di_nb_pieces
-                elif move.di_un_saisie == "COLIS":
-                    sml.di_qte_un_saisie = sml.di_nb_colis
-                elif move.di_un_saisie == "PALETTE":
-                    sml.di_qte_un_saisie = sml.di_nb_palette
-                elif move.di_un_saisie == "KG":
-                    sml.di_qte_un_saisie = sml.di_poib
-                else:
-                    sml.di_qte_un_saisie = sml.qty_done   
+# temporaire herau
+#                 if move.di_un_saisie == "PIECE":
+#                     sml.di_qte_un_saisie = sml.di_nb_pieces
+#                 elif move.di_un_saisie == "COLIS":
+#                     sml.di_qte_un_saisie = sml.di_nb_colis
+#                 elif move.di_un_saisie == "PALETTE":
+#                     sml.di_qte_un_saisie = sml.di_nb_palette
+#                 elif move.di_un_saisie == "KG":
+#                     sml.di_qte_un_saisie = sml.di_poib
+#                 else:
+#                     sml.di_qte_un_saisie = sml.qty_done   
     
     @api.multi                     
     @api.onchange('di_nb_palette')
@@ -746,14 +747,15 @@ class StockMoveLine(models.Model):
                     self.di_poin = self.qty_done * self.product_id.weight 
                     self.di_poib = self.di_poin + self.di_tare
                                                         
-                    if move.di_un_saisie == "PIECE":
-                        self.di_qte_un_saisie = self.di_nb_pieces
-                    elif move.di_un_saisie == "COLIS":
-                        self.di_qte_un_saisie = self.di_nb_colis
-                    elif move.di_un_saisie == "PALETTE":
-                        self.di_qte_un_saisie = self.di_nb_palette 
-                    elif move.di_un_saisie == "KG":
-                        self.di_qte_un_saisie = self.di_poib
+# temporaire herau
+#                     if move.di_un_saisie == "PIECE":
+#                         self.di_qte_un_saisie = self.di_nb_pieces
+#                     elif move.di_un_saisie == "COLIS":
+#                         self.di_qte_un_saisie = self.di_nb_colis
+#                     elif move.di_un_saisie == "PALETTE":
+#                         self.di_qte_un_saisie = self.di_nb_palette 
+#                     elif move.di_un_saisie == "KG":
+#                         self.di_qte_un_saisie = self.di_poib
                                                 
                     self.di_flg_modif_uom = True
             self.di_flg_modif_qty_spe=False

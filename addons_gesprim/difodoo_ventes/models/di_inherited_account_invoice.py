@@ -379,14 +379,15 @@ class AccountInvoiceLine(models.Model):
                             self.di_poin = self.quantity * self.product_id.weight 
                             self.di_poib = self.di_poin + self.di_tare
                             
-                            if self.di_un_saisie == "PIECE":
-                                self.di_qte_un_saisie = self.di_nb_pieces
-                            elif self.di_un_saisie == "COLIS":
-                                self.di_qte_un_saisie = self.di_nb_colis
-                            elif self.di_un_saisie == "PALETTE":
-                                self.di_qte_un_saisie = self.di_nb_palette 
-                            elif self.di_un_saisie == "KG":
-                                self.di_qte_un_saisie = self.di_poib
+# temporaire herau
+#                             if self.di_un_saisie == "PIECE":
+#                                 self.di_qte_un_saisie = self.di_nb_pieces
+#                             elif self.di_un_saisie == "COLIS":
+#                                 self.di_qte_un_saisie = self.di_nb_colis
+#                             elif self.di_un_saisie == "PALETTE":
+#                                 self.di_qte_un_saisie = self.di_nb_palette 
+#                             elif self.di_un_saisie == "KG":
+#                                 self.di_qte_un_saisie = self.di_poib
                                                        
                         self.di_flg_modif_uom = True
                 AccountInvoiceLine.modifparprg=False
@@ -571,15 +572,16 @@ class AccountInvoiceLine(models.Model):
                     nbcolis += Disaleorderline.di_nb_colis_a_facturer
                     nbpal += Disaleorderline.di_nb_palette_a_facturer
                                         
-            # on met à jour la colonne colonne quantité en unité de saisie pour qu'elle soit égale à la colonne correspondante
-            if di_un_saisie == "KG":
-                qte_a_fac = poib
-            elif di_un_saisie == "PIECE":
-                qte_a_fac = nbpieces
-            elif di_un_saisie == "COLIS":
-                qte_a_fac = nbcolis
-            elif di_un_saisie == "PALETTE":
-                qte_a_fac = nbpal                     
+# temporaire herau
+#             # on met à jour la colonne colonne quantité en unité de saisie pour qu'elle soit égale à la colonne correspondante
+#             if di_un_saisie == "KG":
+#                 qte_a_fac = poib
+#             elif di_un_saisie == "PIECE":
+#                 qte_a_fac = nbpieces
+#             elif di_un_saisie == "COLIS":
+#                 qte_a_fac = nbcolis
+#             elif di_un_saisie == "PALETTE":
+#                 qte_a_fac = nbpal                     
                      
             vals["di_qte_un_saisie"] = qte_a_fac
             vals["di_poib"] = poib
