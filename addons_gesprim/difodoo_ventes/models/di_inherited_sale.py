@@ -162,7 +162,7 @@ class SaleOrderLine(models.Model):
     def _di_recalcule_quantites(self):
         if self.ensure_one():
             if self.product_id:
-                if self.di_nb_pieces!=0 or self.di_nb_colis!=0 or self.di_nb_palette!=0 or self.di_poin!=0 or self.di_poib!=0:
+                if self.di_qte_un_saisie!=0 or self.di_nb_pieces!=0 or self.di_nb_colis!=0 or self.di_nb_palette!=0 or self.di_poin!=0 or self.di_poib!=0:
                     # on ne passe que si une des quantités est différente de 0, sinon on y passe en initialisation de l'unité de saisie/colisage                            
                     if self.di_flg_modif_uom == False:
                         self.di_tare_un = 0.0
