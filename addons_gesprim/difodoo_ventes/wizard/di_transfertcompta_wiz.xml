@@ -12,7 +12,9 @@
                         <field name="date_start"/>
                         <field name="date_end"/>
                     </group>
-                    <group/>
+                    <group>
+                        <field name="di_reexporter"/>
+                    </group>
                 </group>
                 
                 <separator string="Journaux"/>

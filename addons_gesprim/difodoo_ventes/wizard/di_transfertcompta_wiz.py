@@ -17,7 +17,8 @@ class Wizard_transfert_compta(models.TransientModel):
     journal_ids = fields.Many2many(comodel_name='account.journal', string="Journals", default=lambda self: self.env['account.journal'].search([('type', 'in', ['sale', 'purchase','cash','bank'])]), required=True)        
     writing_file_transfer = fields.Char(string='File For Writing Transfer', default=lambda self : self.env['di.param'].search([('di_company_id', '=', self.env.user.company_id.id)]).di_nom_exp_ecr_compta)
     compta_data = fields.Binary('Compta File', readonly=True)
-    filename = fields.Char(string='Filename', size=256, readonly=True)            
+    filename = fields.Char(string='Filename', size=256, readonly=True)     
+    di_reexporter = fields.Boolean("Réexporter les écritures déjà transférées.", default=False)          
         
         
     def replace_accent(self, s):
@@ -160,25 +161,44 @@ class Wizard_transfert_compta(models.TransientModel):
         w = pycompat.csv_writer(compta_file, delimiter=';')
       
         # Transfert Invoices
-
-        sql = """SELECT am.name as move_name, account_journal.code as journal,account_account.code as compte,
-                res_partner.name as partner, account_account.name as libelle,
-                to_char(am.date,'YYYYMMDD') as date_ecr,
-                to_char(aml.date_maturity,'YYYYMMDD') as date_ech,
-                sum(aml.debit), sum(aml.credit), res_currency.name as currency
-                from account_move_line as aml
-                INNER JOIN account_move as am on am.id = aml.move_id
-                INNER JOIN account_journal on account_journal.id = am.journal_id
-                INNER JOIN res_currency on res_currency.id = am.currency_id
-                INNER JOIN res_partner on res_partner.id = am.partner_id 
-                INNER JOIN account_account on account_account.id = aml.account_id                
-                WHERE am.state = 'posted' 
-                AND to_char(am.date,'YYYYMMDD') BETWEEN %s AND %s
-                AND am.journal_id IN %s
-                AND aml.di_transfere is not true
-                group by am.name, account_journal.code,account_account.code,
-                res_partner.name, account_account.name, am.date, aml.date_maturity,res_currency.name
-                ORDER BY account_journal.code, am.name, account_account.code"""
+        if self.di_reexporter:
+            sql = """SELECT am.name as move_name, account_journal.code as journal,account_account.code as compte,
+                    res_partner.name as partner, account_account.name as libelle,
+                    to_char(am.date,'YYYYMMDD') as date_ecr,
+                    to_char(aml.date_maturity,'YYYYMMDD') as date_ech,
+                    sum(aml.debit), sum(aml.credit), res_currency.name as currency
+                    from account_move_line as aml
+                    INNER JOIN account_move as am on am.id = aml.move_id
+                    INNER JOIN account_journal on account_journal.id = am.journal_id
+                    INNER JOIN res_currency on res_currency.id = am.currency_id
+                    INNER JOIN res_partner on res_partner.id = am.partner_id 
+                    INNER JOIN account_account on account_account.id = aml.account_id                
+                    WHERE am.state = 'posted' 
+                    AND to_char(am.date,'YYYYMMDD') BETWEEN %s AND %s
+                    AND am.journal_id IN %s                    
+                    group by am.name, account_journal.code,account_account.code,
+                    res_partner.name, account_account.name, am.date, aml.date_maturity,res_currency.name
+                    ORDER BY account_journal.code, am.name, account_account.code"""
+        else:
+            
+            sql = """SELECT am.name as move_name, account_journal.code as journal,account_account.code as compte,
+                    res_partner.name as partner, account_account.name as libelle,
+                    to_char(am.date,'YYYYMMDD') as date_ecr,
+                    to_char(aml.date_maturity,'YYYYMMDD') as date_ech,
+                    sum(aml.debit), sum(aml.credit), res_currency.name as currency
+                    from account_move_line as aml
+                    INNER JOIN account_move as am on am.id = aml.move_id
+                    INNER JOIN account_journal on account_journal.id = am.journal_id
+                    INNER JOIN res_currency on res_currency.id = am.currency_id
+                    INNER JOIN res_partner on res_partner.id = am.partner_id 
+                    INNER JOIN account_account on account_account.id = aml.account_id                
+                    WHERE am.state = 'posted' 
+                    AND to_char(am.date,'YYYYMMDD') BETWEEN %s AND %s
+                    AND am.journal_id IN %s
+                    AND aml.di_transfere is not true
+                    group by am.name, account_journal.code,account_account.code,
+                    res_partner.name, account_account.name, am.date, aml.date_maturity,res_currency.name
+                    ORDER BY account_journal.code, am.name, account_account.code"""
 
         self.env.cr.execute(sql, (date_d, date_f, tuple(self.journal_ids.ids),))
         

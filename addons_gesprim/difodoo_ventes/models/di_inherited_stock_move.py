@@ -817,7 +817,7 @@ class StockMoveLine(models.Model):
         ml = super(StockMoveLine, self).create(vals)
         return ml
     
-    def di_qte_spe_en_stock(self, product_id, date, lot):            
+    def di_qte_spe_en_stock(self, product_id, date, lot,usage='internal'):            
         nbcol = 0.0
         nbpal = 0.0
         nbpiece = 0.0
@@ -833,7 +833,7 @@ class StockMoveLine(models.Model):
              
         for mouv in mouvs:
 #             if mouv.move_id.remaining_qty:
-            if mouv.location_dest_id.usage == 'internal':                
+            if mouv.location_dest_id.usage == usage:                
                 nbcol = nbcol + mouv.di_nb_colis
                 nbpal = nbpal + mouv.di_nb_palette
                 nbpiece = nbpiece + mouv.di_nb_pieces
@@ -912,12 +912,19 @@ class StockQuant(models.Model):
     
     di_cmp = fields.Float(string="Coût moyen", related="product_id.standard_price", group_operator='avg', store=True)
     di_valstock = fields.Float(string='Valeur Stock', compute='_compute_valstock', group_operator='sum', store=True)
-    di_nb_pieces = fields.Integer(string='Nb pièces' , compute="_compute_qte_spe", group_operator='sum', store=True)
-    di_nb_palettes = fields.Integer(string='Nb palettes' , compute="_compute_qte_spe", group_operator='sum', store=True)
-    di_nb_colis = fields.Integer(string='Nb colis', compute="_compute_qte_spe", group_operator='sum', store=True)
-    di_poin = fields.Float(string='Poids net', compute="_compute_qte_spe", group_operator='sum', store=True)
-    di_poib = fields.Float(string='Poids brut', compute="_compute_qte_spe", group_operator='sum', store=True)
-    di_tare = fields.Float(string='Tare', compute="_compute_qte_spe", group_operator='sum', store=True)
+#     di_nb_pieces = fields.Integer(string='Nb pièces' , compute="_compute_qte_spe", group_operator='sum', store=True)
+#     di_nb_palettes = fields.Integer(string='Nb palettes' , compute="_compute_qte_spe", group_operator='sum', store=True)
+#     di_nb_colis = fields.Integer(string='Nb colis', compute="_compute_qte_spe", group_operator='sum', store=True)
+#     di_poin = fields.Float(string='Poids net', compute="_compute_qte_spe", group_operator='sum', store=True)
+#     di_poib = fields.Float(string='Poids brut', compute="_compute_qte_spe", group_operator='sum', store=True)
+#     di_tare = fields.Float(string='Tare', compute="_compute_qte_spe", group_operator='sum', store=True)
+    di_nb_pieces = fields.Integer(string='Nb pièces' , compute="_compute_qte_spe", group_operator='sum', store=False)
+    di_nb_palettes = fields.Integer(string='Nb palettes' , compute="_compute_qte_spe", group_operator='sum', store=False)
+    di_nb_colis = fields.Integer(string='Nb colis', compute="_compute_qte_spe", group_operator='sum', store=False)
+    di_poin = fields.Float(string='Poids net', compute="_compute_qte_spe", group_operator='sum', store=False)
+    di_poib = fields.Float(string='Poids brut', compute="_compute_qte_spe", group_operator='sum', store=False)
+    di_tare = fields.Float(string='Tare', compute="_compute_qte_spe", group_operator='sum', store=False)
+    
     currency_id = fields.Many2one("res.currency", related='company_id.currency_id', string="Currency")  # pour avoir le widget euro
     
     @api.multi
@@ -925,67 +932,81 @@ class StockQuant(models.Model):
     def _compute_valstock(self):
         for quant in self:
             quant.di_valstock = quant.quantity * quant.di_cmp
-        
-    @api.multi
-    @api.depends('quantity')
+            
+            
+    @api.multi    
     def _compute_qte_spe(self):
         for quant in self:     
-            
-            
-            sqlstr = """
-                select
-                    SUM (sml.di_nb_colis ) AS nbcol,                    
-                    SUM (sml.di_nb_pieces ) AS nbpieces,
-                    SUM (sml.di_nb_palette ) AS nbpal,
-                    SUM (sml.di_poin ) AS poin,
-                    SUM (sml.di_poib) AS poib,
-                    SUM (sml.di_tare) AS tare                                                                                                      
-                from stock_move_line sml                                             
-                where sml.product_id = %s and sml.state ='done'  and sml.location_dest_id = %s and lot_id = %s
-                """
-            
-            self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
-            result = self.env.cr.fetchall()[0]
-            
-            quant.di_nb_colis  = result[0] and result[0] or 0.0
-            quant.di_nb_pieces  = result[1] and result[1] or 0.0
-            quant.di_nb_palettes  = result[2] and result[2] or 0.0
-            quant.di_poin  = result[3] and result[3] or 0.0
-            quant.di_poib  = result[4] and result[4] or 0.0
-            quant.di_tare  = result[5] and result[5] or 0.0
-            
-            
-            sqlstr = """
-                select
-                    SUM (sml.di_nb_colis ) AS nbcol,                    
-                    SUM (sml.di_nb_pieces ) AS nbpieces,
-                    SUM (sml.di_nb_palette ) AS nbpal,
-                    SUM (sml.di_poin ) AS poin,
-                    SUM (sml.di_poib) AS poib,
-                    SUM (sml.di_tare) AS tare                                                                                                      
-                from stock_move_line sml                                             
-                where sml.product_id = %s and sml.state ='done'  and sml.location_id = %s and lot_id = %s
-                """
-            
-            self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
-            result = self.env.cr.fetchall()[0]
-            
-            quant.di_nb_colis  -= result[0] and result[0] or 0.0
-            quant.di_nb_pieces  -= result[1] and result[1] or 0.0
-            quant.di_nb_palettes  -= result[2] and result[2] or 0.0
-            quant.di_poin  -= result[3] and result[3] or 0.0
-            quant.di_poib  -= result[4] and result[4] or 0.0
-            quant.di_tare  -= result[5] and result[5] or 0.0
+            if quant.location_id.usage=='internal':
+               (nbcol,nbpal,nbpiece,poin,qte,poib)= self.env['stock.move.line'].di_qte_spe_en_stock(quant.product_id,False,quant.lot_id,quant.location_id.usage)
+               quant.di_nb_colis  = nbcol
+               quant.di_nb_pieces  = nbpiece
+               quant.di_nb_palettes  = nbpal
+               quant.di_poin  = poin
+               quant.di_poib  = poib                
+                
+           
+        
+#     @api.multi
+#     @api.depends('quantity')
+#     def _compute_qte_spe(self):
+#         for quant in self:     
+#             
+#             
+#             sqlstr = """
+#                 select
+#                     SUM (sml.di_nb_colis ) AS nbcol,                    
+#                     SUM (sml.di_nb_pieces ) AS nbpieces,
+#                     SUM (sml.di_nb_palette ) AS nbpal,
+#                     SUM (sml.di_poin ) AS poin,
+#                     SUM (sml.di_poib) AS poib,
+#                     SUM (sml.di_tare) AS tare                                                                                                      
+#                 from stock_move_line sml                                             
+#                 where sml.product_id = %s and sml.state ='done'  and sml.location_dest_id = %s and lot_id = %s
+#                 """
+#             
+#             self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
+#             result = self.env.cr.fetchall()[0]
+#             
+#             quant.di_nb_colis  = result[0] and result[0] or 0.0
+#             quant.di_nb_pieces  = result[1] and result[1] or 0.0
+#             quant.di_nb_palettes  = result[2] and result[2] or 0.0
+#             quant.di_poin  = result[3] and result[3] or 0.0
+#             quant.di_poib  = result[4] and result[4] or 0.0
+#             quant.di_tare  = result[5] and result[5] or 0.0
+#             
+#             
+#             sqlstr = """
+#                 select
+#                     SUM (sml.di_nb_colis ) AS nbcol,                    
+#                     SUM (sml.di_nb_pieces ) AS nbpieces,
+#                     SUM (sml.di_nb_palette ) AS nbpal,
+#                     SUM (sml.di_poin ) AS poin,
+#                     SUM (sml.di_poib) AS poib,
+#                     SUM (sml.di_tare) AS tare                                                                                                      
+#                 from stock_move_line sml                                             
+#                 where sml.product_id = %s and sml.state ='done'  and sml.location_id = %s and lot_id = %s
+#                 """
+#             
+#             self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
+#             result = self.env.cr.fetchall()[0]
+#             
+#             quant.di_nb_colis  -= result[0] and result[0] or 0.0
+#             quant.di_nb_pieces  -= result[1] and result[1] or 0.0
+#             quant.di_nb_palettes  -= result[2] and result[2] or 0.0
+#             quant.di_poin  -= result[3] and result[3] or 0.0
+#             quant.di_poib  -= result[4] and result[4] or 0.0
+#             quant.di_tare  -= result[5] and result[5] or 0.0
             
           
-                   
-#             quant.di_poin = quant.quantity * quant.product_id.weight                        
-#             if quant.product_id.di_type_colis_id.qty != 0.0:
-#                 quant.di_nb_colis = ceil(quant.quantity / quant.product_id.di_type_colis_id.qty)
-#             else:
-#                 quant.di_nb_colis = ceil(quant.quantity)
-#             if quant.product_id.di_type_palette_id.di_qte_cond_inf != 0.0:    
-#                 quant.di_nb_palette = quant.di_nb_colis / quant.product_id.di_type_palette_id.di_qte_cond_inf
-#             else:  
-#                 quant.di_nb_palette = quant.di_nb_colis
-#             quant.di_nb_pieces = ceil(quant.product_id.di_type_colis_id.di_qte_cond_inf * quant.di_nb_colis)
+#                    
+# #             quant.di_poin = quant.quantity * quant.product_id.weight                        
+# #             if quant.product_id.di_type_colis_id.qty != 0.0:
+# #                 quant.di_nb_colis = ceil(quant.quantity / quant.product_id.di_type_colis_id.qty)
+# #             else:
+# #                 quant.di_nb_colis = ceil(quant.quantity)
+# #             if quant.product_id.di_type_palette_id.di_qte_cond_inf != 0.0:    
+# #                 quant.di_nb_palette = quant.di_nb_colis / quant.product_id.di_type_palette_id.di_qte_cond_inf
+# #             else:  
+# #                 quant.di_nb_palette = quant.di_nb_colis
+# #             quant.di_nb_pieces = ceil(quant.product_id.di_type_colis_id.di_qte_cond_inf * quant.di_nb_colis)
