@@ -53,7 +53,8 @@
 					<field name="currency_id" invisible="1"/>
 				</xpath>
 			</field>
-		</record>                
+		</record>      
+			
     </data>
 </odoo>
    
