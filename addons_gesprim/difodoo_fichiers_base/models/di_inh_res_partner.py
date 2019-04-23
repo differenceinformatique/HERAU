@@ -128,14 +128,14 @@ class ResPartner(models.Model):
                 if partner.di_param_seq_cli:
                     partner.di_ref_readonly=True
                 else:
-                    partner.di_ref_required=False
+                    partner.di_ref_readonly=False
             elif partner.supplier:
                 if partner.di_param_seq_fou:
-                    partner.di_ref_required=True
+                    partner.di_ref_readonly=True
                 else:
-                    partner.di_ref_required=False
+                    partner.di_ref_readonly=False
             else:
-                partner.di_ref_required=False
+                partner.di_ref_readonly=False
     #unicité du code tiers
     @api.multi
     @api.constrains('ref')

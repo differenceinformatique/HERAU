@@ -25,8 +25,8 @@ class SaleAdvancePaymentInv(models.TransientModel):
 #         if self.advance_payment_method == 'delivered':
         # le regroupement n'est pertinent que dans le cas où il y a plusieurs commandes, donc uniquement méthode "delivered"     
         # on récupère les commandes cochées
-        sale_orders_1 = self.env['sale.order'].browse(self._context.get('active_ids', []))
-        if len(sale_orders_1)<=1:
+        sale_orders_1 = self.env['sale.order'].browse(self._context.get('active_ids', [])).filtered(lambda so: so.partner_id.ref != False)
+        if len(sale_orders_1)==1:
             # si une seule commande, les filtres ne seront pas affichés, on les renseigne en fonction de la commande                 
             self.period_fact = sale_orders_1.partner_id.di_period_fact
             self.date_debut = sale_orders_1.di_livdt

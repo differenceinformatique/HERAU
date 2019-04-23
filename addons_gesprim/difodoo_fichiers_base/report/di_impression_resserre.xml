@@ -10,35 +10,37 @@
                     <t t-else="">
                         <h2>Liste de comptage</h2>                        
                     </t>
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>Article</th>
-                            <th>Désignation</th>                                                        
-                            <t t-if="not wiz.di_liste_comptage">
-                                <th>Nombre de colis en stock</th>
-                                <th>Poids brut en stock</th>
-                                <th>Poids net en stock</th>
-                                <th>Quantité en stock</th>
-                                <th>Unité de mesure</th>
-                                <th>Prix d'achat moyen</th>
-                                <th>Valeur du stock</th>
-                                
-                                <th>Nombre de colis vendus</th>
-                                <th>Poids brut vendu</th>
-                                <th>Poids net vendu</th>
-                                <th>Quantité vendue</th>
-                                <!-- <th>Unité de mesure</th> -->
-                                <th>Prix vente moyen</th>
-                                <th>Valeur HT</th>
-                                <th>Valeur marge</th>
-                                <th>% Marge</th>
-                                <th>Valeur régul. sortie</th>
-                                <th>Marge après régul sortie</th>
-                            </t>
-                            <t t-else="">
-                                <th>Colis comptés</th>
-                            </t>
-                        </tr>
+                    <table class="table table-bordered o_main_table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Article</th>
+                                <th>Désignation</th>                                                        
+                                <t t-if="not wiz.di_liste_comptage">
+                                    <th>Nombre de colis en stock</th>
+                                    <th>Poids brut en stock</th>
+                                    <th>Poids net en stock</th>
+                                    <th>Quantité en stock</th>
+                                    <th>Unité de mesure</th>
+                                    <th>Prix d'achat moyen</th>
+                                    <th>Valeur du stock</th>
+                                    
+                                    <th>Nombre de colis vendus</th>
+                                    <th>Poids brut vendu</th>
+                                    <th>Poids net vendu</th>
+                                    <th>Quantité vendue</th>
+                                    <!-- <th>Unité de mesure</th> -->
+                                    <th>Prix vente moyen</th>
+                                    <th>Valeur HT</th>
+                                    <th>Valeur marge</th>
+                                    <th>% Marge</th>
+                                    <th>Valeur régul. sortie</th>
+                                    <th>Marge après régul sortie</th>
+                                </t>
+                                <t t-else="">
+                                    <th>Colis comptés</th>
+                                </t>
+                            </tr>
+                        </thead>
                         
                         <t t-set="TotColStock" t-value="0" />
                         <t t-set="TotPoibStock" t-value="0.0" />
@@ -57,172 +59,177 @@
                         
                         <t t-set="TotValPerte" t-value="0.0" />
                         <t t-set="TotValMargeApPerte" t-value="0.0" />
-                        
-                        <t t-as="art" t-foreach="wiz.di_product_ids">  
-                            <tr>
-                                <td>
-                                    <span t-field="art.default_code"/>
-                                </td>
-                                <td>
-                                    <span t-field="art.name"/>
-                                </td>                                
-                               
-                                <t t-if="not wiz.di_liste_comptage">
-                                     <td>
-                                        <span t-field="art.di_col_stock"/>
+                        <tbody>
+                            <t t-as="art" t-foreach="wiz.di_product_ids">  
+                            
+                                <tr>
+                                    <td>
+                                        <span t-field="art.default_code"/>
                                     </td>
                                     <td>
-                                        <span t-field="art.di_poib_stock"/>
+                                        <span t-field="art.name"/>
+                                    </td>                                
+                                   
+                                    <t t-if="not wiz.di_liste_comptage">
+                                         <td>
+                                            <span t-field="art.di_col_stock"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="art.di_poib_stock"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="art.di_poin_stock"/>
+                                        </td>   
+                                         <td>
+                                            <span t-field="art.di_qte_stock"/>
+                                        </td>   
+                                        <td>
+                                            <span t-field="art.uom_id"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="'%.2f'%  art.di_prix_achat_moyen"/>                                    
+                                        </td> 
+                                        <td>
+                                            <span t-esc="'%.2f'% art.di_val_stock"/>
+                                        </td>
+                                        
+                                        <td>
+                                            <span t-field="art.di_col_ven"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="art.di_poib_ven"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="art.di_poin_ven"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="art.di_qte_ven"/>
+                                        </td>
+                                        <!-- <td>
+                                            <span t-field="art.uom_id"/>
+                                        </td> -->
+                                        <td>
+                                            <span t-esc="'%.2f'% art.di_prix_vente_moyen"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="'%.2f'% art.di_val_ven"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="'%.2f'% art.di_val_marge"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="'%.2f'% art.di_marge_prc"/>
+                                        </td>    
+                                         <td>
+                                            <span t-esc="'%.2f'% art.di_val_regul_sortie"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="'%.2f'% art.di_val_marge_ap_regul_sortie"/>
+                                        </td> 
+                                                                                                
+                                        <t t-set="TotColStock" t-value="TotColStock + art.di_col_stock" />
+                                        <t t-set="TotPoibStock" t-value="TotPoibStock + art.di_poib_stock" />
+                                        <t t-set="TotPoinStock" t-value="TotPoinStock + art.di_poin_stock" />
+                                        <t t-set="TotQteStock" t-value="TotQteStock + art.di_qte_stock" />
+                                        <t t-set="TotValStock" t-value="TotValStock + art.di_val_stock" />
+                                        
+                                        <t t-set="TotColVen" t-value="TotColVen + art.di_col_ven" />
+                                        <t t-set="TotPoibVen" t-value="TotPoibVen + art.di_poib_ven" />
+                                        <t t-set="TotPoinVen" t-value="TotPoinVen + art.di_poin_ven" />
+                                        <t t-set="TotQteVen" t-value="TotQteVen + art.di_qte_ven" />
+                                        <t t-set="TotValVen" t-value="TotValVen + art.di_val_ven" />                                                        
+                                        
+                                        <t t-set="TotValMarge" t-value="TotValMarge + art.di_val_marge" />    
+                                        
+                                        <t t-set="TotValPerte" t-value="TotValPerte + art.di_val_regul_sortie" />
+                                                                              
+                                        <t t-set="TotValMargeApPerte" t-value="TotValMargeApPerte + art.di_val_marge_ap_regul_sortie" /> 
+                                    </t>
+                                    <t t-else="">
+                                        <td></td>
+                                    </t>                       
+                                </tr>  
+                            </t> 
+                            <t t-if="not wiz.di_liste_comptage">
+                                <tr>
+                                    <td>
+                                        <span>TOTAL</span>
                                     </td>
                                     <td>
-                                        <span t-field="art.di_poin_stock"/>
+                                        
+                                    </td>                               
+                                    <td>
+                                        <span t-esc="'%.2f'%  TotColStock"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'%  TotPoibStock"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%.2f'%  TotPoinStock"/>
                                     </td>   
-                                     <td>
-                                        <span t-field="art.di_qte_stock"/>
-                                    </td>   
                                     <td>
-                                        <span t-field="art.uom_id"/>
+                                        <span t-esc="'%.2f'% TotQteStock"/>
+                                    </td> 
+                                     <td>
+                                        
                                     </td>
                                     <td>
-                                        <span t-esc="'%.2f'%  art.di_prix_achat_moyen"/>                                    
+                                        
                                     </td> 
                                     <td>
-                                        <span t-esc="'%.2f'% art.di_val_stock"/>
+                                        <span t-esc="'%.2f'% TotValStock"/>
                                     </td>
                                     
                                     <td>
-                                        <span t-field="art.di_col_ven"/>
+                                        <span t-esc="'%.2f'% TotColVen"/>
                                     </td>
                                     <td>
-                                        <span t-field="art.di_poib_ven"/>
+                                        <span t-esc="'%.2f'% TotPoibVen"/>
                                     </td>
                                     <td>
-                                        <span t-field="art.di_poin_ven"/>
+                                        <span t-esc="'%.2f'% TotPoinVen"/>
                                     </td>
                                     <td>
-                                        <span t-field="art.di_qte_ven"/>
+                                        <span t-esc="'%.2f'% TotQteVen"/>
                                     </td>
-                                    <!-- <td>
-                                        <span t-field="art.uom_id"/>
+                                     <!-- <td>
+                                        
                                     </td> -->
                                     <td>
-                                        <span t-esc="'%.2f'% art.di_prix_vente_moyen"/>
+                                        
                                     </td>
                                     <td>
-                                        <span t-esc="'%.2f'% art.di_val_ven"/>
+                                        <span t-esc=" '%.2f'% TotValVen"/>
                                     </td>
                                     <td>
-                                        <span t-esc="'%.2f'% art.di_val_marge"/>
+                                        <span t-esc=" '%.2f'% TotValMarge"/>
                                     </td>
                                     <td>
-                                        <span t-esc="'%.2f'% art.di_marge_prc"/>
-                                    </td>    
+                                        <t t-if="TotValVen != 0.0">        
+                                            <t t-set="TotPrcMarge" t-value="(TotValMarge / TotValVen) * 100.0 " />
+                                        </t>
+                                        <span t-esc="'%.2f'% TotPrcMarge"/>
+                                    </td>  
+                                    
                                      <td>
-                                        <span t-esc="'%.2f'% art.di_val_regul_sortie"/>
+                                        <span t-esc=" '%.2f'% TotValPerte"/>
                                     </td>
-                                    <td>
-                                        <span t-esc="'%.2f'% art.di_val_marge_ap_regul_sortie"/>
+                                    <td>                                    
+                                        <span t-esc="'%.2f'% TotValMargeApPerte"/>
                                     </td> 
-                                                                                            
-                                    <t t-set="TotColStock" t-value="TotColStock + art.di_col_stock" />
-                                    <t t-set="TotPoibStock" t-value="TotPoibStock + art.di_poib_stock" />
-                                    <t t-set="TotPoinStock" t-value="TotPoinStock + art.di_poin_stock" />
-                                    <t t-set="TotQteStock" t-value="TotQteStock + art.di_qte_stock" />
-                                    <t t-set="TotValStock" t-value="TotValStock + art.di_val_stock" />
-                                    
-                                    <t t-set="TotColVen" t-value="TotColVen + art.di_col_ven" />
-                                    <t t-set="TotPoibVen" t-value="TotPoibVen + art.di_poib_ven" />
-                                    <t t-set="TotPoinVen" t-value="TotPoinVen + art.di_poin_ven" />
-                                    <t t-set="TotQteVen" t-value="TotQteVen + art.di_qte_ven" />
-                                    <t t-set="TotValVen" t-value="TotValVen + art.di_val_ven" />                                                        
-                                    
-                                    <t t-set="TotValMarge" t-value="TotValMarge + art.di_val_marge" />    
-                                    
-                                    <t t-set="TotValPerte" t-value="TotValPerte + art.di_val_regul_sortie" />
-                                                                          
-                                    <t t-set="TotValMargeApPerte" t-value="TotValMargeApPerte + art.di_val_marge_ap_regul_sortie" /> 
-                                </t>
-                                <t t-else="">
-                                    <td></td>
-                                </t>                       
-                            </tr>  
-                        </t> 
-                        <t t-if="not wiz.di_liste_comptage">
-                            <tr>
-                                <td>
-                                    <span>TOTAL</span>
-                                </td>
-                                <td>
-                                    
-                                </td>                               
-                                <td>
-                                    <span t-esc="'%.2f'%  TotColStock"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'%  TotPoibStock"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'%  TotPoinStock"/>
-                                </td>   
-                                <td>
-                                    <span t-esc="'%.2f'% TotQteStock"/>
-                                </td> 
-                                 <td>
-                                    
-                                </td>
-                                <td>
-                                    
-                                </td> 
-                                <td>
-                                    <span t-esc="'%.2f'% TotValStock"/>
-                                </td>
-                                
-                                <td>
-                                    <span t-esc="'%.2f'% TotColVen"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'% TotPoibVen"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'% TotPoinVen"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'%.2f'% TotQteVen"/>
-                                </td>
-                                 <!-- <td>
-                                    
-                                </td> -->
-                                <td>
-                                    
-                                </td>
-                                <td>
-                                    <span t-esc=" '%.2f'% TotValVen"/>
-                                </td>
-                                <td>
-                                    <span t-esc=" '%.2f'% TotValMarge"/>
-                                </td>
-                                <td>
-                                    <t t-if="TotValVen != 0.0">        
-                                        <t t-set="TotPrcMarge" t-value="(TotValMarge / TotValVen) * 100.0 " />
-                                    </t>
-                                    <span t-esc="'%.2f'% TotPrcMarge"/>
-                                </td>  
-                                
-                                 <td>
-                                    <span t-esc=" '%.2f'% TotValPerte"/>
-                                </td>
-                                <td>                                    
-                                    <span t-esc="'%.2f'% TotValMargeApPerte"/>
-                                </td> 
-                                                                
-                            </tr>      
-                        </t>                                                                                                   
+                                                                    
+                                </tr>      
+                            </t>  
+                        </tbody>                                                                                                 
                     </table>                                           
                 </div>
             </t>
         </t>
        
                                  
+    </template>
+    <template id="di_impression_resserre_portrait">
+        <t t-call="difodoo_fichiers_base.di_impression_resserre"/>                    
     </template>
     <report 
             id="di_action_report_resserre"
@@ -233,5 +240,15 @@
             name="difodoo_fichiers_base.di_impression_resserre"
             print_report_name="'Resserre après vente détaillée'" 
             paperformat="difodoo_ventes.di_A4_Paysage"           
+        />
+    <report 
+            id="di_action_report_resserre_portrait"
+            string="Impression ressere après vente détaillée portrait"
+            model="di.imp.ress.wiz" 
+            report_type="qweb-pdf"
+            file="difodoo_fichiers_base.di_impression_resserre_portrait" 
+            name="difodoo_fichiers_base.di_impression_resserre_portrait"
+            print_report_name="'Resserre après vente détaillée'"   
+            paperformat="base.paperformat_euro"                     
         />
 </odoo>

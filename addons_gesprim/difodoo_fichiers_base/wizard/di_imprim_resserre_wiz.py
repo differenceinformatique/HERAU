@@ -23,6 +23,10 @@ class DiImpRessWiz(models.TransientModel):
         self.di_product_ids=self.env['product.product'].search([('type','!=','service'),('qty_available','>',0.0)])
         
         
-                                                    
-        return self.env.ref('difodoo_fichiers_base.di_action_report_resserre').report_action(self)                                                      
+        if self.di_liste_comptage:
+            return self.env.ref('difodoo_fichiers_base.di_action_report_resserre_portrait').report_action(self)
+        else:                                            
+            return self.env.ref('difodoo_fichiers_base.di_action_report_resserre').report_action(self)
+            
+                                                          
     
