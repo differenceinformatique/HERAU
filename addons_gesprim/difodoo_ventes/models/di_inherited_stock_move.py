@@ -824,35 +824,133 @@ class StockMoveLine(models.Model):
         qte_std = 0.0    
         poib = 0.0
         
-        if lot:               
-            if date:
-    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-                mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done')]).filtered(lambda mv: mv.move_id.date.date() <= date)
+#         time.strftime('%Y-%m-%d')
+        if date:                
+            di_date_to = date.strftime('%Y-%m-%d') + ' 23:59:59'   
+            
+            
+        if lot:
+            if date :   
+                sqlstr = """
+                    select
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                    LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                    (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
+                    LEFT JOIN stock_move sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
+                    where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.lot_id = %s
+                    """
+                    
+                self.env.cr.execute(sqlstr, (product_id.id, di_date_to,lot.id))
             else:
-                mouvs = self.env['stock.move.line'].search([('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done')])
+                sqlstr = """
+                    select
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                    LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                    (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
+                    LEFT JOIN stock_move sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
+                    where sml.product_id = %s and sml.state ='done'  and sml.lot_id = %s
+                    """
+                    
+                self.env.cr.execute(sqlstr, (product_id.id, lot.id))
         else:
-            if date:
-    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
-                mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('move_id.state', '=', 'done')]).filtered(lambda mv: mv.move_id.date.date() <= date)
+            if date :   
+                sqlstr = """
+                    select
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                    LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                    (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
+                    LEFT JOIN stock_move sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
+                    where sml.product_id = %s and sml.state ='done'  and sml.date <=%s 
+                    """
+                    
+                self.env.cr.execute(sqlstr, (product_id.id, di_date_to))
             else:
-                mouvs = self.env['stock.move.line'].search([('product_id', '=', product_id.id), ('move_id.state', '=', 'done')])
-             
-        for mouv in mouvs:
-#             if mouv.move_id.remaining_qty:
-            if mouv.location_dest_id.usage == usage:                
-                nbcol = nbcol + mouv.di_nb_colis
-                nbpal = nbpal + mouv.di_nb_palette
-                nbpiece = nbpiece + mouv.di_nb_pieces
-                poids = poids + mouv.di_poin
-                poib = poib + mouv.di_poib
-                qte_std = qte_std + mouv.qty_done	                
-            else:                
-                nbcol = nbcol - mouv.di_nb_colis
-                nbpal = nbpal - mouv.di_nb_palette
-                nbpiece = nbpiece - mouv.di_nb_pieces
-                poids = poids - mouv.di_poin
-                poib = poib - mouv.di_poib
-                qte_std = qte_std - mouv.qty_done                       				
+                sqlstr = """
+                    select
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
+                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                    LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                    (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
+                    LEFT JOIN stock_move sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
+                    where sml.product_id = %s and sml.state ='done'
+                    """
+                    
+                self.env.cr.execute(sqlstr, (product_id.id,))                                        
+        
+        result = self.env.cr.fetchall()[0]
+        nbcol = result[0] and result[0] or 0.0
+        qte_std = result[1] and result[1] or 0.0
+        poib = result[2] and result[2] or 0.0
+        poids = result[3] and result[3] or 0.0
+        nbpiece = result[4] and result[4] or 0.0
+        nbpal = result[5] and result[5] or 0.0
+
+        
+        
+#         if lot:               
+#             if date:
+#     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
+#                 mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done')]).filtered(lambda mv: mv.move_id.date.date() <= date)
+#             else:
+#                 mouvs = self.env['stock.move.line'].search([('product_id', '=', product_id.id), ('lot_id', '=', lot.id), ('move_id.state', '=', 'done')])
+#         else:
+#             if date:
+#     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','=',False),('inventory_id.date','=',date),('product_uom_qty','!=',0.0)])
+#                 mouvs = self.env['stock.move.line'].search(['&', ('product_id', '=', product_id.id), ('move_id.state', '=', 'done')]).filtered(lambda mv: mv.move_id.date.date() <= date)
+#             else:
+#                 mouvs = self.env['stock.move.line'].search([('product_id', '=', product_id.id), ('move_id.state', '=', 'done')])
+#              
+#         for mouv in mouvs:
+# #             if mouv.move_id.remaining_qty:
+#             if mouv.location_dest_id.usage == usage:                
+#                 nbcol = nbcol + mouv.di_nb_colis
+#                 nbpal = nbpal + mouv.di_nb_palette
+#                 nbpiece = nbpiece + mouv.di_nb_pieces
+#                 poids = poids + mouv.di_poin
+#                 poib = poib + mouv.di_poib
+#                 qte_std = qte_std + mouv.qty_done	                
+#             else:                
+#                 nbcol = nbcol - mouv.di_nb_colis
+#                 nbpal = nbpal - mouv.di_nb_palette
+#                 nbpiece = nbpiece - mouv.di_nb_pieces
+#                 poids = poids - mouv.di_poin
+#                 poib = poib - mouv.di_poib
+#                 qte_std = qte_std - mouv.qty_done                       				
                 
         return (nbcol, nbpal, nbpiece, poids, qte_std,poib)
     
