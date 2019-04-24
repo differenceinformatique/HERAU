@@ -54,6 +54,9 @@ class PurchaseOrderLine(models.Model):
     di_qte_a_facturer_un_saisie = fields.Float(string='Quantité à facturer en unité de saisie',compute='_di_get_to_invoice_qty')
     di_poin_a_facturer = fields.Float(string='Poids net à facturer',compute='_di_get_to_invoice_qty')
     di_poib_a_facturer = fields.Float(string='Poids brut à facturer',compute='_di_get_to_invoice_qty')
+    di_nb_pieces_a_facturer = fields.Integer(string='Nb pièces à facturer',compute='_get_to_invoice_qty')
+    di_nb_colis_a_facturer = fields.Integer(string='Nb colis à facturer',compute='_get_to_invoice_qty')
+    di_nb_palette_a_facturer = fields.Float(string='Nb palette à facturer',compute='_get_to_invoice_qty')
  
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)    
     di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)    
@@ -92,14 +95,23 @@ class PurchaseOrderLine(models.Model):
                     line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
                     line.di_poin_a_facturer = line.di_poin - line.di_poin_fac
                     line.di_poib_a_facturer = line.di_poib - line.di_poib_fac
+                    line.di_nb_pieces_a_facturer = line.di_nb_pieces - line.di_nb_pieces_fac
+                    line.di_nb_colis_a_facturer = line.di_nb_colis - line.di_nb_colis_fac
+                    line.di_nb_palette_a_facturer = line.di_nb_palette - line.di_nb_palette_fac
                 else:
                     line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
                     line.di_poin_a_facturer = line.di_poin_liv - line.di_poin_fac
                     line.di_poib_a_facturer = line.di_poib_liv - line.di_poib_fac
+                    line.di_nb_pieces_a_facturer = line.di_nb_pieces_liv - line.di_nb_pieces_fac
+                    line.di_nb_colis_a_facturer = line.di_nb_colis_liv - line.di_nb_colis_fac
+                    line.di_nb_palette_a_facturer = line.di_nb_palette_liv - line.di_nb_palette_fac
             else:
                 line.di_qte_a_facturer_un_saisie = 0
                 line.di_poin_a_facturer = 0
-                line.di_poib_a_facturer = 0        
+                line.di_poib_a_facturer = 0     
+                line.di_nb_pieces_a_facturer = 0
+                line.di_nb_colis_a_facturer = 0
+                line.di_nb_palette_a_facturer = 0.0    
     
     def _suggest_quantity(self):
         super(PurchaseOrderLine, self)._suggest_quantity()

@@ -36,7 +36,8 @@ class DiProductResserre(models.TransientModel):
             context.update(di_date_to=self.di_to_date) 
             #product_ids=self.env['product.product'].browse([('type','=','product')]) # maj stock
             #product_ids._di_compute_resserre_values()               
-            domain="[('type','!=','service'),('qty_available','>',0.0)]"
+#             domain="[('type','!=','service'),('qty_available','>',0.0)]"
+            domain="[('type','!=','service'),('di_avec_stock','=',True)]"
             #domain="['&',('type','=','product'),'|',('di_col_stock','>',0.0),'|',('di_qte_stock','>',0.0),'|',('di_poib_stock','>',0.0),'|',('di_poin_stock','>',0.0)]"      
 
         views = [

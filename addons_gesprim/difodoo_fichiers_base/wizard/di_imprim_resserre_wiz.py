@@ -20,7 +20,7 @@ class DiImpRessWiz(models.TransientModel):
         context = dict(self.env.context or {})
         if self.di_to_date:
             context.update(di_date_to=self.di_to_date) 
-        self.di_product_ids=self.env['product.product'].search([('type','!=','service'),('qty_available','>',0.0)])
+        self.di_product_ids=self.env['product.product'].search([('type','!=','service'),('di_avec_stock','=',True)])
         
         
         if self.di_liste_comptage:

@@ -662,8 +662,8 @@ class SaleOrderLine(models.Model):
                     line.di_poin_a_facturer = line.di_poin - line.di_poin_fac
                     line.di_poib_a_facturer = line.di_poib - line.di_poib_fac
                     line.di_nb_pieces_a_facturer = line.di_nb_pieces - line.di_nb_pieces_fac
-                    line.di_nb_colis_facturer = line.di_nb_colis - line.di_nb_colis_fac
-                    line.di_nb_palette_facturer = line.di_nb_palette - line.di_nb_palette_fac
+                    line.di_nb_colis_a_facturer = line.di_nb_colis - line.di_nb_colis_fac
+                    line.di_nb_palette_a_facturer = line.di_nb_palette - line.di_nb_palette_fac
                 else:
                     line.di_qte_a_facturer_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
                     line.di_poin_a_facturer = line.di_poin_liv - line.di_poin_fac

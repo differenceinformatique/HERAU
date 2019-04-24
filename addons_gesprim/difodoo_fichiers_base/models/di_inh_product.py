@@ -176,6 +176,26 @@ class ProductProduct(models.Model):
     di_val_regul_sortie = fields.Float(string='Valeur régul. sortie', compute='_di_compute_resserre_values')
     di_val_marge_ap_regul_sortie = fields.Float(string='Valeur marge après régul. sortie', compute='_di_compute_resserre_values')
     
+    di_avec_stock = fields.Boolean("Avec stock", default=False, compute='_di_compute_avec_stock', search="_di_search_avec_stock")
+    
+    def _di_compute_avec_stock(self):
+        for art in self:              
+            if (art.di_col_stock and art.di_col_stock != 0.0) or (art.di_qte_stock and art.di_qte_stock != 0.0) or (art.di_poib_stock and art.di_poib_stock != 0.0) or (art.di_poin_stock and art.di_poin_stock != 0.0):
+                art.di_avec_stock = True
+            else:
+                art.di_avec_stock = False
+    
+    def _di_search_avec_stock(self, operator, value):        
+                    
+        product_ids = []
+        prods = self.env['product.product'].search([])
+        for prod in prods:                         
+            (nbcol, nbpal, nbpiece, poids, qte_std, poib) = self.env['stock.move.line'].di_qte_spe_en_stock(prod,False,False,'internal')
+            if nbcol != 0.0 or nbpal != 0.0 or nbpiece != 0.0 or poids != 0.0 or qte_std != 0.0 or poib != 0.0 : 
+                product_ids.append(prod.id)
+        return [('id', 'in', product_ids)]        
+                
+    
 #     def _qte_stock_search(self, operator, value):
 #         domain = [('di_qte_stock', operator, value)]
 #         product_ids = self.env['product.product'].search(domain)

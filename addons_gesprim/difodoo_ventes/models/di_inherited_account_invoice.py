@@ -116,13 +116,19 @@ class AccountInvoice(models.Model):
             qty = line.product_qty - line.qty_invoiced
             di_qte_un_saisie = line.di_qte_un_saisie - line.di_qte_un_saisie_fac
             di_poib = line.di_poib - line.di_poib_fac 
-            di_poin = line.di_poin - line.di_poin_fac                
+            di_poin = line.di_poin - line.di_poin_fac  
+            di_nbpieces = line.di_nb_pieces - line.di_nb_pieces_fac
+            di_nbcolis = line.di_nb_colis - line.di_nb_colis_fac
+            di_nbpal = line.di_nb_palette - line.di_nb_palette_fac               
         #ajout difodoo
         else:
             qty = line.qty_received - line.qty_invoiced
             di_qte_un_saisie = line.di_qte_un_saisie_liv - line.di_qte_un_saisie_fac
             di_poib = line.di_poib_liv - line.di_poib_fac
             di_poin = line.di_poin_liv - line.di_poin_fac
+            di_nbpieces = line.di_nb_pieces_liv - line.di_nb_pieces_fac
+            di_nbcolis = line.di_nb_colis_liv - line.di_nb_colis_fac
+            di_nbpal = line.di_nb_palette_liv - line.di_nb_palette_fac
             
         di_tare = di_poib - di_poin
         #ajout difodoo
@@ -154,7 +160,10 @@ class AccountInvoice(models.Model):
             'di_un_prix':line.di_un_prix,
             'di_qte_un_saisie':di_qte_un_saisie,
             'di_poib':di_poib,
-            'di_poin':di_poin                               
+            'di_poin':di_poin,
+            'di_nb_pieces':di_nbpieces,
+            'di_nb_colis':di_nbcolis,
+            'di_nb_palette':di_nbpal                                
         }
         account = invoice_line.get_invoice_line_account('in_invoice', line.product_id, line.order_id.fiscal_position_id, self.env.user.company_id)
         if account:
@@ -397,8 +406,9 @@ class AccountInvoiceLine(models.Model):
     def _di_recalcule_quantites(self):
         if self.ensure_one():
             if self.product_id:
+                quantity = self.quantity
                 if self.di_flg_modif_uom == False:
-                    AccountInvoiceLine.modifparprg=True
+#                     AccountInvoiceLine.modifparprg=True
                     if self.di_un_saisie == "PIECE":
                         self.di_nb_pieces = ceil(self.di_qte_un_saisie)
                         self.quantity = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
@@ -467,7 +477,10 @@ class AccountInvoiceLine(models.Model):
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                         else:  
-                            self.di_nb_palette = self.di_nb_colis  
+                            self.di_nb_palette = self.di_nb_colis
+                    if quantity != self.quantity:
+                    # la quantité en unité de mesure à changer, on met le flag pour ne pas recalculé les qtés spé
+                        AccountInvoiceLine.modifparprg = True  
                     
 #     @api.multi
 #     @api.depends('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_product_packaging_id')
@@ -612,6 +625,9 @@ class AccountInvoiceLine(models.Model):
                     qte_a_fac += Dipurchaseorderline.di_qte_a_facturer_un_saisie   
                     poib += Dipurchaseorderline.di_poib_a_facturer
                     poin += Dipurchaseorderline.di_poin_a_facturer
+                    nbpieces += Dipurchaseorderline.di_nb_pieces_a_facturer
+                    nbcolis += Dipurchaseorderline.di_nb_colis_a_facturer
+                    nbpal += Dipurchaseorderline.di_nb_palette_a_facturer
                     
 #                     qte_a_fac += Dipurchaseorderline.di_qte_un_saisie   
 #                     poib += Dipurchaseorderline.di_poib
@@ -621,6 +637,9 @@ class AccountInvoiceLine(models.Model):
             vals["di_poib"] = poib
             vals["di_poin"] = poin
             vals["di_tare"] = poib-poin 
+            vals["di_nb_pieces"] = nbpieces
+            vals["di_nb_colis"] = nbcolis
+            vals["di_nb_palette"] = nbpal 
   
         res = super(AccountInvoiceLine, self).create(vals)                           
         return res
