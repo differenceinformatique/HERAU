@@ -131,6 +131,8 @@ class AccountInvoice(models.Model):
             di_nbpal = line.di_nb_palette_liv - line.di_nb_palette_fac
             
         di_tare = di_poib - di_poin
+        if di_nbcolis != 0.0:
+            di_tare_un = di_tare / di_nbcolis
         #ajout difodoo
         if float_compare(qty, 0.0, precision_rounding=line.product_uom.rounding) <= 0:
             qty = 0.0
@@ -153,7 +155,8 @@ class AccountInvoice(models.Model):
             'analytic_tag_ids': line.analytic_tag_ids.ids,
             'invoice_line_tax_ids': invoice_line_tax_ids.ids,
             #Ajout des éléments difodoo
-            'di_tare':di_tare,  
+            'di_tare_un':di_tare_un,
+            'di_tare':di_tare,   
             'di_un_saisie':line.di_un_saisie,
             'di_type_palette_id':line.di_type_palette_id,
             'di_product_packaging_id':line.product_packaging,
@@ -199,6 +202,7 @@ class AccountInvoiceLine(models.Model):
     di_product_packaging_id = fields.Many2one('product.packaging', string='Package', default=False, store=True)
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
     di_flg_modif_uom = fields.Boolean(default=False)
+    di_tare_un = fields.Float(string='Tare unitaire')
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
  
@@ -401,6 +405,12 @@ class AccountInvoiceLine(models.Model):
                         self.di_flg_modif_uom = True
                 AccountInvoiceLine.modifparprg=False
             
+    @api.multi    
+    @api.onchange('di_nb_colis', 'di_tare_un','di_qte_un_saisie')
+    def _di_recalcule_tare(self):
+        if self.ensure_one():
+            self.di_tare = self.di_tare_un * self.di_nb_colis
+            
     @api.multi            
     @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_product_packaging_id')
     def _di_recalcule_quantites(self):
@@ -408,6 +418,8 @@ class AccountInvoiceLine(models.Model):
             if self.product_id:
                 quantity = self.quantity
                 if self.di_flg_modif_uom == False:
+                    self.di_tare_un = 0.0
+                    self.di_tare = 0.0
 #                     AccountInvoiceLine.modifparprg=True
                     if self.di_un_saisie == "PIECE":
                         self.di_nb_pieces = ceil(self.di_qte_un_saisie)
@@ -600,6 +612,8 @@ class AccountInvoiceLine(models.Model):
             vals["di_poib"] = poib
             vals["di_poin"] = poin      
             vals["di_tare"] = poib-poin
+            if nbcolis != 0.0:
+                vals["di_tare_un"] = (poib-poin)  / nbcolis
             vals["di_nb_pieces"] = nbpieces
             vals["di_nb_colis"] = nbcolis
             vals["di_nb_palette"] = nbpal      
@@ -637,6 +651,8 @@ class AccountInvoiceLine(models.Model):
             vals["di_poib"] = poib
             vals["di_poin"] = poin
             vals["di_tare"] = poib-poin 
+            if nbcolis != 0.0:
+                vals["di_tare_un"] = (poib-poin)  / nbcolis
             vals["di_nb_pieces"] = nbpieces
             vals["di_nb_colis"] = nbcolis
             vals["di_nb_palette"] = nbpal 

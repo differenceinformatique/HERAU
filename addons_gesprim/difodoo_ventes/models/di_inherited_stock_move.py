@@ -3,6 +3,7 @@ from odoo import api, fields, models, _
 from math import ceil
 from datetime import  datetime
 from odoo.addons import decimal_precision as dp
+from odoo.tools.float_utils import float_round
 
  
 class StockMove(models.Model):
@@ -1114,3 +1115,315 @@ class StockQuant(models.Model):
 # #             else:  
 # #                 quant.di_nb_palette = quant.di_nb_colis
 # #             quant.di_nb_pieces = ceil(quant.product_id.di_type_colis_id.di_qte_cond_inf * quant.di_nb_colis)
+
+
+
+class StockReturnPicking(models.TransientModel):
+    _inherit = "stock.return.picking"
+    
+    @api.model
+    def default_get(self, fields):
+        # copie standard
+        if len(self.env.context.get('active_ids', list())) > 1:
+            raise UserError(_("You may only return one picking at a time."))
+        res = super(StockReturnPicking, self).default_get(fields)
+
+        move_dest_exists = False
+        product_return_moves = []
+        picking = self.env['stock.picking'].browse(self.env.context.get('active_id'))
+        if picking:
+            res.update({'picking_id': picking.id})
+            if picking.state != 'done':
+                raise UserError(_("You may only return Done pickings."))
+            for move in picking.move_lines:
+                if move.scrapped:
+                    continue
+                if move.move_dest_ids:
+                    move_dest_exists = True
+                plusieurs_lots = False    
+                dernier_lot = False
+                for move_line in move.move_line_ids:
+                    if move_line.lot_id and move_line.lot_id != dernier_lot and dernier_lot != False:
+                        plusieurs_lots=True
+                    dernier_lot = move_line.lot_id
+                    
+                    
+                if not plusieurs_lots:
+                    di_lot = dernier_lot.id 
+                else:
+                    di_lot = 0      
+                #surcharge
+                di_qte_un_saisie = move.di_qte_un_saisie - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
+                                                  mapped('move_line_ids').mapped('di_qte_un_saisie'))
+                di_nb_pieces = move.di_nb_pieces - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
+                                                  mapped('move_line_ids').mapped('di_nb_pieces'))
+                di_nb_colis = move.di_nb_colis - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
+                                                  mapped('move_line_ids').mapped('di_nb_colis'))
+                di_nb_palette = move.di_nb_palette - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
+                                                  mapped('move_line_ids').mapped('di_nb_palette'))
+                di_poin = move.di_poin - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
+                                                  mapped('move_line_ids').mapped('di_poin'))
+                di_poib = move.di_poib - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
+                                                  mapped('move_line_ids').mapped('di_poib'))
+                di_tare = di_poib - di_poin     
+                
+                if di_nb_colis!= 0.0:
+                    di_tare_un = di_tare / di_nb_colis
+                else: 
+                    di_tare_un = di_tare 
+    
+                quantity = move.product_qty - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
+                                                  mapped('move_line_ids').mapped('product_qty'))
+                quantity = float_round(quantity, precision_rounding=move.product_uom.rounding)
+                product_return_moves.append((0, 0, {'product_id': move.product_id.id,'di_lot_id':di_lot, 'quantity': quantity, 'di_qte_un_saisie': di_qte_un_saisie, 'di_nb_pieces': di_nb_pieces, 'di_nb_colis': di_nb_colis, 'di_nb_palette': di_nb_palette, 'di_poin': di_poin, 'di_poib': di_poib, 'di_tare': di_tare, 'di_tare_un': di_tare_un, 'move_id': move.id, 'uom_id': move.product_id.uom_id.id}))
+                #fin surcharge
+            if not product_return_moves:
+                raise UserError(_("No products to return (only lines in Done state and not fully returned yet can be returned)."))
+            if 'product_return_moves' in fields:
+                res.update({'product_return_moves': product_return_moves})
+            if 'move_dest_exists' in fields:
+                res.update({'move_dest_exists': move_dest_exists})
+            if 'parent_location_id' in fields and picking.location_id.usage == 'internal':
+                res.update({'parent_location_id': picking.picking_type_id.warehouse_id and picking.picking_type_id.warehouse_id.view_location_id.id or picking.location_id.location_id.id})
+            if 'original_location_id' in fields:
+                res.update({'original_location_id': picking.location_id.id})
+            if 'location_id' in fields:
+                location_id = picking.location_id.id
+                if picking.picking_type_id.return_picking_type_id.default_location_dest_id.return_location:
+                    location_id = picking.picking_type_id.return_picking_type_id.default_location_dest_id.id
+                res['location_id'] = location_id
+        return res
+
+    def _create_returns(self):
+        # TODO sle: the unreserve of the next moves could be less brutal
+        for return_move in self.product_return_moves.mapped('move_id'):
+            return_move.move_dest_ids.filtered(lambda m: m.state not in ('done', 'cancel'))._do_unreserve()
+
+        # create new picking for returned products
+        picking_type_id = self.picking_id.picking_type_id.return_picking_type_id.id or self.picking_id.picking_type_id.id
+        new_picking = self.picking_id.copy({
+            'move_lines': [],
+            'picking_type_id': picking_type_id,
+            'state': 'draft',
+            'origin': _("Return of %s") % self.picking_id.name,
+            'location_id': self.picking_id.location_dest_id.id,
+            'location_dest_id': self.location_id.id})
+        new_picking.message_post_with_view('mail.message_origin_link',
+            values={'self': new_picking, 'origin': self.picking_id},
+            subtype_id=self.env.ref('mail.mt_note').id)
+        returned_lines = 0
+        for return_line in self.product_return_moves:
+            if not return_line.move_id:
+                raise UserError(_("You have manually created product lines, please delete them to proceed."))
+            # TODO sle: float_is_zero?
+            if return_line.quantity:
+                returned_lines += 1
+                vals = self._prepare_move_default_values(return_line, new_picking)
+                r = return_line.move_id.copy(vals)
+                vals = {}
+
+                # +--------------------------------------------------------------------------------------------------------+
+                # |       picking_pick     <--Move Orig--    picking_pack     --Move Dest-->   picking_ship
+                # |              | returned_move_ids              ↑                                  | returned_move_ids
+                # |              ↓                                | return_line.move_id              ↓
+                # |       return pick(Add as dest)          return toLink                    return ship(Add as orig)
+                # +--------------------------------------------------------------------------------------------------------+
+                move_orig_to_link = return_line.move_id.move_dest_ids.mapped('returned_move_ids')
+                move_dest_to_link = return_line.move_id.move_orig_ids.mapped('returned_move_ids')
+                vals['move_orig_ids'] = [(4, m.id) for m in move_orig_to_link | return_line.move_id]
+                vals['move_dest_ids'] = [(4, m.id) for m in move_dest_to_link]
+                r.write(vals)
+                for sml in r.move_line_ids:
+#                     sml.di_qte_un_saisie = return_line.di_qte_un_saisie
+#                     sml.di_nb_pieces = return_line.di_nb_pieces
+#                     sml.di_nb_colis = return_line.di_nb_colis
+#                     sml.di_nb_palette = return_line.di_nb_palette
+#                     sml.di_poin = return_line.di_poin
+#                     sml.di_poib = return_line.di_poib
+#                     sml.di_tare = return_line.di_tare
+#                     sml.di_tare_un = return_line.di_tare_un
+                    sml.update({'di_qte_un_saisie':return_line.di_qte_un_saisie,
+                                'di_nb_pieces':return_line.di_nb_pieces,
+                                'di_nb_colis':return_line.di_nb_colis,
+                                'di_nb_palette':return_line.di_nb_palette,
+                                'di_poin':return_line.di_poin,
+                                'di_poib':return_line.di_poib,
+                                'di_tare':return_line.di_tare,
+                                'di_tare_un':return_line.di_tare_un,
+                                'lot_id':return_line.di_lot_id.id
+                                })
+                                
+        if not returned_lines:
+            raise UserError(_("Please specify at least one non-zero quantity."))
+
+        new_picking.action_confirm()
+        new_picking.action_assign()
+        return new_picking.id, picking_type_id
+
+   
+
+class StockReturnPickingLine(models.TransientModel):
+    _inherit = "stock.return.picking.line"
+    
+    di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True, compute="_compute_qte_un_saisie")
+    di_nb_pieces = fields.Integer(string='Nb pièces')
+    di_nb_colis = fields.Integer(string='Nb colis' )
+    di_nb_palette = fields.Float(string='Nb palettes', digits=dp.get_precision('Product Unit of Measure'))
+    di_poin = fields.Float(string='Poids net' )
+    di_poib = fields.Float(string='Poids brut')
+    di_tare = fields.Float(string='Tare' )    
+    di_tare_un = fields.Float(string='Tare unitaire')
+    di_flg_modif_uom = fields.Boolean(default=False)
+    di_flg_modif_qty_spe = fields.Boolean(default=False)
+    di_lot_id = fields.Many2one('stock.production.lot', 'Lot')
+    
+    
+    @api.multi    
+    @api.depends('di_poin', 'di_tare', 'di_nb_colis', 'di_nb_pieces', 'di_nb_palette')
+    def _compute_qte_un_saisie(self):
+        # recalcule la quantité en unité de saisie
+        for srpl in self:
+            
+            move = srpl.move_id
+             
+            if move.di_un_saisie == "PIECE":
+                srpl.di_qte_un_saisie = srpl.di_nb_pieces
+            elif move.di_un_saisie == "COLIS":
+                srpl.di_qte_un_saisie = srpl.di_nb_colis
+            elif move.di_un_saisie == "PALETTE":
+                srpl.di_qte_un_saisie = srpl.di_nb_palette
+            elif move.di_un_saisie == "KG":
+                srpl.di_qte_un_saisie = srpl.di_poib
+            else:
+                srpl.di_qte_un_saisie = srpl.quantity   
+    
+    @api.multi                     
+    @api.onchange('di_nb_palette')
+    def _di_change_nb_palette(self):
+        if self.ensure_one():
+            if self.di_flg_modif_uom == False:
+                self.di_flg_modif_qty_spe = True   
+                move = self.move_id                                      
+                if move.di_type_palette_id:
+                    self.di_nb_colis = ceil(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf)                    
+                    if move.product_uom.name.lower() == 'kg':       
+                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                        self.di_poin = self.quantity 
+                    else:                                  
+                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis
+                        self.di_poin = self.quantity  * self.product_id.weight
+                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
+                     
+                    self.di_poib = self.di_poin + self.di_tare
+      
+    @api.multi                     
+    @api.onchange('di_nb_colis')
+    def _di_change_nb_colis(self):
+        if self.ensure_one():
+            if self.di_flg_modif_uom == False:
+                self.di_flg_modif_qty_spe = True      
+                self.di_tare_un = 0.0
+                self.di_tare = 0.0
+                move = self.move_id    
+                if move.di_product_packaging_id: 
+                    if move.product_uom.name.lower() == 'kg':       
+                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                        self.di_poin = self.quantity  
+                    else:                                  
+                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis
+                        self.di_poin = self.quantity  * self.product_id.weight
+                          
+                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+                    if move.di_type_palette_id.di_qte_cond_inf != 0.0:                
+                        self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+                    else:
+                        self.di_nb_palette = self.di_nb_colis
+                    
+                    self.di_poib = self.di_poin + self.di_tare
+                
+    @api.multi    
+    @api.onchange('di_nb_colis', 'di_tare_un')
+    def _di_recalcule_tare(self):
+        if self.ensure_one():
+            self.di_tare = self.di_tare_un * self.di_nb_colis
+                
+    @api.multi                     
+    @api.onchange('di_nb_pieces')
+    def _di_change_nb_pieces(self):
+        if self.ensure_one():
+            if self.di_flg_modif_uom == False:
+                self.di_flg_modif_qty_spe = True      
+                move = self.move_id
+                if move.product_uom.name.lower() == 'kg':       
+                    self.quantity = self.di_nb_pieces * self.product_id.weight 
+                    self.di_poin = self.quantity  
+                else:                                             
+                    self.quantity =self.di_nb_pieces
+                    self.di_poin = self.quantity  * self.product_id.weight
+                self.di_poib = self.di_poin + self.di_tare
+
+    @api.multi 
+    @api.onchange('di_poib')
+    def _di_onchange_poib(self):
+        if self.ensure_one():
+            if self.di_flg_modif_uom == False:
+                self.di_flg_modif_qty_spe = True
+                self.di_poin = self.di_poib - self.di_tare
+                move = self.move_id                
+                if move.product_uom.name.lower() == 'kg':
+                    self.quantity = self.di_poin
+   
+    @api.multi 
+    @api.onchange('di_tare')
+    def _di_onchange_tare(self):
+        if self.ensure_one():
+            if self.di_flg_modif_uom == False:
+                self.di_flg_modif_qty_spe = True    
+                self.di_poin = self.di_poib - self.di_tare  
+                move = self.move_id        
+                if move.product_uom.name.lower() == 'kg':
+                    self.quantity = self.di_poin
+                    
+    @api.multi 
+    @api.onchange('di_poin')
+    def _di_onchange_poin(self):
+        if self.ensure_one(): 
+            if self.di_flg_modif_uom == False:
+                self.di_flg_modif_qty_spe = True     
+                move = self.move_id                        
+                if move.product_uom.name.lower() == 'kg':
+                    self.quantity = self.di_poin               
+                self.di_poib = self.di_poin + self.di_tare
+    
+    @api.multi                     
+    @api.onchange('quantity')
+    def _di_change_quantity(self):
+        if self.ensure_one() :
+            move = self.move_id              
+            if self.di_flg_modif_qty_spe == False:
+                if move.product_uom:
+                    if move.product_uom.name.lower == 'kg':
+                        # si géré au kg, on ne modife que les champs poids
+                        self.di_poin = self.quantity
+                        self.di_poib = self.di_poin + self.di_tare
+                    else:
+                        # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
+                        if self.product_id.di_get_type_piece().qty != 0.0:
+                            self.di_nb_pieces = ceil(self.quantity/self.product_id.di_get_type_piece().qty)
+                        else:
+                            self.di_nb_pieces = ceil(self.quantity)                                
+                        if move.di_product_packaging_id.qty != 0.0 :
+                            self.di_nb_colis = ceil(self.quantity / move.di_product_packaging_id.qty)
+                        else:      
+                            self.di_nb_colis = ceil(self.quantity)             
+                        if move.di_type_palette_id.di_qte_cond_inf != 0.0:
+                            self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+                        else:
+                            self.di_nb_palette = self.di_nb_colis
+                            
+                    self.di_poin = self.quantity * self.product_id.weight 
+                    self.di_poib = self.di_poin + self.di_tare
+                                                        
+                    self.di_flg_modif_uom = True
+            self.di_flg_modif_qty_spe=False
+
