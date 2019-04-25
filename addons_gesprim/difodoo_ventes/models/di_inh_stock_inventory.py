@@ -130,6 +130,8 @@ class InventoryLine(models.Model):
     
     di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')   
     
+    di_perte = fields.Boolean("Perte", default=True)
+    
     @api.onchange('di_poib','di_tare_un')
     def di_onchange_poib_tare(self):
         self.di_poin = self.di_poib - (self.di_tare_un*self.di_nb_colis)
@@ -206,7 +208,8 @@ class InventoryLine(models.Model):
                 'location_dest_id': location_dest_id,
                 'owner_id': self.partner_id.id,
                 #surcharge                            
-                'di_nb_colis': qty                
+                'di_nb_colis': qty,     
+                'di_perte':self.di_perte           
                 #fin surcharge
             })]
         }
@@ -241,7 +244,8 @@ class InventoryLine(models.Model):
                 'location_dest_id': location_dest_id,
                 'owner_id': self.partner_id.id,
                 #surcharge                            
-                'di_nb_pieces': qty                
+                'di_nb_pieces': qty,     
+                'di_perte':self.di_perte                
                 #fin surcharge
             })]
         }
@@ -276,7 +280,8 @@ class InventoryLine(models.Model):
                 'location_dest_id': location_dest_id,
                 'owner_id': self.partner_id.id,
                 #surcharge                            
-                'di_poin': qty                
+                'di_poin': qty,     
+                'di_perte':self.di_perte                
                 #fin surcharge
             })]
         } 
@@ -311,7 +316,8 @@ class InventoryLine(models.Model):
                 'location_dest_id': location_dest_id,
                 'owner_id': self.partner_id.id,
                 #surcharge                            
-                'di_poib': qty                
+                'di_poib': qty,     
+                'di_perte':self.di_perte                
                 #fin surcharge
             })]
         }        
@@ -346,7 +352,40 @@ class InventoryLine(models.Model):
                 'location_dest_id': location_dest_id,
                 'owner_id': self.partner_id.id,
                 #surcharge                            
-                'di_nb_palette': qty                
+                'di_nb_palette': qty,     
+                'di_perte':self.di_perte                
+                #fin surcharge
+            })]
+        }
+        
+    def _get_move_values(self, qty, location_id, location_dest_id, out):
+        #copie standard
+        self.ensure_one()
+        return {
+            'name': _('INV:') + (self.inventory_id.name or ''),
+            'product_id': self.product_id.id,
+            'product_uom': self.product_uom_id.id,
+            'product_uom_qty': qty,
+            'date': self.inventory_id.date,
+            'company_id': self.inventory_id.company_id.id,
+            'inventory_id': self.inventory_id.id,
+            'state': 'confirmed',
+            'restrict_partner_id': self.partner_id.id,
+            'location_id': location_id,
+            'location_dest_id': location_dest_id,
+            'move_line_ids': [(0, 0, {
+                'product_id': self.product_id.id,
+                'lot_id': self.prod_lot_id.id,
+                'product_uom_qty': 0,  # bypass reservation here
+                'product_uom_id': self.product_uom_id.id,
+                'qty_done': qty,
+                'package_id': out and self.package_id.id or False,
+                'result_package_id': (not out) and self.package_id.id or False,
+                'location_id': location_id,
+                'location_dest_id': location_dest_id,
+                'owner_id': self.partner_id.id,
+                #surcharge                                            
+                'di_perte':self.di_perte                
                 #fin surcharge
             })]
         }

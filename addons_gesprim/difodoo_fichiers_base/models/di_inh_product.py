@@ -286,10 +286,10 @@ class ProductProduct(models.Model):
                     SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
                     SUM ( Case when orig_type.usage <> 'supplier' and  stock_type.usage = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
                     
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.qty_done else 0 end) AS di_qte_regul_sortie,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.di_poib else 0 end) AS di_poib_reg_sort,
-                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.qty_done else 0 end) AS di_qte_regul_sortie,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poib else 0 end) AS di_poib_reg_sort,
+                    SUM ( Case when orig_type.usage = 'internal' and  stock_type.usage <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
                                                       
                 from stock_move_line sml                
                 LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id

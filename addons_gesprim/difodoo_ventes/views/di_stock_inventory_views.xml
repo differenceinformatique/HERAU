@@ -31,7 +31,8 @@
                     <field name="di_tare_un" string="Tare unitaire" />
                     <field name="di_poin" string="Poids net"/>                                        
                     <field name="di_nb_palette" groups="difodoo_fichiers_base.di_group_aff_palette"/>
-                    <field name="di_ecart_qte" string="Ecart unité de stock" readonly="1"/>                      
+                    <field name="di_ecart_qte" string="Ecart unité de stock" readonly="1"/>
+                    <field name="di_perte" string="Perte" />                          
                 </xpath>                    
                 <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/>   -->                
             </field>
