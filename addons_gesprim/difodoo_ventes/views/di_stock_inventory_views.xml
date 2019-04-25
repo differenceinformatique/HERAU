@@ -22,7 +22,7 @@
                     <field name="di_nb_pieces_theo" readonly="1"/>
                     <field name="di_poib_theo" readonly="1"/>
                     <field name="di_poin_theo" readonly="1"/>                                        
-                    <field name="di_nb_palette_theo" readonly="1"/>                    
+                    <field name="di_nb_palette_theo" readonly="1" groups="difodoo_fichiers_base.di_group_aff_palette"/>                    
                 </xpath> 
                 <xpath expr="//page/field[@name='line_ids']/tree/field[@name='product_qty']" position="after">
                     <field name="di_nb_colis" />
@@ -30,7 +30,7 @@
                     <field name="di_poib" string="Poids brut" />
                     <field name="di_tare_un" string="Tare unitaire" />
                     <field name="di_poin" string="Poids net"/>                                        
-                    <field name="di_nb_palette" />
+                    <field name="di_nb_palette" groups="difodoo_fichiers_base.di_group_aff_palette"/>
                     <field name="di_ecart_qte" string="Ecart unité de stock" readonly="1"/>                      
                 </xpath>                    
                 <!-- <xpath expr="//div[@class='oe_chatter']" position="replace"/>   -->                

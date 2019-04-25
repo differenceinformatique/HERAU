@@ -66,8 +66,10 @@
         "wizard/di_product_resserre.xml",
         "wizard/di_imprim_resserre_wiz.xml",
         "security/ir.model.access.csv",
+        "security/di_groupes_affichage.xml", 
         "data/di_param_data.xml",
-        "data/di.code.dest.csv"               
+        "data/di.code.dest.csv",
+                       
     ],
     # only loaded in demonstration mode
     'demo': [

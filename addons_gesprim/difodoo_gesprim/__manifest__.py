@@ -45,7 +45,7 @@
     # always loaded
     'data': [
         "gesprim_menu.xml",
-        "views/di_report_templates.xml",        
+        "views/di_report_templates.xml",                
         
        
         # 'security/ir.model.access.csv',

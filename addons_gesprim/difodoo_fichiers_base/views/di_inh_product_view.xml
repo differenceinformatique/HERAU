@@ -44,7 +44,7 @@
 					<group>
 						<field name="di_un_saisie" string="Type unité saisie" />
 						<field name="di_un_prix" />
-						<field name="di_type_palette_id"
+						<field name="di_type_palette_id" groups="difodoo_fichiers_base.di_group_aff_palette"
 							context="{ 'default_product_id': product_variant_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
 							domain="[('di_product_tmpl_id','=',id),('di_type_cond','=','PALETTE')]" />
 						<field name="di_type_colis_id"

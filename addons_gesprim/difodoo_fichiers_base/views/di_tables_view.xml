@@ -319,7 +319,7 @@
                     attrs="{'readonly': [('di_un_prix', '!=', 'PALETTE')],'required':[('di_un_prix','=','PALETTE')]}"
                     context="{ 'default_product_id': di_product_tmpl_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
                     domain="[('di_product_tmpl_id','=',di_product_tmpl_id),('di_type_cond','=','PALETTE')]"
-                    name="di_type_palette_id"/>
+                    name="di_type_palette_id" groups="difodoo_fichiers_base.di_group_aff_palette"/>
                 <field name="di_qte_seuil"/>
                 <field name="di_date_effet"/>
                 <field name="di_date_fin"/>
@@ -350,7 +350,7 @@
                             attrs="{'readonly': [('di_un_prix', '!=', 'PALETTE')],'required':[('di_un_prix','=','PALETTE')]}"
                             context="{ 'default_product_id': di_product_tmpl_id, 'tree_view_ref':'product.product_packaging_tree_view',                              'form_view_ref':'product.product_packaging_form_view'}"
                             domain="[('di_product_tmpl_id','=',di_product_tmpl_id),('di_type_cond','=','PALETTE')]"
-                            name="di_type_palette_id"/>
+                            name="di_type_palette_id" groups="difodoo_fichiers_base.di_group_aff_palette"/>
                         <field name="di_qte_seuil"/>
                         <field modifiers="{'required':true}" name="di_date_effet"/>
                         <field name="di_date_fin"/>
@@ -388,7 +388,7 @@
                 <field name="di_poin" readonly="1" string="Poids"/>
                 <field name="di_nbpiece" readonly="1" string="Pièces"/>
                 <field name="di_nbcol" readonly="1" string="Colis"/>
-                <field name="di_nbpal" readonly="1" string="Palettes"/>
+                <field name="di_nbpal" readonly="1" string="Palettes" groups="difodoo_fichiers_base.di_group_aff_palette"/>
                 <field name="di_mont" readonly="1" string="Valorisation"/>
             </tree>
         </field>
@@ -409,7 +409,7 @@
                         <field name="di_poin" readonly="1" string="Poids"/>
                         <field name="di_nbpiece" readonly="1" string="Pièces"/>
                         <field name="di_nbcol" readonly="1" string="Colis"/>
-                        <field name="di_nbpal" readonly="1" string="Palettes"/>
+                        <field name="di_nbpal" readonly="1" string="Palettes" groups="difodoo_fichiers_base.di_group_aff_palette" />
                         <field name="di_mont" readonly="1" string="Valorisation"/>
                     </group>
                 </sheet>

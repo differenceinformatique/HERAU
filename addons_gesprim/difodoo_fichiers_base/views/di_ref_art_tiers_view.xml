@@ -27,7 +27,7 @@
                         </group>              
                         <group>
                             <field name="di_un_saisie" />
-                            <field name="di_type_palette_id" />
+                            <field name="di_type_palette_id" groups="difodoo_fichiers_base.di_group_aff_palette" />
                             <field name="di_type_colis_id" />
                             <field name="di_un_prix" />                            
                         </group>     
