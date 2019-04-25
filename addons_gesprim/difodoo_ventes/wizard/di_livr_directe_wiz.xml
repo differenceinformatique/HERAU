@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_livr_directe_wiz" model="ir.ui.view">
+        <field name="name">di.generer.tarifs.form</field>
+        <field name="model">di.gen.tar.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Livraison directe">            	
+                <footer>
+                    <button string="Valider la livraison" type="object" name="di_livraison_directe_masse"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <act_window
+        id="di_action_livraison_directe_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Livraison directe"
+        res_model="di.livr.directe.wiz"
+        src_model="sale.order"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_livr_directe_wiz">    
+    </act_window>   
+
+</odoo>

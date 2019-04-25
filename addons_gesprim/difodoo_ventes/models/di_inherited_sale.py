@@ -970,13 +970,14 @@ class SaleOrder(models.Model):
     @api.multi
     def di_action_livrer(self):
         for order in self:
-            order.action_confirm()
-            livraison = order.mapped('picking_ids')
-            livraison.action_assign()
-            livraison.button_validate()
-                        
-        
-        return livraison 
+            if order.state == 'draft':
+                order.action_confirm()
+                livraisons = order.mapped('picking_ids')
+                for livraison in livraisons:
+                    livraison.action_assign()
+                    if livraison.state=='assigned':
+                        livraison.button_validate()                                
+        return self 
                 
     @api.multi
     def di_action_grille_vente(self):
