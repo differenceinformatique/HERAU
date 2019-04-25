@@ -6,7 +6,8 @@
         <field name="arch" type="xml">
             <form string="Impression Resserre">     
                 <group col="4" string="Informations">                        
-                        <field name="di_liste_comptage" />                        
+                        <field name="di_liste_comptage" />
+                        <field name="di_masquer_ventes" />                          
                 </group>                                                                        
                 <footer>
                     <button string="Imprimer la resserre" type="object" name="imprimer_resserre"
