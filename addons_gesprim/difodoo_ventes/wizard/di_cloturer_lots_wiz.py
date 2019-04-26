@@ -42,7 +42,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id':  locationinterne_id,
                                 'location_dest_id':  lot.product_id.property_stock_inventory.id,
                                 #surcharge                      
@@ -71,7 +71,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id': lot.product_id.property_stock_inventory.id,
                                 'location_dest_id': locationinterne_id,
                                 #surcharge                      
@@ -102,7 +102,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id':  locationinterne_id,
                                 'location_dest_id':  lot.product_id.property_stock_inventory.id,
                                 #surcharge                      
@@ -131,7 +131,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id': lot.product_id.property_stock_inventory.id,
                                 'location_dest_id': locationinterne_id,
                                 #surcharge                      
@@ -162,7 +162,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id':  locationinterne_id,
                                 'location_dest_id':  lot.product_id.property_stock_inventory.id,
                                 #surcharge                      
@@ -191,7 +191,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id': lot.product_id.property_stock_inventory.id,
                                 'location_dest_id': locationinterne_id,
                                 #surcharge                      
@@ -222,7 +222,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id':  locationinterne_id,
                                 'location_dest_id':  lot.product_id.property_stock_inventory.id,
                                 #surcharge                      
@@ -251,7 +251,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id': lot.product_id.property_stock_inventory.id,
                                 'location_dest_id': locationinterne_id,
                                 #surcharge                      
@@ -282,7 +282,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id':  locationinterne_id,
                                 'location_dest_id':  lot.product_id.property_stock_inventory.id,
                                 #surcharge                      
@@ -311,7 +311,7 @@ class DiCloturerLots(models.TransientModel):
                                 'product_uom_qty': 0.0,
                                 'date': datetime.now(),
                                 'company_id': self.env.user.company_id.id,                            
-                                'state': 'confirmed',                            
+                                'state': 'done',                            
                                 'location_id': lot.product_id.property_stock_inventory.id,
                                 'location_dest_id': locationinterne_id,
                                 #surcharge                      
@@ -342,7 +342,7 @@ class DiCloturerLots(models.TransientModel):
                                     'product_uom_qty': 0.0,
                                     'date': datetime.now(),
                                     'company_id': self.env.user.company_id.id,                            
-                                    'state': 'confirmed',                            
+                                    'state': 'done',                            
                                     'location_id':  locationinterne_id,
                                     'location_dest_id':  lot.product_id.property_stock_inventory.id,                                                                                      
                                     'move_line_ids': [(0, 0, {
@@ -368,7 +368,7 @@ class DiCloturerLots(models.TransientModel):
                                     'product_uom_qty': 0.0,
                                     'date': datetime.now(),
                                     'company_id': self.env.user.company_id.id,                            
-                                    'state': 'confirmed',                            
+                                    'state': 'done',                            
                                     'location_id':  lot.product_id.property_stock_inventory.id,
                                     'location_dest_id': locationinterne_id ,                                                                                      
                                     'move_line_ids': [(0, 0, {
