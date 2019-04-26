@@ -1439,7 +1439,7 @@ class StockProductionLot(models.Model):
     
     di_fini = fields.Boolean("Lot clôturé", default=False, store=True, compute="_compute_cloture")
     
-    @api.depends('quant_ids')
+    @api.depends('quant_ids.quantity')
     def _compute_cloture(self):
         for lot in self:
             product_qty = 0.0
