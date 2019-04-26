@@ -197,31 +197,31 @@
                 <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PIECE'">
                     <td class="text-right">
                         <span
-                            t-esc="move_line.move_id.sale_line_id.move_line.di_nb_pieces" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                            t-esc="'%.2f'% (move_line.move_id.sale_line_id.move_line.di_nb_pieces)" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
                     </td>
                 </t>
                 <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'COLIS'">
                     <td class="text-right">
                         <span
-                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_colis" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                            t-esc="'%.2f'% (move_line.move_id.sale_line_id.price_unit * move_line.di_nb_colis)" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
                     </td>
                 </t>
                 <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'PALETTE'">
                     <td class="text-right">
                         <span
-                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_nb_palette" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                            t-esc="'%.2f'% (move_line.move_id.sale_line_id.price_unit * move_line.di_nb_palette)" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
                     </td>
                 </t>
                 <t t-if="move_line.move_id.sale_line_id.di_un_prix == 'KG'">
                     <td class="text-right">
                         <span
-                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.di_poin" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                            t-esc="'%.2f'% (move_line.move_id.sale_line_id.price_unit * move_line.di_poin)" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
                     </td>
                 </t>
                 <t t-if="move_line.move_id.sale_line_id.di_un_prix == False or move_line.move_id.sale_line_id.di_un_prix == ''">
                     <td class="text-right">
                         <span
-                            t-esc="move_line.move_id.sale_line_id.price_unit * move_line.quantity_done" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
+                            t-esc="'%.2f'% (move_line.move_id.sale_line_id.price_unit * move_line.quantity_done)" t-options="{'widget': 'monetary', 'display_currency': move_line.move_id.sale_line_id.order_id.pricelist_id.currency_id}"/>
                     </td>
                 </t>
             </t>
@@ -357,34 +357,34 @@
                                             <t t-if="move.sale_line_id.di_un_prix == 'PIECE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_pieces" />
+                                                        t-esc="'%.2f'% (move.sale_line_id.price_unit * move.di_nb_pieces)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.di_nb_pieces"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'COLIS'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_colis" />
+                                                        t-esc="'%.2f'% (move.sale_line_id.price_unit * move.di_nb_colis)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.di_nb_colis"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'PALETTE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_nb_palette" />
+                                                        t-esc="'%.2f'% (move.sale_line_id.price_unit * move.di_nb_palette)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.di_nb_palette"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'KG'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.di_poin" />
+                                                        t-esc="'%.2f'% (move.sale_line_id.price_unit * move.di_poin)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.di_poin"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == False or move.sale_line_id.di_un_prix == ''">
                                                 <td class="text-right">                                                
-                                                    <span t-esc="move.sale_line_id.price_unit * move.quantity_done" />
+                                                    <span t-esc="'%.2f'%(move.sale_line_id.price_unit * move.quantity_done)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.quantity_done"/>                                               
                                                 </td>
                                             </t>                                        
@@ -426,34 +426,34 @@
                                             <t t-if="move.sale_line_id.di_un_prix == 'PIECE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_pieces" />
+                                                        t-esc="'%.2f'% (move.sale_line_id.price_unit * move.sale_line_id.di_nb_pieces)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.sale_line_id.di_nb_pieces"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'COLIS'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_colis" />
+                                                        t-esc="'%.2f'% (move.sale_line_id.price_unit * move.sale_line_id.di_nb_colis)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.sale_line_id.di_nb_colis"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'PALETTE'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_nb_palette" />
+                                                        t-esc="'%.2f'%(move.sale_line_id.price_unit * move.sale_line_id.di_nb_palette)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.sale_line_id.di_nb_palette"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == 'KG'">
                                                 <td class="text-right">
                                                     <span
-                                                        t-esc="move.sale_line_id.price_unit * move.sale_line_id.di_poin" />
+                                                        t-esc="'%.2f'% (move.sale_line_id.price_unit * move.sale_line_id.di_poin)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.sale_line_id.di_poin"/>
                                                 </td>
                                             </t>
                                             <t t-if="move.sale_line_id.di_un_prix == False or move.sale_line_id.di_un_prix == ''">
                                                 <td class="text-right">                                                
-                                                    <span t-esc="move.sale_line_id.price_unit * move.product_uom_qty" />
+                                                    <span t-esc=" '%.2f'% (move.sale_line_id.price_unit * move.product_uom_qty)" />
                                                     <t t-set="montant_total" t-value="montant_total + move.sale_line_id.price_unit * move.product_uom_qty"/>                                               
                                                 </td>
                                             </t>                                                                                
@@ -471,7 +471,7 @@
                                     <td></td> 
                                     <td></td> 
                                     <td>Montant total HT</td> 
-                                    <td class="text-right"><span t-esc="montant_total" /></td>                                   
+                                    <td class="text-right"><span t-esc="'%.2f'% montant_total" /></td>                                   
                                 </tr>
                             </t>
                         </tbody>
