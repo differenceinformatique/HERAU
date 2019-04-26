@@ -954,16 +954,19 @@ class SaleOrder(models.Model):
     @api.multi
     def di_action_facturer(self):
         for order in self:
-            order.action_confirm()
-            livraison = order.mapped('picking_ids')
-            livraison.action_assign()
-            livraison.button_validate()
-            order.action_invoice_create(grouped=False)
-            invoice = order.mapped('invoice_ids')
-            param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
-            
-            if param.di_autovalid_fact_ven:
-                invoice.action_invoice_open()
+            if order.state == 'draft':
+                order.action_confirm()
+                livraisons = order.mapped('picking_ids')
+                for livraison in livraisons:
+                    livraison.action_assign()
+                    if livraison.state=='assigned':
+                        livraison.button_validate()
+                        order.action_invoice_create(grouped=False)
+                        invoice = order.mapped('invoice_ids')
+                        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+                        
+                        if param.di_autovalid_fact_ven:
+                            invoice.action_invoice_open()
         
         return self.action_view_invoice() 
     

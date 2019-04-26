@@ -117,6 +117,7 @@
     <menuitem id="menu_gesprim_stock_traca" name="Traçabilité" sequence="20" parent="menu_gesprim_stock" action="stock.action_production_lot_form"/>
     <!-- <menuitem id="menu_gesprim_stock_visu_stock" name="Resserre après vente" sequence="30" parent="menu_gesprim_stock" action="stock.action_stock_quantity_history"/> -->
     <!-- <menuitem id="menu_gesprim_stock_ress_ap_ven_det" name="Resserre après vente détaillée" sequence="40" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_resserre_ap_vente_det"/> -->
+    <menuitem id="menu_gesprim_stock_clot_lot" name="Clôture lots" sequence="39" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_cloturerlots"/>
     <menuitem id="menu_gesprim_stock_ress_ap_ven_det" name="Resserre après vente détaillée" sequence="40" parent="menu_gesprim_stock" action="difodoo_fichiers_base.di_product_resserre_act_window"/>
     <menuitem id="menu_gesprim_stock_imp_ress_ap_ven_det" sequence="41" parent="menu_gesprim_stock" action="difodoo_fichiers_base.action_di_imprimer_resserre_menu_wiz" />
     <menuitem id="menu_gesprim_stock_pertes" name="Pertes" sequence="50" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_stock_report_all"/>

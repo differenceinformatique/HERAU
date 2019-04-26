@@ -108,18 +108,21 @@ class ResPartner(models.Model):
     @api.depends('di_param_seq_cli','di_param_seq_fou')
     def _di_compute_ref_required(self):
         for partner in self:
-            if partner.customer:
-                if partner.di_param_seq_cli:
-                    partner.di_ref_required=False
+            if self._context.get('default_type') in ('invoice','delivery'):  
+                partner.di_ref_required=False  
+            else:                        
+                if partner.customer:
+                    if partner.di_param_seq_cli:
+                        partner.di_ref_required=False
+                    else:
+                        partner.di_ref_required=True
+                elif partner.supplier:
+                    if partner.di_param_seq_fou:
+                        partner.di_ref_required=False
+                    else:
+                        partner.di_ref_required=True
                 else:
-                    partner.di_ref_required=True
-            elif partner.supplier:
-                if partner.di_param_seq_fou:
                     partner.di_ref_required=False
-                else:
-                    partner.di_ref_required=True
-            else:
-                partner.di_ref_required=False
     @api.multi
     @api.depends('di_param_seq_cli','di_param_seq_fou')
     def _di_compute_ref_readonly(self):

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <record id="di_cloturer_lots_wiz_form" model="ir.ui.view">
+        <field name="name">di.cloturer.lots.wiz.form</field>
+        <field name="model">di.cloturer.lots.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Clôture des Lots">                                            
+                <footer>
+                    <button string="Clôturer" type="object" name="cloturer_lots"
+                        default_focus="1" class="oe_link"/>                    
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="di_action_cloturerlots" model="ir.actions.act_window">
+        <field name="name">Clôturer lots</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.cloturer.lots.wiz</field>
+        <field name="view_type">form</field>            
+        <field name="view_id" ref="di_cloturer_lots_wiz_form"/>        
+        <field name="view_mode">tree,form</field>
+        <field name="target">new</field>
+    </record> 
+    
+    </data>
+ 
+</odoo>

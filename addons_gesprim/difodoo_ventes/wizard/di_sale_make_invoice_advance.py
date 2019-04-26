@@ -53,7 +53,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
         # fin de boucle on lance la facturation
         if wPartnerId != 0:
             order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
-            order_partner.action_invoice_create(grouped=(not wRegr))
+            order_partner.action_invoice_create(grouped=(not wRegr),final=True)
         # on met à jour la date de facture    
         invoices = sale_orders.mapped('invoice_ids')
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])

@@ -10,3 +10,4 @@ from . import di_lig_zero_wiz
 from . import di_cloturer_ventes_wiz
 from . import di_imprim_releves_wiz
 from . import di_livr_directe_wiz
+from . import di_cloturer_lots_wiz

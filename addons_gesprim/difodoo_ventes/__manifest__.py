@@ -48,6 +48,7 @@
         "wizard/di_ctrl_trp_wiz.xml",
         "wizard/di_supp_lig_zero_wiz.xml",
         "wizard/di_cloturer_ventes_wiz.xml",
+        "wizard/di_cloturer_lots_wiz.xml",
         "wizard/di_imprim_releves_wiz.xml",
         "wizard/di_livr_directe_wiz.xml",                                
         "views/di_inherited_sale_view.xml",

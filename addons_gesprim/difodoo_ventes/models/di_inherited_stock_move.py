@@ -1196,6 +1196,7 @@ class StockReturnPicking(models.TransientModel):
         return res
 
     def _create_returns(self):
+        #copie standard
         # TODO sle: the unreserve of the next moves could be less brutal
         for return_move in self.product_return_moves.mapped('move_id'):
             return_move.move_dest_ids.filtered(lambda m: m.state not in ('done', 'cancel'))._do_unreserve()
@@ -1259,6 +1260,11 @@ class StockReturnPicking(models.TransientModel):
 
         new_picking.action_confirm()
         new_picking.action_assign()
+        
+        for move in new_picking.move_lines:
+            return_picking_line = self.product_return_moves.filtered(lambda r: r.move_id == move.origin_returned_move_id)
+            if return_picking_line and return_picking_line.to_refund:
+                move.to_refund = True
         return new_picking.id, picking_type_id
 
    
@@ -1428,3 +1434,17 @@ class StockReturnPickingLine(models.TransientModel):
                     self.di_flg_modif_uom = True
             self.di_flg_modif_qty_spe=False
 
+class StockProductionLot(models.Model):    
+    _inherit = "stock.production.lot"
+    
+    di_fini = fields.Boolean("Lot clôturé", default=False, store=True, compute="_compute_cloture")
+    
+    @api.depends('quant_ids')
+    def _compute_cloture(self):
+        for lot in self:
+            product_qty = 0.0
+            quants = lot.quant_ids.filtered(lambda q: q.location_id.usage in ['internal', 'transit'])
+            product_qty = sum(quants.mapped('quantity'))
+            if product_qty != 0.0:
+                lot.di_fini = False
+                
