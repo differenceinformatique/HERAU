@@ -36,8 +36,7 @@
                     <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
                     <field name="di_tare_un" string="Tare Un." attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
                     <field name="di_tare" string="Tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-                    <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/> 
-                                                                       
+                    <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/>                                                                       
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
@@ -56,7 +55,8 @@
                     </div>
                 </xpath>                                       
             </field>                                    
-        </record> 
+        </record>
+         
         <record id="di_account_invoice_supplier_form" model="ir.ui.view">
             <field name="name">di.account.invoice.supplier.form</field>
             <field name="model">account.invoice</field>
@@ -93,8 +93,7 @@
                     <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
                     <field name="di_tare_un" string="Tare Un." attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
                     <field name="di_tare" string="Tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
-                    <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/>
-                                                                               
+                    <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/>                                                                               
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
@@ -112,10 +111,8 @@
                         <field name="message_ids" widget="mail_thread"/>
                     </div>
                 </xpath>                                       
-            </field>             
-                                   
-        </record> 
-      
+            </field>               
+        </record>     
     
         <record model="ir.ui.view" id="di_account_tax_form">
             <field name="name">di.account.tax.form</field>
@@ -161,6 +158,7 @@
 			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='amount_untaxed']" position="replace">
+					<field name="payment_term_id"/>
 					<field name="amount_untaxed" string="Tax Excluded" sum="Total" invisible="1"/>
 					<field name="di_amount_untaxed_signed" string="Taxes exclues" sum="Total"/>
 				</xpath>
