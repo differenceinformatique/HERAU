@@ -242,10 +242,10 @@
                     </h2>
 
                     <div id="informations" class="row mt32 mb32">
-                        <div class="col-auto mw-100 mb-2" t-if="o.name" name="description">
+<!--                         <div class="col-auto mw-100 mb-2" t-if="o.name" name="description">
                             <strong>Description:</strong>
                             <p class="m-0" t-field="o.name"/>
-                        </div>
+                        </div> -->
                         <div class="col-auto mw-100 mb-2" t-if="o.date_invoice" name="invoice_date">
                             <strong>Date de facture:</strong>
                             <!-- <p class="m-0" t-field="o.date_invoice"/> -->
