@@ -260,15 +260,16 @@
                             <strong>Origine:</strong>
                             <p class="m-0" t-field="o.origin"/>
                         </div> -->
+                        <div class="col-auto mw-100 mb-2" t-if="o.payment_term_id">
+		                    <strong>Conditions de paiement:</strong>
+		                    <p class="m-0" t-field="o.payment_term_id"/>
+		                </div>
                         <div class="col-auto mw-100 mb-2" t-if="o.partner_id.ref" name="customer_code">
                             <strong>Code client:</strong>
                             <p class="m-0" t-field="o.partner_id.ref"/>
-                        </div>
-                       
+                        </div>                       
                     </div>
-
                     <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
-
                     <table class="table table-sm o_main_table" name="invoice_line_table">
                         <thead>
                             <tr>
@@ -500,44 +501,42 @@
         </t>
     </template>
     <!-- Temporaire Herau : menu = "False"  -->
-     <report 
-            id="account.account_invoices"
-            model="account.invoice"
-            string="Facture avec paiements"
-            report_type="qweb-pdf"
-            name="difodoo_ventes.di_report_invoice_with_payments"
-            file="difodoo_ventes.di_report_invoice_with_payments"
-            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
-            print_report_name="(object._get_report_base_filename())"
-            menu="False"            
-        />
-        
-
-        <report
-            id="account.account_invoices_without_payment"
-            model="account.invoice"
-            string="Facture"
-            report_type="qweb-pdf"
-            name="difodoo_ventes.di_report_invoice"
-            file="difodoo_ventes.di_report_invoice"
-            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
-            print_report_name="(object._get_report_base_filename())"
-        />
-        <report 
-        id="account_intrastatinvoices"
+    <report 
+		id="account.account_invoices"
+		model="account.invoice"
+		string="Facture avec paiements"
+		report_type="qweb-pdf"
+		name="difodoo_ventes.di_report_invoice_with_payments"
+		file="difodoo_ventes.di_report_invoice_with_payments"
+		attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+		print_report_name="(object._get_report_base_filename())"
+		menu="False"            
+    />     
+    <report
+        id="account.account_invoices_without_payment"
         model="account.invoice"
-        string="Intrastat Invoices"
+        string="Facture"
         report_type="qweb-pdf"
-        name="difodoo_ventes.di_report_intrastatinvoice"
-        file="difodoo_ventes.di_report_intrastatinvoice"
-        print_report_name="
-            (object.type == 'out_invoice' and object.state == 'draft' and 'Intrastat Invoice' or
-            object.type == 'out_invoice' and object.state in ('open','paid') and 'Intrastat Invoice - %s' % (object.number) or
-            object.type == 'out_refund' and object.state == 'draft' and 'Intrastat Credit Note' or
-            object.type == 'out_refund' and 'Intrastat Credit Note - %s' % (object.number) or
-            object.type == 'in_invoice' and object.state == 'draft' and 'Intrastat Vendor Bill' or
-            object.type == 'in_invoice' and object.state in ('open','paid') and 'Intrastat Vendor Bill - %s' % (object.number) or
-            object.type == 'in_refund' and object.state == 'draft' and 'Intrastat Vendor Credit Note' or
-            object.type == 'in_refund' and 'Intrastat Vendor Credit Note - %s' % (object.number))"
+        name="difodoo_ventes.di_report_invoice"
+        file="difodoo_ventes.di_report_invoice"
+        attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+        print_report_name="(object._get_report_base_filename())"
     />
+    <report 
+    id="account_intrastatinvoices"
+    model="account.invoice"
+    string="Intrastat Invoices"
+    report_type="qweb-pdf"
+    name="difodoo_ventes.di_report_intrastatinvoice"
+    file="difodoo_ventes.di_report_intrastatinvoice"
+    print_report_name="
+        (object.type == 'out_invoice' and object.state == 'draft' and 'Intrastat Invoice' or
+        object.type == 'out_invoice' and object.state in ('open','paid') and 'Intrastat Invoice - %s' % (object.number) or
+        object.type == 'out_refund' and object.state == 'draft' and 'Intrastat Credit Note' or
+        object.type == 'out_refund' and 'Intrastat Credit Note - %s' % (object.number) or
+        object.type == 'in_invoice' and object.state == 'draft' and 'Intrastat Vendor Bill' or
+        object.type == 'in_invoice' and object.state in ('open','paid') and 'Intrastat Vendor Bill - %s' % (object.number) or
+        object.type == 'in_refund' and object.state == 'draft' and 'Intrastat Vendor Credit Note' or
+        object.type == 'in_refund' and 'Intrastat Vendor Credit Note - %s' % (object.number))"
+	/>
 </odoo>
