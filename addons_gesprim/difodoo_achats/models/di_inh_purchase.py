@@ -416,10 +416,11 @@ class PurchaseOrderLine(models.Model):
     def _di_recalcule_quantites(self):
         if self.ensure_one():
             if self.product_id:
+                product_qty = self.product_qty  # on fait une sauvegarde de la quantité en unité de mesure, on e bascule le flag que si elle change
                 if self.di_flg_modif_uom == False:
                     self.di_tare_un = 0.0
                     self.di_tare = 0.0
-                    PurchaseOrderLine.modifparprg=True
+#                     PurchaseOrderLine.modifparprg=True
                     if self.di_un_saisie == "PIECE":
                         self.di_nb_pieces = ceil(self.di_qte_un_saisie)
                         self.product_qty = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
@@ -500,7 +501,10 @@ class PurchaseOrderLine(models.Model):
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                         else:  
                             self.di_nb_palette = self.di_nb_colis    
-  
+                if product_qty != self.product_qty:
+                    # la quantité en unité de mesure à changer, on met le flag pour ne pas recalculé les qtés spé
+                    PurchaseOrderLine.modifparprg = True
+                
     @api.multi    
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
