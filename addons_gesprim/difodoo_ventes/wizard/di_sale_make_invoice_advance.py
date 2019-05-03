@@ -27,18 +27,19 @@ class SaleAdvancePaymentInv(models.TransientModel):
         # on récupère les commandes cochées
         if self._context.get('active_ids', []):
             sale_orders_1 = self.env['sale.order'].browse(self._context.get('active_ids', [])).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact)
-        else:
-            sale_orders_1 = self.env['sale.order'].search([('invoice_status','=','to invoice')]).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact)
+            if len(sale_orders_1)==1:
+                # si une seule commande, les filtres ne seront pas affichés, on les renseigne en fonction de la commande                 
+                self.period_fact = sale_orders_1.partner_id.di_period_fact
+                self.date_debut = sale_orders_1.di_livdt
+                self.date_fin = sale_orders_1.di_livdt
+                self.ref_debut = sale_orders_1.partner_id.ref
+                self.ref_fin = sale_orders_1.partner_id.ref
+            # on filtre sur la date
+            sale_orders = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin).sorted(key=lambda so: so.partner_id.id)
+        else:            
+            sale_orders = self.env['sale.order'].search([('invoice_status','=','to invoice'),('di_livdt','>=',self.date_debut),('di_livdt','<=',self.date_fin)]).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact  and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin).sorted(key=lambda so: so.partner_id.id)
             
-        if len(sale_orders_1)==1:
-            # si une seule commande, les filtres ne seront pas affichés, on les renseigne en fonction de la commande                 
-            self.period_fact = sale_orders_1.partner_id.di_period_fact
-            self.date_debut = sale_orders_1.di_livdt
-            self.date_fin = sale_orders_1.di_livdt
-            self.ref_debut = sale_orders_1.partner_id.ref
-            self.ref_fin = sale_orders_1.partner_id.ref
-        # on filtre sur la date
-        sale_orders = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact).sorted(key=lambda so: so.partner_id.id)
+        
         # on filtre sur le code client
 #         sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact )
         wPartnerId = 0
