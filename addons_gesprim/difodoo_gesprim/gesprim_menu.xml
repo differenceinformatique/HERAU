@@ -92,6 +92,7 @@
 	<menuitem id="menu_gesprim_ventes_liv_ctrltrp" name="Contrôle transporteur" sequence="70" parent="menu_gesprim_ventes_liv" action="difodoo_ventes.di_action_wiz_imp_ctrltrp"/>
 	<!-- ****Menu Facturation Ventes-->      
 	<menuitem id="menu_gesprim_ventes_cde_fact" name="Commandes à facturer" sequence="10" parent="menu_gesprim_ventes_fact" action="sale.action_orders_to_invoice"/>
+	<menuitem id="menu_gesprim_ventes_fact_cdes" name="Facturer les commandes" sequence="11" parent="menu_gesprim_ventes_fact" action="sale.action_view_sale_advance_payment_inv"/>		
 	<menuitem id="menu_gesprim_ventes_factures" name="Factures clients" sequence="20" parent="menu_gesprim_ventes_fact" action="account.action_invoice_tree1"/>    
 	<menuitem id="menu_gesprim_ventes_avoirs" name="Avoirs clients" sequence="30" parent="menu_gesprim_ventes_fact" action="account.action_invoice_out_refund"/>
 	<menuitem id="menu_gesprim_ventes_imp_releves" name="Impression des relevés" sequence="40" parent="menu_gesprim_ventes_fact" action="difodoo_ventes.action_di_imprimer_releves_menu_wiz"/>	

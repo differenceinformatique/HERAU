@@ -234,9 +234,9 @@
 			<field name="inherit_id" ref="sale.view_order_tree" />
 			<field eval="80" name="priority" />
 			<field name="arch" type="xml">			     
-			 <xpath expr="//tree" position="attributes">
+			 <!-- <xpath expr="//tree" position="attributes">
                     <attribute name="limit">1000</attribute>
-                </xpath>
+                </xpath> -->
 				<!-- Masquage Date d'engagement + Date demandée - Ne fonctionne pas avec un xpath sur le nom -->
 				<xpath expr="//tree/field[5]" position="attributes">
 					<attribute name="invisible">1</attribute>

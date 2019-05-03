@@ -25,7 +25,11 @@ class SaleAdvancePaymentInv(models.TransientModel):
 #         if self.advance_payment_method == 'delivered':
         # le regroupement n'est pertinent que dans le cas où il y a plusieurs commandes, donc uniquement méthode "delivered"     
         # on récupère les commandes cochées
-        sale_orders_1 = self.env['sale.order'].browse(self._context.get('active_ids', [])).filtered(lambda so: so.partner_id.ref != False)
+        if self._context.get('active_ids', []):
+            sale_orders_1 = self.env['sale.order'].browse(self._context.get('active_ids', [])).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact)
+        else:
+            sale_orders_1 = self.env['sale.order'].search([('invoice_status','=','to invoice')]).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact)
+            
         if len(sale_orders_1)==1:
             # si une seule commande, les filtres ne seront pas affichés, on les renseigne en fonction de la commande                 
             self.period_fact = sale_orders_1.partner_id.di_period_fact
@@ -34,22 +38,22 @@ class SaleAdvancePaymentInv(models.TransientModel):
             self.ref_debut = sale_orders_1.partner_id.ref
             self.ref_fin = sale_orders_1.partner_id.ref
         # on filtre sur la date
-        sale_orders_2 = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin)
+        sale_orders = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact).sorted(key=lambda so: so.partner_id.id)
         # on filtre sur le code client
-        sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact )
+#         sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact )
         wPartnerId = 0
         wRegr = True
         # on les parcourt, triées par partner_id
-        for order in sale_orders.sorted(key=lambda so: so.partner_id.id):
+        for order in sale_orders:
             # on vérifie que la commande correspond à la périodicité et aux dates de selection
-            if order.partner_id.di_period_fact == self.period_fact:
+#             if order.partner_id.di_period_fact == self.period_fact:
                 # à chaque rupture de partner_id on lance une facturation
-                if wPartnerId != order.partner_id.id:
-                    if wPartnerId != 0:
-                        order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
-                        order_partner.action_invoice_create(grouped=(not wRegr))    # grouped=False pour regrouper par client
-                    wPartnerId = order.partner_id.id
-                    wRegr = order.partner_id.di_regr_fact
+            if wPartnerId != order.partner_id.id:
+                if wPartnerId != 0:
+                    order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
+                    order_partner.action_invoice_create(grouped=(not wRegr))    # grouped=False pour regrouper par client
+                wPartnerId = order.partner_id.id
+                wRegr = order.partner_id.di_regr_fact
         # fin de boucle on lance la facturation
         if wPartnerId != 0:
             order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
