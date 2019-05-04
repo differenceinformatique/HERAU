@@ -36,49 +36,109 @@ class SaleAdvancePaymentInv(models.TransientModel):
                 self.ref_fin = sale_orders_1.partner_id.ref
             # on filtre sur la date
             sale_orders = sale_orders_1.filtered(lambda so: so.di_livdt >= self.date_debut and so.di_livdt <= self.date_fin and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin).sorted(key=lambda so: so.partner_id.id)
-        else:            
-            sale_orders = self.env['sale.order'].search([('invoice_status','=','to invoice'),('di_livdt','>=',self.date_debut),('di_livdt','<=',self.date_fin)]).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact  and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin).sorted(key=lambda so: so.partner_id.id)
-            
-        
-        # on filtre sur le code client
-#         sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact )
-        wPartnerId = 0
-        wRegr = True
-        # on les parcourt, triées par partner_id
-        for order in sale_orders:
-            # on vérifie que la commande correspond à la périodicité et aux dates de selection
-#             if order.partner_id.di_period_fact == self.period_fact:
-                # à chaque rupture de partner_id on lance une facturation
-            if wPartnerId != order.partner_id.id:
-                if wPartnerId != 0:
-                    order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
-                    order_partner.action_invoice_create(grouped=(not wRegr))    # grouped=False pour regrouper par client
-                wPartnerId = order.partner_id.id
-                wRegr = order.partner_id.di_regr_fact
-        # fin de boucle on lance la facturation
-        if wPartnerId != 0:
-            order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
-            order_partner.action_invoice_create(grouped=(not wRegr),final=True)
-        # on met à jour la date de facture    
-        invoices = sale_orders.mapped('invoice_ids')
-        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
-        for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
-            s_o.action_done()    
-        for invoice in invoices:
-            invoice.date_invoice=self.date_fact
-            if param.di_autovalid_fact_ven:
-                invoice.action_invoice_open()
-#                 if param.di_autoimp_fact_ven: # ne fonctionne pas
-#                     invoice.invoice_print()
+              # on filtre sur le code client
+    #         sale_orders = sale_orders_2.filtered(lambda so: so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin and so.partner_id.di_period_fact == self.period_fact )
+            wPartnerId = 0
+            wRegr = True
+            # on les parcourt, triées par partner_id
+            for order in sale_orders:
+                # on vérifie que la commande correspond à la périodicité et aux dates de selection
+    #             if order.partner_id.di_period_fact == self.period_fact:
+                    # à chaque rupture de partner_id on lance une facturation
+                if wPartnerId != order.partner_id.id:
+                    if wPartnerId != 0:
+                        order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
+                        order_partner.action_invoice_create(grouped=(not wRegr))    # grouped=False pour regrouper par client
+                    wPartnerId = order.partner_id.id
+                    wRegr = order.partner_id.di_regr_fact
+            # fin de boucle on lance la facturation
+            if wPartnerId != 0:
+                order_partner = sale_orders.filtered(lambda so: so.partner_id.id == wPartnerId)
+                order_partner.action_invoice_create(grouped=(not wRegr),final=True)
+            # on met à jour la date de facture    
+            invoices = sale_orders.mapped('invoice_ids')
+            param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+            for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
+                s_o.action_done()    
+            for invoice in invoices:
+                invoice.date_invoice=self.date_fact
+                if param.di_autovalid_fact_ven:
+                    invoice.action_invoice_open()
+    #                 if param.di_autoimp_fact_ven: # ne fonctionne pas
+    #                     invoice.invoice_print()
+                    
+    #             return sale_orders.action_print_invoice() # ne fonctionne pas
                 
-#             return sale_orders.action_print_invoice() # ne fonctionne pas
+            # comme en standard, on lance l'affichage des factures si demandé  
+            if self._context.get('open_invoices', False):
+                return sale_orders.action_view_invoice()
+            return {'type': 'ir.actions.act_window_close'}
+    #     else:
+    #         # dans les autres cas, on laisse le standard faire son travail
+    #         resSuper = super(SaleAdvancePaymentInv, self).create_invoices()
+    #         return resSuper
+            #TODO date facture sur facturation std
+
             
-        # comme en standard, on lance l'affichage des factures si demandé  
-        if self._context.get('open_invoices', False):
-            return sale_orders.action_view_invoice()
-        return {'type': 'ir.actions.act_window_close'}
-#     else:
-#         # dans les autres cas, on laisse le standard faire son travail
-#         resSuper = super(SaleAdvancePaymentInv, self).create_invoices()
-#         return resSuper
-        #TODO date facture sur facturation std
+        else:           
+            query_args = {'periodicity_invoice': self.period_fact,'date_debut' : self.date_debut,'date_fin' : self.date_fin, 'ref_debut': self.ref_debut,'ref_fin':self.ref_fin}
+            query = """ SELECT  so.id 
+                            FROM sale_order so
+                            INNER JOIN res_partner rp on rp.id = so.partner_id 
+                            WHERE so.invoice_status = 'to invoice' 
+                            AND di_livdt between %(date_debut)s AND %(date_fin)s                            
+                            AND rp.ref is not null
+                            AND rp.di_period_fact = %(periodicity_invoice)s
+                            AND rp.ref between %(ref_debut)s AND %(ref_fin)s
+                            AND rp.di_regr_fact is true
+                            order by so.partner_id
+                            """
+    
+            self.env.cr.execute(query, query_args)
+            ids = [r[0] for r in self.env.cr.fetchall()]
+            sale_orders_non_group = self.env['sale.order'].search([('id', 'in', ids)])
+            if sale_orders_non_group:
+                sale_orders_non_group.action_invoice_create(grouped=False,final=True)     
+            
+            
+            query_args = {'periodicity_invoice': self.period_fact,'date_debut' : self.date_debut,'date_fin' : self.date_fin, 'ref_debut': self.ref_debut,'ref_fin':self.ref_fin}
+            query = """ SELECT  so.id 
+                            FROM sale_order so
+                            INNER JOIN res_partner rp on rp.id = so.partner_id 
+                            WHERE so.invoice_status = 'to invoice' 
+                            AND di_livdt between %(date_debut)s AND %(date_fin)s                            
+                            AND rp.ref is not null
+                            AND rp.di_period_fact = %(periodicity_invoice)s
+                            AND rp.ref between %(ref_debut)s AND %(ref_fin)s
+                            AND rp.di_regr_fact is false
+                            order by so.partner_id
+                            """
+    
+            self.env.cr.execute(query, query_args)
+            ids = [r[0] for r in self.env.cr.fetchall()]
+            sale_orders_group = self.env['sale.order'].search([('id', 'in', ids)])
+            if sale_orders_group:
+                sale_orders_group.action_invoice_create(grouped=True,final=True)       
+            sale_orders = sale_orders_non_group + sale_orders_group
+#             sale_orders = self.env['sale.order'].search([('invoice_status','=','to invoice'),('di_livdt','>=',self.date_debut),('di_livdt','<=',self.date_fin)]).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact  and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin).sorted(key=lambda so: so.partner_id.id)
+                                
+            for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
+                s_o.action_done()
+                
+            invoices = sale_orders.mapped('invoice_ids')
+            param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+            if param.di_autovalid_fact_ven:
+                    invoices.action_invoice_open()
+            invoices.write({'date_invoice':self.date_fact})            
+#             for invoice in invoices:
+#                 invoice.date_invoice=self.date_fact
+#                 
+    #                 if param.di_autoimp_fact_ven: # ne fonctionne pas
+    #                     invoice.invoice_print()
+                    
+    #             return sale_orders.action_print_invoice() # ne fonctionne pas
+                
+            # comme en standard, on lance l'affichage des factures si demandé  
+            if self._context.get('open_invoices', False):
+                return sale_orders.action_view_invoice()
+            return {'type': 'ir.actions.act_window_close'}

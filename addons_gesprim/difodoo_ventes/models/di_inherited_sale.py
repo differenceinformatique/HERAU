@@ -17,6 +17,7 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
     
     modifparprg = False
+    di_flg_msg_stock = True
     
     di_qte_un_saisie= fields.Float(string='Quantité en unité de saisie',store=True)
     di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie",store=True)
@@ -33,6 +34,8 @@ class SaleOrderLine(models.Model):
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
     di_flg_modif_uom = fields.Boolean()
+#     di_flg_msg_stock = fields.Boolean(string="flag", default=False, store=True)
+    
 
     di_qte_un_saisie_liv = fields.Float(string='Quantité livrée en unité de saisie', compute='_compute_qty_delivered')
     di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie livrée")
@@ -533,6 +536,7 @@ class SaleOrderLine(models.Model):
     @api.onchange('product_id')
     def _di_charger_valeur_par_defaut(self):
         if self.ensure_one():
+            SaleOrderLine.di_flg_msg_stock = False
             if self.order_partner_id and self.product_id:
                 ref = self.env['di.ref.art.tiers'].search([('di_partner_id','=',self.order_partner_id.id),('di_product_id','=',self.product_id.id)],limit=1)
             else:
@@ -623,6 +627,7 @@ class SaleOrderLine(models.Model):
     def _onchange_product_id_check_availability(self):
         # copie standard
         #surcharge pour enlever la remise à 0 de product_packaging
+        
         if self.product_id.type == 'product':
             precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
             product = self.product_id.with_context(warehouse=self.order_id.warehouse_id.id,lang=self.order_id.partner_id.lang or self.env.user.lang or 'en_US')
@@ -630,21 +635,26 @@ class SaleOrderLine(models.Model):
             if float_compare(product.virtual_available, product_qty, precision_digits=precision) == -1:
                 is_available = self._check_routing()
                 if not is_available:
-                    message =  _('You plan to sell %s %s of %s but you only have %s %s available in %s warehouse.') % \
-                            (self.product_uom_qty, self.product_uom.name, self.product_id.name, product.virtual_available, product.uom_id.name, self.order_id.warehouse_id.name)
-                    # We check if some products are available in other warehouses.
-                    if float_compare(product.virtual_available, self.product_id.virtual_available, precision_digits=precision) == -1:
-                        message += _('\nThere are %s %s available across all warehouses.\n\n') % \
-                                (self.product_id.virtual_available, product.uom_id.name)
-                        for warehouse in self.env['stock.warehouse'].search([]):
-                            quantity = self.product_id.with_context(warehouse=warehouse.id).virtual_available
-                            if quantity > 0:
-                                message += "%s: %s %s\n" % (warehouse.name, quantity, self.product_id.uom_id.name)
-                    warning_mess = {
-                        'title': _('Not enough inventory!'),
-                        'message' : message
-                    }
-                    return {'warning': warning_mess}
+                    if not SaleOrderLine.di_flg_msg_stock:
+                        SaleOrderLine.di_flg_msg_stock = True
+#                         vals = {}
+#                         vals['product_uom_qty'] = 999.0
+#                         self.update(vals) 
+                        message =  _('You plan to sell %s %s of %s but you only have %s %s available in %s warehouse.') % \
+                                (self.product_uom_qty, self.product_uom.name, self.product_id.name, product.virtual_available, product.uom_id.name, self.order_id.warehouse_id.name)
+                        # We check if some products are available in other warehouses.
+                        if float_compare(product.virtual_available, self.product_id.virtual_available, precision_digits=precision) == -1:
+                            message += _('\nThere are %s %s available across all warehouses.\n\n') % \
+                                    (self.product_id.virtual_available, product.uom_id.name)
+                            for warehouse in self.env['stock.warehouse'].search([]):
+                                quantity = self.product_id.with_context(warehouse=warehouse.id).virtual_available
+                                if quantity > 0:
+                                    message += "%s: %s %s\n" % (warehouse.name, quantity, self.product_id.uom_id.name)
+                        warning_mess = {
+                            'title': _('Not enough inventory!'),
+                            'message' : message
+                        }
+                        return {'warning': warning_mess}
         return {}
     
     @api.depends('di_qte_un_saisie_fac', 'di_qte_un_saisie_liv', 'di_qte_un_saisie', 'order_id.state',"di_poin_liv","di_poin_fac","di_poib_liv","di_poib_fac",  \
