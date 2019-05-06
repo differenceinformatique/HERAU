@@ -12,12 +12,19 @@ class DiCloturerLots(models.TransientModel):
     _name = "di.cloturer.lots.wiz"
     _description = "Wizard clôture des lots"
         
+    di_product_id = fields.Many2one('product.product',string="Article")
+    di_lot  =   fields.Char("Lot", help=""" Mettre * pour prendre tous les lots de l'article sélectionné. """)
   
     @api.multi
     def cloturer_lots(self):
         self.ensure_one()  
-        
-        lots = self.env['stock.production.lot'].search([('di_fini', '=', False)])
+        if self.di_product_id:            
+            if self.di_lot == '*':
+                lots = self.env['stock.production.lot'].search(['&',('di_fini', '=', False),('product_id','=',self.di_product_id.id)])
+            else:
+                lots = self.env['stock.production.lot'].search(['&',('di_fini', '=', False),('product_id','=',self.di_product_id.id),('name','=',self.di_lot)])
+        else:
+            lots = self.env['stock.production.lot'].search([('di_fini', '=', False)])                
         
         for lot in lots:
             

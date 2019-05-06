@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="di_regul_art_lot_wiz_form" model="ir.ui.view">
+            <field name="name">di.regul.art.lot.wiz.form</field>
+            <field name="model">di.regul.art.lot.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Régul. de stock">                               
+                    <group>                    
+                        <field name="date_regul" required="1"/>
+                        <field name="di_product_id" required="1"/> 
+                        <field name="di_lot_id" required="1" 
+                            context="{'default_product_id': di_product_id}"
+                            domain="[('product_id','=',di_product_id)]"  
+                        />                     
+                    </group>
+                    <group>
+                        <group string="Quantités théoriques">
+                            <field name="di_qte_std_theo"/> 
+                            <field name="di_nb_palette_theo" groups="difodoo_fichiers_base.di_group_aff_palette"/> 
+                            <field name="di_nb_colis_theo"/> 
+                            <field name="di_nb_pieces_theo"/> 
+                            <field name="di_poib_theo"/>                             
+                            <field name="di_poin_theo"/>    
+                        </group>
+                        <group string="Quantités réelles">
+                            <field name="di_qte_std"/> 
+                            <field name="di_nb_palette" groups="difodoo_fichiers_base.di_group_aff_palette"/> 
+                            <field name="di_nb_colis"/> 
+                            <field name="di_nb_pieces"/> 
+                            <field name="di_poib"/> 
+                            <field name="di_tare_un"/> 
+                            <field name="di_poin"/>                             
+                        </group>
+                    </group>                                
+                    <footer>
+                        <button string="Valider" type="object" name="valider_regul"
+                            default_focus="1" class="oe_link"/>                    
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+         <record id="di_regul_art_lot_msgfin" model="ir.ui.view">
+            <field name="name">di.regul.art.lot.msgfin</field>
+            <field name="model">di.regul.art.lot.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Traitement terminé">                                                                           
+                    <footer>
+                        <button string="Continuer" type="object" name="continuer_regul"
+                            default_focus="1" class="oe_link"/>                    
+                        <button string="Fermer" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        
+    
+        <record id="di_action_regul_art_lot" model="ir.actions.act_window">
+            <field name="name">Régul. article lot</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">di.regul.art.lot.wiz</field>
+            <field name="view_type">form</field>            
+            <field name="view_id" ref="di_regul_art_lot_wiz_form"/>        
+            <field name="view_mode">tree,form</field>
+            <field name="target">new</field>
+        </record> 
+    
+    </data>
+ 
+</odoo>

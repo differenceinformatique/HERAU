@@ -835,40 +835,38 @@ class StockMoveLine(models.Model):
             if date :   
                 sqlstr = """
                     select
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
-                    from stock_move_line sml                
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                                    
                     LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
                     (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
-                    LEFT JOIN stock_move sm on sm.id = sml.move_id
-                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
-                    where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.lot_id = %s
+                    LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id   
+                    LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id                     
+                    where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.lot_id = %s and lot.di_fini is false
                     """
                     
                 self.env.cr.execute(sqlstr, (product_id.id, di_date_to,lot.id))
             else:
                 sqlstr = """
                     select
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
-                    from stock_move_line sml                
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                                    
                     LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
                     (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
-                    LEFT JOIN stock_move sm on sm.id = sml.move_id
-                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
-                    where sml.product_id = %s and sml.state ='done'  and sml.lot_id = %s
+                    LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id 
+                    LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id                       
+                    where sml.product_id = %s and sml.state ='done'  and sml.lot_id = %s and lot.di_fini is false
                     """
                     
                 self.env.cr.execute(sqlstr, (product_id.id, lot.id))
@@ -876,40 +874,38 @@ class StockMoveLine(models.Model):
             if date :   
                 sqlstr = """
                     select
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
-                    from stock_move_line sml                
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                                    
                     LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
                     (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
-                    LEFT JOIN stock_move sm on sm.id = sml.move_id
-                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
-                    where sml.product_id = %s and sml.state ='done'  and sml.date <=%s 
+                    LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id   
+                    LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id                     
+                    where sml.product_id = %s and sml.state ='done'  and sml.date <=%s  and lot.di_fini is false
                     """
                     
                 self.env.cr.execute(sqlstr, (product_id.id, di_date_to))
             else:
                 sqlstr = """
                     select
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
-                        SUM ( Case when stock_type.usage = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
-                    from stock_move_line sml                
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) stock_type ON stock_type.id = sml.location_dest_id
-                    LEFT JOIN ( SELECT sloc.id,sloc.usage FROM stock_location sloc) orig_type ON orig_type.id = sml.location_id
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_pieces else -1*sml.di_nb_pieces end) AS di_piece_stock,
+                        SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_palette else -1*sml.di_nb_palette end) AS di_pal_stock                                                                                                                        
+                    from stock_move_line sml                                    
                     LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
                     (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
-                    LEFT JOIN stock_move sm on sm.id = sml.move_id
-                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
-                    where sml.product_id = %s and sml.state ='done'
+                    LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id
+                    LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
+                    LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id                   
+                    where sml.product_id = %s and sml.state ='done' and lot.di_fini is false
                     """
                     
                 self.env.cr.execute(sqlstr, (product_id.id,))                                        
