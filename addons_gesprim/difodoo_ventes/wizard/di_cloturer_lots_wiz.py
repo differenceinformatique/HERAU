@@ -65,11 +65,11 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id':lot.product_id.property_stock_inventory.id,                               
                                     #surcharge                            
                                     'di_nb_colis': abs(nbcol),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
-                    else:
+                    elif nbcol < 0.0:
                         qtediff = qtediff + 1.0
                         vals = {
                                 'name': "Clôture lot",
@@ -94,7 +94,7 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id': locationinterne_id,                                
                                     #surcharge                            
                                     'di_nb_colis': abs(nbcol),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
@@ -125,11 +125,11 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id':lot.product_id.property_stock_inventory.id,                               
                                     #surcharge                            
                                     'di_nb_palette': abs(nbpal),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
-                    else:
+                    elif nbpal < 0.0:
                         qtediff = qtediff + 1.0
                         vals = {
                                 'name': "Clôture lot",
@@ -154,7 +154,7 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id': locationinterne_id,                                
                                     #surcharge                            
                                     'di_nb_palette': abs(nbpal),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
@@ -185,11 +185,11 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id':lot.product_id.property_stock_inventory.id,                               
                                     #surcharge                            
                                     'di_nb_pieces': abs(nbpiece),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
-                    else:
+                    elif nbpiece < 0.0:
                         qtediff = qtediff + 1.0
                         vals = {
                                 'name': "Clôture lot",
@@ -214,7 +214,7 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id': locationinterne_id,                                
                                     #surcharge                            
                                     'di_nb_pieces': abs(nbpiece),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
@@ -245,11 +245,11 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id':lot.product_id.property_stock_inventory.id,                               
                                     #surcharge                            
                                     'di_poin': abs(poin),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
-                    else:
+                    elif poin < 0.0:
                         qtediff = qtediff + 1.0
                         vals = {
                                 'name': "Clôture lot",
@@ -274,7 +274,7 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id': locationinterne_id,                                
                                     #surcharge                            
                                     'di_poin': abs(poin),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
@@ -305,11 +305,11 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id':lot.product_id.property_stock_inventory.id,                               
                                     #surcharge                            
                                     'di_poib': abs(poib),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
-                    else:
+                    elif poib < 0.0:
                         qtediff = qtediff + 1.0
                         vals = {
                                 'name': "Clôture lot",
@@ -334,7 +334,7 @@ class DiCloturerLots(models.TransientModel):
                                     'location_dest_id': locationinterne_id,                                
                                     #surcharge                            
                                     'di_poib': abs(poib),     
-                                    'di_perte': True           
+#                                     'di_perte': True           
                                     #fin surcharge
                                 })]
                             }
@@ -361,13 +361,13 @@ class DiCloturerLots(models.TransientModel):
                                         'location_id': locationinterne_id,
                                         'location_dest_id':lot.product_id.property_stock_inventory.id,                               
                                         #surcharge                                                                
-                                        'di_perte': True           
+#                                         'di_perte': True           
                                         #fin surcharge
                                     })]
                                 }
                             
                             
-                        else :
+                        elif qtediff < 0.0 :
                             vals = {
                                     'name': "Clôture lot",
                                     'product_id': lot.product_id.id,
@@ -387,7 +387,7 @@ class DiCloturerLots(models.TransientModel):
                                         'location_id': lot.product_id.property_stock_inventory.id,
                                         'location_dest_id': locationinterne_id,                               
                                         #surcharge                                                                
-                                        'di_perte': True           
+#                                         'di_perte': True           
                                         #fin surcharge
                                     })]
                                 }

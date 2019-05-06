@@ -72,7 +72,7 @@ class DiGenCoutsWiz(models.TransientModel):
                 nbpal = cout_veille.di_nbpal + nbpal
                 nbpiece = cout_veille.di_nbpiece + nbpiece
                 poids = cout_veille.di_poin + poids             
-                if qte !=0.0:                
+                if qte !=0.0 and qte != -0.0:                
                     cmp=round(mont/qte,2)
                 else:
                     nbcol = 0
@@ -81,6 +81,7 @@ class DiGenCoutsWiz(models.TransientModel):
                     poids = 0
                     mont = 0
                     cmp=mont
+                
                     
     #     
                         

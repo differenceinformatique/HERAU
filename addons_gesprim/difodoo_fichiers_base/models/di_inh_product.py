@@ -54,7 +54,14 @@ class ProductTemplate(models.Model):
 #             "domain": (["product_id", "=", product.id]), 
 #             "name": "Conditionnements",
 #         }
-#         
+
+    def action_open_quants(self):
+        products = self.mapped('product_variant_ids')
+        action = self.env.ref('stock.product_open_quants').read()[0]
+        action['domain'] = [('product_id', 'in', products.ids)]
+        action['context'] = {'search_default_internal_loc': 1,'search_default_positive': 1}
+        return action
+         
     def di_action_afficher_cond(self):
         self.ensure_one()
         product=self.env['product.product'].search([('product_tmpl_id','=',self.id)])

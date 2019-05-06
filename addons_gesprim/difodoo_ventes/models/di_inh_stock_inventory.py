@@ -130,7 +130,7 @@ class InventoryLine(models.Model):
     
     di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')   
     
-    di_perte = fields.Boolean("Perte", default=True)
+    di_perte = fields.Boolean("Perte", default=False)
     
     @api.onchange('di_poib','di_tare_un')
     def di_onchange_poib_tare(self):
@@ -414,54 +414,65 @@ class InventoryLine(models.Model):
             if di_diff_pal < 0:  # found more than expected
                 diff = diff + 1 # obligé de mettre qty_done = 1 pour que le move soit créé, je rétabli la quantité
                 vals = line._di_get_move_values_pal(abs(di_diff_pal), line.product_id.property_stock_inventory.id, line.location_id.id, False)
-            else:
+                vals_list.append(vals) #v12
+            elif di_diff_pal > 0:
                 diff = diff - 1
                 vals = line._di_get_move_values_pal(abs(di_diff_pal), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+                vals_list.append(vals) #v12
 #             moves |= self.env['stock.move'].create(vals)# v11
-            vals_list.append(vals) #v12
+            
             
             if di_diff_col < 0:  # found more than expected
                 diff = diff + 1
                 vals = line._di_get_move_values_col(abs(di_diff_col), line.product_id.property_stock_inventory.id, line.location_id.id, False)
-            else:
+                vals_list.append(vals)#v12
+            elif di_diff_col > 0:
                 diff = diff - 1
                 vals = line._di_get_move_values_col(abs(di_diff_col), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+                vals_list.append(vals)#v12
 #             moves |= self.env['stock.move'].create(vals)# v11
-            vals_list.append(vals)#v12
+                
             
             if di_diff_piece < 0:  # found more than expected
                 diff = diff + 1
                 vals = line._di_get_move_values_piece(abs(di_diff_piece), line.product_id.property_stock_inventory.id, line.location_id.id, False)
-            else:
+                vals_list.append(vals)#v12
+            elif di_diff_piece > 0:
                 diff = diff - 1
                 vals = line._di_get_move_values_piece(abs(di_diff_piece), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+                vals_list.append(vals)#v12
 #             moves |= self.env['stock.move'].create(vals)# v11
-            vals_list.append(vals)#v12
+            
             
             if di_diff_poids < 0:  # found more than expected
                 diff = diff + 1
                 vals = line._di_get_move_values_poids(abs(di_diff_poids), line.product_id.property_stock_inventory.id, line.location_id.id, False)
-            else:
+                vals_list.append(vals)#v12
+            elif di_diff_poids:
                 diff = diff - 1
                 vals = line._di_get_move_values_poids(abs(di_diff_poids), line.location_id.id, line.product_id.property_stock_inventory.id, True)
-#             moves |= self.env['stock.move'].create(vals)# v11
-            vals_list.append(vals)#v12
+                vals_list.append(vals)#v12
+#             moves |= self.env['stock.move'].create(vals)# v11            
             
             if di_diff_poib < 0:  # found more than expected
                 diff = diff + 1
                 vals = line._di_get_move_values_poids_brut(abs(di_diff_poib), line.product_id.property_stock_inventory.id, line.location_id.id, False)
-            else:
+                vals_list.append(vals)#v12
+            elif di_diff_poib > 0:
                 diff = diff - 1
                 vals = line._di_get_move_values_poids_brut(abs(di_diff_poib), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+                vals_list.append(vals)#v12
 #             moves |= self.env['stock.move'].create(vals)# v11
-            vals_list.append(vals)#v12
+            
             
             if diff < 0:  # found more than expected
                 vals = line._get_move_values(abs(diff), line.product_id.property_stock_inventory.id, line.location_id.id, False)
-            else:
+                vals_list.append(vals)#v12
+            elif diff > 0:
                 vals = line._get_move_values(abs(diff), line.location_id.id, line.product_id.property_stock_inventory.id, True)
+                vals_list.append(vals)#v12
 #             moves |= self.env['stock.move'].create(vals)# v11
-            vals_list.append(vals)#v12
+            
                                                
 #         return moves # v11
         return self.env['stock.move'].create(vals_list)#v12

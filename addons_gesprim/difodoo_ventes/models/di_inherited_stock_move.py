@@ -483,7 +483,7 @@ class StockMove(models.Model):
                         di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
                     mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))    
         if date:
-            mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: (mv.inventory_id.date.date() < date and mv.id>dernier_id) or (mv.inventory_id.date.date() == date))
+            mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: (mv.date.date() < date and mv.id>dernier_id) or (mv.date.date() == date))
         else:
             mouvs = self.env['stock.move'].search([('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: mv.id>dernier_id)    
         for mouv in mouvs:
