@@ -274,17 +274,7 @@ class ProductProduct(models.Model):
                     SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poib when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1* sml.di_poib else 0 end) AS di_poib_ven,
                     SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poin when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_poin else 0 end) AS di_poin_ven,
                     
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done*sol.price_unit when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,
-                                                                                
-                    SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_nb_colis else 0 end) AS di_col_ach,
-                    SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.qty_done  else 0 end) AS di_qte_ach,
-                    SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poib  else 0 end) AS di_poib_ach,
-                    SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poin  else 0 end) AS di_poin_ach,
-                    
-                    SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else 0 end) AS di_col_regul_entree,
-                    SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done else 0 end) AS di_qte_regul_entree,
-                    SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
-                    SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
+                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done*sol.price_unit when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,                                                                                                                                            
                     
                     SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
                     SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.qty_done else 0 end) AS di_qte_regul_sortie,
@@ -299,7 +289,16 @@ class ProductProduct(models.Model):
                 LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
                 where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
                 """
-            
+                
+#                 SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_nb_colis else 0 end) AS di_col_ach,
+#                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.qty_done  else 0 end) AS di_qte_ach,
+#                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poib  else 0 end) AS di_poib_ach,
+#                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poin  else 0 end) AS di_poin_ach,
+# SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else 0 end) AS di_col_regul_entree,
+#                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done else 0 end) AS di_qte_regul_entree,
+#                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
+#                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
+#             
             self.env.cr.execute(sqlstr, (val.id, di_date_to))
             result = self.env.cr.fetchall()[0]
             res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
@@ -312,18 +311,22 @@ class ProductProduct(models.Model):
             res[val.id]['di_poib_ven'] = result[7] and result[7] or 0.0
             res[val.id]['di_poin_ven'] = result[8] and result[8] or 0.0
             res[val.id]['di_val_ven'] = result[9] and result[9] or 0.0
-            res[val.id]['di_col_ach'] = result[10] and result[10] or 0.0
-            res[val.id]['di_qte_ach'] = result[11] and result[11] or 0.0
-            res[val.id]['di_poib_ach'] = result[12] and result[12] or 0.0
-            res[val.id]['di_poin_ach'] = result[13] and result[13] or 0.0
-            res[val.id]['di_col_regul_entree'] = result[14] and result[14] or 0.0
-            res[val.id]['di_qte_regul_entree'] = result[15] and result[15] or 0.0
-            res[val.id]['di_poib_reg_ent'] = result[16] and result[16] or 0.0
-            res[val.id]['di_poin_reg_ent'] = result[17] and result[17] or 0.0
-            res[val.id]['di_col_regul_sortie'] = result[18] and result[18] or 0.0
-            res[val.id]['di_qte_regul_sortie'] = result[19] and result[19] or 0.0
-            res[val.id]['di_poib_reg_sort'] = result[20] and result[20] or 0.0
-            res[val.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
+            res[val.id]['di_col_regul_sortie'] = result[10] and result[10] or 0.0
+            res[val.id]['di_qte_regul_sortie'] = result[11] and result[11] or 0.0
+            res[val.id]['di_poib_reg_sort'] = result[12] and result[12] or 0.0
+            res[val.id]['di_poin_reg_sort'] = result[13] and result[13] or 0.0
+#             res[val.id]['di_col_ach'] = result[10] and result[10] or 0.0
+#             res[val.id]['di_qte_ach'] = result[11] and result[11] or 0.0
+#             res[val.id]['di_poib_ach'] = result[12] and result[12] or 0.0
+#             res[val.id]['di_poin_ach'] = result[13] and result[13] or 0.0
+#             res[val.id]['di_col_regul_entree'] = result[14] and result[14] or 0.0
+#             res[val.id]['di_qte_regul_entree'] = result[15] and result[15] or 0.0
+#             res[val.id]['di_poib_reg_ent'] = result[16] and result[16] or 0.0
+#             res[val.id]['di_poin_reg_ent'] = result[17] and result[17] or 0.0
+#             res[val.id]['di_col_regul_sortie'] = result[18] and result[18] or 0.0
+#             res[val.id]['di_qte_regul_sortie'] = result[19] and result[19] or 0.0
+#             res[val.id]['di_poib_reg_sort'] = result[20] and result[20] or 0.0
+#             res[val.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
             
             
             
