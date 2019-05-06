@@ -14,6 +14,7 @@ class DiProductResserre(models.TransientModel):
     di_aff_ven = fields.Boolean("Masquer les ventes",default = True)
     di_aff_pertes = fields.Boolean("Masquer les pertes",default = True)
     di_to_date = fields.Date('Le', default=time.strftime('%Y-%m-%d') )
+    di_charger_tout = fields.Boolean("Tout charger",default = False)
    
     @api.multi
     def action_open_window(self):
@@ -28,7 +29,10 @@ class DiProductResserre(models.TransientModel):
         model, search_view_id = ref('difodoo_fichiers_base', 'di_product_search_form_view')
 #         model, graph_view_id = ref('product_margin', 'view_product_margin_graph')
 #         model, form_view_id = ref('product_margin', 'view_product_margin_form')
-        model, tree_view_id = ref('difodoo_fichiers_base', 'di_view_product_resserre_tree')
+        if self.di_charger_tout:
+            model, tree_view_id = ref('difodoo_fichiers_base', 'di_view_product_resserre_tree')            
+        else:
+            model, tree_view_id = ref('difodoo_fichiers_base', 'di_view_product_resserre_tree_80')
         
         context.update(di_aff_ven=self.di_aff_ven)
         context.update(di_aff_pertes=self.di_aff_pertes)  

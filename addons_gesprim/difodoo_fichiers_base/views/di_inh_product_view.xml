@@ -359,6 +359,42 @@
             </tree>
             </field>
         </record>
+        <record id="di_view_product_resserre_tree_80" model="ir.ui.view">
+            <field name="name">di.product.resserre.tree.80</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="50"/>
+            <field name="arch" type="xml">
+                <tree string="Resserre" limit = "80" >
+                    <field name="name"/>                    
+                    <field name="default_code"/>                    
+                    <field name="di_col_stock" sum="Nombre de colis en stock"/>
+                    <field name="di_poib_stock" sum="Poids brut en stock" />
+                    <field name="di_poin_stock" sum="Poids net en stock"/>
+                    <field name="di_qte_stock" sum="Quantité stock"/>
+                    <field name="uom_id"/>
+                    <field name="di_prix_achat_moyen"/>
+                    <field name="di_val_stock" sum="Valeur du stock au PA" />
+                    
+                    <field name="di_col_ven" sum="Nombre de colis vendus" invisible="context.get('di_aff_ven',True)" />
+                    <field name="di_poib_ven" invisible="context.get('di_aff_ven',True)" />
+                    <field name="di_poin_ven" invisible="context.get('di_aff_ven',True)" />
+                    <field name="di_qte_ven" sum="Quantité vente" invisible="context.get('di_aff_ven',True)" />
+                    <!-- <field name="uom_id"/> -->
+                    <field name="di_prix_vente_moyen"  invisible="context.get('di_aff_ven',True)" />
+                    <field name="di_val_ven" sum="Chiffre d'affaire hors taxes"  invisible="context.get('di_aff_ven',True)" />
+                    <field name="di_val_marge" sum="Valeur totale de la marge"  invisible="context.get('di_aff_ven',True)" />
+                    <field name="di_marge_prc" avg="Pourcentage de marge moyenne"  invisible="context.get('di_aff_ven',True)" />
+                                        
+                    <field name="di_col_regul_sortie" sum="Nombre de colis perdus" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_poib_reg_sort" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_poin_reg_sort" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_qte_regul_sortie" sum="Quantité perdue" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_val_regul_sortie" sum="Valeur régul. sortie" invisible="context.get('di_aff_pertes',True)" />
+                    <field name="di_val_marge_ap_regul_sortie" sum="Valeur marge après régul. sortie" invisible="context.get('di_aff_pertes',True)" />
+              
+            </tree>
+            </field>
+        </record>
 
 	</data>
 </odoo>

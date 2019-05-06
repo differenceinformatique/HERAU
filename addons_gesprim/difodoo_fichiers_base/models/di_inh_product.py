@@ -297,8 +297,9 @@ class ProductProduct(models.Model):
                 LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
                 (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)
                 LEFT JOIN stock_move sm on sm.id = sml.move_id
-                LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                 
-                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s
+                LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
+                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
+                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
                 """
             
             self.env.cr.execute(sqlstr, (val.id, di_date_to))
