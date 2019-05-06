@@ -438,6 +438,7 @@
         <field eval="80" name="priority"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='qty_done']" position="before">
+                <field name="lot_id" string="Lot" />
                 <field name="di_entrees_sorties" string="Sens" />
                 <field name="di_partner" string="Tiers"/>
                 <field name="di_nb_colis" string="Nb colis"/>
@@ -551,7 +552,7 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="domain"/>
-        <field name="context">{'search_default_internal_loc': 1}</field>        
+        <field name="context">{'search_default_internal_loc': 1, 'search_default_positive':1}</field>        
         
     </record>        
   
