@@ -1011,6 +1011,7 @@ class StockPicking(models.Model):
         
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
+    _order = "product_id"
     
     di_cmp = fields.Float(string="Coût moyen", related="product_id.standard_price", group_operator='avg', store=True)
     di_valstock = fields.Float(string='Valeur Stock', compute='_compute_valstock', group_operator='sum', store=True)
