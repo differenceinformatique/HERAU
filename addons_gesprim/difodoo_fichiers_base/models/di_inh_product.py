@@ -143,8 +143,6 @@ class ProductProduct(models.Model):
     di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')
     di_tarifs_ids = fields.One2many('di.tarifs', 'id',string='Tarifs de l\'article')
     
-        
-    di_date_to = fields.Date(compute='_di_compute_resserre_values', string='Au')
     
     di_prix_vente_moyen = fields.Float(compute='_di_compute_resserre_values', string='Prix de vente moyen')
     di_prix_achat_moyen = fields.Float(compute='_di_compute_resserre_values', string="Prix d'achat moyen")
