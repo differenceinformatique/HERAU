@@ -27,7 +27,7 @@ class DiImpRessWiz(models.TransientModel):
         self.di_product_ids=self.env['product.product'].search(['&',('type','!=','service'),'|',('qty_available','>',0.0),('qty_available','<',0.0)])
         
 #         domain="['&',('type','=','product'),'|',('qty_available','>',0.0),('qty_available','<',0.0)]"
-                
+            
         
         
         if self.di_liste_comptage or self.di_masquer_ventes:
