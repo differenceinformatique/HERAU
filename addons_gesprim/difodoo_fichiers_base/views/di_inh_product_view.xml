@@ -262,6 +262,7 @@
 				</xpath>				
 			</field>
 		</record>
+			
 		<!-- Liste conditionnement -->
 		<record id="di_product_packaging_tree_view" model="ir.ui.view">
 			<field name="name">di.product.packaging.tree.view</field>
@@ -397,7 +398,7 @@
         </record>
          <record id="di_view_product_simplifiee" model="ir.ui.view">
             <field name="name">di.product.resserre.simplifiee</field>
-            <field name="model">product.product</field>
+            <field name="model">product.template</field>
             <field name="priority" eval="50"/>
             <field name="arch" type="xml">
                 <tree string="Resserre" limit = "80" >
@@ -408,9 +409,7 @@
                 </tree>
             </field>
         </record>
-    
-             
-             
+        
          <record id="di_action_vue_simpl_art" model="ir.actions.act_window">
             <field name="name">Nouvelle resserre par article</field>
             <field name="res_model">product.product</field>
@@ -418,15 +417,16 @@
             <field name="view_type">form</field>
             <field name="target">current</field>
             <field name="multi">True</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="difodoo_fichiers_base.di_view_product_simplifiee"/>  
+            <field name="views">[[difodoo_fichiers_base.di_view_product_simplifiee, "tree"], [product.product_template_only_form_view, "form"]]</field>            
+            <field name="view_mode">tree,form</field>                                    
+            <!-- <field name="view_id" ref="difodoo_fichiers_base.di_view_product_simplifiee"/>   -->
              <field name="domain">
                 [('type','=','product'),'|',('qty_available','&gt;',0.0),('qty_available','&lt;',0.0)]
             </field>                                             
         </record>      
+       
         
-        
-         <record id="di_action_dispo_art" model="ir.actions.act_window">
+        <record id="di_action_dispo_art" model="ir.actions.act_window">
             <field name="name">Disponible article</field>
             <field name="res_model">stock.quant</field>
             <field name="src_model">product.product</field>
