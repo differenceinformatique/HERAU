@@ -118,6 +118,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
+                self.env['stock.move'].create(vals)
             elif nbcol > 0.0:
                 qtediff = qtediff - 1.0
                 vals = {
@@ -147,7 +148,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
-            self.env['stock.move'].create(vals)
+                self.env['stock.move'].create(vals)
             
             if nbpal < 0.0:
                 qtediff = qtediff + 1.0
@@ -178,6 +179,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
+                self.env['stock.move'].create(vals)
             elif nbpal > 0.0:
                 qtediff = qtediff - 1.0
                 vals = {
@@ -207,7 +209,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
-            self.env['stock.move'].create(vals)
+                self.env['stock.move'].create(vals)
             
             if nbpiece < 0.0:
                 qtediff = qtediff + 1.0
@@ -238,6 +240,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
+                self.env['stock.move'].create(vals)
             elif nbpiece > 0.0:
                 qtediff = qtediff - 1.0
                 vals = {
@@ -267,7 +270,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
-            self.env['stock.move'].create(vals)
+                self.env['stock.move'].create(vals)
             
             if poin < 0.0:
                 qtediff = qtediff + 1.0
@@ -298,6 +301,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
+                self.env['stock.move'].create(vals)
             elif poin > 0.0:
                 qtediff = qtediff - 1.0
                 vals = {
@@ -327,7 +331,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
-            self.env['stock.move'].create(vals)
+                self.env['stock.move'].create(vals)
             
             if poib < 0.0:
                 qtediff = qtediff + 1.0
@@ -358,6 +362,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
+                self.env['stock.move'].create(vals)
             elif poib > 0.0:
                 qtediff = qtediff - 1.0
                 vals = {
@@ -387,7 +392,7 @@ class DiRegulArtLots(models.TransientModel):
                             #fin surcharge
                         })]
                     }
-            self.env['stock.move'].create(vals)
+                self.env['stock.move'].create(vals)
             
             if qtediff != 0.0:
                 if qtediff < 0.0:
@@ -414,6 +419,7 @@ class DiRegulArtLots(models.TransientModel):
                                 #fin surcharge
                             })]
                         }
+                    self.env['stock.move'].create(vals)
                     
                     
                 elif qtediff > 0.0 :
@@ -441,7 +447,7 @@ class DiRegulArtLots(models.TransientModel):
                             })]
                         }
                 
-                self.env['stock.move'].create(vals)
+                    self.env['stock.move'].create(vals)
                 
                 
                 
