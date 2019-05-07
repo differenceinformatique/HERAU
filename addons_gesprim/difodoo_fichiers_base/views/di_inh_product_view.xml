@@ -395,6 +395,62 @@
             </tree>
             </field>
         </record>
-
+         <record id="di_view_product_simplifiee" model="ir.ui.view">
+            <field name="name">di.product.resserre.simplifiee</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="50"/>
+            <field name="arch" type="xml">
+                <tree string="Resserre" limit = "80" >
+                    <field name="name" string="Désignation"/>                    
+                    <field name="default_code" string="Code"/>                                        
+                    <field name="qty_available" string="Quantité en stock"/>
+                    <field name="uom_id" string="Unité de mesure"/>                                  
+                </tree>
+            </field>
+        </record>
+    
+             
+             
+         <record id="di_action_vue_simpl_art" model="ir.actions.act_window">
+            <field name="name">Nouvelle resserre par article</field>
+            <field name="res_model">product.product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="target">current</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="difodoo_fichiers_base.di_view_product_simplifiee"/>                
+        </record>      
+        
+        
+         <record id="di_action_dispo_art" model="ir.actions.act_window">
+            <field name="name">Disponible article</field>
+            <field name="res_model">stock.quant</field>
+            <field name="src_model">product.product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="target">current</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="stock.view_stock_quant_tree"/>
+            <field name="context">{'search_default_internal_loc': 1,'search_default_positive': 1,'search_default_negative': 1}</field>                        
+        </record>      
+        
+        <record id="di_mouv_dispo" model="ir.actions.act_window">
+            <field name="name">Mouvements de produit</field>
+            <field name="res_model">stock.move.line</field>
+            <field name="src_model">stock.quant</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">tree</field>
+            <field name="target">current</field>
+            <field name="key2">client_action_multi</field>
+            <field name="view_mode">tree,kanban,pivot,form</field>
+            <field name="view_id" ref="stock.view_move_line_tree"/>
+            <field name="context">{'search_default_done': 1, 'search_default_groupby_product_id': 1}</field>            
+            <field name="domain">
+                [('product_id', '=', self.product_id.id),'|',('location_id', '=', self.location_id.id),('location_dest_id', '=', self.location_id.id),
+                ('lot_id', '=', self.lot_id.id),'|',('package_id', '=', self.package_id.id),('result_package_id', '=', self.package_id.id),]
+            </field>            
+        </record>                
+        
+        
 	</data>
 </odoo>

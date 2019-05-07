@@ -14,6 +14,12 @@ class DiCloturerLots(models.TransientModel):
         
     di_product_id = fields.Many2one('product.product',string="Article")
     di_lot  =   fields.Char("Lot", help=""" Mettre * pour prendre tous les lots de l'article sélectionné. """)
+    
+    art_debut = fields.Char(default=" ", string="Code Article Début")
+    art_fin = fields.Char(default="ZZZZZZZZZZ", string="Code Article Fin")
+    
+    fam_debut = fields.Char( default=" ", string="Famille Début")
+    fam_fin = fields.Char(default="ZZZZZZZZZZ", string="Famille Fin")
   
     @api.multi
     def cloturer_lots(self):
@@ -402,5 +408,5 @@ class DiCloturerLots(models.TransientModel):
                                                                     
                     lot.update({'di_fini':True,}) 
             
-     
+        self.env['stock.quant']._unlink_zero_quants()
         return lots                    

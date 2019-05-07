@@ -423,13 +423,16 @@ class SaleOrderLine(models.Model):
         for sol in self:
             sol.di_dern_prix =sol._get_dernier_prix()    
               
-    def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date,typecol,typepal):    
-        prixFinal = 0.0       
-        prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date,typecol,typepal)
-        if prixFinal == 0.0:
+    def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date,typecol,typepal):
+        if not prixOrig or prixOrig ==0.0:    
+            prixFinal = 0.0       
+            prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date,typecol,typepal)
+            if prixFinal == 0.0:
+                prixFinal = prixOrig
+    #             if prixOrig == 0.0:
+    #                 raise ValidationError("Le prix unitaire de la ligne est à 0 !")
+        else:
             prixFinal = prixOrig
-#             if prixOrig == 0.0:
-#                 raise ValidationError("Le prix unitaire de la ligne est à 0 !")
         return prixFinal  
                        
     @api.multi
@@ -591,7 +594,8 @@ class SaleOrderLine(models.Model):
     
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
-        super(SaleOrderLine, self).product_uom_change()
+        if not self.price_unit or self.price_unit==0.0:
+            super(SaleOrderLine, self).product_uom_change()
         #surcharge de la procédure pour recalculer le prix car elle est appelée après _di_changer_prix quand on modifie l'article
         if self.product_id and self.di_un_prix:            
             di_qte_prix = 0.0

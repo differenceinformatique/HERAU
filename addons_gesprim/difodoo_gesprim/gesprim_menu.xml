@@ -47,7 +47,7 @@
 	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="60" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_uti" name="Utilitaires" sequence="70" parent="menu_gesprim" />
 	<!-- ***Menu Fichiers -->	
-	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />	
+	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />		
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
 	<menuitem id="menu_gesprim_fournisseurs" name="Fournisseurs" sequence="30" parent="menu_gesprim_fichiers" action="base.action_partner_supplier_form" />
 	<menuitem id="menu_gesprim_refarttiers" name="Référencement article" sequence="40" parent="menu_gesprim_fichiers" action="difodoo_fichiers_base.di_action_ref_art_tiers" />
@@ -124,7 +124,9 @@
     <menuitem id="menu_gesprim_stock_clot_lot_art" name="Clôture lots par article/lot" sequence="39" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_cloturerlots_art"/>    
     <menuitem id="menu_gesprim_stock_ress_ap_ven_det" name="Resserre après vente détaillée" sequence="40" parent="menu_gesprim_stock" action="difodoo_fichiers_base.di_product_resserre_act_window"/>        
     <menuitem id="menu_gesprim_stock_imp_ress_ap_ven_det" sequence="41" parent="menu_gesprim_stock" action="difodoo_fichiers_base.action_di_imprimer_resserre_menu_wiz" />
-    <menuitem id="menu_gesprim_stock_quants_all" name="Nouvelle resserre" sequence="42" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_view_quants_all" />
+    <menuitem id="menu_gesprim_stock_quants_all" name="Nouvelle resserre par lot" sequence="42" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_view_quants_all" />
+    <menuitem id="menu_gesprim_stock_ress_art" name="Nouvelle resserre par article" sequence="43" parent="menu_gesprim_stock" action="difodoo_fichiers_base.di_action_vue_simpl_art" />
+        
     
     <menuitem id="menu_gesprim_stock_pertes" name="Pertes" sequence="50" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_stock_report_all"/>
     <menuitem id="menu_gesprim_stock_mvt_prod" name="Mouvements de produits" sequence="51" parent="menu_gesprim_stock" action="stock.stock_move_line_action"/>
