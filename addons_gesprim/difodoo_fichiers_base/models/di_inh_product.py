@@ -221,53 +221,50 @@ class ProductProduct(models.Model):
 #     def _get_ids_avec_stock(self):
 #             
 
-    @api.model
-    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
-        """
-            Inherit read_group to calculate the sum of the non-stored fields, as it is not automatically done anymore through the XML.
-        """
-        res = super(ProductProduct, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
-        fields_list = ['di_prix_vente_moyen', 'di_prix_achat_moyen', 'di_val_stock', 'di_val_ven', 'di_val_marge',
-                       'di_marge_prc', 'di_col_stock', 'di_qte_stock', 'di_poib_stock', 'di_poin_stock', 'di_col_ven',
-                       'di_qte_ven', 'di_poib_ven', 'di_poin_ven','di_col_ach','di_qte_ach', 'di_poib_ach', 'di_poin_ach',
-                       'di_col_regul_entree', 'di_qte_regul_entree', 'di_poib_reg_ent', 'di_poin_reg_ent',
-                       'di_col_regul_sortie', 'di_qte_regul_sortie', 'di_poib_reg_sort', 'di_poin_reg_sort','di_val_regul_sortie','di_val_marge_ap_regul_sortie']
-            
-        if any(x in fields for x in fields_list):
-            # Calculate first for every product in which line it needs to be applied
-            re_ind = 0
-            prod_re = {}
-            tot_products = self.browse([])
-            for re in res:
-                if re.get('__domain'):
-                    products = self.search(re['__domain'])
-                    tot_products |= products
-                    for prod in products:
-                        prod_re[prod.id] = re_ind
-                re_ind += 1
-            res_val = tot_products._di_compute_resserre_values(field_names=[x for x in fields if fields in fields_list])
-            for key in res_val:
-                for l in res_val[key]:
-                    re = res[prod_re[key]]
-                    if re.get(l):
-                        re[l] += res_val[key][l]
-                    else:
-                        re[l] = res_val[key][l]
-        return res
+#     @api.model
+#     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+#         """
+#             Inherit read_group to calculate the sum of the non-stored fields, as it is not automatically done anymore through the XML.
+#         """
+#         res = super(ProductProduct, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+#         fields_list = ['di_prix_vente_moyen', 'di_prix_achat_moyen', 'di_val_stock', 'di_val_ven', 'di_val_marge',
+#                        'di_marge_prc', 'di_col_stock', 'di_qte_stock', 'di_poib_stock', 'di_poin_stock', 'di_col_ven',
+#                        'di_qte_ven', 'di_poib_ven', 'di_poin_ven','di_col_ach','di_qte_ach', 'di_poib_ach', 'di_poin_ach',
+#                        'di_col_regul_entree', 'di_qte_regul_entree', 'di_poib_reg_ent', 'di_poin_reg_ent',
+#                        'di_col_regul_sortie', 'di_qte_regul_sortie', 'di_poib_reg_sort', 'di_poin_reg_sort','di_val_regul_sortie','di_val_marge_ap_regul_sortie']
+#             
+#         if any(x in fields for x in fields_list):
+#             # Calculate first for every product in which line it needs to be applied
+#             re_ind = 0
+#             prod_re = {}
+#             tot_products = self.browse([])
+#             for re in res:
+#                 if re.get('__domain'):
+#                     products = self.search(re['__domain'])
+#                     tot_products |= products
+#                     for prod in products:
+#                         prod_re[prod.id] = re_ind
+#                 re_ind += 1
+#             res_val = tot_products._di_compute_resserre_values(field_names=[x for x in fields if fields in fields_list])
+#             for key in res_val:
+#                 for l in res_val[key]:
+#                     re = res[prod_re[key]]
+#                     if re.get(l):
+#                         re[l] += res_val[key][l]
+#                     else:
+#                         re[l] = res_val[key][l]
+#         return res
 
-    def _di_compute_resserre_values(self, field_names=None):
-        res = {}
-        if field_names is None:
-            field_names = []
-        for val in self:
-            res[val.id] = {}            
-            di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
-            affven = self.env.context.get('di_aff_ven')
-            affperte = self.env.context.get('di_aff_pertes')
-            listecpt = self.env.context.get('di_liste_comptage')
+#     def _di_compute_resserre_values(self, field_names=None):
+    def _di_compute_resserre_values(self):  
+        di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
+        affven = self.env.context.get('di_aff_ven')
+        affperte = self.env.context.get('di_aff_pertes')
+        listecpt = self.env.context.get('di_liste_comptage')
 #             di_date_to  =  val.di_date_to.strftime('%Y-%m-%d')      
-            di_date_to = di_date_to + ' 23:59:59'   
-            res[val.id]['di_date_to'] =di_date_to
+        di_date_to = di_date_to + ' 23:59:59'   
+        for art in self:                    
+                        
             if not listecpt:
                 if affven:
                     if affperte:
@@ -285,22 +282,22 @@ class ProductProduct(models.Model):
                                 LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
                                 where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
                                 """             
-                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        self.env.cr.execute(sqlstr, (art.id, di_date_to))
                         result = self.env.cr.fetchall()[0]
-                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
-                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
-                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
-                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
-                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
-                        res[val.id]['di_col_ven'] =  0.0
-                        res[val.id]['di_qte_ven'] =  0.0
-                        res[val.id]['di_poib_ven'] =  0.0
-                        res[val.id]['di_poin_ven'] =  0.0
-                        res[val.id]['di_val_ven'] = 0.0
-                        res[val.id]['di_col_regul_sortie'] =0.0
-                        res[val.id]['di_qte_regul_sortie'] = 0.0
-                        res[val.id]['di_poib_reg_sort'] = 0.0
-                        res[val.id]['di_poin_reg_sort'] = 0.0
+                        art.di_col_stock = result[0] and result[0] or 0.0
+                        art.di_qte_stock = result[1] and result[1] or 0.0
+                        art.di_poib_stock = result[2] and result[2] or 0.0
+                        art.di_poin_stock = result[3] and result[3] or 0.0
+                        art.di_val_stock = result[4] and result[4] or 0.0
+                        art.di_col_ven =  0.0
+                        art.di_qte_ven =  0.0
+                        art.di_poib_ven =  0.0
+                        art.di_poin_ven =  0.0
+                        art.di_val_ven = 0.0
+                        art.di_col_regul_sortie =0.0
+                        art.di_qte_regul_sortie = 0.0
+                        art.di_poib_reg_sort = 0.0
+                        art.di_poin_reg_sort = 0.0
                     else:
                         sqlstr = """
                             select
@@ -324,22 +321,22 @@ class ProductProduct(models.Model):
                             where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
                             """
         
-                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        self.env.cr.execute(sqlstr, (art.id, di_date_to))
                         result = self.env.cr.fetchall()[0]
-                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
-                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
-                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
-                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
-                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
-                        res[val.id]['di_col_ven'] = 0.0
-                        res[val.id]['di_qte_ven'] =0.0
-                        res[val.id]['di_poib_ven'] =0.0
-                        res[val.id]['di_poin_ven'] = 0.0
-                        res[val.id]['di_val_ven'] = 0.0
-                        res[val.id]['di_col_regul_sortie'] = result[5] and result[5] or 0.0
-                        res[val.id]['di_qte_regul_sortie'] = result[6] and result[6] or 0.0
-                        res[val.id]['di_poib_reg_sort'] = result[7] and result[7] or 0.0
-                        res[val.id]['di_poin_reg_sort'] = result[8] and result[8] or 0.0
+                        art.di_col_stock = result[0] and result[0] or 0.0
+                        art.di_qte_stock = result[1] and result[1] or 0.0
+                        art.di_poib_stock = result[2] and result[2] or 0.0
+                        art.di_poin_stock = result[3] and result[3] or 0.0
+                        art.di_val_stock = result[4] and result[4] or 0.0
+                        art.di_col_ven = 0.0
+                        art.di_qte_ven =0.0
+                        art.di_poib_ven =0.0
+                        art.di_poin_ven = 0.0
+                        art.di_val_ven = 0.0
+                        art.di_col_regul_sortie = result[5] and result[5] or 0.0
+                        art.di_qte_regul_sortie = result[6] and result[6] or 0.0
+                        art.di_poib_reg_sort = result[7] and result[7] or 0.0
+                        art.di_poin_reg_sort = result[8] and result[8] or 0.0
                         
                 else:
                     if affperte:
@@ -369,22 +366,22 @@ class ProductProduct(models.Model):
                             """
           
                        
-                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        self.env.cr.execute(sqlstr, (art.id, di_date_to))
                         result = self.env.cr.fetchall()[0]
-                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
-                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
-                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
-                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
-                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
-                        res[val.id]['di_col_ven'] = result[5] and result[5] or 0.0
-                        res[val.id]['di_qte_ven'] = result[6] and result[6] or 0.0
-                        res[val.id]['di_poib_ven'] = result[7] and result[7] or 0.0
-                        res[val.id]['di_poin_ven'] = result[8] and result[8] or 0.0
-                        res[val.id]['di_val_ven'] = result[9] and result[9] or 0.0
-                        res[val.id]['di_col_regul_sortie'] = 0.0
-                        res[val.id]['di_qte_regul_sortie'] = 0.0
-                        res[val.id]['di_poib_reg_sort'] = 0.0
-                        res[val.id]['di_poin_reg_sort'] = 0.0
+                        art.di_col_stock = result[0] and result[0] or 0.0
+                        art.di_qte_stock = result[1] and result[1] or 0.0
+                        art.di_poib_stock = result[2] and result[2] or 0.0
+                        art.di_poin_stock = result[3] and result[3] or 0.0
+                        art.di_val_stock = result[4] and result[4] or 0.0
+                        art.di_col_ven = result[5] and result[5] or 0.0
+                        art.di_qte_ven = result[6] and result[6] or 0.0
+                        art.di_poib_ven = result[7] and result[7] or 0.0
+                        art.di_poin_ven = result[8] and result[8] or 0.0
+                        art.di_val_ven = result[9] and result[9] or 0.0
+                        art.di_col_regul_sortie = 0.0
+                        art.di_qte_regul_sortie = 0.0
+                        art.di_poib_reg_sort = 0.0
+                        art.di_poin_reg_sort = 0.0
                     else:
                
                         sqlstr = """
@@ -426,77 +423,74 @@ class ProductProduct(models.Model):
             #                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
             #                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
             #             
-                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        self.env.cr.execute(sqlstr, (art.id, di_date_to))
                         result = self.env.cr.fetchall()[0]
-                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
-                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
-                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
-                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
-                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
-                        res[val.id]['di_col_ven'] = result[5] and result[5] or 0.0
-                        res[val.id]['di_qte_ven'] = result[6] and result[6] or 0.0
-                        res[val.id]['di_poib_ven'] = result[7] and result[7] or 0.0
-                        res[val.id]['di_poin_ven'] = result[8] and result[8] or 0.0
-                        res[val.id]['di_val_ven'] = result[9] and result[9] or 0.0
-                        res[val.id]['di_col_regul_sortie'] = result[10] and result[10] or 0.0
-                        res[val.id]['di_qte_regul_sortie'] = result[11] and result[11] or 0.0
-                        res[val.id]['di_poib_reg_sort'] = result[12] and result[12] or 0.0
-                        res[val.id]['di_poin_reg_sort'] = result[13] and result[13] or 0.0
-            #             res[val.id]['di_col_ach'] = result[10] and result[10] or 0.0
-            #             res[val.id]['di_qte_ach'] = result[11] and result[11] or 0.0
-            #             res[val.id]['di_poib_ach'] = result[12] and result[12] or 0.0
-            #             res[val.id]['di_poin_ach'] = result[13] and result[13] or 0.0
-            #             res[val.id]['di_col_regul_entree'] = result[14] and result[14] or 0.0
-            #             res[val.id]['di_qte_regul_entree'] = result[15] and result[15] or 0.0
-            #             res[val.id]['di_poib_reg_ent'] = result[16] and result[16] or 0.0
-            #             res[val.id]['di_poin_reg_ent'] = result[17] and result[17] or 0.0
-            #             res[val.id]['di_col_regul_sortie'] = result[18] and result[18] or 0.0
-            #             res[val.id]['di_qte_regul_sortie'] = result[19] and result[19] or 0.0
-            #             res[val.id]['di_poib_reg_sort'] = result[20] and result[20] or 0.0
-            #             res[val.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
+                        art.di_col_stock = result[0] and result[0] or 0.0
+                        art.di_qte_stock = result[1] and result[1] or 0.0
+                        art.di_poib_stock = result[2] and result[2] or 0.0
+                        art.di_poin_stock = result[3] and result[3] or 0.0
+                        art.di_val_stock = result[4] and result[4] or 0.0
+                        art.di_col_ven = result[5] and result[5] or 0.0
+                        art.di_qte_ven = result[6] and result[6] or 0.0
+                        art.di_poib_ven = result[7] and result[7] or 0.0
+                        art.di_poin_ven = result[8] and result[8] or 0.0
+                        art.di_val_ven = result[9] and result[9] or 0.0
+                        art.di_col_regul_sortie = result[10] and result[10] or 0.0
+                        art.di_qte_regul_sortie = result[11] and result[11] or 0.0
+                        art.di_poib_reg_sort = result[12] and result[12] or 0.0
+                        art.di_poin_reg_sort = result[13] and result[13] or 0.0
+            #             art.di_col_ach = result[10] and result[10] or 0.0
+            #             art.di_qte_ach = result[11] and result[11] or 0.0
+            #             art.di_poib_ach = result[12] and result[12] or 0.0
+            #             art.di_poin_ach = result[13] and result[13] or 0.0
+            #             art.di_col_regul_entree = result[14] and result[14] or 0.0
+            #             art.di_qte_regul_entree = result[15] and result[15] or 0.0
+            #             art.di_poib_reg_ent = result[16] and result[16] or 0.0
+            #             art.di_poin_reg_ent = result[17] and result[17] or 0.0
+            #             art.di_col_regul_sortie = result[18] and result[18] or 0.0
+            #             art.di_qte_regul_sortie = result[19] and result[19] or 0.0
+            #             art.di_poib_reg_sort = result[20] and result[20] or 0.0
+            #             art.di_poin_reg_sort = result[21] and result[21] or 0.0
                 
                 
             else:
-                res[val.id]['di_col_stock'] = 0.0
-                res[val.id]['di_qte_stock'] = 0.0
-                res[val.id]['di_poib_stock'] = 0.0
-                res[val.id]['di_poin_stock'] = 0.0
-                res[val.id]['di_val_stock'] = 0.0
-                res[val.id]['di_col_ven'] = 0.0
-                res[val.id]['di_qte_ven'] = 0.0
-                res[val.id]['di_poib_ven'] = 0.0
-                res[val.id]['di_poin_ven'] = 0.0
-                res[val.id]['di_val_ven'] = 0.0
-                res[val.id]['di_col_regul_sortie'] = 0.0
-                res[val.id]['di_qte_regul_sortie'] = 0.0
-                res[val.id]['di_poib_reg_sort'] = 0.0
-                res[val.id]['di_poin_reg_sort'] = 0.0
+                art.di_col_stock = 0.0
+                art.di_qte_stock = 0.0
+                art.di_poib_stock = 0.0
+                art.di_poin_stock = 0.0
+                art.di_val_stock = 0.0
+                art.di_col_ven = 0.0
+                art.di_qte_ven = 0.0
+                art.di_poib_ven = 0.0
+                art.di_poin_ven = 0.0
+                art.di_val_ven = 0.0
+                art.di_col_regul_sortie = 0.0
+                art.di_qte_regul_sortie = 0.0
+                art.di_poib_reg_sort = 0.0
+                art.di_poin_reg_sort = 0.0
             
-            if res[val.id]['di_qte_stock'] != 0.0:
-                res[val.id]['di_prix_achat_moyen'] = res[val.id]['di_val_stock'] / res[val.id]['di_qte_stock']
+            if art.di_qte_stock != 0.0:
+                art.di_prix_achat_moyen = art.di_val_stock / art.di_qte_stock
             else:
-                res[val.id]['di_prix_achat_moyen'] =0.0
+                art.di_prix_achat_moyen =0.0
                 
-            res[val.id]['di_val_marge'] = res[val.id]['di_val_ven'] - (res[val.id]['di_qte_ven']*res[val.id]['di_prix_achat_moyen'])
+            art.di_val_marge = art.di_val_ven - (art.di_qte_ven*art.di_prix_achat_moyen)
                 
-            if res[val.id]['di_qte_ven'] != 0.0:
-                res[val.id]['di_prix_vente_moyen'] = res[val.id]['di_val_ven'] / res[val.id]['di_qte_ven']
+            if art.di_qte_ven != 0.0:
+                art.di_prix_vente_moyen = art.di_val_ven / art.di_qte_ven
             else:
-                res[val.id]['di_prix_vente_moyen'] =0.0
+                art.di_prix_vente_moyen =0.0
                 
-            if res[val.id]['di_val_ven'] != 0.0:    
-                res[val.id]['di_marge_prc'] = res[val.id]['di_val_marge'] * 100 / res[val.id]['di_val_ven']
+            if art.di_val_ven != 0.0:    
+                art.di_marge_prc = art.di_val_marge * 100 / art.di_val_ven
             else:
-                res[val.id]['di_marge_prc'] = 0.0
+                art.di_marge_prc = 0.0
                 
-            res[val.id]['di_val_regul_sortie'] =  res[val.id]['di_prix_achat_moyen'] *  res[val.id]['di_qte_regul_sortie']
-            res[val.id]['di_val_marge_ap_regul_sortie'] =  res[val.id]['di_val_marge'] -  res[val.id]['di_val_regul_sortie']
-                                                                                
-            for k, v in res[val.id].items():
-                setattr(val, k, v)
+            art.di_val_regul_sortie =  art.di_prix_achat_moyen *  art.di_qte_regul_sortie
+            art.di_val_marge_ap_regul_sortie =  art.di_val_marge -  art.di_val_regul_sortie
+          
                 
-
-        return res
+    
     
     def di_get_dernier_cmp(self,date):
         couts=self.env['di.cout'].search([('di_product_id', '=', self.id)]).filtered(lambda c: c.di_date<=date).sorted(key=lambda k: k.di_date,reverse=True)
