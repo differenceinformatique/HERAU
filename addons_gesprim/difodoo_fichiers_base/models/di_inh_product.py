@@ -262,81 +262,215 @@ class ProductProduct(models.Model):
         for val in self:
             res[val.id] = {}            
             di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
+            affven = self.env.context.get('di_aff_ven')
+            affperte = self.env.context.get('di_aff_pertes')
+            listecpt = self.env.context.get('di_liste_comptage')
 #             di_date_to  =  val.di_date_to.strftime('%Y-%m-%d')      
             di_date_to = di_date_to + ' 23:59:59'   
             res[val.id]['di_date_to'] =di_date_to
-            
-           
-            sqlstr = """
-                select
-                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
-                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
-                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
-                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
-                    
-                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
-                    
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_nb_colis when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_nb_colis  else   0 end) AS di_col_ven,
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done else 0 end) AS di_qte_ven,
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poib when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1* sml.di_poib else 0 end) AS di_poib_ven,
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poin when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_poin else 0 end) AS di_poin_ven,
-                    
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done*sol.price_unit when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,                                                                                                                                            
-                    
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.qty_done else 0 end) AS di_qte_regul_sortie,
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poib else 0 end) AS di_poib_reg_sort,
-                    SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
-                                                      
-                from stock_move_line sml                                
-                LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
-                (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                
-                LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
-                LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
-                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
-                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
-                """
+            if not listecpt:
+                if affven:
+                    if affperte:
+                        sqlstr = """
+                                select
+                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,                                
+                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock                                                            
+                                from stock_move_line sml                                
+                                LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                                (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                
+                                LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id                              
+                                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
+                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
+                                """             
+                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        result = self.env.cr.fetchall()[0]
+                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
+                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
+                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
+                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
+                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
+                        res[val.id]['di_col_ven'] =  0.0
+                        res[val.id]['di_qte_ven'] =  0.0
+                        res[val.id]['di_poib_ven'] =  0.0
+                        res[val.id]['di_poin_ven'] =  0.0
+                        res[val.id]['di_val_ven'] = 0.0
+                        res[val.id]['di_col_regul_sortie'] =0.0
+                        res[val.id]['di_qte_regul_sortie'] = 0.0
+                        res[val.id]['di_poib_reg_sort'] = 0.0
+                        res[val.id]['di_poin_reg_sort'] = 0.0
+                    else:
+                        sqlstr = """
+                            select
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                                
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
+                                                            
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.qty_done else 0 end) AS di_qte_regul_sortie,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poib else 0 end) AS di_poib_reg_sort,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
+                                                                  
+                            from stock_move_line sml                                
+                            LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                            (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                
+                            LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id                          
+                            LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
+                            where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
+                            """
+        
+                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        result = self.env.cr.fetchall()[0]
+                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
+                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
+                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
+                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
+                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
+                        res[val.id]['di_col_ven'] = 0.0
+                        res[val.id]['di_qte_ven'] =0.0
+                        res[val.id]['di_poib_ven'] =0.0
+                        res[val.id]['di_poin_ven'] = 0.0
+                        res[val.id]['di_val_ven'] = 0.0
+                        res[val.id]['di_col_regul_sortie'] = result[5] and result[5] or 0.0
+                        res[val.id]['di_qte_regul_sortie'] = result[6] and result[6] or 0.0
+                        res[val.id]['di_poib_reg_sort'] = result[7] and result[7] or 0.0
+                        res[val.id]['di_poin_reg_sort'] = result[8] and result[8] or 0.0
+                        
+                else:
+                    if affperte:
+                        sqlstr = """
+                            select
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                                
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
+                                
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_nb_colis when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_nb_colis  else   0 end) AS di_col_ven,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done else 0 end) AS di_qte_ven,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poib when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1* sml.di_poib else 0 end) AS di_poib_ven,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poin when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_poin else 0 end) AS di_poin_ven,
+                                
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done*sol.price_unit when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven                                                                                                                                            
+                               
+                            from stock_move_line sml                                
+                            LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                            (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                
+                            LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
+                            LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
+                            LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
+                            where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
+                            """
+          
+                       
+                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        result = self.env.cr.fetchall()[0]
+                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
+                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
+                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
+                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
+                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
+                        res[val.id]['di_col_ven'] = result[5] and result[5] or 0.0
+                        res[val.id]['di_qte_ven'] = result[6] and result[6] or 0.0
+                        res[val.id]['di_poib_ven'] = result[7] and result[7] or 0.0
+                        res[val.id]['di_poin_ven'] = result[8] and result[8] or 0.0
+                        res[val.id]['di_val_ven'] = result[9] and result[9] or 0.0
+                        res[val.id]['di_col_regul_sortie'] = 0.0
+                        res[val.id]['di_qte_regul_sortie'] = 0.0
+                        res[val.id]['di_poib_reg_sort'] = 0.0
+                        res[val.id]['di_poin_reg_sort'] = 0.0
+                    else:
+               
+                        sqlstr = """
+                            select
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,
+                                
+                                SUM ( Case when sml.di_usage_loc_dest = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock,
+                                
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_nb_colis when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_nb_colis  else   0 end) AS di_col_ven,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done else 0 end) AS di_qte_ven,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poib when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1* sml.di_poib else 0 end) AS di_poib_ven,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.di_poin when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.di_poin else 0 end) AS di_poin_ven,
+                                
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'customer' and sml.di_flg_cloture is not true then sml.qty_done*sol.price_unit when sml.di_usage_loc = 'customer' and sml.di_usage_loc_dest = 'internal' and sml.di_flg_cloture is not true then -1*sml.qty_done*sol.price_unit else 0 end) AS di_val_ven,                                                                                                                                            
+                                
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_nb_colis else 0 end) AS di_col_regul_sortie,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.qty_done else 0 end) AS di_qte_regul_sortie,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poib else 0 end) AS di_poib_reg_sort,
+                                SUM ( Case when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_flg_cloture is not true and sml.di_perte is true then sml.di_poin else 0 end) AS di_poin_reg_sort                                  
+                                                                  
+                            from stock_move_line sml                                
+                            LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+                            (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                
+                            LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
+                            LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
+                            LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
+                            where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
+                            """
+                            
+            #                 SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_nb_colis else 0 end) AS di_col_ach,
+            #                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.qty_done  else 0 end) AS di_qte_ach,
+            #                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poib  else 0 end) AS di_poib_ach,
+            #                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poin  else 0 end) AS di_poin_ach,
+            # SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else 0 end) AS di_col_regul_entree,
+            #                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done else 0 end) AS di_qte_regul_entree,
+            #                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
+            #                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
+            #             
+                        self.env.cr.execute(sqlstr, (val.id, di_date_to))
+                        result = self.env.cr.fetchall()[0]
+                        res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
+                        res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
+                        res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
+                        res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
+                        res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
+                        res[val.id]['di_col_ven'] = result[5] and result[5] or 0.0
+                        res[val.id]['di_qte_ven'] = result[6] and result[6] or 0.0
+                        res[val.id]['di_poib_ven'] = result[7] and result[7] or 0.0
+                        res[val.id]['di_poin_ven'] = result[8] and result[8] or 0.0
+                        res[val.id]['di_val_ven'] = result[9] and result[9] or 0.0
+                        res[val.id]['di_col_regul_sortie'] = result[10] and result[10] or 0.0
+                        res[val.id]['di_qte_regul_sortie'] = result[11] and result[11] or 0.0
+                        res[val.id]['di_poib_reg_sort'] = result[12] and result[12] or 0.0
+                        res[val.id]['di_poin_reg_sort'] = result[13] and result[13] or 0.0
+            #             res[val.id]['di_col_ach'] = result[10] and result[10] or 0.0
+            #             res[val.id]['di_qte_ach'] = result[11] and result[11] or 0.0
+            #             res[val.id]['di_poib_ach'] = result[12] and result[12] or 0.0
+            #             res[val.id]['di_poin_ach'] = result[13] and result[13] or 0.0
+            #             res[val.id]['di_col_regul_entree'] = result[14] and result[14] or 0.0
+            #             res[val.id]['di_qte_regul_entree'] = result[15] and result[15] or 0.0
+            #             res[val.id]['di_poib_reg_ent'] = result[16] and result[16] or 0.0
+            #             res[val.id]['di_poin_reg_ent'] = result[17] and result[17] or 0.0
+            #             res[val.id]['di_col_regul_sortie'] = result[18] and result[18] or 0.0
+            #             res[val.id]['di_qte_regul_sortie'] = result[19] and result[19] or 0.0
+            #             res[val.id]['di_poib_reg_sort'] = result[20] and result[20] or 0.0
+            #             res[val.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
                 
-#                 SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_nb_colis else 0 end) AS di_col_ach,
-#                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.qty_done  else 0 end) AS di_qte_ach,
-#                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poib  else 0 end) AS di_poib_ach,
-#                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_poin  else 0 end) AS di_poin_ach,
-# SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else 0 end) AS di_col_regul_entree,
-#                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done else 0 end) AS di_qte_regul_entree,
-#                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poib else 0 end) AS di_poib_reg_ent,
-#                     SUM ( Case when sml.di_usage_loc <> 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_poin else 0 end) AS di_poin_reg_ent,
-#             
-            self.env.cr.execute(sqlstr, (val.id, di_date_to))
-            result = self.env.cr.fetchall()[0]
-            res[val.id]['di_col_stock'] = result[0] and result[0] or 0.0
-            res[val.id]['di_qte_stock'] = result[1] and result[1] or 0.0
-            res[val.id]['di_poib_stock'] = result[2] and result[2] or 0.0
-            res[val.id]['di_poin_stock'] = result[3] and result[3] or 0.0
-            res[val.id]['di_val_stock'] = result[4] and result[4] or 0.0
-            res[val.id]['di_col_ven'] = result[5] and result[5] or 0.0
-            res[val.id]['di_qte_ven'] = result[6] and result[6] or 0.0
-            res[val.id]['di_poib_ven'] = result[7] and result[7] or 0.0
-            res[val.id]['di_poin_ven'] = result[8] and result[8] or 0.0
-            res[val.id]['di_val_ven'] = result[9] and result[9] or 0.0
-            res[val.id]['di_col_regul_sortie'] = result[10] and result[10] or 0.0
-            res[val.id]['di_qte_regul_sortie'] = result[11] and result[11] or 0.0
-            res[val.id]['di_poib_reg_sort'] = result[12] and result[12] or 0.0
-            res[val.id]['di_poin_reg_sort'] = result[13] and result[13] or 0.0
-#             res[val.id]['di_col_ach'] = result[10] and result[10] or 0.0
-#             res[val.id]['di_qte_ach'] = result[11] and result[11] or 0.0
-#             res[val.id]['di_poib_ach'] = result[12] and result[12] or 0.0
-#             res[val.id]['di_poin_ach'] = result[13] and result[13] or 0.0
-#             res[val.id]['di_col_regul_entree'] = result[14] and result[14] or 0.0
-#             res[val.id]['di_qte_regul_entree'] = result[15] and result[15] or 0.0
-#             res[val.id]['di_poib_reg_ent'] = result[16] and result[16] or 0.0
-#             res[val.id]['di_poin_reg_ent'] = result[17] and result[17] or 0.0
-#             res[val.id]['di_col_regul_sortie'] = result[18] and result[18] or 0.0
-#             res[val.id]['di_qte_regul_sortie'] = result[19] and result[19] or 0.0
-#             res[val.id]['di_poib_reg_sort'] = result[20] and result[20] or 0.0
-#             res[val.id]['di_poin_reg_sort'] = result[21] and result[21] or 0.0
-            
-            
-            
+                
+            else:
+                res[val.id]['di_col_stock'] = 0.0
+                res[val.id]['di_qte_stock'] = 0.0
+                res[val.id]['di_poib_stock'] = 0.0
+                res[val.id]['di_poin_stock'] = 0.0
+                res[val.id]['di_val_stock'] = 0.0
+                res[val.id]['di_col_ven'] = 0.0
+                res[val.id]['di_qte_ven'] = 0.0
+                res[val.id]['di_poib_ven'] = 0.0
+                res[val.id]['di_poin_ven'] = 0.0
+                res[val.id]['di_val_ven'] = 0.0
+                res[val.id]['di_col_regul_sortie'] = 0.0
+                res[val.id]['di_qte_regul_sortie'] = 0.0
+                res[val.id]['di_poib_reg_sort'] = 0.0
+                res[val.id]['di_poin_reg_sort'] = 0.0
             
             if res[val.id]['di_qte_stock'] != 0.0:
                 res[val.id]['di_prix_achat_moyen'] = res[val.id]['di_val_stock'] / res[val.id]['di_qte_stock']

@@ -19,6 +19,9 @@ class DiImpRessWiz(models.TransientModel):
     @api.multi
     def imprimer_resserre(self):
         context = dict(self.env.context or {})
+        context.update(di_aff_ven=self.di_masquer_ventes)
+        context.update(di_aff_pertes=True)
+        context.update(di_liste_comptage=self.di_liste_comptage)
         if self.di_to_date:
             context.update(di_date_to=self.di_to_date) 
         self.di_product_ids=self.env['product.product'].search([('type','!=','service'),('di_avec_stock','=',True)])
