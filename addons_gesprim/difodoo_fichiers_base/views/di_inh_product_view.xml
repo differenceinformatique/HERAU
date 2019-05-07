@@ -418,7 +418,10 @@
             <field name="view_type">form</field>
             <field name="target">current</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="difodoo_fichiers_base.di_view_product_simplifiee"/>                
+            <field name="view_id" ref="difodoo_fichiers_base.di_view_product_simplifiee"/>  
+             <field name="domain">
+                ['|',('qty_available','&gt;',0.0),('qty_available','&lt;',0.0)]
+            </field>                                             
         </record>      
         
         
@@ -430,25 +433,27 @@
             <field name="view_type">form</field>
             <field name="target">current</field>
             <field name="view_mode">tree,form</field>
+            <field name="key2">client_action_multi</field>
             <field name="view_id" ref="stock.view_stock_quant_tree"/>
-            <field name="context">{'search_default_internal_loc': 1,'search_default_positive': 1,'search_default_negative': 1}</field>                        
+            <field name="context">{'search_default_internal_loc': 1,'search_default_positive': 1,'search_default_negative': 1}</field>
+            <field name="domain">[('product_id', '=', active_id)]</field>
         </record>      
         
-        <record id="di_mouv_dispo" model="ir.actions.act_window">
+        <record id="di_mouv_dispo_quant" model="ir.actions.act_window">
             <field name="name">Mouvements de produit</field>
             <field name="res_model">stock.move.line</field>
             <field name="src_model">stock.quant</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="view_type">tree</field>
+            <field name="view_type">form</field>
             <field name="target">current</field>
             <field name="key2">client_action_multi</field>
             <field name="view_mode">tree,kanban,pivot,form</field>
             <field name="view_id" ref="stock.view_move_line_tree"/>
             <field name="context">{'search_default_done': 1, 'search_default_groupby_product_id': 1}</field>            
-            <field name="domain">
+            <!-- <field name="domain">
                 [('product_id', '=', self.product_id.id),'|',('location_id', '=', self.location_id.id),('location_dest_id', '=', self.location_id.id),
                 ('lot_id', '=', self.lot_id.id),'|',('package_id', '=', self.package_id.id),('result_package_id', '=', self.package_id.id),]
-            </field>            
+            </field>             -->
         </record>                
         
         
