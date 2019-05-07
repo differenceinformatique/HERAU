@@ -5,7 +5,12 @@
             <field name="name">di.cloturer.lots.wiz.form</field>
             <field name="model">di.cloturer.lots.wiz</field>
             <field name="arch" type="xml">
-                <form string="Clôture des Lots">                                            
+                <form string="Clôture des Lots"> 
+                    <group col="4" string="Informations">                        
+                        <field name="art_debut"  />
+                        <field name="art_fin"  />  
+                        <field name="familles" />                                                                                                   
+                    </group>                                             
                     <footer>
                         <button string="Clôturer" type="object" name="cloturer_lots"
                             default_focus="1" class="oe_link"/>                    

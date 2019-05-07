@@ -18,8 +18,8 @@ class DiCloturerLots(models.TransientModel):
     art_debut = fields.Char(default=" ", string="Code Article Début")
     art_fin = fields.Char(default="ZZZZZZZZZZ", string="Code Article Fin")
     
-    fam_debut = fields.Char( default=" ", string="Famille Début")
-    fam_fin = fields.Char(default="ZZZZZZZZZZ", string="Famille Fin")
+    familles = fields.Many2many("product.category", string="Familles")
+    
   
     @api.multi
     def cloturer_lots(self):
@@ -30,7 +30,11 @@ class DiCloturerLots(models.TransientModel):
             else:
                 lots = self.env['stock.production.lot'].search(['&',('di_fini', '=', False),('product_id','=',self.di_product_id.id),('name','=',self.di_lot)])
         else:
-            lots = self.env['stock.production.lot'].search([('di_fini', '=', False)])                
+            if self.familles:
+                lots = self.env['stock.production.lot'].search([('di_fini', '=', False)]).filtered(lambda l: l.product_id.categ_id in self.familles and l.product_id.name <= self.art_debut and l.product_id.name >= self.art_fin)
+            else:                        
+                lots = self.env['stock.production.lot'].search([('di_fini', '=', False)]).filtered(lambda l:  l.product_id.name <= self.art_debut and l.product_id.name >= self.art_fin)
+                            
         
         for lot in lots:
             
