@@ -130,23 +130,30 @@ class PurchaseOrderLine(models.Model):
                                 # si géré au kg, on ne modife que les champs poids
                                 self.di_poin = self.product_qty
                                 self.di_poib = self.di_poin + self.di_tare
-                            else:
-                                # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
-                                if self.product_id.di_get_type_piece().qty != 0.0:
-                                    self.di_nb_pieces = ceil(self.product_qty/self.product_id.di_get_type_piece().qty)
-                                else:
-                                    self.di_nb_pieces = ceil(self.product_qty)                                
-                                if self.product_packaging.qty != 0.0 :
-                                    self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
-                                else:      
-                                    self.di_nb_colis = ceil(self.product_qty)             
-                                if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                                    self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-                                else:
-                                    self.di_nb_palette = self.di_nb_colis
-                                    
-                            self.di_poin = self.product_qty * self.product_id.weight 
-                            self.di_poib = self.di_poin + self.di_tare
+                                
+                            if self.product_uom.name == 'Unit(s)' or self.product_uom.name == 'Pièce' :
+                                self.di_nb_pieces = ceil(self.product_qty)
+                            if self.product_uom.name.lower() ==  'colis' :
+                                self.di_nb_colis = ceil(self.product_qty)
+                            if self.product_uom.name.lower() ==  'palette' :
+                                self.di_nb_palette = ceil(self.product_qty)
+#                             else:
+#                                 # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
+#                                 if self.product_id.di_get_type_piece().qty != 0.0:
+#                                     self.di_nb_pieces = ceil(self.product_qty/self.product_id.di_get_type_piece().qty)
+#                                 else:
+#                                     self.di_nb_pieces = ceil(self.product_qty)                                
+#                                 if self.product_packaging.qty != 0.0 :
+#                                     self.di_nb_colis = ceil(self.product_qty / self.product_packaging.qty)
+#                                 else:      
+#                                     self.di_nb_colis = ceil(self.product_qty)             
+#                                 if self.di_type_palette_id.di_qte_cond_inf != 0.0:
+#                                     self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                                 else:
+#                                     self.di_nb_palette = self.di_nb_colis
+#                                     
+#                             self.di_poin = self.product_qty * self.product_id.weight 
+#                             self.di_poib = self.di_poin + self.di_tare
                                     
 # temporaire herau
 #                             if self.di_un_saisie == "PIECE":
