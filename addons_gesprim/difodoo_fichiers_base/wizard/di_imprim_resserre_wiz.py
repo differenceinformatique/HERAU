@@ -24,7 +24,9 @@ class DiImpRessWiz(models.TransientModel):
         context.update(di_liste_comptage=self.di_liste_comptage)
         if self.di_to_date:
             context.update(di_date_to=self.di_to_date) 
-        self.di_product_ids=self.env['product.product'].search([('type','!=','service'),('qty_available','>',0.0)])
+        self.di_product_ids=self.env['product.product'].search(['&',('type','!=','service'),'|',('qty_available','>',0.0),('qty_available','<',0.0)])
+        
+#         domain="['&',('type','=','product'),'|',('qty_available','>',0.0),('qty_available','<',0.0)]"
                 
         
         
