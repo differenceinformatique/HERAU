@@ -34,8 +34,8 @@ class DiRegulArtLots(models.TransientModel):
     di_poin_theo = fields.Float(string='Poids net théorique' , readonly=True, store=True, compute="_compute_qte_theo")
     di_poib_theo = fields.Float(string='Poids brut théorique' , readonly=True, store=True, compute="_compute_qte_theo")
     
-    di_flg_modif_uom = fields.Boolean(default=False)
-    di_flg_modif_qty_spe = fields.Boolean(default=False)   
+#     di_flg_modif_uom = fields.Boolean(default=False)
+#     di_flg_modif_qty_spe = fields.Boolean(default=False)   
     
 #     
 #     @api.multi                     
