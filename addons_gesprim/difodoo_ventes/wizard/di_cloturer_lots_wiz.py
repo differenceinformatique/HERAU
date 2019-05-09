@@ -410,7 +410,7 @@ class DiCloturerLots(models.TransientModel):
                         
                             self.env['stock.move'].create(vals)
                                                                     
-                    lot.update({'di_fini':True,}) 
+                lot.update({'di_fini':True,}) 
             
         self.env['stock.quant']._unlink_zero_quants()
         return lots                    
