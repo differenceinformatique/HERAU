@@ -31,9 +31,9 @@ class DiCloturerLots(models.TransientModel):
                 lots = self.env['stock.production.lot'].search(['&',('di_fini', '=', False),('product_id','=',self.di_product_id.id),('name','=',self.di_lot)])
         else:
             if self.familles:
-                lots = self.env['stock.production.lot'].search([('di_fini', '=', False)]).filtered(lambda l: l.product_id.categ_id in self.familles and l.product_id.default_code <= self.art_debut and l.product_id.default_code >= self.art_fin)
+                lots = self.env['stock.production.lot'].search([('di_fini', '=', False)]).filtered(lambda l: l.product_id.categ_id in self.familles and l.product_id.default_code >= self.art_debut and l.product_id.default_code <= self.art_fin)
             else:                        
-                lots = self.env['stock.production.lot'].search([('di_fini', '=', False)]).filtered(lambda l:  l.product_id.default_code <= self.art_debut and l.product_id.default_code >= self.art_fin)
+                lots = self.env['stock.production.lot'].search([('di_fini', '=', False)]).filtered(lambda l:  l.product_id.default_code >= self.art_debut and l.product_id.default_code <= self.art_fin)
                             
         
         for lot in lots:

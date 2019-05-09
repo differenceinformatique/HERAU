@@ -2,6 +2,7 @@
 from odoo import api, fields, models
 from datetime import timedelta, datetime
 import io
+from math import ceil
 # import os
 import base64
 # from ..models import di_outils
@@ -31,7 +32,125 @@ class DiRegulArtLots(models.TransientModel):
     di_nb_colis_theo = fields.Integer(string='Nb colis théorique' , readonly=True, store=True, compute="_compute_qte_theo")
     di_nb_palette_theo = fields.Float(string='Nb palettes théorique' , readonly=True, store=True, compute="_compute_qte_theo")
     di_poin_theo = fields.Float(string='Poids net théorique' , readonly=True, store=True, compute="_compute_qte_theo")
-    di_poib_theo = fields.Float(string='Poids brut théorique' , readonly=True, store=True, compute="_compute_qte_theo")   
+    di_poib_theo = fields.Float(string='Poids brut théorique' , readonly=True, store=True, compute="_compute_qte_theo")
+    
+    di_flg_modif_uom = fields.Boolean(default=False)
+    di_flg_modif_qty_spe = fields.Boolean(default=False)   
+    
+#     
+#     @api.multi                     
+#     @api.onchange('di_nb_palette')
+#     def _di_change_nb_palette(self):
+#         if self.ensure_one() and self.di_product_id and self.di_lot_id :
+#             if self.di_flg_modif_uom == False:
+#                 self.di_flg_modif_qty_spe = True   
+#                                                     
+#                 if self.di_product_id.di_type_palette_id:
+#                     self.di_nb_colis = ceil(self.di_nb_palette * self.di_product_id.di_type_palette_id.di_qte_cond_inf)                    
+#                     if self.di_product_id.uom_id.name.lower() == 'kg':       
+#                         self.di_qte_std = self.di_product_id.di_type_colis_id.qty * self.di_nb_colis * self.di_product_id.weight
+#                         self.di_poin = self.di_qte_std 
+#                     else:                                  
+#                         self.di_qte_std = self.di_product_id.di_type_colis_id.qty * self.di_nb_colis
+#                         self.di_poin = self.di_qte_std  * self.di_product_id.weight
+#                     self.di_nb_pieces = ceil(self.di_product_id.di_type_colis_id.di_qte_cond_inf * self.di_nb_colis)            
+#                      
+#                     self.di_poib = self.di_poin + (self.di_tare_un * self.di_nb_colis)
+#       
+#     @api.multi                     
+#     @api.onchange('di_nb_colis')
+#     def _di_change_nb_colis(self):
+#         if self.ensure_one() and self.di_product_id and self.di_lot_id :
+#             if self.di_flg_modif_uom == False:
+#                 self.di_flg_modif_qty_spe = True      
+#                 self.di_tare_un = 0.0
+#                 
+#                   
+#                 if self.di_product_id.di_type_colis_id: 
+#                     if self.di_product_id.uom_id.name.lower() == 'kg':       
+#                         self.di_qte_std = self.di_product_id.di_type_colis_id.qty * self.di_nb_colis * self.di_product_id.weight
+#                         self.di_poin = self.di_qte_std  
+#                     else:                                  
+#                         self.di_qte_std = self.di_product_id.di_type_colis_id.qty * self.di_nb_colis
+#                         self.di_poin = self.di_qte_std  * self.di_product_id.weight
+#                           
+#                     self.di_nb_pieces = ceil(self.di_product_id.di_type_colis_id.di_qte_cond_inf * self.di_nb_colis)
+#                     if self.di_product_id.di_type_palette_id.di_qte_cond_inf != 0.0:                
+#                         self.di_nb_palette = self.di_nb_colis / self.di_product_id.di_type_palette_id.di_qte_cond_inf
+#                     else:
+#                         self.di_nb_palette = self.di_nb_colis
+#                     
+#                     self.di_poib = self.di_poin +  (self.di_tare_un * self.di_nb_colis)
+#    
+#                 
+#     @api.multi                     
+#     @api.onchange('di_nb_pieces')
+#     def _di_change_nb_pieces(self):
+#         if self.ensure_one() and self.di_product_id and self.di_lot_id :
+#             if self.di_flg_modif_uom == False:
+#                 self.di_flg_modif_qty_spe = True      
+#                
+#                 if self.di_product_id.uom_id.name.lower() == 'kg':       
+#                     self.di_qte_std = self.di_nb_pieces * self.di_product_id.weight 
+#                     self.di_poin = self.di_qte_std  
+#                 else:                                             
+#                     self.di_qte_std =self.di_nb_pieces
+#                     self.di_poin = self.di_qte_std  * self.di_product_id.weight
+#                 self.di_poib = self.di_poin +  (self.di_tare_un * self.di_nb_colis)
+# 
+#     @api.multi 
+#     @api.onchange('di_poib')
+#     def _di_onchange_poib(self):
+#         if self.ensure_one() and self.di_product_id and self.di_lot_id :
+#             if self.di_flg_modif_uom == False:
+#                 self.di_flg_modif_qty_spe = True
+#                 self.di_poin = self.di_poib -  (self.di_tare_un * self.di_nb_colis)
+#                              
+#                 if self.di_product_id.uom_id.name.lower() == 'kg':
+#                     self.di_qte_std = self.di_poin
+#    
+#     @api.multi 
+#     @api.onchange('di_tare_un')
+#     def _di_onchange_tare(self):
+#         if self.ensure_one() and self.di_product_id and self.di_lot_id :
+#             if self.di_flg_modif_uom == False:
+#                 self.di_flg_modif_qty_spe = True    
+#                 self.di_poin = self.di_poib -  (self.di_tare_un * self.di_nb_colis)  
+#                         
+#                 if self.di_product_id.uom_id.name.lower() == 'kg':
+#                     self.di_qte_std = self.di_poin
+#                     
+#     @api.multi 
+#     @api.onchange('di_poin')
+#     def _di_onchange_poin(self):
+#         if self.ensure_one() and self.di_product_id and self.di_lot_id :
+#             if self.di_flg_modif_uom == False:
+#                 self.di_flg_modif_qty_spe = True     
+#                                        
+#                 if self.di_product_id.uom_id.name.lower() == 'kg':
+#                     self.di_qte_std = self.di_poin               
+#                 self.di_poib = self.di_poin +  (self.di_tare_un * self.di_nb_colis)
+#     
+#     @api.multi                     
+#     @api.onchange('di_qte_std')
+#     def _di_change_qty_done(self):
+#         if self.ensure_one() and self.di_product_id and self.di_lot_id :
+#                            
+#             if self.di_flg_modif_qty_spe == False:
+#                 if self.di_product_id.uom_id:
+#                     if self.di_product_id.uom_id.name.lower == 'kg':
+#                         # si géré au kg, on ne modife que les champs poids
+#                         self.di_poin = self.di_qte_std
+#                         self.di_poib = self.di_poin +  (self.di_tare_un * self.di_nb_colis)
+#                         
+#                     if self.di_product_id.uom_id.name == 'Unit(s)' or self.di_product_id.uom_id.name == 'Pièce' :
+#                         self.di_nb_pieces = ceil(self.di_qte_std)
+#                     if self.di_product_id.uom_id.name.lower() ==  'colis' :
+#                         self.di_nb_colis = ceil(self.di_qte_std)
+#                     if self.di_product_id.uom_id.name.lower() ==  'palette' :
+#                         self.di_nb_palette = ceil(self.di_qte_std)
+#                     self.di_flg_modif_uom = True
+#             self.di_flg_modif_qty_spe=False
     
     
     @api.depends('di_product_id','di_lot_id')
