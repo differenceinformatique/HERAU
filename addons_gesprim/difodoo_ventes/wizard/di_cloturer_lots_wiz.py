@@ -48,6 +48,11 @@ class DiCloturerLots(models.TransientModel):
                 
                 qtediff = 0.0
                 (nbcol,nbpal,nbpiece,poin,qte,poib)= self.env['stock.move.line'].di_qte_spe_en_stock(lot.product_id,False,lot)
+                nbcol=round(nbcol,3)
+                nbpal=round(nbpal,3)
+                nbpiece=round(nbpiece,3)
+                poin=round(poin,3)
+                poib=round(poib,3)
                 if nbcol != 0.0 or nbpal != 0.0 or nbpiece != 0.0 or poin != 0.0 or poib != 0.0:                
                     locationinterne_id = self.env['stock.picking.type'].search([('code','=','incoming')], limit=1).default_location_dest_id.id
                     if nbcol > 0.0:
