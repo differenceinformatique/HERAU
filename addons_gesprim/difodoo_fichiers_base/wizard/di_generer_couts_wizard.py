@@ -62,6 +62,12 @@ class DiGenCoutsWiz(models.TransientModel):
                     dernier_id_cout_veille = cout_veille.dernier_id
                 dernier_id = 0    
                 (qte,mont,nbcol,nbpal,nbpiece,poids,dernier_id) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,di_date,self.di_cde_ach,dernier_id_cout_veille)
+                qte=round(qte,3)
+                mont=round(mont,3)
+                nbcol=round(nbcol,3)
+                nbpal=round(nbpal,3)
+                nbpiece=round(nbpiece,3)
+                poids=round(poids,3)
                 
                 
                 if dernier_id == 0:
