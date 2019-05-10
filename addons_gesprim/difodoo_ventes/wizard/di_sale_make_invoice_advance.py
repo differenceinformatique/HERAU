@@ -11,7 +11,7 @@ from odoo.exceptions import UserError
 class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = "sale.advance.payment.inv"
     
-    date_fact = fields.Date(required=True, default=datetime.today().date(), string="Date de facturation")
+    date_fact = fields.Date(required=True, default=datetime.date().today(), string="Date de facturation")
     period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
     date_debut = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
