@@ -37,12 +37,18 @@ class AccountInvoice(models.Model):
                     invoice.write({'di_nbex': invoice.partner_id.di_nbex_fac})                
         return res
     
-    @api.multi
+    
     @api.onchange("partner_id")
-    def di_onchange_partner(self):
-        for fac in self:
-            if fac.partner_id:
-                fac.di_nbex = fac.partner_id.di_nbex_fac
+    def di_onchange_partner(self):    
+        if self.partner_id:
+            self.di_nbex = self.partner_id.di_nbex_fac
+            if self.partner_id.di_period_fact != 'DEMANDE':
+                message = {
+                            'title': ('Attention'),
+                            'message' : "La périodicité de facturation du client n'est pas à la demande."
+                        }
+                return {'warning': message}
+                
     
     @api.multi
     def _invoice_line_tax_values(self):

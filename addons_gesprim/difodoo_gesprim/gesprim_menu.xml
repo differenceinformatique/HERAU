@@ -95,6 +95,7 @@
 	<menuitem id="menu_gesprim_ventes_fact_cdes" name="Facturer les commandes" sequence="11" parent="menu_gesprim_ventes_fact" action="sale.action_view_sale_advance_payment_inv"/>		
 	<menuitem id="menu_gesprim_ventes_factures" name="Factures clients" sequence="20" parent="menu_gesprim_ventes_fact" action="account.action_invoice_tree1"/>    
 	<menuitem id="menu_gesprim_ventes_avoirs" name="Avoirs clients" sequence="30" parent="menu_gesprim_ventes_fact" action="account.action_invoice_out_refund"/>
+	<menuitem id="menu_gesprim_ventes_fact_avoirs" name="Facture et Avoirs clients" sequence="31" parent="menu_gesprim_ventes_fact" action="difodoo_ventes.di_action_factures_avoirs"/>	
 	<menuitem id="menu_gesprim_ventes_imp_releves" name="Impression des relevés" sequence="40" parent="menu_gesprim_ventes_fact" action="difodoo_ventes.action_di_imprimer_releves_menu_wiz"/>	
 	
 	
