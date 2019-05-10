@@ -58,9 +58,8 @@ class SaleAdvancePaymentInv(models.TransientModel):
             # on met à jour la date de facture    
             invoices = sale_orders.mapped('invoice_ids')
             param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
-            # //morvan 10/05/2019 - pour test perfs
-            #for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
-            #    s_o.action_done()    
+            for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
+                s_o.action_done()    
             for invoice in invoices:
                 invoice.date_invoice=self.date_fact
                 if param.di_autovalid_fact_ven:
@@ -143,10 +142,9 @@ class SaleAdvancePaymentInv(models.TransientModel):
             
             
 #             sale_orders = self.env['sale.order'].search([('invoice_status','=','to invoice'),('di_livdt','>=',self.date_debut),('di_livdt','<=',self.date_fin)]).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact  and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin).sorted(key=lambda so: so.partner_id.id)
-            
-            # //morvan 10/05/2019 - pour test perfs                    
-            #for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
-            #    s_o.action_done()
+                                
+            for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
+                s_o.action_done()
                 
 #             invoices = sale_orders.mapped('invoice_ids')
 #             param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
