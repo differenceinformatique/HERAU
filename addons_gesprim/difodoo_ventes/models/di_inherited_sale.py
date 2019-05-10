@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare, float_is_zero
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError, ValidationError, Warning
 from ...difodoo_fichiers_base.controllers import di_ctrl_print
@@ -342,7 +342,8 @@ class SaleOrderLine(models.Model):
                 colis = 0.0
                 palettes = 0.0
                 poib = 0.0
-                poin = 0.0               
+                poin = 0.0         
+                tare = 0.0      
                 for move in line.move_ids.filtered(lambda r: r.state == 'done' and not r.scrapped and line.product_id == r.product_id):
                     if move.location_dest_id.usage == "customer":
                         if not move.origin_returned_move_id or (move.origin_returned_move_id and move.to_refund):
@@ -352,6 +353,7 @@ class SaleOrderLine(models.Model):
                             palettes += move.di_nb_palette
                             poib += move.di_poib
                             poin += move.di_poin
+                            tare += move.di_tare
                    
                     elif move.location_dest_id.usage != "customer" and move.to_refund:
                         qte_un_saisie -= move.di_qte_un_saisie
@@ -360,12 +362,14 @@ class SaleOrderLine(models.Model):
                         palettes -= move.di_nb_palette
                         poib -= move.di_poib
                         poin -= move.di_poin
+                        tare -= move.di_tare
+                        
                         
                     line.di_type_palette_liv_id  = move.di_type_palette_id
                     line.di_un_saisie_liv     = move.di_un_saisie
                     line.di_product_packaging_liv_id = move.di_product_packaging_id
-                    line.di_tare_liv          = move.di_tare 
-               
+                     
+                line.di_tare_liv          = tare
                 line.di_qte_un_saisie_liv = qte_un_saisie
                 line.di_nb_pieces_liv = pieces
                 line.di_nb_colis_liv = colis
@@ -712,14 +716,36 @@ class SaleOrderLine(models.Model):
         """
         for line in self:
             qty_invoiced = 0.0
+            poin_invoiced = 0.0
+            poib_invoiced = 0.0
+            nbpieces_invoiced = 0.0
+            nbcolis_invoiced = 0.0
+            nbpal_invoiced = 0.0
             for invoice_line in line.invoice_lines:
                 if invoice_line.invoice_id.state != 'cancel':
                     if invoice_line.invoice_id.type == 'out_invoice':
                         qty_invoiced += invoice_line.di_qte_un_saisie
+                        poin_invoiced += invoice_line.di_poin
+                        poib_invoiced += invoice_line.di_poib
+                        nbpieces_invoiced += invoice_line.di_nb_pieces
+                        nbcolis_invoiced += invoice_line.di_nb_colis
+                        nbpal_invoiced += invoice_line.di_nb_palette
                     elif invoice_line.invoice_id.type == 'out_refund':
                         qty_invoiced -= invoice_line.di_qte_un_saisie
+                        poin_invoiced -= invoice_line.di_poin
+                        poib_invoiced -= invoice_line.di_poib
+                        nbpieces_invoiced -= invoice_line.di_nb_pieces
+                        nbcolis_invoiced -= invoice_line.di_nb_colis
+                        nbpal_invoiced -= invoice_line.di_nb_palette
             line.di_qte_un_saisie_fac = qty_invoiced
+            line.di_poin_fac = poin_invoiced
+            line.di_poib_fac = poib_invoiced
+            line.di_nb_pieces_fac = nbpieces_invoiced
+            line.di_nb_colis_fac = nbcolis_invoiced
+            line.di_nb_palette_fac = nbpal_invoiced
         super(SaleOrderLine, self)._get_invoice_qty()
+        
+     
         
     @api.multi
     def unlink(self):
@@ -1155,3 +1181,97 @@ class SaleOrder(models.Model):
             order.di_nbpal = wnbpal
             order.di_nbcol = ceil(wnbcol)
 
+    @api.multi
+    def action_invoice_create(self, grouped=False, final=False):
+        #copie standard
+        """
+        Create the invoice associated to the SO.
+        :param grouped: if True, invoices are grouped by SO id. If False, invoices are grouped by
+                        (partner_invoice_id, currency)
+        :param final: if True, refunds will be generated if necessary
+        :returns: list of created invoices
+        """
+        inv_obj = self.env['account.invoice']
+        precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+        invoices = {}
+        references = {}
+        invoices_origin = {}
+        invoices_name = {}
+
+        for order in self:
+            group_key = order.id if grouped else (order.partner_invoice_id.id, order.currency_id.id)
+
+            # We only want to create sections that have at least one invoiceable line
+            pending_section = None
+
+            for line in order.order_line:
+                if line.display_type == 'line_section':
+                    pending_section = line
+                    continue
+                if float_is_zero(line.qty_to_invoice, precision_digits=precision):
+                    continue
+                if group_key not in invoices:
+                    inv_data = order._prepare_invoice()
+                    invoice = inv_obj.create(inv_data)
+                    references[invoice] = order
+                    invoices[group_key] = invoice
+                    invoices_origin[group_key] = [invoice.origin]
+                    invoices_name[group_key] = [invoice.name]
+                elif group_key in invoices:
+                    if order.name not in invoices_origin[group_key]:
+                        invoices_origin[group_key].append(order.name)
+                    if order.client_order_ref and order.client_order_ref not in invoices_name[group_key]:
+                        invoices_name[group_key].append(order.client_order_ref)
+
+                if line.qty_to_invoice > 0 or (line.qty_to_invoice < 0 and final):
+                    if pending_section:
+                        pending_section.invoice_line_create(invoices[group_key].id, pending_section.qty_to_invoice)
+                        pending_section = None
+                    line.invoice_line_create(invoices[group_key].id, line.qty_to_invoice)
+
+            if references.get(invoices.get(group_key)):
+                if order not in references[invoices[group_key]]:
+                    references[invoices[group_key]] |= order
+
+        for group_key in invoices:
+            invoices[group_key].write({'name': ', '.join(invoices_name[group_key]),
+                                       'origin': ', '.join(invoices_origin[group_key])})
+            sale_orders = references[invoices[group_key]]
+            if len(sale_orders) == 1:
+                invoices[group_key].reference = sale_orders.reference
+
+        if not invoices:
+            raise UserError(_('There is no invoiceable line. If a product has a Delivered quantities invoicing policy, please make sure that a quantity has been delivered.'))
+
+        for invoice in invoices.values():
+            invoice.compute_taxes()
+            if not invoice.invoice_line_ids:
+                raise UserError(_('There is no invoiceable line. If a product has a Delivered quantities invoicing policy, please make sure that a quantity has been delivered.'))
+            # If invoice is negative, do a refund invoice instead
+            if invoice.amount_total < 0:
+                invoice.type = 'out_refund'
+                for line in invoice.invoice_line_ids:
+                    #difodoo
+                    line.di_nb_colis = - line.di_nb_colis
+                    line.di_nb_pieces = - line.di_nb_pieces
+                    line.di_nb_palette = - line.di_nb_palette
+                    line.di_poib = - line.di_poib
+                    line.di_poin = - line.di_poin
+                    line.di_qte_un_saisie = - line.di_qte_un_saisie
+                    #fin difodoo
+                    line.quantity = -line.quantity
+            # Use additional field helper function (for account extensions)
+            for line in invoice.invoice_line_ids:
+                line._set_additional_fields(invoice)
+            # Necessary to force computation of taxes. In account_invoice, they are triggered
+            # by onchanges, which are not triggered when doing a create.
+            invoice.compute_taxes()
+            # Idem for partner
+            so_payment_term_id = invoice.payment_term_id.id
+            invoice._onchange_partner_id()
+            # To keep the payment terms set on the SO
+            invoice.payment_term_id = so_payment_term_id
+            invoice.message_post_with_view('mail.message_origin_link',
+                values={'self': invoice, 'origin': references[invoice]},
+                subtype_id=self.env.ref('mail.mt_note').id)
+        return [inv.id for inv in invoices.values()]
