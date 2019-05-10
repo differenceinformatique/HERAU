@@ -150,6 +150,24 @@
             </field>
         </record>
         
+        <record id="di_view_account_invoice_filter" model="ir.ui.view">
+            <field name="name">di.account.invoice.select</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter" />
+            <field eval="80" name="priority" />
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='myinvoices']" position="after">
+                   <separator/>
+                   <filter name="period_demande" string="Demande" domain="[('di_period_fact','=','DEMANDE')]"/>
+                   <filter name="period_semaine" string="Semaine" domain="[('di_period_fact','=','SEMAINE')]"/>
+                   <filter name="period_decade" string="Décade" domain="[('di_period_fact','=','DECADE')]"/>
+                   <filter name="period_quinzaine" string="Quinzaine" domain="[('di_period_fact','=','QUINZAINE')]"/>
+                   <filter name="period_mois" string="Mois" domain="[('di_period_fact','=','MOIS')]"/>
+                </xpath>            
+            </field>
+        </record>   
+                
+        
 		<!-- surcharge vue liste facture pour montants signés -->
 		<record id="di_invoice_tree" model="ir.ui.view">
             <field name="name">account.invoice.tree</field>
@@ -159,6 +177,7 @@
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='amount_untaxed']" position="replace">
 					<field name="payment_term_id"/>
+					<field name="di_period_fact"/>
 					<field name="amount_untaxed" string="Tax Excluded" sum="Total" invisible="1"/>
 					<field name="di_amount_untaxed_signed" string="Taxes exclues" sum="Total"/>
 				</xpath>

@@ -18,6 +18,9 @@ class AccountInvoice(models.Model):
                                            help="Tax amount in the currency of the invoice, negative for credit notes.")
     di_amount_untaxed_signed = fields.Monetary(string='Total in Invoice Currency', currency_field='currency_id', store=True, readonly=True, compute='_compute_amount',    # en standard donnée en devise dossier
                                              help="Total amount in the currency of the invoice, negative for credit notes.")
+    di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")]
+                                     ,related='partner_id.di_period_fact', string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
+        
 
     @api.multi
     @api.depends("invoice_line_ids")
