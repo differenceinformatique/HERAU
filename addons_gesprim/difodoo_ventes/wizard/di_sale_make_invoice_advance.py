@@ -11,7 +11,7 @@ from odoo.exceptions import UserError
 class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = "sale.advance.payment.inv"
     
-    date_fact = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, calendar.mdays[datetime.date.today().month]), string="Date de facturation")
+    date_fact = fields.Date(required=True, default=datetime.today().date(), string="Date de facturation")
     period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
     date_debut = fields.Date(required=True, default=datetime.date(datetime.date.today().year, datetime.date.today().month, 1), string="Date Début")
@@ -81,7 +81,8 @@ class SaleAdvancePaymentInv(models.TransientModel):
             #TODO date facture sur facturation std
 
             
-        else:           
+        else:         
+                        
             query_args = {'periodicity_invoice': self.period_fact,'date_debut' : self.date_debut,'date_fin' : self.date_fin, 'ref_debut': self.ref_debut,'ref_fin':self.ref_fin}
             query = """ SELECT  so.id 
                             FROM sale_order so
@@ -99,7 +100,13 @@ class SaleAdvancePaymentInv(models.TransientModel):
             ids = [r[0] for r in self.env.cr.fetchall()]
             sale_orders_non_group = self.env['sale.order'].search([('id', 'in', ids)])
             if sale_orders_non_group:
-                sale_orders_non_group.action_invoice_create(grouped=False,final=True)     
+                partners = sale_orders_non_group.mapped('partner_id')
+                for partner in partners:                        
+                    partner_orders = sale_orders_non_group.filtered(lambda so: so.partner_id.id == partner.id)
+                    partner_orders.action_invoice_create(grouped=False,final=True)   
+                    invoices = partner_orders.mapped('invoice_ids')
+                    invoices.write({'date_invoice':self.date_fact})
+                    self.env.cr.commit()  
             
             
             query_args = {'periodicity_invoice': self.period_fact,'date_debut' : self.date_debut,'date_fin' : self.date_fin, 'ref_debut': self.ref_debut,'ref_fin':self.ref_fin}
@@ -117,21 +124,35 @@ class SaleAdvancePaymentInv(models.TransientModel):
     
             self.env.cr.execute(query, query_args)
             ids = [r[0] for r in self.env.cr.fetchall()]
+               
+            
+            
+            
+            
             sale_orders_group = self.env['sale.order'].search([('id', 'in', ids)])
             if sale_orders_group:
-                sale_orders_group.action_invoice_create(grouped=True,final=True)       
-            sale_orders = sale_orders_non_group + sale_orders_group
+                partners = sale_orders_group.mapped('partner_id')
+                for partner in partners:                        
+                    partner_orders = sale_orders_non_group.filtered(lambda so: so.partner_id.id == partner.id)
+                    partner_orders.action_invoice_create(grouped=False,final=True)
+                    invoices = partner_orders.mapped('invoice_ids')
+                    invoices.write({'date_invoice':self.date_fact})   
+                    self.env.cr.commit()  
+            
+#             sale_orders = sale_orders_non_group + sale_orders_group
+            
+            
 #             sale_orders = self.env['sale.order'].search([('invoice_status','=','to invoice'),('di_livdt','>=',self.date_debut),('di_livdt','<=',self.date_fin)]).filtered(lambda so: so.partner_id.ref != False and so.partner_id.di_period_fact == self.period_fact  and so.partner_id.ref >= self.ref_debut and so.partner_id.ref <= self.ref_fin).sorted(key=lambda so: so.partner_id.id)
             
             # //morvan 10/05/2019 - pour test perfs                    
             #for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
             #    s_o.action_done()
                 
-            invoices = sale_orders.mapped('invoice_ids')
-            param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
-            if param.di_autovalid_fact_ven:
-                    invoices.action_invoice_open()
-            invoices.write({'date_invoice':self.date_fact})            
+#             invoices = sale_orders.mapped('invoice_ids')
+#             param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+#             if param.di_autovalid_fact_ven:
+#                     invoices.action_invoice_open()
+#             invoices.write({'date_invoice':self.date_fact})            
 #             for invoice in invoices:
 #                 invoice.date_invoice=self.date_fact
 #                 
@@ -141,6 +162,6 @@ class SaleAdvancePaymentInv(models.TransientModel):
     #             return sale_orders.action_print_invoice() # ne fonctionne pas
                 
             # comme en standard, on lance l'affichage des factures si demandé  
-            if self._context.get('open_invoices', False):
-                return sale_orders.action_view_invoice()
+#             if self._context.get('open_invoices', False):
+#                 return sale_orders.action_view_invoice()
             return {'type': 'ir.actions.act_window_close'}

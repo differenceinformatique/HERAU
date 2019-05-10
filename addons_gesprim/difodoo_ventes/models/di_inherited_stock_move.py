@@ -555,9 +555,20 @@ class StockMoveLine(models.Model):
     di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
     di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+    
+#    di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo_sign')
+    
     di_tare_un      = fields.Float(string='Tare unitaire')
     di_perte = fields.Boolean("Perte", default=False)
     
+#     @api.multi
+#     def _di_compute_valo_sign(self):
+#         for sml in self:
+#             if di_entrees_sorties == 'entree': 
+#                 sml.di_valo_sign = sml.di_valo
+#             else:  
+#                 sml.di_valo_sign = -sml.di_valo
+#     
     @api.multi
     def _di_compute_valo(self):
         for sml in self:

@@ -55,9 +55,9 @@
                 <xpath expr="//page/field[@name='order_line']/form/sheet/group/group/field[@name='taxes_id'] " position="before">
                     <field name="product_packaging" string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />                    
                     <field name="di_type_palette_id" groups="difodoo_fichiers_base.di_group_aff_palette" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />                                    
-                    <field name="di_nb_pieces"  force_save="1"/>
-                    <field name="di_nb_colis"   force_save="1"/>
-                    <field name="di_nb_palette" groups="difodoo_fichiers_base.di_group_aff_palette"  force_save="1"/>
+                    <field name="di_nb_pieces" readonly="1"  force_save="1"/>
+                    <field name="di_nb_colis" readonly="1"  force_save="1"/>
+                    <field name="di_nb_palette" readonly="1" groups="difodoo_fichiers_base.di_group_aff_palette"  force_save="1"/>
                                                                                
                 </xpath> 
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='date_planned']" position="attributes">
@@ -79,10 +79,10 @@
                     <field name="di_spe_saisissable" invisible="1"/>
                     <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
                     <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
-                    <field name="di_nb_pieces"  force_save="1" />
-                    <field name="di_nb_colis"  force_save="1"/>
+                    <field name="di_nb_pieces" readonly="1"  force_save="1" />
+                    <field name="di_nb_colis" readonly="1"  force_save="1"/>
                     <field name="product_packaging" string="Colis"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />
-                    <field name="di_nb_palette"  force_save="1" groups="difodoo_fichiers_base.di_group_aff_palette" />
+                    <field name="di_nb_palette"  readonly="1" force_save="1" groups="difodoo_fichiers_base.di_group_aff_palette" />
                     <field name="di_type_palette_id" groups="difodoo_fichiers_base.di_group_aff_palette" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />
                     <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
                     <field name="di_tare_un" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
