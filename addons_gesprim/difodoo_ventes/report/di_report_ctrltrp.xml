@@ -182,5 +182,5 @@
 
 	<report id="di_wiz_report_ctrltrp" string="Impression contrôle transporteur" model="di.ctrltrp.wiz"
 		report_type="qweb-pdf" file="difodoo_ventes.di_wiz_imp_ctrltrp" name="difodoo_ventes.di_wiz_imp_ctrltrp"
-		print_report_name="'Controle transporteur'" paperformat="difodoo_ventes.di_A4_Paysage" />
+		print_report_name="'Controle transporteur'" paperformat="difodoo_fichiers_base.di_A4_Paysage" />
 </odoo>
