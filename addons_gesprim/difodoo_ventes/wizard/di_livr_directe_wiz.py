@@ -16,7 +16,7 @@ class DiLivrDirecteWiz(models.TransientModel):
     @api.multi
     def di_livraison_directe_masse(self):
         ok = True
-        orders_to_deliver = self.di_orders.filtered(lambda o: o.state == 'draft')
+        orders_to_deliver = self.di_orders.filtered(lambda o: o.state in ('draft','sent'))
         orders_to_deliver.di_action_livrer()   
         for order in orders_to_deliver:
             livraisons = order.mapped('picking_ids')

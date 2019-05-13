@@ -441,16 +441,21 @@
                 <field name="lot_id" string="Lot" />
                 <field name="di_entrees_sorties" string="Sens" />
                 <field name="di_partner" string="Tiers"/>
-                <field name="di_nb_colis" string="Nb colis"/>
-                <field name="di_nb_pieces" string="Nb pièces"/>    
-                <field name="di_poib" string="Poids brut"/>                
-                <field name="di_tare" string="Tare"/>    
-                <field name="di_poin" string="Poids net"/>        
+                <field name="di_nb_colis_sign" string="Nb colis" />
+                <field name="di_nb_pieces_sign" string="Nb pièces" />    
+                <field name="di_poib_sign" string="Poids brut" />                
+                <field name="di_tare_sign" string="Tare" />    
+                <field name="di_poin_sign" string="Poids net" />
+                <field name="di_qty_done_sign" string="Quantité traitée" sum="Quantité traitée"/>  
+                      
+            </xpath>
+            <xpath expr="//field[@name='qty_done']" position="attributes">
+                <attribute name="invisible">1</attribute>                       
             </xpath>
             <xpath expr="//field[@name='product_uom_id']" position="after">
                 <field name="di_prix" string="Prix" />
                 <field name="di_un_prix" string="Unité de prix"/>
-                <field name="di_valo" string="Valorisation"/>
+                <field name="di_valo_sign" string="Valorisation" />
             </xpath>                    
     
             <xpath expr="//field[@name='location_id']" position="replace"/>

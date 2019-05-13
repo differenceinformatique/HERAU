@@ -1001,7 +1001,7 @@ class SaleOrder(models.Model):
     @api.multi
     def di_action_facturer(self):
         for order in self:
-            if order.state == 'draft':
+            if order.state in ('draft','sent'):
                 order.action_confirm()
                 livraisons = order.mapped('picking_ids')
                 for livraison in livraisons:
@@ -1020,7 +1020,7 @@ class SaleOrder(models.Model):
     @api.multi
     def di_action_livrer(self):
         for order in self:
-            if order.state == 'draft':
+            if order.state in ('draft','sent'):
                 order.action_confirm()
                 livraisons = order.mapped('picking_ids')
                 for livraison in livraisons:

@@ -13,8 +13,8 @@
 						string="Grille de vente" help="Permet d'importer les derniers articles vendus à ce client." />					
 					<button class="oe_edit_only" name="di_action_supp_lig_zero" type="object"
                         string="Supprimer lignes à 0" help="Permet de supprimer les lignes avec quantité à 0." />
-                    <button name="di_action_livrer" string="Livraison directe" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>    
-                    <button name="di_action_facturer" string="Facture directe" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <button name="di_action_livrer" string="Livraison directe" type="object" attrs="{'invisible': [('state', 'not in', ['draft','sent'])]}"/>    
+                    <button name="di_action_facturer" string="Facture directe" type="object" attrs="{'invisible': [('state', 'not in', ['draft','sent'])]}"/>
                     
 						<!-- <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/> -->
 				</xpath>
