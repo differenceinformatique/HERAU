@@ -11,4 +11,5 @@ from . import di_cloturer_ventes_wiz
 from . import di_imprim_releves_wiz
 from . import di_livr_directe_wiz
 from . import di_cloturer_lots_wiz
-from . import di_regul_art_lot_wiz 
+from . import di_regul_art_lot_wiz
+from . import di_facturation_cron_wiz  

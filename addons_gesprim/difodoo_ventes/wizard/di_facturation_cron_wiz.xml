@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="di_fact_cron_wiz_form" model="ir.ui.view">
+            <field name="name">di.fact.cron.wiz.form</field>
+            <field name="model">di.fact.cron.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Facturation des commandes"> 
+                    <group col="4" string="Informations">                        
+                        <field name="date_debut" />
+                        <field name="date_fin" />
+                        <field name="period_fact" />                       
+                        <field name="date_fact" />
+                        <field name="ref_debut" />
+                        <field name="ref_fin" />  
+                    </group>                                                                                                                                                       
+                    <footer>
+                        <button string="Facturer" type="object" name="create_cron_fact"
+                            default_focus="1" class="oe_link"/>                    
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="di_action_factcron" model="ir.actions.act_window">
+            <field name="name">Facturation des commandes arrière plan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">di.fact.cron.wiz</field>
+            <field name="view_type">form</field>            
+            <field name="view_id" ref="di_fact_cron_wiz_form"/>        
+            <field name="view_mode">tree,form</field>
+            <field name="target">new</field>
+        </record> 
+                       
+    </data>
+ 
+</odoo>
