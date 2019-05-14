@@ -37,7 +37,12 @@ class DiFactCronWiz(models.TransientModel):
     
     def create_cron_fact(self):
         
-        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])    
+        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+        self.env.cr.execute("""SELECT id FROM ir_model 
+                                  WHERE model = %s""", (str(self._name),))            
+        info = self.env.cr.dictfetchall()  
+        if info:
+            model_id = info[0]['id']     
         sale_orders = self.env['sale.order']                    
         query_args = {'periodicity_invoice': self.period_fact,'date_debut' : self.date_debut,'date_fin' : self.date_fin, 'ref_debut': self.ref_debut,'ref_fin':self.ref_fin}
         query = """ SELECT  so.id 
@@ -63,19 +68,14 @@ class DiFactCronWiz(models.TransientModel):
             for partner in partners:      
                 cptpart +=1                  
                 partner_orders = sale_orders.filtered(lambda so: so.partner_id.id == partner.id)
-                dateheure = datetime.datetime.today()                
-                self.env.cr.execute("""SELECT id FROM ir_model 
-                                          WHERE model = %s""", (str(self._name),))            
-                info = self.env.cr.dictfetchall()  
-                if info:
-                    model_id = info[0]['id'] 
+                dateheure = datetime.datetime.today()                              
                 to_invoice+=partner_orders
                 if cptpart == 50:
                     cptpart =0
                     if not dateheureexec:
                         dateheureexec = dateheure+datetime.timedelta(minutes=2)
                     else:
-                        dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                        dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                     self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                                 'active':True, 
                                                 'user_id':self.env.user.id, 
@@ -95,7 +95,7 @@ class DiFactCronWiz(models.TransientModel):
                 if not dateheureexec:
                     dateheureexec = dateheure+datetime.timedelta(minutes=2)
                 else:
-                    dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                    dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                 self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                             'active':True, 
                                             'user_id':self.env.user.id, 
@@ -133,23 +133,19 @@ class DiFactCronWiz(models.TransientModel):
             partners = sale_orders.mapped('partner_id')
             cptpart = 0
             to_invoice = self.env['sale.order']
-            dateheureexec =False
+            
             for partner in partners:      
                 cptpart +=1                  
                 partner_orders = sale_orders.filtered(lambda so: so.partner_id.id == partner.id)
                 dateheure = datetime.datetime.today()                
-                self.env.cr.execute("""SELECT id FROM ir_model 
-                                          WHERE model = %s""", (str(self._name),))            
-                info = self.env.cr.dictfetchall()  
-                if info:
-                    model_id = info[0]['id'] 
+                
                 to_invoice+=partner_orders
                 if cptpart == 50:
                     cptpart =0
                     if not dateheureexec:
                         dateheureexec = dateheure+datetime.timedelta(minutes=2)
                     else:
-                        dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                        dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                     self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                                 'active':True, 
                                                 'user_id':self.env.user.id, 
@@ -169,7 +165,7 @@ class DiFactCronWiz(models.TransientModel):
                 if not dateheureexec:
                     dateheureexec = dateheure+datetime.timedelta(minutes=2)
                 else:
-                    dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                    dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                 self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                             'active':True, 
                                             'user_id':self.env.user.id, 
