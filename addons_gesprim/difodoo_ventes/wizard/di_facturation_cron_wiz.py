@@ -38,8 +38,7 @@ class DiFactCronWiz(models.TransientModel):
     def create_cron_fact(self):
         
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])    
-        sale_orders = self.env['sale.order']    
-                    
+        sale_orders = self.env['sale.order']                    
         query_args = {'periodicity_invoice': self.period_fact,'date_debut' : self.date_debut,'date_fin' : self.date_fin, 'ref_debut': self.ref_debut,'ref_fin':self.ref_fin}
         query = """ SELECT  so.id 
                         FROM sale_order so
@@ -48,7 +47,8 @@ class DiFactCronWiz(models.TransientModel):
                         AND di_livdt between %(date_debut)s AND %(date_fin)s                            
                         AND rp.ref is not null
                         AND rp.di_period_fact = %(periodicity_invoice)s
-                        AND rp.ref between %(ref_debut)s AND %(ref_fin)s                        
+                        AND rp.ref between %(ref_debut)s AND %(ref_fin)s 
+                        AND rp.di_regr_fact is true                       
                         order by so.partner_id
                         """
 
@@ -57,17 +57,46 @@ class DiFactCronWiz(models.TransientModel):
         sale_orders = self.env['sale.order'].search([('id', 'in', ids)])
         if sale_orders:
             partners = sale_orders.mapped('partner_id')
-            for partner in partners:                        
+            cptpart = 0
+            to_invoice = self.env['sale.order']
+            dateheureexec =False
+            for partner in partners:      
+                cptpart +=1                  
                 partner_orders = sale_orders.filtered(lambda so: so.partner_id.id == partner.id)
-                dateheure = datetime.datetime.today()
-                dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                dateheure = datetime.datetime.today()                
                 self.env.cr.execute("""SELECT id FROM ir_model 
                                           WHERE model = %s""", (str(self._name),))            
                 info = self.env.cr.dictfetchall()  
                 if info:
                     model_id = info[0]['id'] 
+                to_invoice+=partner_orders
+                if cptpart == 50:
+                    cptpart =0
+                    if not dateheureexec:
+                        dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                    else:
+                        dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                    self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+                                                'active':True, 
+                                                'user_id':self.env.user.id, 
+                                                'interval_number':1, 
+                                                'interval_type':'days', 
+                                                'numbercall':1, 
+                                                'doall':1, 
+                                                'nextcall':dateheureexec, 
+                                                'model_id': model_id, 
+                                                'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % True , 
+                                                'state':'code',
+                                                'priority':0})    
+                    to_invoice = self.env['sale.order']           
                 
-                self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S")+' '+partner.name, 
+                    
+            if cptpart > 0:
+                if not dateheureexec:
+                    dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                else:
+                    dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                             'active':True, 
                                             'user_id':self.env.user.id, 
                                             'interval_number':1, 
@@ -76,19 +105,82 @@ class DiFactCronWiz(models.TransientModel):
                                             'doall':1, 
                                             'nextcall':dateheureexec, 
                                             'model_id': model_id, 
-                                            'code': 'model.di_create_invoices(('+str(partner_orders.ids).strip('[]')+'),%s)' % partner.di_regr_fact , 
-#                                             'args':(partner_orders.ids,partner.di_regr_fact),
+                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % True , 
                                             'state':'code',
-                                            'priority':0})               
+                                            'priority':0})    
+                to_invoice = self.env['sale.order'] 
                 
-#                 
-#                   <field name="name">Account; Reverse entries</field>
-#         <field name="interval_number">1</field>
-#         <field name="interval_type">days</field>
-#         <field name="numbercall">-1</field>
-#         <field name="doall" eval="False"/>
-#         <field name="model_id" ref="model_account_move"/>
-#         <field name="code">model._run_reverses_entries()</field>
-#         <field name="state">code</field>
-#     </record>             
-        
+                
+                
+        sale_orders = self.env['sale.order']                    
+        query_args = {'periodicity_invoice': self.period_fact,'date_debut' : self.date_debut,'date_fin' : self.date_fin, 'ref_debut': self.ref_debut,'ref_fin':self.ref_fin}
+        query = """ SELECT  so.id 
+                        FROM sale_order so
+                        INNER JOIN res_partner rp on rp.id = so.partner_id 
+                        WHERE so.invoice_status = 'to invoice' 
+                        AND di_livdt between %(date_debut)s AND %(date_fin)s                            
+                        AND rp.ref is not null
+                        AND rp.di_period_fact = %(periodicity_invoice)s
+                        AND rp.ref between %(ref_debut)s AND %(ref_fin)s 
+                        AND rp.di_regr_fact is false                       
+                        order by so.partner_id
+                        """
+
+        self.env.cr.execute(query, query_args)
+        ids = [r[0] for r in self.env.cr.fetchall()]
+        sale_orders = self.env['sale.order'].search([('id', 'in', ids)])
+        if sale_orders:
+            partners = sale_orders.mapped('partner_id')
+            cptpart = 0
+            to_invoice = self.env['sale.order']
+            dateheureexec =False
+            for partner in partners:      
+                cptpart +=1                  
+                partner_orders = sale_orders.filtered(lambda so: so.partner_id.id == partner.id)
+                dateheure = datetime.datetime.today()                
+                self.env.cr.execute("""SELECT id FROM ir_model 
+                                          WHERE model = %s""", (str(self._name),))            
+                info = self.env.cr.dictfetchall()  
+                if info:
+                    model_id = info[0]['id'] 
+                to_invoice+=partner_orders
+                if cptpart == 50:
+                    cptpart =0
+                    if not dateheureexec:
+                        dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                    else:
+                        dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                    self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+                                                'active':True, 
+                                                'user_id':self.env.user.id, 
+                                                'interval_number':1, 
+                                                'interval_type':'days', 
+                                                'numbercall':1, 
+                                                'doall':1, 
+                                                'nextcall':dateheureexec, 
+                                                'model_id': model_id, 
+                                                'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % False , 
+                                                'state':'code',
+                                                'priority':0})    
+                    to_invoice = self.env['sale.order']           
+                
+                    
+            if cptpart > 0:
+                if not dateheureexec:
+                    dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                else:
+                    dateheureexec = dateheureexec+datetime.timedelta(minutes=10)
+                self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+                                            'active':True, 
+                                            'user_id':self.env.user.id, 
+                                            'interval_number':1, 
+                                            'interval_type':'days', 
+                                            'numbercall':1, 
+                                            'doall':1, 
+                                            'nextcall':dateheureexec, 
+                                            'model_id': model_id, 
+                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % True , 
+                                            'state':'code',
+                                            'priority':0})    
+                to_invoice = self.env['sale.order'] 
+                
