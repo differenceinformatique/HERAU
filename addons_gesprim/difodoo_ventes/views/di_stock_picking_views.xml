@@ -430,6 +430,21 @@
         </field>
     </record>
     
+     <record id="di_stock_move_line_action" model="ir.actions.act_window">
+            <field name="name">Mouvements de produits</field>
+            <field name="res_model">stock.move.line</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,pivot,form</field>
+            <field name="view_id" ref="stock.view_move_line_tree"/>
+            <field name="context">{'search_default_done': 1, 'search_default_groupby_product_id': 1,'search_default_semaine':1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_empty_folder">
+                There's no product move yet
+              </p>
+            </field>
+    </record>
+    
 
     <record id="di_view_move_line_tree" model="ir.ui.view">
         <field name="name">di.stock.move.line.tree</field>
@@ -491,6 +506,10 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='location_dest_id']" position="after">
                 <field name="di_partner" string="Tiers"/>
+                <separator/>
+                <filter string="Aujourd'hui" name="jour" domain="[('date','&gt;=',(context_today().strftime('%Y-%m-%d 00:00:00'))),('date','&lt;=',context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter string="Cette semaine" name="semaine"   domain="[('date','&gt;=',(context_today()+relativedelta(weeks=-1,days=1,weekday=0)).strftime('%Y-%m-%d 00:00:00')),('date','&lt;=',(context_today()+relativedelta(weekday=6)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter string="Ce mois" name="mois"            domain="[('date','&gt;=',(context_today().strftime('%Y-%m-01 00:00:00'))),('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00'))]"/>      
                 <separator/>
                 <filter string="Entrées" name="entrees" domain="[('di_entrees_sorties','=','entree')]"/>
                 <filter string="Sorties" name="sorties" domain="[('di_entrees_sorties','=','sortie')]"/>    

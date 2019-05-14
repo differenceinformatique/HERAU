@@ -580,7 +580,9 @@ class StockMoveLine(models.Model):
                        'di_poin_sign', 'di_poib_sign', 'di_tare_sign', 'di_qty_done_sign']
              
         if any(x in fields for x in fields_list):
-            # Calculate first for every stock move line in which line it needs to be applied
+#             for re in res:
+#                 re._di_compute_sign(field_names=[x for x in fields if fields in fields_list])
+#             # Calculate first for every stock move line in which line it needs to be applied
             re_ind = 0
             sml_re = {}
             tot_sml = self.browse([])

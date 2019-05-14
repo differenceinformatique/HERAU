@@ -55,6 +55,12 @@ class ProductTemplate(models.Model):
 #             "name": "Conditionnements",
 #         }
 
+    def action_view_stock_move_lines(self):
+        self.ensure_one()
+        action = self.env.ref('difodoo_ventes.di_stock_move_line_action').read()[0]
+        action['domain'] = [('product_id.product_tmpl_id', 'in', self.ids)]
+        return action
+
     def action_open_quants(self):
         products = self.mapped('product_variant_ids')
         action = self.env.ref('stock.product_open_quants').read()[0]
@@ -254,6 +260,14 @@ class ProductProduct(models.Model):
 #         return res
 
 #     def _di_compute_resserre_values(self, field_names=None):
+
+    def action_view_stock_move_lines(self):
+        self.ensure_one()
+        action = self.env.ref('difodoo_ventes.di_stock_move_line_action').read()[0]
+        action['domain'] = [('product_id', '=', self.id)]
+        return action
+    
+    
     def _di_compute_resserre_values(self):  
         di_date_to = self.env.context.get('di_date_to', time.strftime('%Y-%m-%d'))
         affven = self.env.context.get('di_aff_ven')
