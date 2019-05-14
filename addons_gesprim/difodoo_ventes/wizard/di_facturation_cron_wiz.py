@@ -175,7 +175,7 @@ class DiFactCronWiz(models.TransientModel):
                                             'doall':1, 
                                             'nextcall':dateheureexec, 
                                             'model_id': model_id, 
-                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % True , 
+                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % False , 
                                             'state':'code',
                                             'priority':0})    
                 to_invoice = self.env['sale.order'] 
