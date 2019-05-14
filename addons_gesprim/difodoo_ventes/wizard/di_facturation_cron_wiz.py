@@ -44,7 +44,7 @@ class DiFactCronWiz(models.TransientModel):
     
 #     si séparation par client
     @api.multi
-    def di_create_invoices(self, ids, regr):       
+    def di_create_invoices(self, ids, regr, date_fact):       
         sale_orders = self.env['sale.order'].browse(ids)
         if sale_orders:
             sale_orders.action_invoice_create(grouped=not regr,final=True)       
@@ -56,7 +56,7 @@ class DiFactCronWiz(models.TransientModel):
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
         if param.di_autovalid_fact_ven:
                 invoices.action_invoice_open()
-        invoices.write({'date_invoice':self.date_fact})    
+        invoices.write({'date_invoice':date_fact})    
         
 #     def create_cron_fact(self):                
 #         self.env.cr.execute("""SELECT id FROM ir_model 
@@ -96,7 +96,7 @@ class DiFactCronWiz(models.TransientModel):
 #                                         'state':'code',
 #                                         'priority':0})                                                                      
                 
-    # séparé par paquet de 40 clients
+    # séparé par paquet de 30 clients
     def create_cron_fact(self):                
         self.env.cr.execute("""SELECT id FROM ir_model 
                                   WHERE model = %s""", (str(self._name),))            
@@ -130,7 +130,7 @@ class DiFactCronWiz(models.TransientModel):
                 partner_orders = sale_orders.filtered(lambda so: so.partner_id.id == partner.id)
                 dateheure = datetime.datetime.today()                              
                 to_invoice+=partner_orders
-                if cptpart == 40:
+                if cptpart == 30:
                     cptpart =0
                     if not dateheureexec:
                         dateheureexec = dateheure+datetime.timedelta(minutes=2)
@@ -145,7 +145,7 @@ class DiFactCronWiz(models.TransientModel):
                                                 'doall':1, 
                                                 'nextcall':dateheureexec, 
                                                 'model_id': model_id, 
-                                                'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % True , 
+                                                'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s, "%s")' % (True , self.date_fact),
                                                 'state':'code',
                                                 'priority':0})    
                     to_invoice = self.env['sale.order']           
@@ -165,7 +165,7 @@ class DiFactCronWiz(models.TransientModel):
                                             'doall':1, 
                                             'nextcall':dateheureexec, 
                                             'model_id': model_id, 
-                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % True , 
+                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s, "%s")' % (True , self.date_fact),
                                             'state':'code',
                                             'priority':0})    
                 to_invoice = self.env['sale.order'] 
@@ -200,7 +200,7 @@ class DiFactCronWiz(models.TransientModel):
                 dateheure = datetime.datetime.today()                
                  
                 to_invoice+=partner_orders
-                if cptpart == 40:
+                if cptpart == 30:
                     cptpart =0
                     if not dateheureexec:
                         dateheureexec = dateheure+datetime.timedelta(minutes=2)
@@ -215,7 +215,7 @@ class DiFactCronWiz(models.TransientModel):
                                                 'doall':1, 
                                                 'nextcall':dateheureexec, 
                                                 'model_id': model_id, 
-                                                'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % False , 
+                                                'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s, "%s")' % (False , self.date_fact),
                                                 'state':'code',
                                                 'priority':0})    
                     to_invoice = self.env['sale.order']           
@@ -235,7 +235,7 @@ class DiFactCronWiz(models.TransientModel):
                                             'doall':1, 
                                             'nextcall':dateheureexec, 
                                             'model_id': model_id, 
-                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s)' % False , 
+                                            'code': 'model.di_create_invoices(('+str(to_invoice.ids).strip('[]')+'),%s, "%s")' % (False , self.date_fact),
                                             'state':'code',
                                             'priority':0})    
                 to_invoice = self.env['sale.order'] 
