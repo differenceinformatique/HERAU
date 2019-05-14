@@ -35,9 +35,7 @@ class DiFactCronWiz(models.TransientModel):
                 invoices.action_invoice_open()
         invoices.write({'date_invoice':self.date_fact})                
     
-    def create_cron_fact(self):
-        
-        param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
+    def create_cron_fact(self):                
         self.env.cr.execute("""SELECT id FROM ir_model 
                                   WHERE model = %s""", (str(self._name),))            
         info = self.env.cr.dictfetchall()  
