@@ -344,7 +344,8 @@ class DiFactCronWiz(models.TransientModel):
                                                 'state':'code',
                                                 'priority':0})    
                     to_invoice = self.env['sale.order']  
-                    fini=True         
+                    fini=True  
+                    break       
                  
                       
                     
@@ -419,6 +420,7 @@ class DiFactCronWiz(models.TransientModel):
                                                         'priority':0})    
                             to_invoice = self.env['sale.order']    
                             fini=True       
+                            break
                          
                              
                     if cptpart > 0 and not fini:
