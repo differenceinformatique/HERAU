@@ -552,117 +552,151 @@ class StockMoveLine(models.Model):
 #     di_entree_sortie = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
     di_entrees_sorties = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
 #     di_calc_es = fields.Boolean(string="Calc ES",  compute='_di_compute_es')
-    di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
-    di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+    di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo' , store=True)
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo' , store=True)    
+    di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo', store=True)
             
     di_tare_un      = fields.Float(string='Tare unitaire')
     di_perte = fields.Boolean("Perte", default=False)
     
-    di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_sign')
-    di_nb_pieces_sign = fields.Integer(string='Nb pièces',compute='_di_compute_sign')
-    di_nb_colis_sign = fields.Integer(string='Nb colis' ,compute='_di_compute_sign')
-    di_nb_palette_sign = fields.Float(string='Nb palettes',compute='_di_compute_sign', digits=dp.get_precision('Product Unit of Measure'))
-    di_poin_sign = fields.Float(string='Poids net' ,compute='_di_compute_sign')
-    di_poib_sign = fields.Float(string='Poids brut',compute='_di_compute_sign')
-    di_tare_sign = fields.Float(string='Tare',compute='_di_compute_sign')
-    di_qty_done_sign = fields.Float('Quantité traitée', digits=dp.get_precision('Product Unit of Measure'), compute='_di_compute_sign')
+    di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_sign', store=True)
+    di_nb_pieces_sign = fields.Integer(string='Nb pièces',compute='_di_compute_sign', store=True)
+    di_nb_colis_sign = fields.Integer(string='Nb colis' ,compute='_di_compute_sign', store=True)
+    di_nb_palette_sign = fields.Float(string='Nb palettes',compute='_di_compute_sign', digits=dp.get_precision('Product Unit of Measure'), store=True)
+    di_poin_sign = fields.Float(string='Poids net' ,compute='_di_compute_sign', store=True)
+    di_poib_sign = fields.Float(string='Poids brut',compute='_di_compute_sign', store=True)
+    di_tare_sign = fields.Float(string='Tare',compute='_di_compute_sign', store=True)
+    di_qty_done_sign = fields.Float('Quantité traitée', digits=dp.get_precision('Product Unit of Measure'), compute='_di_compute_sign', store=True)
+    di_date_date = fields.Date('Date sans heure', compute='_di_comoute_date_date', store=True)
     
     
     
-    @api.model
-    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
-        """
-            Inherit read_group to calculate the sum of the non-stored fields, as it is not automatically done anymore through the XML.
-        """
-        res = super(StockMoveLine, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
-        fields_list = ['di_valo', 'di_valo_sign', 'di_nb_pieces_sign', 'di_nb_colis_sign', 'di_nb_palette_sign',
-                       'di_poin_sign', 'di_poib_sign', 'di_tare_sign', 'di_qty_done_sign']
-             
-        if any(x in fields for x in fields_list):
+#     @api.model
+#     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+#         """
+#             Inherit read_group to calculate the sum of the non-stored fields, as it is not automatically done anymore through the XML.
+#         """
+#         res = super(StockMoveLine, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+#         fields_list = ['di_valo', 'di_valo_sign', 'di_nb_pieces_sign', 'di_nb_colis_sign', 'di_nb_palette_sign',
+#                        'di_poin_sign', 'di_poib_sign', 'di_tare_sign', 'di_qty_done_sign']
+#              
+#         if any(x in fields for x in fields_list):
+# #             for re in res:
+# #                 re._di_compute_sign(field_names=[x for x in fields if fields in fields_list])
+# #             # Calculate first for every stock move line in which line it needs to be applied
+#             re_ind = 0
+#             sml_re = {}
+#             tot_sml = self.browse([])
 #             for re in res:
-#                 re._di_compute_sign(field_names=[x for x in fields if fields in fields_list])
-#             # Calculate first for every stock move line in which line it needs to be applied
-            re_ind = 0
-            sml_re = {}
-            tot_sml = self.browse([])
-            for re in res:
-                if re.get('__domain'):
-                    sml = self.search(re['__domain'])
-                    tot_sml |= sml
-                    for lig in sml:
-                        sml_re[lig.id] = re_ind
-                re_ind += 1
-            res_val = tot_sml._di_compute_sign(field_names=[x for x in fields if fields in fields_list])
-            for key in res_val:
-                for l in res_val[key]:
-                    re = res[sml_re[key]]
-                    if re.get(l):
-                        re[l] += res_val[key][l]
-                    else:
-                        re[l] = res_val[key][l]
-        return res
+#                 if re.get('__domain'):
+#                     sml = self.search(re['__domain'])
+#                     tot_sml |= sml
+#                     for lig in sml:
+#                         sml_re[lig.id] = re_ind
+#                 re_ind += 1
+#             res_val = tot_sml._di_compute_sign(field_names=[x for x in fields if fields in fields_list])
+#             for key in res_val:
+#                 for l in res_val[key]:
+#                     re = res[sml_re[key]]
+#                     if re.get(l):
+#                         re[l] += res_val[key][l]
+#                     else:
+#                         re[l] = res_val[key][l]
+#         return res
+#     
+#     @api.multi
+#     def _di_compute_sign(self, field_names=None):
+#         res = {}
+#         if field_names is None:
+#             field_names = []
+#         for sml in self:
+#             res[sml.id] = {}
+#             di_valo = 0.0
+#             if sml.move_id.purchase_line_id:
+#                 sml.di_prix = sml.move_id.purchase_line_id.price_unit
+#                 sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
+#             elif sml.move_id.sale_line_id:
+#                 sml.di_prix = sml.move_id.sale_line_id.price_unit
+#                 sml.di_un_prix = sml.move_id.sale_line_id.di_un_prix
+#             else:
+#                 sml.di_prix = sml.product_id.di_get_dernier_cmp(sml.date.date())
+#                 sml.di_un_prix = False
+#             if sml.di_un_prix:
+#                 if sml.di_un_prix == 'PIECE':
+#                     di_valo = sml.di_prix * sml.di_nb_pieces
+#                 elif sml.di_un_prix == 'COLIS':
+#                     di_valo = sml.di_prix * sml.di_nb_colis
+#                 elif sml.di_un_prix == 'PALETTE':
+#                     di_valo = sml.di_prix * sml.di_nb_palette
+#                 elif sml.di_un_prix == 'KG':
+#                     di_valo = sml.di_prix * sml.di_poin
+#             else:
+#                 if sml.state == 'done':
+#                     di_valo = sml.di_prix * sml.qty_done
+#                 else:
+#                     di_valo = sml.di_prix * sml.product_uom_qty  
+#                     
+#             res[sml.id]['di_valo']=di_valo
+#             if sml.di_entrees_sorties == 'entree': 
+#                 res[sml.id]['di_valo_sign'] = res[sml.id]['di_valo']
+#                 res[sml.id]['di_nb_pieces_sign'] = sml.di_nb_pieces
+#                 res[sml.id]['di_nb_colis_sign'] = sml.di_nb_colis
+#                 res[sml.id]['di_nb_palette_sign'] = sml.di_nb_palette
+#                 res[sml.id]['di_poin_sign'] = sml.di_poin
+#                 res[sml.id]['di_poib_sign'] = sml.di_poib
+#                 res[sml.id]['di_tare_sign'] = sml.di_tare
+#                 res[sml.id]['di_qty_done_sign'] = sml.qty_done                
+#             else:  
+#                 res[sml.id]['di_valo_sign'] = -res[sml.id]['di_valo']
+#                 res[sml.id]['di_nb_pieces_sign'] = -sml.di_nb_pieces
+#                 res[sml.id]['di_nb_colis_sign'] = -sml.di_nb_colis
+#                 res[sml.id]['di_nb_palette_sign'] = -sml.di_nb_palette
+#                 res[sml.id]['di_poin_sign'] = -sml.di_poin
+#                 res[sml.id]['di_poib_sign'] = -sml.di_poib
+#                 res[sml.id]['di_tare_sign'] = -sml.di_tare
+#                 res[sml.id]['di_qty_done_sign'] = -sml.qty_done  
+#             for k, v in res[sml.id].items():
+#                 setattr(sml, k, v)
+#         return res
     
     @api.multi
-    def _di_compute_sign(self, field_names=None):
-        res = {}
-        if field_names is None:
-            field_names = []
-        for sml in self:
-            res[sml.id] = {}
-            di_valo = 0.0
-            if sml.move_id.purchase_line_id:
-                sml.di_prix = sml.move_id.purchase_line_id.price_unit
-                sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
-            elif sml.move_id.sale_line_id:
-                sml.di_prix = sml.move_id.sale_line_id.price_unit
-                sml.di_un_prix = sml.move_id.sale_line_id.di_un_prix
-            else:
-                sml.di_prix = sml.product_id.di_get_dernier_cmp(sml.date.date())
-                sml.di_un_prix = False
-            if sml.di_un_prix:
-                if sml.di_un_prix == 'PIECE':
-                    di_valo = sml.di_prix * sml.di_nb_pieces
-                elif sml.di_un_prix == 'COLIS':
-                    di_valo = sml.di_prix * sml.di_nb_colis
-                elif sml.di_un_prix == 'PALETTE':
-                    di_valo = sml.di_prix * sml.di_nb_palette
-                elif sml.di_un_prix == 'KG':
-                    di_valo = sml.di_prix * sml.di_poin
-            else:
-                if sml.state == 'done':
-                    di_valo = sml.di_prix * sml.qty_done
-                else:
-                    di_valo = sml.di_prix * sml.product_uom_qty  
-                    
-            res[sml.id]['di_valo']=di_valo
-            if sml.di_entrees_sorties == 'entree': 
-                res[sml.id]['di_valo_sign'] = res[sml.id]['di_valo']
-                res[sml.id]['di_nb_pieces_sign'] = sml.di_nb_pieces
-                res[sml.id]['di_nb_colis_sign'] = sml.di_nb_colis
-                res[sml.id]['di_nb_palette_sign'] = sml.di_nb_palette
-                res[sml.id]['di_poin_sign'] = sml.di_poin
-                res[sml.id]['di_poib_sign'] = sml.di_poib
-                res[sml.id]['di_tare_sign'] = sml.di_tare
-                res[sml.id]['di_qty_done_sign'] = sml.qty_done                
-            else:  
-                res[sml.id]['di_valo_sign'] = -res[sml.id]['di_valo']
-                res[sml.id]['di_nb_pieces_sign'] = -sml.di_nb_pieces
-                res[sml.id]['di_nb_colis_sign'] = -sml.di_nb_colis
-                res[sml.id]['di_nb_palette_sign'] = -sml.di_nb_palette
-                res[sml.id]['di_poin_sign'] = -sml.di_poin
-                res[sml.id]['di_poib_sign'] = -sml.di_poib
-                res[sml.id]['di_tare_sign'] = -sml.di_tare
-                res[sml.id]['di_qty_done_sign'] = -sml.qty_done  
-            for k, v in res[sml.id].items():
-                setattr(sml, k, v)
-        return res
+    @api.depends('date')
+    def _di_comoute_date_date(self):        
+        for sml in self:   
+            sml.di_date_date = sml.date.date() 
+    
+    
     @api.multi
+    @api.depends('di_entrees_sorties','di_valo','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','qty_done')
+    def _di_compute_sign(self):        
+        for sml in self:                      
+            if sml.di_entrees_sorties == 'entree': 
+                sml.di_valo_sign = sml.di_valo
+                sml.di_nb_pieces_sign = sml.di_nb_pieces
+                sml.di_nb_colis_sign = sml.di_nb_colis
+                sml.di_nb_palette_sign = sml.di_nb_palette
+                sml.di_poin_sign = sml.di_poin
+                sml.di_poib_sign = sml.di_poib
+                sml.di_tare_sign = sml.di_tare
+                sml.di_qty_done_sign = sml.qty_done                
+            else:  
+                sml.di_valo_sign = -sml.di_valo
+                sml.di_nb_pieces_sign = -sml.di_nb_pieces
+                sml.di_nb_colis_sign = -sml.di_nb_colis
+                sml.di_nb_palette_sign = -sml.di_nb_palette
+                sml.di_poin_sign = -sml.di_poin
+                sml.di_poib_sign = -sml.di_poib
+                sml.di_tare_sign = -sml.di_tare
+                sml.di_qty_done_sign = -sml.qty_done  
+                  
+    @api.multi
+    @api.depends('move_id','product_id')
     def _di_compute_valo(self):
         for sml in self:
             if sml.move_id.purchase_line_id:
-                sml.di_prix = sml.move_id.purchase_line_id.price_unit
-                sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
+                pol = self.env['sale.order.line'].browse(sml.move_id.purchase_line_id.id) # les champs spé ne sont pas dispo sinon ??? bug? je ne comprends pas
+                sml.di_prix = pol.price_unit
+                sml.di_un_prix = pol.di_un_prix
             elif sml.move_id.sale_line_id:
                 sml.di_prix = sml.move_id.sale_line_id.price_unit
                 sml.di_un_prix = sml.move_id.sale_line_id.di_un_prix

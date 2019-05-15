@@ -452,6 +452,13 @@
         <field name="inherit_id" ref="stock.view_move_line_tree"/>
         <field eval="80" name="priority"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="before">
+                <field name="di_date_date" string="Date" />
+            </xpath>
+            <xpath expr="//field[@name='date']" position="attributes">
+               <attribute name="invisible">1</attribute>                       
+            </xpath>
+            
             <xpath expr="//field[@name='qty_done']" position="before">
                 <field name="lot_id" string="Lot" />
                 <field name="di_entrees_sorties" string="Sens" />
