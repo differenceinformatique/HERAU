@@ -328,7 +328,7 @@ class DiFactCronWiz(models.TransientModel):
                 if cptpart == 30:
                     cptpart =0
                     if not dateheureexec:
-                        dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                        dateheureexec = dateheure+datetime.timedelta(minutes=1)
                     else:
                         dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                     self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
@@ -351,7 +351,7 @@ class DiFactCronWiz(models.TransientModel):
                     
             if cptpart > 0 and not fini:
                 if not dateheureexec:
-                    dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                    dateheureexec = dateheure+datetime.timedelta(minutes=1)
                 else:
                     dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                 self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
@@ -403,7 +403,7 @@ class DiFactCronWiz(models.TransientModel):
                         if cptpart == 30:
                             cptpart =0
                             if not dateheureexec:
-                                dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                                dateheureexec = dateheure+datetime.timedelta(minutes=1)
                             else:
                                 dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                             self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
@@ -425,7 +425,7 @@ class DiFactCronWiz(models.TransientModel):
                              
                     if cptpart > 0 and not fini:
                         if not dateheureexec:
-                            dateheureexec = dateheure+datetime.timedelta(minutes=2)
+                            dateheureexec = dateheure+datetime.timedelta(minutes=1)
                         else:
                             dateheureexec = dateheureexec+datetime.timedelta(minutes=15)
                         self.env['ir.cron'].create({'name':'Fact. '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 

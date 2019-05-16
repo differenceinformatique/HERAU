@@ -55,6 +55,7 @@
 						attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
 					<field name="di_flg_modif_uom" invisible="1" />
 				</xpath>
+				
 				<xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']"
 					position="after">
 					<field name="di_un_prix" string="Unité de prix"
@@ -173,9 +174,13 @@
                     <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1" />
 				</xpath>
 								
-				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
-                    <attribute name="style">"color:blue !important;"</attribute>
-                </xpath>
+				<!-- <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">                    
+                    <attribute name="widget">"di_couleur_col"</attribute>                                    
+                </xpath> -->
+                
+                <!-- <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="replace">                                        
+                    <field name="price_unit" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}" widget="di_couleur_col"  />
+                </xpath> -->
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
                     <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
                 </xpath>
