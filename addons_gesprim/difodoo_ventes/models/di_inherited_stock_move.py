@@ -552,14 +552,14 @@ class StockMoveLine(models.Model):
 #     di_entree_sortie = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
     di_entrees_sorties = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
 #     di_calc_es = fields.Boolean(string="Calc ES",  compute='_di_compute_es')
-    di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo' , store=True)
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo' , store=True)    
-    di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo', store=True)
+    di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
+    di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
             
     di_tare_un      = fields.Float(string='Tare unitaire')
     di_perte = fields.Boolean("Perte", default=False)
     
-    di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_sign', store=True)
+    di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_sign')
     di_nb_pieces_sign = fields.Integer(string='Nb pièces',compute='_di_compute_sign', store=True)
     di_nb_colis_sign = fields.Integer(string='Nb colis' ,compute='_di_compute_sign', store=True)
     di_nb_palette_sign = fields.Float(string='Nb palettes',compute='_di_compute_sign', digits=dp.get_precision('Product Unit of Measure'), store=True)
@@ -694,7 +694,7 @@ class StockMoveLine(models.Model):
     def _di_compute_valo(self):
         for sml in self:
             if sml.move_id.purchase_line_id:
-                pol = self.env['sale.order.line'].browse(sml.move_id.purchase_line_id.id) # les champs spé ne sont pas dispo sinon ??? bug? je ne comprends pas
+                pol = self.env['purchase.order.line'].browse(sml.move_id.purchase_line_id.id) # les champs spé ne sont pas dispo sinon ??? bug? je ne comprends pas
                 sml.di_prix = pol.price_unit
                 sml.di_un_prix = pol.di_un_prix
             elif sml.move_id.sale_line_id:
