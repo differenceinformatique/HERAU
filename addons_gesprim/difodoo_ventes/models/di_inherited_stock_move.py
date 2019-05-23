@@ -444,6 +444,15 @@ class StockMove(models.Model):
                     else:
                         di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered                        
                     mont = mont + (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date)) 
+                else:                    
+                    nbcol = nbcol + mouv.di_nb_colis
+                    nbpal = nbpal + mouv.di_nb_palette
+                    nbpiece = nbpiece + mouv.di_nb_pieces
+                    poids = poids + mouv.sale_line_id.di_poin                
+                    qte = qte +  mouv.quantity_done                                             
+                    di_qte_prix = 0.0                    
+                    di_qte_prix = mouv.quantity_done                                            
+                    mont = mont + (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date)) 
             else:
                 if mouv.purchase_line_id:
                     if mouv.state == 'done':
@@ -503,7 +512,16 @@ class StockMove(models.Model):
                         di_qte_prix = mouv.sale_line_id.qty_delivered
                     else:
                         di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
-                    mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))    
+                    mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))  
+                else:                    
+                    nbcol = nbcol - mouv.di_nb_colis
+                    nbpal = nbpal - mouv.di_nb_palette
+                    nbpiece = nbpiece - mouv.di_nb_pieces
+                    poids = poids - mouv.sale_line_id.di_poin                
+                    qte = qte -  mouv.quantity_done                                             
+                    di_qte_prix = 0.0                    
+                    di_qte_prix = mouv.quantity_done                                        
+                    mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))   
         if date:
             mouvs = self.env['stock.move'].search(['&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: (mv.date.date() < date and mv.id>dernier_id) or (mv.date.date() == date))
         else:
