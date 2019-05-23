@@ -81,12 +81,13 @@ class DiGenCoutsWiz(models.TransientModel):
                 if qte !=0.0 and qte != -0.0:                
                     cmp=round(mont/qte,2)
                 else:
-                    nbcol = 0
-                    nbpal = 0
-                    nbpiece = 0
-                    poids = 0
-                    mont = 0
-                    cmp=mont
+#                     nbcol = 0
+#                     nbpal = 0
+#                     nbpiece = 0
+#                     poids = 0
+#                     mont = 0
+#                     cmp=mont
+                    cmp=0
                 
                     
     #     
