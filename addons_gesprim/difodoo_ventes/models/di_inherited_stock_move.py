@@ -523,14 +523,26 @@ class StockMove(models.Model):
 #                     di_qte_prix = mouv.quantity_done                                        
 #                     mont = mont - (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date))   
 
-        couts=self.env['di.cout'].search([('di_product_id', '=', product_id)]).filtered(lambda c: c.di_date<=date).sorted(key=lambda k: k.di_date,reverse=True)        
+        couts=self.env['di.cout'].search([('di_product_id', '=', product_id)]).filtered(lambda c: c.di_date<=date).sorted(key=lambda k: k.di_date,reverse=True)
+        dernier_cout=self.env['di.cout']
+        nouveau_cmp=0        
         for cout in couts:
             dernier_cout = cout
             break
-        if dernier_cout.di_qte + qte != 0.0:
-            nouveau_cmp = (dernier_cout.di_mont + mont) / (dernier_cout.di_qte + qte)
-        else:
-            nouveau_cmp=0
+        if not dernier_cout:
+            achats=self.env['purchase.order.line'].search(['&',('product_id','=',product_id),('price_unit','>',0.0)]).filtered(lambda a: a.order_id.date_order.date()<=date).sorted(key=lambda k: k.order_id.date_order,reverse=True)
+            for achat in achats:
+                if achat.product_uom_qty != 0.0:
+                    nouveau_cmp = round((achat.price_subtotal / achat.product_uom_qty),2)
+                    break
+            if nouveau_cmp ==0.0:
+                product=self.env['product.product'].browse(product_id)
+                nouveau_cmp= product.standard_price
+        else:            
+            if dernier_cout.di_qte + qte != 0.0:
+                nouveau_cmp = (dernier_cout.di_mont + mont) / (dernier_cout.di_qte + qte)
+            else:
+                nouveau_cmp=0
         if cde_ach:
             if date:                                
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
