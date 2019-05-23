@@ -85,7 +85,7 @@ class DiGenCoutsWiz(models.TransientModel):
 #                     nbpal = 0
 #                     nbpiece = 0
 #                     poids = 0
-#                     mont = 0
+                    mont = 0
 #                     cmp=mont
                     cmp=0
                 
