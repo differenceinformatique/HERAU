@@ -64,7 +64,8 @@ class SaleAdvancePaymentInv(models.TransientModel):
             for invoice in invoices:
                 invoice.date_invoice=self.date_fact
                 if param.di_autovalid_fact_ven:
-                    invoice.action_invoice_open()
+                    if invoice.state=='draft':
+                        invoice.action_invoice_open()
     #                 if param.di_autoimp_fact_ven: # ne fonctionne pas
     #                     invoice.invoice_print()
                     
@@ -131,6 +132,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
             invoices.write({'date_invoice':self.date_fact})
             param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
             if param.di_autovalid_fact_ven:
+                if invoice.state=='draft':
                     invoices.action_invoice_open()
                         
 #             for invoice in invoices:
