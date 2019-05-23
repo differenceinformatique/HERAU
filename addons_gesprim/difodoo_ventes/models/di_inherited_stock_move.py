@@ -1501,16 +1501,19 @@ class StockReturnPicking(models.TransientModel):
                     move_dest_exists = True
                 plusieurs_lots = False    
                 dernier_lot = False
-                for move_line in move.move_line_ids:
-                    if move_line.lot_id and move_line.lot_id != dernier_lot and dernier_lot != False:
-                        plusieurs_lots=True
-                    dernier_lot = move_line.lot_id
-                    
-                    
-                if not plusieurs_lots:
-                    di_lot = dernier_lot.id 
+                if move.move_line_ids:
+                    for move_line in move.move_line_ids:
+                        if move_line.lot_id and move_line.lot_id != dernier_lot and dernier_lot != False:
+                            plusieurs_lots=True
+                        dernier_lot = move_line.lot_id
+                        
+                        
+                    if not plusieurs_lots:
+                        di_lot = dernier_lot.id 
+                    else:
+                        di_lot = 0
                 else:
-                    di_lot = 0      
+                    di_lot=0      
                 #surcharge
                 di_qte_un_saisie = move.di_qte_un_saisie - sum(move.move_dest_ids.filtered(lambda m: m.state in ['partially_available', 'assigned', 'done']).\
                                                   mapped('move_line_ids').mapped('di_qte_un_saisie'))
