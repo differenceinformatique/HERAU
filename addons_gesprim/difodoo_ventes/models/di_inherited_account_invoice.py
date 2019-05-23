@@ -42,31 +42,32 @@ class AccountInvoice(models.Model):
     def di_onchange_partner(self):    
         if self.partner_id:
             self.di_nbex = self.partner_id.di_nbex_fac
-            if self.partner_id.di_period_fact != 'DEMANDE':
-                if self.partner_id.di_period_fact == 'DECADE':
-                    message = {
-                                'title': ('Attention'),
-                                'message' : "Ce client est à la décade, il n’est pas conseillé de faire une facture directe."
-                            }
-                if self.partner_id.di_period_fact == 'SEMAINE':
-                    message = {
-                                'title': ('Attention'),
-                                'message' : "Ce client est à la semaine, il n’est pas conseillé de faire une facture directe."
-                            }
-                if self.partner_id.di_period_fact == 'QUINZAINE':
-                    message = {
-                                'title': ('Attention'),
-                                'message' : "Ce client est à la quinzaine, il n’est pas conseillé de faire une facture directe."
-                            }
-                if self.partner_id.di_period_fact == 'MOIS':
-                    message = {
-                                'title': ('Attention'),
-                                'message' : "Ce client est au mois, il n’est pas conseillé de faire une facture directe."
-                            }
+            if self.partner_id.customer:
+                if self.partner_id.di_period_fact != 'DEMANDE':
+                    if self.partner_id.di_period_fact == 'DECADE':
+                        message = {
+                                    'title': ('Attention'),
+                                    'message' : "Ce client est à la décade, il n’est pas conseillé de faire une facture directe."
+                                }
+                    if self.partner_id.di_period_fact == 'SEMAINE':
+                        message = {
+                                    'title': ('Attention'),
+                                    'message' : "Ce client est à la semaine, il n’est pas conseillé de faire une facture directe."
+                                }
+                    if self.partner_id.di_period_fact == 'QUINZAINE':
+                        message = {
+                                    'title': ('Attention'),
+                                    'message' : "Ce client est à la quinzaine, il n’est pas conseillé de faire une facture directe."
+                                }
+                    if self.partner_id.di_period_fact == 'MOIS':
+                        message = {
+                                    'title': ('Attention'),
+                                    'message' : "Ce client est au mois, il n’est pas conseillé de faire une facture directe."
+                                }
+                        
+                                        
+                    return {'warning': message}
                     
-                                    
-                return {'warning': message}
-                
     
     @api.multi
     def _invoice_line_tax_values(self):

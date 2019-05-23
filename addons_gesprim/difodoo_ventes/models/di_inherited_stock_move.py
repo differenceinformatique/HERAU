@@ -448,7 +448,7 @@ class StockMove(models.Model):
                     nbcol = nbcol + mouv.di_nb_colis
                     nbpal = nbpal + mouv.di_nb_palette
                     nbpiece = nbpiece + mouv.di_nb_pieces
-                    poids = poids + mouv.sale_line_id.di_poin                
+                    poids = poids + mouv.di_poin                
                     qte = qte +  mouv.quantity_done                                             
                     di_qte_prix = 0.0                    
                     di_qte_prix = mouv.quantity_done                                            
@@ -517,7 +517,7 @@ class StockMove(models.Model):
                     nbcol = nbcol - mouv.di_nb_colis
                     nbpal = nbpal - mouv.di_nb_palette
                     nbpiece = nbpiece - mouv.di_nb_pieces
-                    poids = poids - mouv.sale_line_id.di_poin                
+                    poids = poids - mouv.di_poin                
                     qte = qte -  mouv.quantity_done                                             
                     di_qte_prix = 0.0                    
                     di_qte_prix = mouv.quantity_done                                        
