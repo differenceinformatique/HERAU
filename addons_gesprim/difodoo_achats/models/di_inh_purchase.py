@@ -26,7 +26,7 @@ class PurchaseOrderLine(models.Model):
     di_poin         = fields.Float(string='Poids net')
     di_poib         = fields.Float(string='Poids brut')
     di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix")
 
     di_qte_un_saisie_liv = fields.Float(string='Quantité reçue en unité de saisie',store=True)
     di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie reçue",store=True)
