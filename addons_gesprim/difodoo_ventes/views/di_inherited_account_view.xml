@@ -170,12 +170,17 @@
         
 		<!-- surcharge vue liste facture pour montants signés -->
 		<record id="di_invoice_tree" model="ir.ui.view">
-            <field name="name">account.invoice.tree</field>
+            <field name="name">di.account.invoice.tree</field>
             <field name="model">account.invoice</field>
 			<field name="inherit_id" ref="account.invoice_tree" />
 			<field eval="80" name="priority" />
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='amount_untaxed']" position="replace">
+			     <xpath expr="//field[@name='amount_untaxed_invoice_signed']" position="before">
+			         <field name="payment_term_id"/>
+                    <field name="di_period_fact"/>
+			     
+			     </xpath>
+				<!-- <xpath expr="//field[@name='amount_untaxed']" position="replace">
 					<field name="payment_term_id"/>
 					<field name="di_period_fact"/>
 					<field name="amount_untaxed" string="Tax Excluded" sum="Total" invisible="1"/>
@@ -184,7 +189,7 @@
 				<xpath expr="//field[@name='amount_tax']" position="replace">
 					<field name="amount_tax" sum="Total" invisible="1"/>
 					<field name="di_amount_tax_signed" string="Taxe" sum="Total"/>
-				</xpath>
+				</xpath> -->
 			</field>
 		</record>     
 		
