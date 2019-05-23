@@ -530,21 +530,21 @@ class StockMove(models.Model):
             if mouv.id > dernier_id_lu:
                 dernier_id_lu = mouv.id
 #             if mouv.remaining_qty:
-            if mouv.product_uom_qty !=0.0:
+            if mouv.quantity_done !=0.0:
                 if mouv.location_dest_id.usage == 'internal':
-                    qte = qte + mouv.product_uom_qty
+                    qte = qte + mouv.quantity_done
                     nbcol = nbcol + mouv.di_nb_colis
                     nbpal = nbpal + mouv.di_nb_palette
                     nbpiece = nbpiece + mouv.di_nb_pieces
                     poids = poids + mouv.di_poin
-                    mont = mont + (mouv.product_uom_qty * mouv.product_id.di_get_dernier_cmp(date))
+                    mont = mont + (mouv.quantity_done * mouv.product_id.di_get_dernier_cmp(date))
                 else:
-                    qte = qte - mouv.product_uom_qty 
+                    qte = qte - mouv.quantity_done 
                     nbcol = nbcol - mouv.di_nb_colis
                     nbpal = nbpal - mouv.di_nb_palette
                     nbpiece = nbpiece - mouv.di_nb_pieces
                     poids = poids - mouv.di_poin  
-                    mont = mont - (mouv.product_uom_qty * mouv.product_id.di_get_dernier_cmp(date)) 
+                    mont = mont - (mouv.quantity_done * mouv.product_id.di_get_dernier_cmp(date)) 
         mont  = round(mont,2)
         return (qte, mont, nbcol, nbpal, nbpiece, poids,dernier_id_lu)
                  
