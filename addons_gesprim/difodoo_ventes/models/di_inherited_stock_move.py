@@ -893,12 +893,12 @@ class StockMoveLine(models.Model):
     def _di_compute_valo(self):
         for sml in self:
             if sml.move_id.purchase_line_id:
-#                 pol = self.env['purchase.order.line'].browse(sml.move_id.purchase_line_id.id) # les champs spé ne sont pas dispo sinon ??? bug? je ne comprends pas
-#                 sml.di_prix = pol.price_unit
-#                 sml.di_un_prix = pol.di_un_prix
+                pol = self.env['purchase.order.line'].browse(sml.move_id.purchase_line_id.id) # les champs spé ne sont pas dispo sinon ??? bug? je ne comprends pas
+                sml.di_prix = pol.price_unit
+                sml.di_un_prix = pol.di_un_prix
 #                 sml
-                sml.di_prix = sml.move_id.purchase_line_id.price_unit
-                sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
+#                 sml.di_prix = sml.move_id.purchase_line_id.price_unit
+#                 sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
             elif sml.move_id.sale_line_id:
                 sml.di_prix = sml.move_id.sale_line_id.price_unit
                 sml.di_un_prix = sml.move_id.sale_line_id.di_un_prix
