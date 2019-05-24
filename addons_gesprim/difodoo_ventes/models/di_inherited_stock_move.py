@@ -901,7 +901,7 @@ class StockMoveLine(models.Model):
 #                 sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
                 sqlstr = """
                     select
-                        pol.di_prix,
+                        pol.price_unit,
                         pol.di_un_prix                                                                                                                       
                     from purchase_order_line pol                                                                            
                     where pol.id = %s 
