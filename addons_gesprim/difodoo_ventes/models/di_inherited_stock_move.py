@@ -889,7 +889,7 @@ class StockMoveLine(models.Model):
                 sml.di_qty_done_sign = -sml.qty_done  
                   
     @api.multi
-    @api.depends('move_id','product_id')
+#     @api.depends('move_id','product_id')
     def _di_compute_valo(self):
         for sml in self:
             if sml.move_id.purchase_line_id:
