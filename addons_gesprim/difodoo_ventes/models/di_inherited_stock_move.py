@@ -751,9 +751,9 @@ class StockMoveLine(models.Model):
 #     di_entree_sortie = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
     di_entrees_sorties = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
 #     di_calc_es = fields.Boolean(string="Calc ES",  compute='_di_compute_es')
-    di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
-    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
-    di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+#     di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+#     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
+#     di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
             
     di_tare_un      = fields.Float(string='Tare unitaire')
     di_perte = fields.Boolean("Perte", default=False)
