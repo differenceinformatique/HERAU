@@ -912,7 +912,7 @@ class StockMoveLine(models.Model):
                 
                 result = self.env.cr.fetchall()[0]
                 sml.di_prix = result[0] and result[0] or 0.0
-                sml.di_un_prix = result[1] and result[1] or 0.0
+                sml.di_un_prix = result[1] and result[1] or False
 
             elif sml.move_id.sale_line_id:
                 sml.di_prix = sml.move_id.sale_line_id.price_unit
