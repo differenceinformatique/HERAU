@@ -751,14 +751,14 @@ class StockMoveLine(models.Model):
 #     di_entree_sortie = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
     di_entrees_sorties = fields.Char(string="Entrée / Sortie",  compute='_di_compute_entree_sortie', store=True)
 #     di_calc_es = fields.Boolean(string="Calc ES",  compute='_di_compute_es')
-#     di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
-#     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
-#     di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+    di_prix = fields.Float(string='Prix', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
+    di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",compute='_di_compute_valo')    
+    di_valo = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo')
             
     di_tare_un      = fields.Float(string='Tare unitaire')
     di_perte = fields.Boolean("Perte", default=False)
     
-    di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_sign')
+    di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo_sign')
     di_nb_pieces_sign = fields.Integer(string='Nb pièces',compute='_di_compute_sign', store=True)
     di_nb_colis_sign = fields.Integer(string='Nb colis' ,compute='_di_compute_sign', store=True)
     di_nb_palette_sign = fields.Float(string='Nb palettes',compute='_di_compute_sign', digits=dp.get_precision('Product Unit of Measure'), store=True)
@@ -866,11 +866,11 @@ class StockMoveLine(models.Model):
     
     
     @api.multi
-    @api.depends('di_entrees_sorties','di_valo','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','qty_done')
+    @api.depends('di_entrees_sorties','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','qty_done')
     def _di_compute_sign(self):        
         for sml in self:                      
             if sml.di_entrees_sorties == 'entree': 
-                sml.di_valo_sign = sml.di_valo
+#                 sml.di_valo_sign = sml.di_valo
                 sml.di_nb_pieces_sign = sml.di_nb_pieces
                 sml.di_nb_colis_sign = sml.di_nb_colis
                 sml.di_nb_palette_sign = sml.di_nb_palette
@@ -879,7 +879,7 @@ class StockMoveLine(models.Model):
                 sml.di_tare_sign = sml.di_tare
                 sml.di_qty_done_sign = sml.qty_done                
             else:  
-                sml.di_valo_sign = -sml.di_valo
+#                 sml.di_valo_sign = -sml.di_valo
                 sml.di_nb_pieces_sign = -sml.di_nb_pieces
                 sml.di_nb_colis_sign = -sml.di_nb_colis
                 sml.di_nb_palette_sign = -sml.di_nb_palette
@@ -887,7 +887,16 @@ class StockMoveLine(models.Model):
                 sml.di_poib_sign = -sml.di_poib
                 sml.di_tare_sign = -sml.di_tare
                 sml.di_qty_done_sign = -sml.qty_done  
-                  
+         
+         
+    @api.multi
+#     @api.depends('di_entrees_sorties','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','qty_done')
+    def _di_compute_valo_sign(self):        
+        for sml in self:                      
+            if sml.di_entrees_sorties == 'entree': 
+                sml.di_valo_sign = sml.di_valo                        
+            else:  
+                sml.di_valo_sign = -sml.di_valo             
     @api.multi
 #     @api.depends('move_id','product_id')
     def _di_compute_valo(self):
