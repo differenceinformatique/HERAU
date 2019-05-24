@@ -72,13 +72,13 @@ class DiFactCronWiz(models.TransientModel):
             s_o.action_done()
              
         invoices = sale_orders.mapped('invoice_ids')
-        invoices.write({'date_invoice':date_fact})
+        draft_invoices = invoices.filtered(lambda f: f.state == 'draft')
+        draft_invoices.write({'date_invoice':date_fact})
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
-        if param.di_autovalid_fact_ven:
-            if invoice.state=='draft':
-                invoices.action_invoice_open()        
+        if param.di_autovalid_fact_ven:            
+            draft_invoices.action_invoice_open()        
         if not di_avec_fact:    
-            if invoices:
+            if draft_invoices:
                 di_avec_fact = True  
                 
                 
