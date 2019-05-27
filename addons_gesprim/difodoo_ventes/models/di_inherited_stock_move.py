@@ -906,22 +906,22 @@ class StockMoveLine(models.Model):
 #                 sml.di_prix = pol.price_unit
 #                 sml.di_un_prix = pol.di_un_prix
 #                 sml
-                sml.di_prix = sml.move_id.purchase_line_id.price_unit
-                sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
-#                 sqlstr = """
-#                     select
-#                         pol.price_unit,
-#                         pol.di_un_prix                                                                                                                       
-#                     from purchase_order_line pol                                                                            
-#                     where pol.id = %s 
-#                     """
-#                     
-#                 self.env.cr.execute(sqlstr, (sml.move_id.purchase_line_id.id,))
-#                 
-#                 
-#                 result = self.env.cr.fetchall()[0]
-#                 sml.di_prix = result[0] and result[0] or 0.0
-#                 sml.di_un_prix = result[1] and result[1] or False
+#                 sml.di_prix = sml.move_id.purchase_line_id.price_unit
+#                 sml.di_un_prix = sml.move_id.purchase_line_id.di_un_prix
+                sqlstr = """
+                    select
+                        pol.price_unit,
+                        pol.di_un_prix                                                                                                                       
+                    from purchase_order_line pol                                                                            
+                    where pol.id = %s 
+                    """
+                    
+                self.env.cr.execute(sqlstr, (sml.move_id.purchase_line_id.id,))
+                
+                
+                result = self.env.cr.fetchall()[0]
+                sml.di_prix = result[0] and result[0] or 0.0
+                sml.di_un_prix = result[1] and result[1] or False
 
             elif sml.move_id.sale_line_id:
                 sml.di_prix = sml.move_id.sale_line_id.price_unit
