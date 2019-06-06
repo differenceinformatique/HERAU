@@ -2,90 +2,311 @@
 <odoo>
     <template id="di_report_invoice_fixe">
         <t t-call="difodoo_gesprim.di_external_layout">
-            <!-- <t t-set="o" t-value="o.with_context({'lang': lang})"/> -->
-            <t t-set="o" t-value="o.with_context(lang = 'fr_FR')"/>
-            <t t-set="address">
-                <div class="di_o_adr_tiers">
-                    <address t-field="o.partner_id"  t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
-                    <div t-if="o.partner_id.vat" class="mt16">TVA : <span t-field="o.partner_id.vat"/></div>
-                </div>
+            <t t-set="o" t-value="o.with_context({'lang': lang})"/>   
+            <t t-if="not company">                
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="else">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
             </t>
-            <div class="page">
-                <h2 class = "di_o_titre_fac">
+            <div class="header">
+                <div class="di_o_fixe_header">
+                    <div class="row mb8">                   
+                        <div class="col-3 text-left mb4">
+                            <h4 class="mt0" t-field="company.report_header"/>
+                            <div name="company_address" class="mb4">
+                                <span class="company_address" t-field="company.partner_id"
+                                    t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                            </div>
+                        </div>
+                        <div class="col-3 text-left mb4">
+                            <table>
+                                <tr>
+                                    <td>Tél : </td>
+                                    <td><div t-if="company.phone"> <span t-field="company.phone"/></div></td>
+                                </tr>
+                                <tr>
+                                    EURL au capital de 60 000 euros
+                                </tr>
+                                <!-- <tr>
+                                    <td>Forme juridique : </td>
+                                    <td><div t-if="company.di_form_jur"><span t-field="company.di_form_jur"/></div></td>
+                                </tr>
+                                <tr>
+                                    <td>Capital : </td>
+                                    <td><div t-if="company.di_capital"> <span t-field="company.di_capital"/></div></td>
+                                </tr> -->
+                                <tr>
+                                    <td>Siret : </td>
+                                    <td><div t-if="company.siret"> <span t-field="company.siret"/></div></td>
+                                </tr>
+                                <tr>
+                                    <td>TVA : </td>
+                                    <td><div t-if="company.vat"> <span t-field="company.vat"/></div></td>
+                                </tr>
+                                <tr>
+                                    <td>GLN : </td>
+                                    <td><div t-if="company.di_gln"> <span t-field="company.di_gln"/></div></td>
+                                </tr>
+                            </table>                                                    
+                        </div>                      
+                    </div>
+                    <!-- partner_shipping_id -->
+                     <div t-if="report_type == 'pdf'">
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </div>      
+            <div class="page" >  
+                <div class="di_table_adr row mb8">  
+                    <div class="col-8" name="adresse_facturation">
+                        <span>Facturé à :</span>     
+                        <br></br>                                                                                                                                                                                      
+                        <span t-if="o.partner_id.name"> <span t-field="o.partner_id.name"/></span>      
+                        <br></br>                                                                  
+                        <span t-if="o.partner_id.street"> <span t-field="o.partner_id.street"/></span>   
+                        <br></br>                                                                    
+                        <span t-if="o.partner_id.street2"> <span t-field="o.partner_id.street2"/></span>   
+                        <br></br>                                                                    
+                        <span t-if="o.partner_id.zip"> <span t-field="o.partner_id.zip"/></span>
+                        <span t-if="o.partner_id.city"> <span t-field="o.partner_id.city"/></span>     
+                        <br></br>                          
+                        <span>TVA : </span>
+                        <span t-if="o.partner_id.vat"> <span t-field="o.partner_id.vat"/></span>    
+                        <br></br>                           
+                        <span>GLN :</span>
+                        <span t-if="o.partner_id.di_gln"> <span t-field="o.partner_id.di_gln"/></span>                                                                    
+                    </div>                                                           
+                    <div class="col-3 ">
+                        <span>Livré à : </span>                                       
+                        <br></br>         
+                        <span t-if="o.partner_shipping_id.name"> <span t-field="o.partner_shipping_id.name"/></span>       
+                        <br></br>                                                                         
+                        <span t-if="o.partner_shipping_id.street"> <span t-field="o.partner_shipping_id.street"/></span>  
+                        <br></br>                                                                              
+                        <span t-if="o.partner_shipping_id.street2"> <span t-field="o.partner_shipping_id.street2"/></span> 
+                        <br></br>                                                                               
+                        <span t-if="o.partner_shipping_id.zip"> <span t-field="o.partner_shipping_id.zip"/></span>
+                        <span t-if="o.partner_shipping_id.city"> <span t-field="o.partner_shipping_id.city"/></span>   
+                        <br></br>                                        
+                        <span>TVA : </span>
+                        <span t-if="o.partner_shipping_id.vat"> <span t-field="o.partner_shipping_id.vat"/></span>   
+                        <br></br>                                     
+                        <span>GLN : </span>
+                        <span t-if="o.partner_shipping_id.di_gln"> <span t-field="o.partner_shipping_id.di_gln"/></span>                                                                               
+                    </div>   
+                </div>                                        
+                <!-- <table class="di_table_adr">
+                    <tbody>
+                        <tr>
+                            <td class="di_o_adr_fac col-1" name="adresse_facturation">
+                                Facturé à :   
+                            </td>
+                            
+                            <td class="di_o_adr_liv col-2 ">
+                                Livré à :
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                               <t t-if="o.partner_id.name"> <span t-field="o.partner_id.name"/></t>    
+                            </td>
+                            
+                            <td>
+                               <t t-if="o.partner_shipping_id.name"> <span t-field="o.partner_shipping_id.name"/></t>                                     
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <t t-if="o.partner_id.street"> <span t-field="o.partner_id.street"/></t>  
+                            </td>
+                            
+                            <td>
+                                <t t-if="o.partner_shipping_id.street"> <span t-field="o.partner_shipping_id.street"/></t> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <t t-if="o.partner_id.street2"> <span t-field="o.partner_id.street2"/></t>   
+                            </td>
+                            
+                            <td>
+                                <t t-if="o.partner_shipping_id.street2"> <span t-field="o.partner_shipping_id.street2"/></t> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <t t-if="o.partner_id.zip"> <span t-field="o.partner_id.zip"/></t>  
+                                <t t-if="o.partner_id.city"> <span t-field="o.partner_id.city"/></t>
+                            </td>
+                            
+                            <td>
+                                <t t-if="o.partner_shipping_id.zip"> <span t-field="o.partner_shipping_id.zip"/></t>  
+                                <t t-if="o.partner_shipping_id.city"> <span t-field="o.partner_shipping_id.city"/></t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                TVA :   
+                                <t t-if="o.partner_id.vat"> <span t-field="o.partner_id.vat"/></t>      
+                            </td>
+                            
+                            <td>
+                                TVA :   
+                                <t t-if="o.partner_shipping_id.vat"> <span t-field="o.partner_shipping_id.vat"/></t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                GLN : 
+                                <t t-if="o.partner_id.di_gln"> <span t-field="o.partner_id.di_gln"/></t>     
+                            </td>
+                            
+                            <td>
+                                GLN : 
+                                <t t-if="o.partner_shipping_id.di_gln"> <span t-field="o.partner_shipping_id.di_gln"/></t> 
+                            </td>
+                        </tr> -->
+                            <!-- <td class="di_o_adr_fac" name="adresse_facturation">
+                                <span>Facturé à :</span>     
+                                <br></br>                                                                                                                                                                                      
+                                <span t-if="o.partner_id.name"> <span t-field="o.partner_id.name"/></span>      
+                                <br></br>                                                                  
+                                <span t-if="o.partner_id.street"> <span t-field="o.partner_id.street"/></span>   
+                                <br></br>                                                                    
+                                <span t-if="o.partner_id.street2"> <span t-field="o.partner_id.street2"/></span>   
+                                <br></br>                                                                    
+                                <span t-if="o.partner_id.zip"> <span t-field="o.partner_id.zip"/></span>
+                                <span t-if="o.partner_id.city"> <span t-field="o.partner_id.city"/></span>     
+                                <br></br>                          
+                                <span>TVA : </span>
+                                <span t-if="o.partner_id.vat"> <span t-field="o.partner_id.vat"/></span>    
+                                <br></br>                           
+                                <span>GLN :</span>
+                                <span t-if="o.partner_id.di_gln"> <span t-field="o.partner_id.di_gln"/></span>                                                                    
+                            </td>                                                           
+                            <td class="di_o_adr_liv ">
+                                <span>Livré à : </span>                                       
+                                <br></br>         
+                                <span t-if="o.partner_shipping_id.name"> <span t-field="o.partner_shipping_id.name"/></span>       
+                                <br></br>                                                                         
+                                <span t-if="o.partner_shipping_id.street"> <span t-field="o.partner_shipping_id.street"/></span>  
+                                <br></br>                                                                              
+                                <span t-if="o.partner_shipping_id.street2"> <span t-field="o.partner_shipping_id.street2"/></span> 
+                                <br></br>                                                                               
+                                <span t-if="o.partner_shipping_id.zip"> <span t-field="o.partner_shipping_id.zip"/></span>
+                                <span t-if="o.partner_shipping_id.city"> <span t-field="o.partner_shipping_id.city"/></span>   
+                                <br></br>                                        
+                                <span>TVA : </span>
+                                <span t-if="o.partner_shipping_id.vat"> <span t-field="o.partner_shipping_id.vat"/></span>   
+                                <br></br>                                     
+                                <span>GLN : </span>
+                                <span t-if="o.partner_shipping_id.di_gln"> <span t-field="o.partner_shipping_id.di_gln"/></span>                                                                               
+                            </td>
+                        </tr> -->
+                    <!-- </tbody>
+                            
+                </table> -->
+                
+                 <h2 class = "di_o_titre_fac">
                     <span t-if="o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">Facture</span>
                     <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Facture brouillon</span>
                     <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Facture annulée</span>
                     <span t-if="o.type == 'out_refund'">Avoir</span>
                     <span t-if="o.type == 'in_refund'">Avoir</span>
-                    <span t-if="o.type == 'in_invoice'">Facture</span>
+                    <span t-if="o.type == 'in_invoice'">Facture</span>                    
                     <span t-field="o.number"/>
                 </h2>
+                
 
-                <div id="informations" class="row di_o_informations">
-                    <div class="di_o_description_fac"  name="description">
-                        <strong>Description:</strong>
-                        <t t-if="o.name">
-                            <p class="m-0" t-field="o.name"/>
-                        </t>                        
-                    </div>
-                    <div class="di_o_date_fac" name="invoice_date">
-                        <strong>Date de facture:</strong>
-                        <t t-if="o.date_invoice">
-                            <p class="m-0" t-field="o.date_invoice"/>
-                        </t> 
-                    </div>
-                    <div class="di_o_date_ech"  name="due_date">
-                        <strong>Date d'échéance:</strong>
-                        <t t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">
-                            <p class="m-0" t-field="o.date_due"/>
-                        </t> 
-                    </div>
-                    <div class="di_o_doc_orig" name="origin">
-                        <strong>Document d'origine:</strong>
-                        <t t-if="o.origin">
-                            <p class="m-0" t-field="o.origin"/>
-                        </t> 
-                    </div>
-                    <div class="di_o_code_cli" name="customer_code">
-                        <strong>Code client:</strong>
-                        <t t-if="o.partner_id.ref">
-                            <p class="m-0" t-field="o.partner_id.ref"/>
-                        </t> 
-                    </div>
-                    <div name="reference" class="di_o_ref_fac" >
-                        <strong>Reference:</strong>
-                        <t t-if="o.reference">
-                            <p class="m-0" t-field="o.reference"/>
-                        </t> 
-                    </div>
-                </div>
+                <table class="di_o_informations">
+                    <tbody>
+                        <tr>
+                            <td class="di_o_description_fac"  name="description">
+                                <strong>Description:</strong>
+                            </td> 
+                            <td class="di_o_date_fac"  name="invoice_date">
+                                <strong>Date de facture:</strong>
+                            </td> 
+                            <td class="di_o_date_ech"  name="due_date">
+                                <strong>Date d'échéance:</strong>
+                            </td> 
+                            <!-- <td class="di_o_doc_orig"  name="origin">
+                                <strong>Document d'origine:</strong>
+                            </td>  -->
+                            <td class="di_o_code_cli"  name="customer_code">
+                                <strong>Code client:</strong>
+                            </td> 
+                            <td class="di_o_ref_fac"  name="reference">
+                                <strong>Reference:</strong>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td>                            
+                                <t t-if="o.name">
+                                    <span t-field="o.name"/>
+                                </t>                                
+                            </td>
+                            <td>
+                                <t t-if="o.date_invoice">
+                                    <span t-field="o.date_invoice"/>
+                                </t>                                
+                            </td>
+                            <td>
+                                <t t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">
+                                    <span t-field="o.date_due"/>
+                                </t>                                
+                            </td>
+                            <!-- <td>
+                                <t t-if="o.origin">
+                                    <span t-field="o.origin"/>
+                                </t>                                
+                            </td> -->
+                            <td>
+                                <t t-if="o.partner_id.ref">
+                                    <span t-field="o.partner_id.ref"/>
+                                </t>                                
+                            </td>
+                            <td>
+                                <t t-if="o.reference">
+                                    <span t-field="o.reference"/>
+                                </t>                                
+                            </td>
+                        </tr>                                                                                                                                                   
+                    </tbody>
+                </table>
                                 
-                <table class="table table-sm o_main_table" name="invoice_line_table">
+                <table class="table di_o_main_table" name="invoice_line_table">
                     <thead>
                         <tr>
                             <t t-set="colspan" t-value="10"/>
-                            <th class="di_o_col_des"><span>Désignation</span></th>
-                            <th class="di_o_col_colis">
+                            <th class="di_o_col_des col-3"><span>Désignation</span></th>
+                            <th class="di_o_col_colis col-1">
                                 <div>Nb Colis</div>                                
                             </th>
-                            <th class="di_o_col_piece">
+                            <th class="di_o_col_piece col-1">
                                 <div>Nb Pièces</div>                                
                             </th>
                                                       
-                            <th class="di_o_col_poib">
+                            <th class="di_o_col_poib col-1">
                                 <div>Poids brut</div>                                
                             </th>
-                            <th class="di_o_col_tare">
+                            <th class="di_o_col_tare col-1">
                                 <div>Tare</div>                                
                             </th>
-                            <th class="di_o_col_poin">
+                            <th class="di_o_col_poin col-1">
                                 <div>Poids net</div>                                
                             </th>                          
                                                         
-                            <th class="di_o_col_pu"><span>P.U.</span></th>                           
-                            <th class="di_o_col_tax"><span>Taxes</span></th>
-                            <th class="di_o_col_unprix">UN Prix</th>
-                            <th class="di_o_col_mont">
+                            <th class="di_o_col_pu col-1"><span>P.U.</span></th>                           
+                            <th class="di_o_col_tax col-1"><span>Taxes</span></th>
+                            <th class="di_o_col_unprix col-1">UN Prix</th>
+                            <th class="di_o_col_mont col-1">
                                 <span groups="account.group_show_line_subtotals_tax_excluded">Montant HT</span>
                                 <span groups="account.group_show_line_subtotals_tax_included">Montant TTC</span>
                             </th>
@@ -93,11 +314,39 @@
                     </thead>
                     <tbody class="invoice_tbody">
                         <t t-set="current_subtotal" t-value="0"/>
+                        <t t-set="soustot_cde" t-value="0"/>
 
-                        <t t-foreach="o.invoice_line_ids" t-as="line">
+                        <t t-foreach="o.invoice_line_ids.sorted(key=lambda l: (l.origin and l.origin or '', l.sequence, l.id))" t-as="line">
 
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                            <t t-if="not current_origine or current_origine != line.origin">
+                                <t t-if="current_origine">
+                                    <tr t-att-class="'o_line_section '">
+                                        <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
+                                            <p>
+                                                Total commande <span t-field="line.origin" /> :  <span t-esc="soustot_cde" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />                                                        
+                                            </p>      
+                                        </td>
+                                    </tr>                                                                  
+                                </t>
+                                <t t-if="current_origine != line.origin">
+                                    <t t-set="soustot_cde" t-value="0"/>    
+                                </t>
+                                
+                                <t t-if="line.origin">
+                                    <tr t-att-class="'o_line_section '">
+                                        <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
+                                            <t t-set="cde" t-value="env['sale.order'].search([('name', '=', line.origin)])"/>
+                                            <p>
+                                                Commande <span t-field="line.origin" /> du <span t-field="cde.date_order"  t-options='{"widget": "date"}'/>                                                        
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-set="soustot_cde" t-value="soustot_cde + line.price_subtotal" />
+                            <t t-set="current_origine" t-value="line.origin"/>
 
                             <tr t-att-class="'bg-200 font-weight-bold di_o_line_section' if line.display_type == 'line_section' else 'font-italic di_o_line_note' if line.display_type == 'line_note' else ''">
                                 <t t-if="not line.display_type" name="account_invoice_line_accountable">
@@ -144,11 +393,18 @@
                                 <t t-if="line.display_type == 'line_note'">
                                     <td t-att-colspan="colspan">
                                         <span t-field="line.name"/>
-                                    </td>
-                                   
-                                    
+                                    </td>                                                                       
                                 </t>
                             </tr>
+                             <t t-if="current_origine and (line_last)">
+                                    <tr t-att-class="'o_line_section '">
+                                        <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
+                                            <p>
+                                                Total commande <span t-field="line.origin" /> :  <span t-esc="soustot_cde" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />                                                        
+                                            </p>      
+                                        </td>
+                                    </tr>                                                                  
+                                </t>
 
                             <t t-if="current_section and (line_last or o.invoice_line_ids[line_index+1].display_type == 'line_section')">
                                 <tr class="is-subtotal text-right">
@@ -161,8 +417,7 @@
                                     </td>
                                   
                                 </tr>
-                            </t>
-                            
+                            </t>                            
                         </t>
                         <t t-if="o.comment" name="comment">
                             <tr class="di_o_cgv">
@@ -171,9 +426,75 @@
                                 </td>
                             </tr>
                         </t>
+                       
                     </tbody>
                 </table>                                                                                                                                                    
-            </div>            
+            </div>  
+            <div class="footer di_o_fixe_footer">                     
+                <table class="di_o_table_pied ">
+                    <thead>
+                        <tr>
+                            <th class="di_o_col_ht">
+                                Total HT
+                            </th>
+                            <th class="di_o_col_base_taxe">
+                                Base Taxe
+                            </th>
+                            <th class="di_o_col_taxe">
+                                Taxe
+                            </th>
+                            <th class="di_o_col_mt_taxe">
+                                Montant Taxe
+                            </th>
+                            <th class="di_o_col_ttc">
+                                Total TTC
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5">
+                                Devise : <span t-field="o.currency_id.name"/>                    
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td>                            
+                                <span t-field="o.amount_untaxed"/>                            
+                            </td>
+                            <td></td>
+                            <td>Total TVA : </td>
+                            <td><span t-field="o.amount_tax"/></td>
+                            <td>                            
+                                <span t-field="o.amount_total"/>                            
+                            </td>
+                        </tr>
+                        
+                        <t t-set="nbligtva" t-value="0"/>
+                        <t t-foreach="o.amount_by_group" t-as="amount_by_group">
+                            <t t-set="nbligtva" t-value="nbligtva+1"/>
+                            <t t-if="nbligtva &lt;= 5 ">
+                                <tr>      
+                                    <td></td>
+                                    <td>                                                                                    
+                                        <t t-esc="amount_by_group[4]" class="show_only_lastpage"/>                                                                                        
+                                    </td>                                    
+                                    <td>                                                                                                                                       
+                                        <t t-esc="amount_by_group[0]"/>                                                                                
+                                    </td>                                            
+                                    <td>                                        
+                                        <span t-esc="amount_by_group[3]"/>                                        
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </t>
+                        </t>   
+                                              
+                    </tbody>
+                </table>                                     
+                <div class="text-center">                    
+                    <div t-field="company.report_footer"/>
+                </div>
+            </div>          
         </t>
     </template>
    
@@ -189,6 +510,21 @@
         </t>
     </template>
     
+    <record id="di_A4_Fixe" model="report.paperformat"> <!-- ???? emplacement -->
+        <field name="name">A4 Fixe</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">40</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">35</field>
+        <field name="dpi">96</field>
+    </record>
     <report 
         id="di_account_invoice_fixe"
         model="account.invoice"
@@ -197,6 +533,7 @@
         name="difodoo_ventes.di_report_invoice_fixe_temp"
         file="difodoo_ventes.di_report_invoice_fixe_temp"
         print_report_name="(object._get_report_base_filename())"
+        paperformat="difodoo_ventes.di_A4_Fixe"
     />
     
    

@@ -12,6 +12,8 @@ class ResPartner(models.Model):
     ref = fields.Char(string='Internal Reference', index=True, help="Code Tiers",store=True)  # modif attribut copy + ajout help
     di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
                                       default="DEMANDE", string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
+    di_period_fact_aff = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")],
+                                          string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation", compute="_compute_period_fact_aff", store=True)
     di_regr_fact = fields.Boolean(string="Regroupement sur Facture", default=True, help="Permet de filtrer lors de la facturation")
     di_pres_bl = fields.Selection([('CHIFFRE','Chiffré'),('NONCHIFFRE','Non Chiffré')], default="NONCHIFFRE", string="Présentation BL",
                                    help="Choix de la présentation du bon de livraison")
@@ -33,10 +35,20 @@ class ResPartner(models.Model):
                                    help="Choix de la périodicité des relevés.")
         
     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict',default=lambda self : self._di_get_pays_fr())
+    di_gln= fields.Char("GLN")
 #     property_account_position_id = fields.Many2one('account.fiscal.position' , default=lambda self : self._di_get_posfisc_fr(), company_dependent=True,
 #         string="Fiscal Position",
 #         help="The fiscal position determines the taxes/accounts used for this contact.", oldname="property_account_position")
-#      
+# #      
+    @api.depends('di_period_fact','parent_id')
+    def _compute_period_fact_aff(self):
+        for partner in self:
+            if partner.parent_id:
+                partner.di_period_fact_aff = partner.parent_id.di_period_fact_aff
+            else:
+                partner.di_period_fact_aff = partner.di_period_fact
+                            
+        
     
     def _di_get_pays_fr(self):
         pays = self.env['res.country'].search([('code','=','FR')])

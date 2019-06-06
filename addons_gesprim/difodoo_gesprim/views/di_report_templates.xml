@@ -19,137 +19,21 @@
             <li t-if="company.company_registry" class="list-inline-item"><span t-field="company.company_registry"/></li>            
         </xpath>          
     </template>
-    
              
 
     <template id="di_layout_fixe">
-        <div class="header">
-            <div class="di_o_fixe_header">
-                <div class="row mb8">
-                    <div class="col-6">
-                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
-                    </div>
-                    <div class="col-6 text-right mb4">
-                        <h4 class="mt0" t-field="company.report_header"/>
-                        <div name="company_address" class="mb4">
-                            <span class="company_address" t-field="company.partner_id"
-                                t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
-                        </div>
-                    </div>
-                   
-                </div>
-                 <div t-if="report_type == 'pdf'">
-                    Page: <span class="page"/> / <span class="topage"/>
-                </div>
-            </div>
-        </div>        
+               
         <div class="article di_o_report_layout_fixe" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
             <t t-call="web.address_layout"/>
             <t t-raw="0"/>
         </div>
-
-        <div class="footer di_o_fixe_footer show_lastpage">            
-            <table class="di_o_table_pied ">
-                <thead>
-                    <tr>
-                        <th class="di_o_col_ht">
-                            Total HT
-                        </th>
-                        <th class="di_o_col_base_taxe">
-                            Base Taxe
-                        </th>
-                        <th class="di_o_col_taxe">
-                            Taxe
-                        </th>
-                        <th class="di_o_col_mt_taxe">
-                            Montant Taxe
-                        </th>
-                        <th class="di_o_col_ttc">
-                            Total TTC
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>                            
-                            <span t-field="o.amount_untaxed"/>                            
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>                            
-                            <span t-field="o.amount_total"/>                            
-                        </td>
-                    </tr>
-                    <t t-set="nbligtva" t-value="0"/>
-                    <t t-foreach="o.amount_by_group" t-as="amount_by_group">
-                        <t t-set="nbligtva" t-value="nbligtva+1"/>
-                        <t t-if="nbligtva &lt;= 5 ">
-                            <tr>      
-                                <td></td>
-                                <td>   
-                                                                             
-                                    <t t-esc="amount_by_group[4]" class="show_only_lastpage"/>
-                                                                                    
-                                </td>                                    
-                                <td>   
-                                                                                                                                
-                                    <t t-esc="amount_by_group[0]"/>
-                                                                                    
-                                </td>                                            
-                                <td>
-                                    
-                                    <span t-esc="amount_by_group[3]"/>
-                                    
-                                </td>
-                                <td></td>
-                            </tr>
-                        </t>
-                    </t>   
-                    <!-- <t t-foreach="[1,2,3,4,5]" t-as="i">                        
-                        <t t-if="i &gt; nbligtva">
-                            <tr>      
-                                <td></td>
-                                <td></td>                                    
-                                <td></td>                                            
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </t>
-                    </t>                          -->
-                </tbody>
-            </table> 
-            
-                
-            <div class="text-center">
-                <ul class="list-inline">
-                    <li t-if="company.phone" class="list-inline-item">Tel: <span t-field="company.phone"/></li>
-                    <li t-if="company.email" class="list-inline-item">Mail: <span t-field="company.email"/></li>
-                    <li t-if="company.website" class="list-inline-item">Web: <span t-field="company.website"/></li>
-                    <li t-if="company.vat" class="list-inline-item">TVA : <span t-field="company.vat"/></li>
-                </ul>
-                <div t-field="company.report_footer"/>               
-            </div>
-        </div>
+        
     </template>
     
     
     <template id="di_external_layout">
         <t t-if="not o" t-set="o" t-value="doc"/>
-
-        <t t-if="not company">
-            Multicompany
-            <t t-if="company_id">
-                <t t-set="company" t-value="company_id"/>
-            </t>
-            <t t-elif="o and 'company_id' in o">
-                <t t-set="company" t-value="o.company_id.sudo()"/>
-            </t>
-            <t t-else="else">
-                <t t-set="company" t-value="res_company"/>
-            </t>
-        </t>
-
+     
         <t t-call="difodoo_gesprim.di_layout_fixe">            
             <t t-raw="0"/>
         </t>

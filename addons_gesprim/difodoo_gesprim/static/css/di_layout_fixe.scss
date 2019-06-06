@@ -3,12 +3,65 @@
     color: gray('700');
     font-size: 12px;
 }
+.di_o_adr_tiers{
+//     position: fixed !important;
+//     position : relative !important;
+    margin-top : 10px !important;
+    margin-left : 10px !important;    
+    width : 600px !important;
+}
+.di_o_adr_fac{
+    width : 300px !important;
+}
+.di_o_adr_liv{
+    width : 300px !important;
+}
+.di_o_titre_fac{
+//     position: fixed !important;
+    margin-top : 10px !important;
+    margin-left : 0px !important;    
+}
+.di_table_adr{
+    margin-top : 0px !important;
+    margin-left : 20px !important;   
+    }
+
+.di_o_informations{
+//     position: fixed !important;    
+    margin-top : 10px !important;
+    margin-left : 0px !important;    
+    }
+
+.di_o_description_fac{
+    //left : 20px !important;
+    width: 100px !important;
+    }
+.di_o_date_fac{
+    //left : 130px !important;
+    width: 100px !important;
+    }
+.di_o_date_ech{
+    //left : 240px !important;
+    width: 100px !important;
+    }
+.di_o_doc_orig{
+    //left : 350px !important;
+    width: 100px !important;
+    }
+.di_o_code_cli{
+    //left : 460px !important;
+    width: 100px !important;
+    }
+.di_o_ref_fac{
+    //left : 570px !important;
+    width: 100px !important;
+    }
 //90ppp = 1050 px pour 29,7cm
+
+
 .di_o_fixe_header {
-    height : 120px !important;
-    border-bottom: 1px solid gray('200');
-    img {
-        height: 100px;
+//     height : 300px !important;
+    border-bottom: 1px solid gray('200');    
     }
     h4 {
         color: $o-we-color-text-normal;
@@ -16,58 +69,72 @@
         text-transform: uppercase;
     }
 }
-.di_o_titre_fac{
-//     position: fixed !important;
-    top : 10px !important;
-    left : 10px !important;    
-}
-.di_o_informations{
-//     position: fixed !important;
-    top : 80px !important;
-    left : 20px !important;    
-    }
-.di_o_description_fac{
-    left : 20px !important;
-    width: 100px !important;
-    }
-.di_o_date_fac{
-    left : 130px !important;
-    width: 100px !important;
-    }
-.di_o_date_ech{
-    left : 240px !important;
-    width: 100px !important;
-    }
-.di_o_doc_orig{
-    left : 350px !important;
-    width: 100px !important;
-    }
-.di_o_code_cli{
-    left : 460px !important;
-    width: 100px !important;
-    }
-.di_o_ref_fac{
-    left : 570px !important;
-    width: 100px !important;
-    }
-
-.di_o_adr_tiers{
-//     position: fixed !important;
-    top : 10px !important;
-    left : 620px !important;    
-}
 
 .page{    
+    position : static !important; 
+    margin-top : 0px !important;
+    margin-left :  0px !important;
 //     margin-top : 150px !important;
-    height:500px !important;
-//     width: 900px !important;
+//    height:500px !important;
+    width: 900px !important;
 }
 
+.di_o_main_table{
+            //border: none !important;
+//             position : relative !important;
+            margin-top : 10px !important;
+//             margin-bottom : 600px !important;
+            margin-left : 0px !important;
+//             max-height : 300px !important;
+            width :900px !important;               
+        }
+    
+.di_o_col_des{
+    min-width: 240px !important;
+    max-width: 240px !important;
+    }
+.di_o_col_piece{
+    min-width: 60px !important;
+    max-width: 60px !important;
+    }
+.di_o_col_colis{
+    min-width: 60px !important;
+    max-width: 60px !important;
+    }
+.di_o_col_poib{
+    min-width: 70px !important;
+    max-width: 70px !important;
+    }
+.di_o_col_poin{
+    min-width: 70px !important;
+    max-width: 70px !important;
+    }
+.di_o_col_tare{
+    min-width: 60px !important;
+    max-width: 60px !important;
+    }
+.di_o_col_pu{
+    min-width: 60px !important;
+    max-width: 60px !important;
+    }
+.di_o_col_tax{
+    min-width: 120px !important;
+    max-width: 120px !important;
+    }
+.di_o_col_unprix{
+    min-width: 50px !important;
+    max-width: 50px !important;
+    }
+.di_o_col_mont{
+    min-width: 70px !important;
+    max-width: 70px !important;
+    }
+
 .di_o_fixe_footer {
-    position:relative;
-    margin-top: 200px;
-    min-height : 300px !important;
-    margin-bottom: 10px !important;
+    position:relative !important;
+//     margin-top: 200px;
+//     min-height : 300px !important;
+//     margin-bottom: 10px !important;
 //     white-space: nowrap;
 //     border-top: 3px solid gray('700');
     ul {
@@ -93,19 +160,15 @@
             }
         }
 }
-.di_pied{
-    position: relative !important;
-    top:0px !important;
-    height:auto;
-    width :900px !important;  
-    }
+
 .di_o_table_pied{
-//     position: absolute !important;
+    position: absolute !important;
 //     bottom : 0px !important;
+    top : 20px !important;
     left : 0px !important;
     border: 1px solid gray('700');
-    height : 100px !important;
-    width :900px !important;   
+//     height : 100px !important;
+//     width :900px !important;   
     }
 .di_o_col_ht{
     width: 180px !important;
@@ -123,103 +186,74 @@
     width: 180px !important;
     }          
 
-.di_o_col_des{
-    width: 250px !important;
-    }
-.di_o_col_piece{
-    width: 70px !important;
-    }
-.di_o_col_colis{
-    width: 70px !important;
-    }
-.di_o_col_poib{
-    width: 70px !important;
-    }
-.di_o_col_poin{
-    width: 70px !important;
-    }
-.di_o_col_tare{
-    width: 70px !important;
-    }
-.di_o_col_pu{
-    width: 70px !important;
-    }
-.di_o_col_tax{
-    width: 80px !important;
-    }
-.di_o_col_unprix{
-    width: 70px !important;
-    }
-.di_o_col_mont{
-    width: 80px !important;
-    }
- 
- 
-.di_o_report_layout_fixe {
-    > h2 {
-        text-transform: uppercase;
-    }
-    table {   
-        &.o_main_table{
-//             position : absolute !important;
-//             top : 150px !important;
-            margin-bottom : 100px !important;
-            left : 0px !important;
-//             max-height:600px !important;
-//             margin-top : 150px !important;            
-//             margin-left : 0px !important;
-            width :900px !important;         
-            }  
-        thead {
-            border-bottom: 2px solid gray('700');
-            tr th {
-                text-transform: uppercase;
-                border: 1px solid gray('700');
-            }
-        }          
-        tbody {
-            color: gray('700');
-            tr {
-                td {
-                    // remove border-top from standard layout
-                    border-top: none;
-                    border-left: 1px solid gray('700');
-                    border-right: 1px solid gray('700');
-                    border-bottom: 1px solid gray('700');
-                }
-                
-                &.di_o_line_section td,
-                &.di_o_line_note td,
-                &.is-subtotal td {
-                    border-top: 1px solid gray('700');
-                    border-bottom: 1px solid gray('700');
-                }
-                &.di_o_line_section td {
-                    background-color: gray('700');
-                    color: #fff;
-                }
-                &.is-subtotal,
-                td.di_o_price_total {
-                    background-color: gray('200');
-                }
-            }
-        }
-    }
 
-    /*Total table*/
-    /* row div rule compat 12.0 */
-    .row > div > table,
-    div#total table {
-        tr {
-            &:first-child,
-            &.di_o_subtotal {
-                border-bottom: 1px solid gray('700');
-
-                td:first-child {
-                    border-right: none;
-                }
-            }
-          
-        }
-    }
-}
+ 
+//  
+// .di_o_report_layout_fixe {
+//     > h2 {
+//         text-transform: uppercase;
+//     }
+//     table {   
+//         &.o_main_table{
+// //             position : absolute !important;
+// //             top : 150px !important;
+//             margin-bottom : 100px !important;
+//             left : 0px !important;
+// //             max-height:600px !important;
+// //             margin-top : 150px !important;            
+// //             margin-left : 0px !important;
+//             width :900px !important;         
+//             }  
+//         thead {
+//             border-bottom: 2px solid gray('700');
+//             tr th {
+//                 text-transform: uppercase;
+//                 border: 1px solid gray('700');
+//             }
+//         }          
+//         tbody {
+//             color: gray('700');
+//             tr {
+//                 td {
+//                     // remove border-top from standard layout
+//                     border-top: none;
+//                     border-left: 1px solid gray('700');
+//                     border-right: 1px solid gray('700');
+//                     border-bottom: 1px solid gray('700');
+//                 }
+//                 
+//                 &.di_o_line_section td,
+//                 &.di_o_line_note td,
+//                 &.is-subtotal td {
+//                     border-top: 1px solid gray('700');
+//                     border-bottom: 1px solid gray('700');
+//                 }
+//                 &.di_o_line_section td {
+//                     background-color: gray('700');
+//                     color: #fff;
+//                 }
+//                 &.is-subtotal,
+//                 td.di_o_price_total {
+//                     background-color: gray('200');
+//                 }
+//             }
+//         }
+//     }
+// 
+//     /*Total table*/
+//     /* row div rule compat 12.0 */
+//     .row > div > table,
+//     div#total table {
+//         tr {
+//             &:first-child,
+//             &.di_o_subtotal {
+//                 border-bottom: 1px solid gray('700');
+// 
+//                 td:first-child {
+//                     border-right: none;
+//                 }
+//             }
+//           
+//         }
+//     }
+// }

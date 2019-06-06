@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="di_res_company_form" model="ir.ui.view">
+            <field name="name">di.res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field eval="80" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="di_capital"/>
+                    <field name="di_form_jur"/>
+                    <field name="di_gln"/>                    
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

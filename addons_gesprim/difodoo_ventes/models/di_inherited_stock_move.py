@@ -307,7 +307,14 @@ class StockMove(models.Model):
                     self.di_type_palette_id = self.product_id.di_type_palette_id
                     self.product_packaging = self.product_id.di_type_colis_id    
                     self.di_un_prix = self.product_id.di_un_prix    
-                    self.di_spe_saisissable = self.product_id.di_spe_saisissable                            
+                    self.di_spe_saisissable = self.product_id.di_spe_saisissable
+                        
+    def write(self, vals):
+        res = super(StockMove, self).write(vals)
+        if 'product_uom_qty' in vals or 'di_nb_colis' in vals or 'di_qte_un_saisie' in vals or 'di_nb_pieces' in vals or 'di_nb_palette' in vals or 'di_poin' in vals or 'di_poib' in vals :
+            self.filtered(lambda m: m.state == 'done' and m.purchase_line_id).mapped(
+                'purchase_line_id').sudo()._update_received_qty()
+        return res                        
     @api.model
     def create(self, vals):               
         di_avec_sale_line_id = False  # initialisation d'une variable       
