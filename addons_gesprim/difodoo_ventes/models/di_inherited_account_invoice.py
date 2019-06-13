@@ -233,7 +233,19 @@ class AccountInvoiceLine(models.Model):
     di_tare_un = fields.Float(string='Tare unitaire')
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
- 
+    
+    def di_get_blno(self):
+        blno=''
+        if self.ensure_one():
+            for sol in self.sale_line_ids:
+                for sm in sol.move_ids:
+                    if sm.picking_id:
+                        if sm.picking_id.name:
+                            blno = sm.picking_id.name
+                            break
+        return blno
+             
+        
     def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date,typecol,typepal):    
         prixFinal = 0.0       
         prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date,typecol,typepal)
