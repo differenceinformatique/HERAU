@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="di_impression_manquants">
+        <t t-call="web.basic_layout">
+            <t t-as="wiz" t-foreach="docs">            
+                <t t-set="company" t-value="wiz.di_company_id"/>
+                <div class="page">
+                    <h2>Manquants</h2>               
+                     
+                    <table class="table table-condensed o_main_table table-sm">
+                        <tr>
+                            <th>Article</th>
+                            <th>Commande</th>
+                            <th>Quantité commandée</th>
+                            <th>Quantité en stock</th>
+                            <th>Manquants</th>                            
+                        </tr>
+                        <t  t-foreach="wiz.di_sol_ids" t-as="sol">                           
+                            <tr>
+                                <td>
+                                    <span t-field="sol.product_id"/>
+                                </td>
+                                <td>
+                                    <span t-field="sol.order_id"/>
+                                </td>
+                                
+                                <td>
+                                    <span t-field="sol.product_uom_qty"/>
+                                </td>
+                                <td>
+                                    <span t-field="sol.product_id.qty_available" />
+                                </td>
+                                <td>
+                                    <t t-set="di_manquants" t-value="sol.product_uom_qty - sol.product_id.qty_available "/>
+                                    <span t-esc="di_manquants" />   
+                                </td>                               
+                            </tr>                            
+                        </t>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+    <report 
+            id="di_action_report_manquants"
+            string="Manquants"
+            model="di.imp.manq.wiz" 
+            report_type="qweb-pdf"
+            file="difodoo_ventes.di_impression_manquants" 
+            name="difodoo_ventes.di_impression_manquants"
+            print_report_name="'Manquants'"  
+            paperformat="difodoo_fichiers_base.di_A4_sans_marge"           
+        />
+</odoo>

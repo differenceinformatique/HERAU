@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_imprimer_manquants_wiz" model="ir.ui.view">
+        <field name="name">di.imprimer.manquants.form</field>
+        <field name="model">di.imp.manq.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Impression manquants">                
+                <div>        
+                    <group>
+                        <group>                                                                       
+                            
+                        </group>
+                        <group>                                                                    
+                            
+                        </group>        
+                    </group>              
+                </div>                                   
+                <separator />
+               
+                <footer>
+                    <button string="Imprimer les manquants" type="object" name="imprimer_manquants"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <act_window
+        id="action_di_imprimer_manquants_menu_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Impression manquants"
+        res_model="di.imp.manq.wiz"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_imprimer_manquants_wiz">    
+    </act_window>
+    
+
+</odoo>

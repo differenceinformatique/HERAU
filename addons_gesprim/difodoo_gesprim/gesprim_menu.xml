@@ -79,7 +79,8 @@
 	<menuitem id="menu_gesprim_grilletrp" sequence="100" parent="menu_gesprim_tables" action="difodoo_fichiers_base.di_action_delivery_price_rule" />
 	<!-- ***Menu Ventes -->	
 	<menuitem id="menu_gesprim_ventes_devis" name="Devis" sequence="10" parent="menu_gesprim_ventes" action="sale.action_quotations"/>
-	<menuitem id="menu_gesprim_ventes_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />  
+	<menuitem id="menu_gesprim_ventes_manquants" name="Imprimer manquants" sequence="11" parent="menu_gesprim_ventes" action="difodoo_ventes.action_di_imprimer_manquants_menu_wiz"/>
+	<menuitem id="menu_gesprim_ventes_commandes" name="Commandes" sequence="20" parent="menu_gesprim_ventes" action="sale.action_orders" />		  
 	<menuitem id="menu_gesprim_ventes_liv" name="Livraisons" sequence="30" parent="menu_gesprim_ventes" />	
 	<menuitem id="menu_gesprim_ventes_fact" name="Facturation" sequence="40" parent="menu_gesprim_ventes" />
 	<!-- ****Menu Livraisons -->	

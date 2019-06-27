@@ -52,11 +52,12 @@
         "wizard/di_imprim_releves_wiz.xml",
         "wizard/di_livr_directe_wiz.xml",
         "wizard/di_regul_art_lot_wiz.xml",
-        "wizard/di_facturation_cron_wiz.xml",                                             
+        "wizard/di_facturation_cron_wiz.xml",
+        "wizard/di_imp_manquants_wiz.xml",                                                
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
-        "views/di_stock_inventory_views.xml",        
+        "views/di_stock_inventory_views.xml",                
         "report/di_sale_report_templates.xml",
         "report/di_report_deliveryslip.xml",
         "report/di_report_stock_inventory.xml",
@@ -69,6 +70,7 @@
         "report/di_report_ctrltrp.xml",
         "report/di_report_invoice_preimp.xml",
         "report/di_report_releves.xml",
+        "report/di_imp_manquants.xml",
         "security/ir.model.access.csv"
               
     ],
