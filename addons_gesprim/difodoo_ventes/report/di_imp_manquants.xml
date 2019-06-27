@@ -25,14 +25,14 @@
                                 </td>
                                 
                                 <td>
-                                    <span t-field="sol.product_uom_qty"/>
+                                    <span t-esc="'%.2f'% sol.product_uom_qty"/>
                                 </td>
                                 <td>
-                                    <span t-field="sol.product_id.qty_available" />
+                                    <span t-esc="'%.2f'% sol.product_id.qty_available" />
                                 </td>
                                 <td>
                                     <t t-set="di_manquants" t-value="sol.product_uom_qty - sol.product_id.qty_available "/>
-                                    <span t-esc="di_manquants" />   
+                                    <span t-esc="'%.2f'% di_manquants" />   
                                 </td>                               
                             </tr>                            
                         </t>
