@@ -17,7 +17,7 @@ class DiImpManqWiz(models.TransientModel):
     
     @api.multi
     def imprimer_manquants(self):  
-        self.di_sol_ids = self.env['sale.order.line'].search([('state', 'in', ('draft','sent','sale'))]).filtered(lambda s: s.product_uom_qty > s.product_id.qty_available)                                                           
+        self.di_sol_ids = self.env['sale.order.line'].search([('state', 'in', ('draft','sent','sale'))]).filtered(lambda s: s.product_uom_qty > s.product_id.qty_available).sorted(key=lambda s: s.order_id)                                                           
         return self.env.ref('difodoo_ventes.di_action_report_manquants').report_action(self)                                                       
             
     @api.model
