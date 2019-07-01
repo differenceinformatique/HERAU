@@ -121,7 +121,12 @@
                                 <strong>Description:</strong>
                             </td> 
                             <td class="di_o_date_fac"  name="invoice_date">
-                                <strong>Date de facture:</strong>
+                                <t t-if="o.type == 'out_refund'">
+                                    <strong>Date d'avoir:</strong>
+                                </t>
+                                <t t-else="">
+                                    <strong>Date de facture:</strong>
+                                </t>
                             </td> 
                             <td class="di_o_date_ech"  name="due_date">
                                 <strong>Date d'échéance:</strong>
@@ -134,7 +139,12 @@
                             </td> 
                             <td class="di_o_ref_fac"  name="reference">
                                 <strong>Reference:</strong>
-                            </td> 
+                            </td>
+                            <t t-if="o.type == 'out_refund'"> 
+                                <td class="di_o_date_fac_orig"  name="invoice_date_orig">                                
+                                    <strong>Date de facture d'origine:</strong>                                
+                                </td>
+                            </t> 
                         </tr>
                         <tr>
                             <td>                            
@@ -148,9 +158,9 @@
                                 </t>                                
                             </td>
                             <td>
-                                <t t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">
+                                <!-- <t t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')"> -->
                                     <span t-field="o.date_due" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/>
-                                </t>                                
+                                <!-- </t>                                 -->
                             </td>
                             <!-- <td>
                                 <t t-if="o.origin">
@@ -167,6 +177,11 @@
                                     <span t-field="o.reference"/>
                                 </t>                                
                             </td>
+                            <t t-if="o.type == 'out_refund'"> 
+                                <td class="di_o_date_fac_orig"  name="invoice_date_orig">                                
+                                    <span t-field="o.di_date_piece_orig"/>                               
+                                </td>
+                            </t> 
                         </tr>                                                                                                                                                   
                     </tbody>
                 </table>
@@ -562,7 +577,12 @@
                                 <strong>Description:</strong>
                             </td> 
                             <td class="di_o_date_fac"  name="invoice_date">
-                                <strong>Date de facture:</strong>
+                                <t t-if="o.type == 'out_refund'">
+                                    <strong>Date d'avoir:</strong>
+                                </t>
+                                <t t-else="">
+                                    <strong>Date de facture:</strong>
+                                </t>
                             </td> 
                             <td class="di_o_date_ech"  name="due_date">
                                 <strong>Date d'échéance:</strong>
@@ -576,6 +596,11 @@
                             <td class="di_o_ref_fac"  name="reference">
                                 <strong>Reference:</strong>
                             </td> 
+                            <t t-if="o.type == 'out_refund'"> 
+                                <td class="di_o_date_fac_orig"  name="invoice_date_orig">                                
+                                    <strong>Date de facture d'origine:</strong>                                
+                                </td>
+                            </t> 
                         </tr>
                         <tr>
                             <td>                            
@@ -589,9 +614,9 @@
                                 </t>                                
                             </td>
                             <td>
-                                <t t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')">
+                                <!-- <t t-if="o.date_due and o.type == 'out_invoice' and o.state in ('open', 'in_payment', 'paid')"> -->
                                     <span t-field="o.date_due" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/>
-                                </t>                                
+                                <!-- </t>                                 -->
                             </td>
                             <!-- <td>
                                 <t t-if="o.origin">
@@ -608,6 +633,11 @@
                                     <span t-field="o.reference"/>
                                 </t>                                
                             </td>
+                            <t t-if="o.type == 'out_refund'"> 
+                                <td class="di_o_date_fac_orig"  name="invoice_date_orig">                                
+                                    <span t-field="o.di_date_piece_orig"/>                               
+                                </td>
+                            </t> 
                         </tr>                                                                                                                                                   
                     </tbody>
                 </table>

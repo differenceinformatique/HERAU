@@ -20,8 +20,18 @@ class AccountInvoice(models.Model):
                                              help="Total amount in the currency of the invoice, negative for credit notes.")
     di_period_fact = fields.Selection([("DEMANDE", "Demande"), ("SEMAINE", "Semaine"),("DECADE", "Décade"),("QUINZAINE","Quinzaine"),("MOIS","Mois")]
                                      ,related='partner_id.di_period_fact_aff', string="Périodicité de Facturation", help="Permet de filtrer lors de la facturation")
-        
 
+    di_date_piece_orig = fields.Date(string="Date pièece origine",compute="_compute_date_piece_orig" )#,store=True)
+    
+    @api.multi
+    @api.depends("origin")
+    def _compute_date_piece_orig(self):
+        for invoice in self:
+            if invoice.type == 'out_refund':
+                piece_orig = self.env['account.invoice'].search([('number','=',invoice.origin)],limit=1)
+                if piece_orig:
+                    invoice.di_date_piece_orig = piece_orig.date_invoice
+    
     @api.multi
     @api.depends("invoice_line_ids")
     def _compute_nb_lignes(self):
