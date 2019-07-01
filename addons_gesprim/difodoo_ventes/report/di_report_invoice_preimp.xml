@@ -179,7 +179,7 @@
                             </td>
                             <t t-if="o.type == 'out_refund'"> 
                                 <td class="di_o_date_fac_orig"  name="invoice_date_orig">                                
-                                    <span t-field="o.di_date_piece_orig"/>                               
+                                    <span t-field="o.di_date_piece_orig" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/>                               
                                 </td>
                             </t> 
                         </tr>                                                                                                                                                   
@@ -635,7 +635,7 @@
                             </td>
                             <t t-if="o.type == 'out_refund'"> 
                                 <td class="di_o_date_fac_orig"  name="invoice_date_orig">                                
-                                    <span t-field="o.di_date_piece_orig"/>                               
+                                    <span t-field="o.di_date_piece_orig" t-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/>                               
                                 </td>
                             </t> 
                         </tr>                                                                                                                                                   
