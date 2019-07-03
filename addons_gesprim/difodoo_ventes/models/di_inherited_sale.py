@@ -71,8 +71,14 @@ class SaleOrderLine(models.Model):
     di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)    
     di_marge_prc = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)    
     di_marge_inf_seuil = fields.Boolean(string='Marge inférieure au seuil',default = False, compute='_di_compute_marge_seuil',store=True)    
-    di_tare_un = fields.Float(string='Tare unitaire')          
-            
+    di_tare_un = fields.Float(string='Tare unitaire')  
+    
+    di_mode_saisie = fields.Char(string='Mode saisie',compute='_compte_mode_saisie')
+    
+    def _compte_mode_saisie(self):
+        self.di_mode_saisie = 'bottom'        
+   
+
     @api.multi 
     @api.onchange('di_poib')
     def _di_onchange_poib(self):
@@ -773,6 +779,7 @@ class SaleOrder(models.Model):
     
     di_nb_lig = fields.Integer(string='Nb lignes saisies', compute="_compute_nb_lignes")
     
+
     @api.multi
     @api.depends("order_line")
     def _compute_nb_lignes(self):

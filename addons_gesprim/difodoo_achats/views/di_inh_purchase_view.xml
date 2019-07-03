@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
+        <record id="di_view_purchase_order_form_editable_list" model="ir.ui.view">
+            <field name="name">di.view.purchase.order.form.editable.list</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="groups_id" eval="[(6,0, [ref('difodoo_fichiers_base.di_group_sais_fiche_pol')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable"/>
+                </xpath>
+            </field>
+        </record>
         <record id="di_view_purchase_order_form" model="ir.ui.view">
             <field name="name">di.purchase.order.form</field>
             <field name="model">purchase.order</field>
@@ -60,6 +71,10 @@
                     <field name="di_nb_palette" readonly="1" groups="difodoo_fichiers_base.di_group_aff_palette"  force_save="1"/>
                                                                                
                 </xpath> 
+                
+                <!-- <xpath expr="//page/field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable" groups="difodoo_fichiers_base.di_group_sais_fiche_pol"></attribute>
+                </xpath>  -->
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='date_planned']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath> 

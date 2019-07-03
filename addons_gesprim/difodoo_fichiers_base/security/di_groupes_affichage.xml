@@ -5,6 +5,21 @@
             <field name="name">Affichage des palettes</field>
             <field name="category_id" ref="base.module_category_hidden"/>
         </record>
+        <!-- Ne fonctionne pas -->
+        <record id="di_group_sais_fiche_sol" model="res.groups">
+            <field name="name">Saisie en mode fiche des commandes client</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+        
+        <record id="di_group_sais_fiche_pol" model="res.groups">
+            <field name="name">Saisie en mode fiche des commandes fournisseur</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+       
+        <record id="di_group_sais_fiche_ail" model="res.groups">
+            <field name="name">Saisie en mode fiche des factures</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
     
     </data>
 </odoo>
