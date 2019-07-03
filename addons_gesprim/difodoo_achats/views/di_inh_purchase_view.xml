@@ -20,30 +20,9 @@
             <field name="arch" type="xml">
     
                 <xpath expr="//header/field[@name='state']" position="before">   
-                <button class="oe_edit_only" name="di_action_grille_achat" type="object"
+                    <button class="oe_edit_only" name="di_action_grille_achat" type="object"
                         string="Grille d'achat" help="Permet d'importer les derniers articles achetés à ce fournisseur." />                                                                     
-                    <!-- <button class="di_imprimer_etiquette" name="imprimer_etiquettes" type="object" string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/> -->
-                    <!-- <button class="di_imprimer_etiquette_JS" type="button" string="Imprimer étiquettes JS" help="Imprime les étiquettes de la commande"/> -->                                        
-                    <!-- <button onclick="$window.alert('form')" >Imprimer étiquettes JS</button> -->                    
-                    <!-- <button class="di_imprimer_etiquette" onclick="openWin(^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR6,6~SD15^JUS^LRN^CI0^XZ
-^XA
-^MMT
-^PW639
-^LL0799
-^LS0
-^BY2,3,160^FT566,701^BCB,,N,N
-^FD>;[codebarre[^FS
-^FT74,460^A0B,39,38^FB98,1,0,C^FH\^FD[codeart[^FS
-^FT128,703^A0B,28,28^FB583,2,1,C^FH\^FD[des[^FS
-^FT325,607^A0B,28,28^FH\^FDLot : ^FS
-^FT247,603^A0B,28,28^FH\^FDQuantit\82 : ^FS
-^FT324,541^A0B,28,28^FH\^FD[lot[^FS
-^FT247,476^A0B,28,28^FH\^FD[qte[^FS
-^FT583,570^A0B,16,16^FH\^FD[txtcb[^FS
-^PQ1,0,1,Y^XZ)"  string="Imprimer étiquettes" help="Imprime les étiquettes de la commande"/>
-                </xpath> -->
-                <!-- <xpath expr="//header/field[@name='state']" position="after"> -->
-                         
+                   
                 </xpath> 
                 <xpath expr="//sheet/group/group[2]/field[@name='date_order'] " position="after">
                     <field name="di_demdt"/>
@@ -51,7 +30,37 @@
                 <xpath expr="//field[@name='date_approve'] " position="after">
                     <field name="di_nbex"/>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/form//label[@for='product_qty'] " position="before">
+                 <xpath expr="//field[@name='order_line']/form//field[@name='product_id'] " position="after">                                                
+                    <field name="di_qte_un_saisie_liv" invisible="1" readonly="1"/>                                                                                                
+                    <field name="di_qte_un_saisie_fac" invisible="1" readonly="1"/>                                                                            
+                    <field name="name"/>
+                    <field name="di_spe_saisissable" invisible="1"/>
+                    <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+                    <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
+                    <field name="di_nb_pieces" readonly="1"  force_save="1" />
+                    <field name="di_nb_colis" readonly="1"  force_save="1"/>
+                    <field name="product_packaging" string="Colis"   attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />
+                    <field name="di_nb_palette"  readonly="1" force_save="1" groups="difodoo_fichiers_base.di_group_aff_palette" />
+                    <field name="di_type_palette_id" groups="difodoo_fichiers_base.di_group_aff_palette" attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />
+                    <field name="di_poib" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
+                    <field name="di_tare_un" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>
+                    <field name="di_tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1"/>                                                            
+                    <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />                                                                    
+                </xpath>  
+                
+                <xpath expr="//page/field[@name='order_line']/form//field[@name='price_unit'] " position="before">
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/form//field[@name='price_unit'] " position="after">
+                    <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>                    
+                </xpath>
+                 <xpath expr="//page/field[@name='order_line']/form//field[@name='taxes_id'] " position="after">                    
+                    <field name="price_subtotal" widget="monetary" force_save="1" readonly="1" />
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/form//field[@name='date_planned']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath> 
+                <!-- <xpath expr="//field[@name='order_line']/form//label[@for='product_qty'] " position="before">
                     <field name="di_spe_saisissable" invisible="1"/>
                     <field name="di_un_saisie"  attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
                     <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
@@ -70,7 +79,7 @@
                     <field name="di_nb_colis" readonly="1"  force_save="1"/>
                     <field name="di_nb_palette" readonly="1" groups="difodoo_fichiers_base.di_group_aff_palette"  force_save="1"/>
                                                                                
-                </xpath> 
+                </xpath>  -->
                 
                 <!-- <xpath expr="//page/field[@name='order_line']/tree" position="attributes">
                     <attribute name="editable" groups="difodoo_fichiers_base.di_group_sais_fiche_pol"></attribute>

@@ -19,6 +19,41 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <field eval="80" name="priority"/>
             <field name="arch" type="xml"> 
+                <xpath expr="//field[@name='invoice_line_ids']/tree" position="before" >
+                    <form>
+                        <group>
+                            <field name="di_spe_saisissable" invisible="1"/>
+                            <field name="di_flg_modif_uom"  invisible="1"/>
+                            <field name="sequence" invisible="1" widget="handle"/>                        
+                            <field name="origin" invisible="1"/>
+                            <field name="is_rounding_line" invisible="1"/>                        
+                            <field name="display_type" invisible="1"/>
+                            <field name="company_id" invisible="1"/>    
+                            <field name="product_id" domain="[('sale_ok','=',True)]"/>                    
+                            <field name="name" widget="section_and_note_text"/>
+                            <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+                            <field name="di_un_saisie" string="Unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
+                            <field name="di_nb_pieces" readonly="1"  force_save="1" string="Nb pièces"/>
+                            <field name="di_nb_colis" readonly="1" force_save="1" string="Nb colis"/>
+                            <field name="di_product_packaging_id"  string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />
+                            <field name="di_nb_palette" readonly="1" force_save="1" string="Nb palettes" groups="difodoo_fichiers_base.di_group_aff_palette"/>
+                            <field name="di_type_palette_id"  groups="difodoo_fichiers_base.di_group_aff_palette"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />
+                            <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+                            <field name="di_tare_un" string="Tare Un." attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
+                            <field name="di_tare" string="Tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+                            <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/>  
+                            <field name="quantity"/>
+                            <field name="uom_id" groups="uom.group_uom"/>
+                            <field name="price_unit" string="Prix"/>
+                            <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
+                            <field name="discount" groups="base.group_no_one" string="Rem. (%)"/>
+                            <field name="invoice_line_tax_ids" widget="many2many_tags" options="{'no_create': True}" context="{'type':parent.type, 'tree_view_ref': 'account.account_tax_view_tree', 'search_view_ref': 'account.account_tax_view_search'}" domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]"/>
+                            <field name="price_subtotal" string="Sous-total" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
+                            <field name="currency_id" invisible="1"/>    
+                        </group>   
+                    </form>
+                </xpath>
                 <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="replace">
                 </xpath>   -->
                 <!-- <xpath expr="//field[@name='origin']" position="after">
@@ -90,6 +125,41 @@
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field eval="80" name="priority"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_line_ids']/tree" position="before" >
+                    <form>
+                        <group>
+                            <field name="di_spe_saisissable" invisible="1"/>
+                            <field name="di_flg_modif_uom"  invisible="1"/>
+                            <field name="sequence" invisible="1" widget="handle"/>                        
+                            <field name="origin" invisible="1"/>
+                            <field name="is_rounding_line" invisible="1"/>                        
+                            <field name="display_type" invisible="1"/>
+                            <field name="company_id" invisible="1"/>    
+                            <field name="product_id" domain="[('sale_ok','=',True)]"/>                    
+                            <field name="name" widget="section_and_note_text"/>
+                            <field name="di_qte_un_saisie" string="Qté unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+                            <field name="di_un_saisie" string="Unité saisie" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>
+                            <field name="di_nb_pieces" readonly="1"  force_save="1" string="Nb pièces"/>
+                            <field name="di_nb_colis" readonly="1" force_save="1" string="Nb colis"/>
+                            <field name="di_product_packaging_id"  string="Colis"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','COLIS')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','COLIS')]" />
+                            <field name="di_nb_palette" readonly="1" force_save="1" string="Nb palettes" groups="difodoo_fichiers_base.di_group_aff_palette"/>
+                            <field name="di_type_palette_id"  groups="difodoo_fichiers_base.di_group_aff_palette"  attrs="{'invisible': [('product_id', '=', False)],'required':[('di_un_saisie','=','PALETTE')],'readonly': [('di_spe_saisissable', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id),('di_type_cond','=','PALETTE')]" />
+                            <field name="di_poib"  string="Poids brut" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+                            <field name="di_tare_un" string="Tare Un." attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" />
+                            <field name="di_tare" string="Tare" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}"/>
+                            <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" string="Poids net"/>  
+                            <field name="quantity"/>
+                            <field name="uom_id" groups="uom.group_uom"/>
+                            <field name="price_unit" string="Prix"/>
+                            <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}" />
+                            <field name="discount" groups="base.group_no_one" string="Rem. (%)"/>
+                            <field name="invoice_line_tax_ids" widget="many2many_tags" options="{'no_create': True}" context="{'type':parent.type, 'tree_view_ref': 'account.account_tax_view_tree', 'search_view_ref': 'account.account_tax_view_search'}" domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]"/>
+                            <field name="price_subtotal" string="Sous-total" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
+                            <field name="currency_id" invisible="1"/>    
+                        </group>
+                    </form>
+                </xpath>
             
                 <xpath expr="//field[@name='purchase_id']" position="attributes">
                     <attribute name="context">{'show_total_amount': True,'di_afficher_BLs': True}</attribute>
