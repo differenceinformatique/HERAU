@@ -421,7 +421,7 @@
             <field name="view_mode">tree,form</field>                                    
             <!-- <field name="view_id" ref="difodoo_fichiers_base.di_view_product_simplifiee"/>   -->
              <field name="domain">
-                [('type','=','product'),'|',('qty_available','&gt;',0.0),('qty_available','&lt;',0.0)]
+                [('type','=','product'),'|','|',('qty_available','&gt;',0.0),('qty_available','&lt;',0.0),('di_flg_avec_ventes','=',True)]
             </field>                                             
         </record>      
        

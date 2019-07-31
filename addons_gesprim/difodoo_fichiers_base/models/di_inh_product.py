@@ -144,6 +144,8 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = "product.product"
     
+    di_flg_avec_ventes = fields.Boolean("Avec ventes non clôturées", default=False)
+    
     default_code = fields.Char('Internal Reference', index=True)
         
     di_reftiers_ids = fields.Many2many('res.partner', 'di_referencement_article_tiers', 'product_id','partner_id', string='Référencement article')

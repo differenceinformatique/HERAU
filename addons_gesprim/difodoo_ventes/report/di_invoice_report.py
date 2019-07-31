@@ -34,7 +34,7 @@ class DiInvoiceReport(models.Model):
     di_mt_vente = fields.Float(string='Montant vente', readonly=True)
 #     di_prix_achat = fields.Float(string='Prix achat', readonly=True, group_operator="avg")
 #     di_prix_vente = fields.Float(string='Prix vente', readonly=True, group_operator="avg")
-    di_marge_mt = fields.Float(string='Marge en montant', readonly=True, group_operator="avg")
+    di_marge_mt = fields.Float(string='Marge en montant', readonly=True)
 #     di_marge_prc = fields.Float(string='Marge en pourcentage', readonly=True, group_operator="avg")
 
     type = fields.Selection([

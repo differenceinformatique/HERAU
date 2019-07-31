@@ -42,7 +42,7 @@ class DiProductResserre(models.TransientModel):
             #product_ids._di_compute_resserre_values()               
 #             domain="[('type','!=','service'),('qty_available','>',0.0)]"
 #             domain="[('type','!=','service'),('di_avec_stock','=',True)]"
-            domain="['&',('type','=','product'),'|',('qty_available','>',0.0),('qty_available','<',0.0)]"      
+            domain="['&',('type','=','product'),'|','|',('qty_available','>',0.0),('qty_available','<',0.0),('di_flg_avec_ventes','=',True)]"      
 
         views = [
             (tree_view_id, 'tree'),     

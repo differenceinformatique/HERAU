@@ -1209,9 +1209,22 @@ class StockMoveLine(models.Model):
                             else:
                                 vals['lot_id'] = lotexist.id
                                 vals['lot_name'] = lotexist.name
-
+        
         ml = super(StockMoveLine, self).create(vals)
+        if ml.location_dest_id.usage=='customer':
+            articles = ml.mapped('product_id')
+            articles.update({
+                    'di_flg_avec_ventes': True,
+                })
         return ml
+    
+#     def write(self, vals):
+#         ml = super(StockMoveLine, self).write(vals)
+#         articles = ml.mapped('product_id')
+#         articles.update({
+#                 'di_flg_avec_ventes': False,
+#             })
+#         return ml 
     
     def di_qte_spe_en_stock(self, product_id, date, lot,usage='internal'):            
         nbcol = 0.0

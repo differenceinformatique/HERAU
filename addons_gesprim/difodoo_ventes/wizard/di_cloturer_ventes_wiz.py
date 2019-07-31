@@ -25,10 +25,19 @@ class DiCloturerVentes(models.TransientModel):
                 'di_flg_cloture': True,               
             })    
         
+        articles=smlines.mapped('product_id')
+        articles.update({
+                'di_flg_avec_ventes': False,
+            })
+        
         smlines = self.env['stock.move.line'].search(['&', ('di_flg_cloture', '=', False), ('state', '=', 'done'), ('di_usage_loc', '=', 'customer'), ('di_usage_loc_dest', '=', 'internal')]).filtered(lambda l: l.date.date() <= self.date_cloture)
         
         
         smlines.update({
                 'di_flg_cloture': True,               
             })    
+        articles=smlines.mapped('product_id')
+        articles.update({
+                'di_flg_avec_ventes': False,
+            })
         return smlines                    
