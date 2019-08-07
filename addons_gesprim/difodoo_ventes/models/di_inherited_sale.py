@@ -175,7 +175,7 @@ class SaleOrderLine(models.Model):
     
     @api.multi    
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
-    def _di_recalcule_quantites(self):
+    def _di_recalcule_quantites(self): 
         if self.ensure_one():
             if self.product_id:
                 #if self.di_qte_un_saisie!=0 or self.di_nb_pieces!=0 or self.di_nb_colis!=0 or self.di_nb_palette!=0 or self.di_poin!=0 or self.di_poib!=0:

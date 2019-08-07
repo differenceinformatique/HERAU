@@ -3,7 +3,7 @@
 
 from odoo import api, fields, models, _
 from datetime import datetime
-from mock.mock import self
+#from mock.mock import self    //morvan 01/08/2019 - fait planter la vm ubuntu
     
 class DiTarifs(models.Model):
     _name = "di.tarifs"
