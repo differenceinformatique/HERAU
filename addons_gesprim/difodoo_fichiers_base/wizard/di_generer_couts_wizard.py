@@ -89,7 +89,8 @@ class DiGenCoutsWiz(models.TransientModel):
 #                     cmp=mont
                     cmp=0
                 
-                    
+                if cmp<=0:
+                    cmp=cout_veille.di_cmp   
     #     
                         
                 data ={
