@@ -171,6 +171,8 @@ class AccountInvoice(models.Model):
         di_tare = di_poib - di_poin
         if di_nbcolis != 0.0:
             di_tare_un = di_tare / di_nbcolis
+        else:
+            di_tare_un = 0.0
         #ajout difodoo
         if float_compare(qty, 0.0, precision_rounding=line.product_uom.rounding) <= 0:
             qty = 0.0
