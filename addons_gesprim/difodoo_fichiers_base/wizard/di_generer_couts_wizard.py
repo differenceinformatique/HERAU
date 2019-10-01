@@ -16,7 +16,8 @@ class DiGenCoutsWiz(models.TransientModel):
     di_date_gen = fields.Date('Date de génération', default=datetime.today().date() )
 
     def di_generer_cmp(self,di_product_id,di_date):
-        
+#         if di_date.strftime("%d/%m/%y") == '06/06/19':
+#             di_date
         cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
         
         if not cout_jour:
@@ -106,13 +107,16 @@ class DiGenCoutsWiz(models.TransientModel):
                             'dernier_id':dernier_id        
                             }
                   
-                cout_jour.create(data)
-                self.env.cr.commit()                        
+                di_cout = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
+                if not di_cout:
+                    cout_jour.create(data)
+                    self.env.cr.commit()                        
                                     
     
     def di_generer_couts(self):        
         articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
-#         articles = self.env['product.product'].browse(5114)               
+
+#         articles = self.env['product.product'].browse(6817) #T300F              
 #         date_lancement = datetime.today().date()#+ timedelta(days=-7)
         
         date_lancement = self.di_date_gen
