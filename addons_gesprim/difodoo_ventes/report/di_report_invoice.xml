@@ -320,7 +320,7 @@
                                         <tr t-att-class="'o_line_section '">
                                             <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
                                                 <p>
-                                                    Total commande <span t-field="line.origin" /> :  <span t-esc="soustot_cde" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />                                                        
+                                                    Total commande <span t-esc="current_origine" /> :  <span t-esc="soustot_cde" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />                                                        
                                                 </p>      
                                             </td>
                                         </tr>                                                                  
@@ -398,7 +398,7 @@
                                     <tr t-att-class="'o_line_section '">
                                         <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
                                             <p>
-                                                Total commande <span t-field="line.origin" /> :  <span t-esc="soustot_cde" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />                                                        
+                                                Total commande <span t-esc="current_origine" /> :  <span t-esc="soustot_cde" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />                                                        
                                             </p>      
                                         </td>
                                     </tr>                                                                  
