@@ -14,6 +14,7 @@ class DiGenCoutsWiz(models.TransientModel):
     di_generer_tous_tar = fields.Boolean(string="Générer tous les tarifs ?",default=False)
     di_cde_ach = fields.Boolean(string="Prendre en compte les commandes d'achat dans le calcul.",default=False)
     di_date_gen = fields.Date('Date de génération', default=datetime.today().date() )
+    di_product_id = fields.Many2one('product.product',string="Article", help="""Permet de faire la génération sur un article. Laisser vide pour faire tous les articles.""")
 
     def di_generer_cmp(self,di_product_id,di_date):
 #         if di_date.strftime("%d/%m/%y") == '06/06/19':
@@ -113,8 +114,11 @@ class DiGenCoutsWiz(models.TransientModel):
                     self.env.cr.commit()                        
                                     
     
-    def di_generer_couts(self):        
-        articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
+    def di_generer_couts(self):      
+        if self.di_product_id:
+            articles = self.di_product_id
+        else:    
+            articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
 
 #         articles = self.env['product.product'].browse(6817) #T300F              
 #         date_lancement = datetime.today().date()#+ timedelta(days=-7)

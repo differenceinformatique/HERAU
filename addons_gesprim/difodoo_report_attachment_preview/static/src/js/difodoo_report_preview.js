@@ -25,38 +25,48 @@ odoo.define('difodoo_report_attachment_preview.ReportPreview', function(require)
             if (options.complete) {
                 options.complete();
             }
-            return rpc.query({
-                model: 'di.param',
-                method: 'di_get_option_impression',
-                args: [{}]
-            }).then(function(result) {                                                                                
-                if (result === 'ONG') { // contrôle du retour de la fonction          
-                //ouverture du doc dans un nouvel onglet            
-                    var w = window.open(url);
-                    if (!w || w.closed || typeof w.closed === 'undefined') {
-                        //  popup was blocked
-                        return false;
+            if (url.length < 10000){
+                return rpc.query({
+                    model: 'di.param',
+                    method: 'di_get_option_impression',
+                    args: [{}]
+                }).then(function(result) {                                                                                
+                    if (result === 'ONG') { // contrôle du retour de la fonction          
+                    //ouverture du doc dans un nouvel onglet            
+                        var w = window.open(url);
+                        if (!w || w.closed || typeof w.closed === 'undefined') {
+                            //  popup was blocked
+                            return false;
+                        }
+                        return true;
                     }
-                    return true;
-                }
-                if (result === 'STD') { // contrôle du retour de la fonction
-                    if (this.override_session) {
-                        options.data.session_id = this.session_id;
+                    if (result === 'STD') { // contrôle du retour de la fonction
+                        if (this.override_session) {
+                            options.data.session_id = this.session_id;
+                        }
+                        options.session = this;
+                        return ajax.get_file(options);
                     }
-                    options.session = this;
-                    return ajax.get_file(options);
-                }
-                if (result === 'DIR') { // contrôle du retour de la fonction                                            
-                    //impression directe sur l'imprimante par défaut (ou ouverture de la boite de dialogue)
-                    var objFra = document.createElement('iframe'); // CREATE AN IFRAME.
-                    objFra.style.visibility = "hidden"; // HIDE THE FRAME.
-                    objFra.src = url; // SET SOURCE.
-                    document.body.appendChild(objFra); // APPEND THE FRAME TO THE PAGE.
-                    objFra.contentWindow.focus(); // SET FOCUS.
-                    objFra.contentWindow.print();
-                    return true;
-                }
-            });        
+                    if (result === 'DIR') { // contrôle du retour de la fonction                                            
+                        //impression directe sur l'imprimante par défaut (ou ouverture de la boite de dialogue)
+                        var objFra = document.createElement('iframe'); // CREATE AN IFRAME.
+                        objFra.style.visibility = "hidden"; // HIDE THE FRAME.
+                        objFra.src = url; // SET SOURCE.
+                        document.body.appendChild(objFra); // APPEND THE FRAME TO THE PAGE.
+                        objFra.contentWindow.focus(); // SET FOCUS.
+                        objFra.contentWindow.print();
+                        return true;
+                    }
+                });    
+            }
+            else{
+                if (this.override_session) {
+                            options.data.session_id = this.session_id;
+                        }
+                        options.session = this;
+                        return ajax.get_file(options);
+                
+            }    
         },
     });
 

@@ -75,6 +75,11 @@ class SaleOrderLine(models.Model):
     
     di_mode_saisie = fields.Char(string='Mode saisie',compute='_compte_mode_saisie')
     
+#     @api.depends('state')
+#     def _di_maj_cout(self):
+#         for line in self:
+#             line.purchase_price = line.product_id.standard_price
+           
     def _compte_mode_saisie(self):
         self.di_mode_saisie = 'bottom'        
    
@@ -779,7 +784,13 @@ class SaleOrder(models.Model):
     
     di_nb_lig = fields.Integer(string='Nb lignes saisies', compute="_compute_nb_lignes")
     
-
+    @api.multi
+    def _action_confirm(self):
+        for order in self:
+            for line in order.order_line:
+                line.purchase_price = line.product_id.standard_price
+        super(SaleOrder, self)._action_confirm()
+        
     @api.multi
     @api.depends("order_line")
     def _compute_nb_lignes(self):

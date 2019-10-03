@@ -14,3 +14,4 @@ from . import di_cloturer_lots_wiz
 from . import di_regul_art_lot_wiz
 from . import di_facturation_cron_wiz
 from . import di_imp_manquants_wiz  
+from . import di_inh_account_invoice_refund

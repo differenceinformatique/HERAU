@@ -263,6 +263,13 @@ class ProductProduct(models.Model):
 
 #     def _di_compute_resserre_values(self, field_names=None):
 
+    def di_get_qte_cde(self):
+        qtecde=0.0
+        lines = self.env['sale.order.line'].search(['&',('state', 'in', ('draft','sent','sale')),('invoice_status','=','no'),('product_id','=',self.id)]).filtered(lambda s: s.order_id.invoice_status == 'no')
+        for line in lines:
+            qtecde = qtecde+line.product_uom_qty
+        return qtecde
+        
     def action_view_stock_move_lines(self):
         self.ensure_one()
         action = self.env.ref('difodoo_ventes.di_stock_move_line_action').read()[0]

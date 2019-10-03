@@ -11,11 +11,13 @@
                         <tr>
                             <th>Article</th>
                             <th>Commande</th>
-                            <th>Quantité commandée</th>
+                            <th>Quantité commande</th>
+                            <th>Quantité totale commandée</th>
                             <th>Quantité en stock</th>
                             <th>Manquants</th>                            
                         </tr>
-                        <t  t-foreach="wiz.di_sol_ids" t-as="sol">                           
+                        <t  t-foreach="wiz.di_sol_ids.sorted(key=lambda l: (l.product_id.name))" t-as="sol">  
+                            <t t-set="qtetotcde" t-value="sol.product_id.di_get_qte_cde()"/>                         
                             <tr>
                                 <td>
                                     <span t-field="sol.product_id"/>
@@ -28,10 +30,13 @@
                                     <span t-esc="'%.2f'% sol.product_uom_qty"/>
                                 </td>
                                 <td>
+                                    <span t-esc="'%.2f'% qtetotcde"/>
+                                </td>
+                                <td>
                                     <span t-esc="'%.2f'% sol.product_id.qty_available" />
                                 </td>
                                 <td>
-                                    <t t-set="di_manquants" t-value="sol.product_uom_qty - sol.product_id.qty_available "/>
+                                    <t t-set="di_manquants" t-value="qtetotcde - sol.product_id.qty_available "/>
                                     <span t-esc="'%.2f'% di_manquants" />   
                                 </td>                               
                             </tr>                            
