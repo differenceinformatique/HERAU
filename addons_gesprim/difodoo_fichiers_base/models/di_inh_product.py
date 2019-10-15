@@ -493,7 +493,7 @@ class ProductProduct(models.Model):
             if art.di_qte_stock != 0.0:
                 art.di_prix_achat_moyen = art.di_val_stock / art.di_qte_stock
             else:
-                art.di_prix_achat_moyen =0.0
+                art.di_prix_achat_moyen = art.product_tmpl_id.standard_price
                 
             art.di_val_marge = art.di_val_ven - (art.di_qte_ven*art.di_prix_achat_moyen)
                 
