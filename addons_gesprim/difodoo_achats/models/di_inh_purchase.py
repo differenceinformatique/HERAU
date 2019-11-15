@@ -59,10 +59,14 @@ class PurchaseOrderLine(models.Model):
     di_nb_palette_a_facturer = fields.Float(string='Nb palette à facturer',compute='_get_to_invoice_qty')
  
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)    
-    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)    
+#     di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)  
+    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),store=True)
+  
     di_flg_modif_uom = fields.Boolean()    
     di_tare_un = fields.Float(string='Tare unitaire')
     di_flg_qty_suggest = fields.Boolean(store=False, default=False)
+    
+    order_date_order = fields.Datetime(related='order_id.date_order', store=True, string='Date commande', readonly=False)
     
     @api.model
     def _get_date_planned(self, seller, po=False):
@@ -142,24 +146,52 @@ class PurchaseOrderLine(models.Model):
                 else:
                     self.di_flg_qty_suggest=False                                
    
+#     def _get_dernier_prix(self):
+#         prix = 0.0
+#         prix = self.product_id.di_get_dernier_cmp(self.date_order.date())
+#         if prix == 0.0:
+#             lignes = self.search(['&', ('product_id', '=', self.product_id.id), ('partner_id', '=', self.partner_id.id),('date_order','<',self.date_order)]).sorted(key=lambda t: t.date_order,reverse=True)
+#             if lignes:
+#                 for l in lignes:
+#                     break
+#                 if l.price_unit:
+#                     prix = l.price_unit            
+#         return prix
+    
+    
     def _get_dernier_prix(self):
         prix = 0.0
-        prix = self.product_id.di_get_dernier_cmp(self.date_order.date())
-        if prix == 0.0:
-            lignes = self.search(['&', ('product_id', '=', self.product_id.id), ('partner_id', '=', self.partner_id.id),('date_order','<',self.date_order)]).sorted(key=lambda t: t.date_order,reverse=True)
-            if lignes:
-                for l in lignes:
-                    break
-                if l.price_unit:
-                    prix = l.price_unit            
+        
+        sqlstr = """
+                    select  price_unit                                                                                                                       
+                    from purchase_order_line pol                                                                    
+                    where pol.product_id = %s and pol.partner_id =%s
+                    order by pol.order_date_order desc limit 1
+                    """
+                    
+        self.env.cr.execute(sqlstr, (self.product_id.id, self.partner_id.id))                                        
+        
+        result = self.env.cr.fetchall()[0]
+        prix = result[0] and result[0] or 0.0
+        
+#         l = self.search(['&', ('product_id', '=', self.product_id.id), ('order_partner_id', '=', self.order_partner_id.id),('order_date_order','<',self.order_date_order)], limit=1).sorted(key=lambda t: t.order_date_order,reverse=True)
+#         if l.price_unit:
+#             prix = l.price_unit            
         return prix
     
     @api.multi
-    @api.depends('product_id','partner_id','date_order')
-    def _di_compute_dernier_prix(self):    
-        for pol in self:    
-            pol.di_dern_prix =pol._get_dernier_prix()
+    @api.onchange('product_id','partner_id')#,'order_date_order')
+    def _di_onchange_dernier_prix(self):        
+        for pol in self:
+            if pol.product_id and pol.partner_id:
+                pol.di_dern_prix =pol._get_dernier_prix()   
     
+#     @api.multi
+#     @api.depends('product_id','partner_id','date_order')
+#     def _di_compute_dernier_prix(self):    
+#         for pol in self:    
+#             pol.di_dern_prix =pol._get_dernier_prix()
+#     
     @api.multi
     @api.depends('product_id.di_spe_saisissable')
     def _di_compute_spe_saisissable(self):       

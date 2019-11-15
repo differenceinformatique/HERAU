@@ -49,7 +49,7 @@
                 </xpath>  
                 
                 <xpath expr="//page/field[@name='order_line']/form//field[@name='price_unit'] " position="before">
-                    <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1" force_save="1"/>
                 </xpath>
                 <xpath expr="//page/field[@name='order_line']/form//field[@name='price_unit'] " position="after">
                     <field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>                    
@@ -128,7 +128,7 @@
                     <field name="di_qte_un_saisie_fac" invisible="1" readonly="1"/>                                                            
                 </xpath>  
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit'] " position="before">
-                    <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1"  force_save="1"/>
                 </xpath> 
                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit'] " position="after">
                 	<field name="di_un_prix" string="Unité de prix" attrs="{'readonly': [('di_spe_saisissable', '=', False)],'required':[('di_spe_saisissable','=',True)]}"/>

@@ -92,7 +92,7 @@
                     <field name="price_unit" string="Prix unitaire"    options="{&quot;bg_color&quot;:&quot;aqua&quot;}" />
                 </xpath>
                 <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
-                    <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1" force_save="1" />
                 </xpath>
 				
 				<xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']"
@@ -248,7 +248,7 @@
                     <field name="price_unit" string="Prix unitaire" style="font-weight: bold;" options="{&quot;bg_color&quot;:&quot;aqua&quot;,&quot;hbg_color&quot;:&quot;aqua&quot;}"/>
                 </xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
-                    <field name="di_dern_prix" string="Dernier prix" readonly="1"  />
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1" force_save="1"  />
                 </xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
 					<field name="di_un_prix" string="Unité de prix"

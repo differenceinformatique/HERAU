@@ -64,12 +64,15 @@ class SaleOrderLine(models.Model):
     di_nb_palette_a_facturer = fields.Float(string='Nb palette à facturer',compute='_get_to_invoice_qty')
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=True,compute='_di_compute_spe_saisissable',store=True)          
-    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)    
+#     di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),compute='_di_compute_dernier_prix',store=True)
+    di_dern_prix = fields.Float(string='Dernier prix', digits=dp.get_precision('Product Price'),store=True)        
     di_marge_prc = fields.Float(string='% marge',compute='_di_calul_marge_prc',store=True)    
     di_marge_inf_seuil = fields.Boolean(string='Marge inférieure au seuil',default = False, compute='_di_compute_marge_seuil',store=True)    
     di_tare_un = fields.Float(string='Tare unitaire')  
     
     di_mode_saisie = fields.Char(string='Mode saisie',compute='_compte_mode_saisie')
+    
+    order_date_order = fields.Datetime(related='order_id.date_order', store=True, string='Date commande', readonly=False)
     
            
     def _compte_mode_saisie(self):
@@ -79,7 +82,7 @@ class SaleOrderLine(models.Model):
     @api.multi 
     @api.onchange('di_poib')
     def _di_onchange_poib(self):
-        if self.ensure_one():                    
+        if self.ensure_one() and self.product_id:                    
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poib
             else:
@@ -92,7 +95,7 @@ class SaleOrderLine(models.Model):
     @api.multi 
     @api.onchange('di_poin')
     def _di_onchange_poin(self):
-        if self.ensure_one():
+        if self.ensure_one() and self.product_id:
             self.di_tare = self.di_poib-self.di_poin      
             if self.di_un_saisie != 'KG':         
                 if self.product_uom:
@@ -103,7 +106,7 @@ class SaleOrderLine(models.Model):
     @api.multi 
     @api.onchange('di_tare')
     def _di_onchange_tare(self):
-        if self.ensure_one():    
+        if self.ensure_one() and self.product_id:    
             self.di_poin = self.di_poib - self.di_tare        
             if self.di_un_saisie == 'KG':
                 self.di_qte_un_saisie = self.di_poib
@@ -229,13 +232,14 @@ class SaleOrderLine(models.Model):
     @api.multi    
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
-        if self.ensure_one():
+        if self.ensure_one() and self.product_id:
             self.di_tare = self.di_tare_un * self.di_nb_colis
             
     #OK calcul en dessous
     @api.multi
     @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom', 'move_ids.di_qte_un_saisie'
                  , 'move_ids.di_nb_pieces', 'move_ids.di_nb_colis', 'move_ids.di_nb_palette', 'move_ids.di_poin', 'move_ids.di_poib')
+    @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom')    
     def _compute_qty_delivered(self):
         super(SaleOrderLine, self)._compute_qty_delivered()
         for line in self:  # TODO: maybe one day, this should be done in SQL for performance sake
@@ -319,17 +323,38 @@ class SaleOrderLine(models.Model):
         
     def _get_dernier_prix(self):
         prix = 0.0
-        l = self.search(['&', ('product_id', '=', self.product_id.id), ('order_partner_id', '=', self.order_partner_id.id),('order_id.date_order','<',self.order_id.date_order)], limit=1).sorted(key=lambda t: t.order_id.date_order,reverse=True)
-        if l.price_unit:
-            prix = l.price_unit            
+        
+        sqlstr = """
+                    select  price_unit                                                                                                                       
+                    from sale_order_line sol                                                                    
+                    where sol.product_id = %s and sol.order_partner_id =%s
+                    order by sol.order_date_order desc limit 1
+                    """
+                    
+        self.env.cr.execute(sqlstr, (self.product_id.id, self.order_partner_id.id))                                        
+        
+        result = self.env.cr.fetchall()[0]
+        prix = result[0] and result[0] or 0.0
+        
+#         l = self.search(['&', ('product_id', '=', self.product_id.id), ('order_partner_id', '=', self.order_partner_id.id),('order_date_order','<',self.order_date_order)], limit=1).sorted(key=lambda t: t.order_date_order,reverse=True)
+#         if l.price_unit:
+#             prix = l.price_unit            
         return prix
                       
+#     @api.multi
+#     @api.depends('product_id','order_partner_id')#,'order_date_order')
+#     def _di_compute_dernier_prix(self):        
+#         for sol in self:
+#             if sol.product_id and sol.order_partner_id:
+#                 sol.di_dern_prix =sol._get_dernier_prix()  
+                
     @api.multi
-    @api.depends('product_id','order_partner_id','order_id.date_order')
-    def _di_compute_dernier_prix(self):        
+    @api.onchange('product_id','order_partner_id')#,'order_date_order')
+    def _di_onchange_dernier_prix(self):        
         for sol in self:
-            sol.di_dern_prix =sol._get_dernier_prix()    
-              
+            if sol.product_id and sol.order_partner_id:
+                sol.di_dern_prix =sol._get_dernier_prix()    
+               
     def di_recherche_prix_unitaire(self,prixOrig, tiers, article, di_un_prix , qte, date,typecol,typepal):
         if not prixOrig or prixOrig ==0.0:    
             prixFinal = 0.0       
