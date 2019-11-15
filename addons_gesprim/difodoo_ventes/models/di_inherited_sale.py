@@ -22,26 +22,22 @@ class SaleOrderLine(models.Model):
     di_qte_un_saisie= fields.Float(string='Quantité en unité de saisie',store=True)
     di_un_saisie    = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie",store=True)
     di_type_palette_id  = fields.Many2one('product.packaging', string='Palette') 
-#     di_nb_pieces    = fields.Integer(string='Nb pièces' ,compute="_compute_qte_aff",store=True) # doublon avec _di_recalcule_quantites
-#     di_nb_colis     = fields.Integer(string='Nb colis',compute="_compute_qte_aff",store=True) # doublon avec _di_recalcule_quantites
-#     di_nb_palette   = fields.Float(string='Nb palettes',compute="_compute_qte_aff",store=True) # doublon avec _di_recalcule_quantites
+
     di_nb_pieces    = fields.Integer(string='Nb pièces')
-    di_nb_colis     = fields.Integer(string='Nb colis')
+    di_nb_colis     = fields.Float(string='Nb colis', digits=(8,1))
     di_nb_palette   = fields.Float(string='Nb palettes')
     di_poin         = fields.Float(string='Poids net',store=True)
     di_poib         = fields.Float(string='Poids brut',store=True)
     di_tare         = fields.Float(string='Tare',store=True)#,compute="_compute_tare")    
     di_un_prix      = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de prix",store=True)
 
-    di_flg_modif_uom = fields.Boolean()
-#     di_flg_msg_stock = fields.Boolean(string="flag", default=False, store=True)
-    
+    di_flg_modif_uom = fields.Boolean()   
 
     di_qte_un_saisie_liv = fields.Float(string='Quantité livrée en unité de saisie', compute='_compute_qty_delivered')
     di_un_saisie_liv     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie livrée")
     di_type_palette_liv_id  = fields.Many2one('product.packaging', string='Palette livrée') 
     di_nb_pieces_liv     = fields.Integer(string='Nb pièces livrées', compute='_compute_qty_delivered')
-    di_nb_colis_liv      = fields.Integer(string='Nb colis livrés', compute='_compute_qty_delivered')
+    di_nb_colis_liv      = fields.Float(string='Nb colis livrés', compute='_compute_qty_delivered', digits=(8,1))
     di_nb_palette_liv    = fields.Float(string='Nb palettes livrées', compute='_compute_qty_delivered')
     di_poin_liv          = fields.Float(string='Poids net livré', compute='_compute_qty_delivered')
     di_poib_liv          = fields.Float(string='Poids brut livré', compute='_compute_qty_delivered')
@@ -52,7 +48,7 @@ class SaleOrderLine(models.Model):
     di_un_saisie_fac     = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"),("PALETTE", "Palette"),("KG","Kg")], string="Unité de saisie facturés")
     di_type_palette_fac_id  = fields.Many2one('product.packaging', string='Palette facturée') 
     di_nb_pieces_fac     = fields.Integer(string='Nb pièces facturées')
-    di_nb_colis_fac      = fields.Integer(string='Nb colis facturés')
+    di_nb_colis_fac      = fields.Float(string='Nb colis facturés', digits=(8,1))
     di_nb_palette_fac    = fields.Float(string='Nb palettes facturées')
     di_poin_fac          = fields.Float(string='Poids net facturé')
     di_poib_fac          = fields.Float(string='Poids brut facturé')
@@ -64,7 +60,7 @@ class SaleOrderLine(models.Model):
     di_poin_a_facturer = fields.Float(string='Poids net à facturer',compute='_get_to_invoice_qty')
     di_poib_a_facturer = fields.Float(string='Poids brut à facturer',compute='_get_to_invoice_qty')
     di_nb_pieces_a_facturer = fields.Integer(string='Nb pièces à facturer',compute='_get_to_invoice_qty')
-    di_nb_colis_a_facturer = fields.Integer(string='Nb colis à facturer',compute='_get_to_invoice_qty')
+    di_nb_colis_a_facturer = fields.Float(string='Nb colis à facturer',compute='_get_to_invoice_qty', digits=(8,1))
     di_nb_palette_a_facturer = fields.Float(string='Nb palette à facturer',compute='_get_to_invoice_qty')
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=True,compute='_di_compute_spe_saisissable',store=True)          
@@ -75,10 +71,6 @@ class SaleOrderLine(models.Model):
     
     di_mode_saisie = fields.Char(string='Mode saisie',compute='_compte_mode_saisie')
     
-#     @api.depends('state')
-#     def _di_maj_cout(self):
-#         for line in self:
-#             line.purchase_price = line.product_id.standard_price
            
     def _compte_mode_saisie(self):
         self.di_mode_saisie = 'bottom'        
@@ -102,10 +94,6 @@ class SaleOrderLine(models.Model):
     def _di_onchange_poin(self):
         if self.ensure_one():
             self.di_tare = self.di_poib-self.di_poin      
-#             self.di_poib = self.di_poin+self.di_tare       
-#             if self.di_un_saisie == 'KG':
-#                 self.di_qte_un_saisie = self.di_poib
-#             else:       
             if self.di_un_saisie != 'KG':         
                 if self.product_uom:
                     if self.product_uom.name.lower() == 'kg' and self.product_uom_qty != self.di_poin: # si la qté std n'est pas modifiée le flag modifparprg reste à vrai
@@ -144,36 +132,9 @@ class SaleOrderLine(models.Model):
                         if self.product_uom.name == 'Unit(s)' or self.product_uom.name == 'Pièce' :
                             self.di_nb_pieces = ceil(self.product_uom_qty)
                         if self.product_uom.name.lower() ==  'colis' :
-                            self.di_nb_colis = ceil(self.product_uom_qty)
+                            self.di_nb_colis = self.product_uom_qty
                         if self.product_uom.name.lower() ==  'palette' :
                             self.di_nb_palette = ceil(self.product_uom_qty)
-#                         else:
-#                             # sinon on recalcule les autres unité à partir de la quantité en unité de mesure    
-#                             if self.product_id.di_get_type_piece().qty != 0.0:
-#                                 self.di_nb_pieces = ceil(self.product_uom_qty/self.product_id.di_get_type_piece().qty)
-#                             else:
-#                                 self.di_nb_pieces = ceil(self.product_uom_qty)                                
-#                             if self.product_packaging.qty != 0.0 :
-#                                 self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
-#                             else:      
-#                                 self.di_nb_colis = ceil(self.product_uom_qty)             
-#                             if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                                 self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
-#                             else:
-#                                 self.di_nb_palette = self.di_nb_colis
-# 
-#                         self.di_poin = self.product_uom_qty * self.product_id.weight 
-#                         self.di_poib = self.di_poin + self.di_tare
-#                                 
-# temporaire herau
-#                         if self.di_un_saisie == "PIECE":
-#                             self.di_qte_un_saisie = self.di_nb_pieces
-#                         elif self.di_un_saisie == "COLIS":
-#                             self.di_qte_un_saisie = self.di_nb_colis
-#                         elif self.di_un_saisie == "PALETTE":
-#                             self.di_qte_un_saisie = self.di_nb_palette 
-#                         elif self.di_un_saisie == "KG":
-#                             self.di_qte_un_saisie = self.di_poib
                             
                         self.di_flg_modif_uom = True
                 SaleOrderLine.modifparprg=False
@@ -182,8 +143,7 @@ class SaleOrderLine(models.Model):
     @api.onchange('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
     def _di_recalcule_quantites(self): 
         if self.ensure_one():
-            if self.product_id:
-                #if self.di_qte_un_saisie!=0 or self.di_nb_pieces!=0 or self.di_nb_colis!=0 or self.di_nb_palette!=0 or self.di_poin!=0 or self.di_poib!=0:
+            if self.product_id:                
                 #    # on ne passe que si une des quantités est différente de 0, sinon on y passe en initialisation de l'unité de saisie/colisage
                 product_uom_qty = self.product_uom_qty  # on fait une sauvegarde de la quantité en unité de mesure, on e bascule le flag que si elle change                         
                 if self.di_flg_modif_uom == False:
@@ -194,9 +154,9 @@ class SaleOrderLine(models.Model):
                         self.di_nb_pieces = ceil(self.di_qte_un_saisie)
                         self.product_uom_qty = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
                         if self.product_packaging.qty != 0.0 :
-                            self.di_nb_colis = ceil(self.product_uom_qty / self.product_packaging.qty)
+                            self.di_nb_colis = self.product_uom_qty / self.product_packaging.qty
                         else:      
-                            self.di_nb_colis = ceil(self.product_uom_qty)             
+                            self.di_nb_colis = self.product_uom_qty             
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                         else:
@@ -205,7 +165,7 @@ class SaleOrderLine(models.Model):
                         self.di_poib = self.di_poin + self.di_tare
                               
                     elif self.di_un_saisie == "COLIS":
-                        self.di_nb_colis = ceil(self.di_qte_un_saisie)
+                        self.di_nb_colis = self.di_qte_un_saisie
                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
@@ -218,9 +178,9 @@ class SaleOrderLine(models.Model):
                     elif self.di_un_saisie == "PALETTE":            
                         self.di_nb_palette = self.di_qte_un_saisie
                         if self.di_type_palette_id.di_qte_cond_inf!=0.0:
-                            self.di_nb_colis = ceil(self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf)
+                            self.di_nb_colis = self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_colis = ceil(self.di_nb_palette)
+                            self.di_nb_colis = self.di_nb_palette
                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
                         self.di_poin = self.product_uom_qty * self.product_id.weight 
@@ -235,9 +195,9 @@ class SaleOrderLine(models.Model):
                         else:
                             self.di_nb_pieces = ceil(self.di_poin)                                            
                         if self.product_packaging.qty !=0.0:
-                            self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                            self.di_nb_colis = self.di_nb_pieces / self.product_packaging.qty
                         else:
-                            self.di_nb_colis = ceil(self.di_nb_pieces)                            
+                            self.di_nb_colis = self.di_nb_pieces                            
                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis                            
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
@@ -253,9 +213,9 @@ class SaleOrderLine(models.Model):
                         else:
                             self.di_nb_pieces = ceil(self.di_poin)                                            
                         if self.product_packaging.qty !=0.0:
-                            self.di_nb_colis = ceil(self.di_nb_pieces / self.product_packaging.qty)
+                            self.di_nb_colis = self.di_nb_pieces / self.product_packaging.qty
                         else:
-                            self.di_nb_colis = ceil(self.di_nb_pieces)                           
+                            self.di_nb_colis = self.di_nb_pieces                           
                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis                           
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
@@ -267,80 +227,12 @@ class SaleOrderLine(models.Model):
                     SaleOrderLine.modifparprg = True
                             
     @api.multi    
-    @api.onchange('di_nb_colis', 'di_tare_un','di_qte_un_saisie')
+    @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
             self.di_tare = self.di_tare_un * self.di_nb_colis
-               
-#     @api.multi    ; doublon avec _di_recalcule_quantites
-#     @api.depends('di_qte_un_saisie', 'di_un_saisie','di_type_palette_id','product_packaging')
-#     def _compute_qte_aff(self):
-#         #if self.ensure_one():
-#         for sol in self:
-#             if sol.di_flg_modif_uom == False:
-#                 if sol.di_un_saisie == "PIECE":
-#                     sol.di_nb_pieces = ceil(sol.di_qte_un_saisie)            
-#                     if sol.product_packaging.qty != 0.0 :
-#                         sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
-#                     else:      
-#                         sol.di_nb_colis = ceil(sol.product_uom_qty)             
-#                     if sol.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                         sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
-#                     else:
-#                         sol.di_nb_palette = sol.di_nb_colis                               
-#                             
-#                 elif sol.di_un_saisie == "COLIS":
-#                     sol.di_nb_colis = ceil(sol.di_qte_un_saisie)            
-#                     sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)
-#                     if sol.di_type_palette_id.di_qte_cond_inf !=0.0:                
-#                         sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
-#                     else:
-#                         sol.di_nb_palette = sol.di_nb_colis                              
-#                                            
-#                 elif sol.di_un_saisie == "PALETTE":            
-#                     sol.di_nb_palette = sol.di_qte_un_saisie
-#                     if sol.di_type_palette_id.di_qte_cond_inf!=0.0:
-#                         sol.di_nb_colis = ceil(sol.di_nb_palette * sol.di_type_palette_id.di_qte_cond_inf)
-#                     else:
-#                         sol.di_nb_colis = ceil(sol.di_nb_palette)
-#                     sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)                                           
-#                       
-#                 elif sol.di_un_saisie == "KG":                                          
-#                     if sol.product_packaging.qty !=0.0:
-#                         sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
-#                     else:
-#                         sol.di_nb_colis = ceil(sol.product_uom_qty)
-#                     if sol.di_type_palette_id.di_qte_cond_inf !=0.0:    
-#                         sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
-#                     else:  
-#                         sol.di_nb_palette = sol.di_nb_colis
-#                     sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)
-#                       
-#                 else:                                    
-#                     if sol.product_packaging.qty !=0.0:
-#                         sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
-#                     else:
-#                         sol.di_nb_colis = ceil(sol.product_uom_qty)
-#                     if sol.di_type_palette_id.di_qte_cond_inf !=0.0:    
-#                         sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
-#                     else:  
-#                         sol.di_nb_palette = sol.di_nb_colis
-#                     sol.di_nb_pieces = ceil(sol.product_packaging.di_qte_cond_inf * sol.di_nb_colis)
-#             else:           
-#                 if sol.product_id.di_get_type_piece().qty != 0.0:
-#                     sol.di_nb_pieces = ceil(sol.product_uom_qty/sol.product_id.di_get_type_piece().qty)
-#                 else:
-#                     sol.di_nb_pieces = ceil(sol.product_uom_qty)                                
-#                 if sol.product_packaging.qty != 0.0 :
-#                     sol.di_nb_colis = ceil(sol.product_uom_qty / sol.product_packaging.qty)
-#                 else:      
-#                     sol.di_nb_colis = ceil(sol.product_uom_qty)             
-#                 if sol.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                     sol.di_nb_palette = sol.di_nb_colis / sol.di_type_palette_id.di_qte_cond_inf
-#                 else:
-#                     sol.di_nb_palette = sol.di_nb_colis
-#                       
-    
+            
+    #OK calcul en dessous
     @api.multi
     @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom', 'move_ids.di_qte_un_saisie'
                  , 'move_ids.di_nb_pieces', 'move_ids.di_nb_colis', 'move_ids.di_nb_palette', 'move_ids.di_poin', 'move_ids.di_poib')
@@ -443,20 +335,18 @@ class SaleOrderLine(models.Model):
             prixFinal = 0.0       
             prixFinal =self.env["di.tarifs"]._di_get_prix(tiers,article,di_un_prix,qte,date,typecol,typepal)
             if prixFinal == 0.0:
-                prixFinal = prixOrig
-    #             if prixOrig == 0.0:
-    #                 raise ValidationError("Le prix unitaire de la ligne est à 0 !")
+                prixFinal = prixOrig    
         else:
             prixFinal = prixOrig
         return prixFinal  
                        
     @api.multi
-    @api.depends('product_id.di_spe_saisissable','product_id','di_qte_un_saisie')
+    @api.depends('product_id.di_spe_saisissable','product_id')
     def _di_compute_spe_saisissable(self):     
         for sol in self:   
             sol.di_spe_saisissable =sol.product_id.di_spe_saisissable     
 
-    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','di_un_prix')
+    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_un_prix')
     def _compute_amount(self):
         # copie standard
         """
@@ -589,7 +479,6 @@ class SaleOrderLine(models.Model):
         #surcharge de la procédure pour recalculer le prix car elle est appelée après _di_changer_prix quand on modifie l'article
         vals = {}
         if self.product_id and self.di_un_prix:
-#             if vals.get("price_unit"):
             # modif de la quantité à prendre en compte
             di_qte_prix = 0.0
             if self.di_un_prix == "PIECE":
@@ -612,22 +501,10 @@ class SaleOrderLine(models.Model):
         if not self.price_unit or self.price_unit==0.0:
             super(SaleOrderLine, self).product_uom_change()
         #surcharge de la procédure pour recalculer le prix car elle est appelée après _di_changer_prix quand on modifie l'article
-        if self.product_id and self.di_un_prix:            
-            di_qte_prix = 0.0
-            if self.di_un_prix == "PIECE":
-                di_qte_prix = self.di_nb_pieces
-            elif self.di_un_prix == "COLIS":
-                di_qte_prix = self.di_nb_colis
-            elif self.di_un_prix == "PALETTE":
-                di_qte_prix = self.di_nb_palette
-            elif self.di_un_prix == "KG":
-                di_qte_prix = self.di_poin
-            elif self.di_un_prix == False or self.di_un_prix == '':
-                di_qte_prix = self.product_uom_qty
-            self.price_unit = self.di_recherche_prix_unitaire(self.price_unit,self.order_id.partner_id,self.product_id,self.di_un_prix,di_qte_prix,self.order_id.date_order,self.product_packaging,self.di_type_palette_id)       
-                
+        self._di_changer_prix()
+        
     @api.multi
-    @api.onchange('product_id','order_id.partner_id','order_id.date_order','di_un_prix','di_qte_un_saisie','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','di_poib','di_tare','product_uom_qty')
+    @api.onchange('product_id','order_id.partner_id','order_id.date_order','di_un_prix','di_nb_pieces','di_nb_colis','di_nb_palette','di_poin','product_uom_qty')
     def _di_changer_prix(self):
         for line in self:
             di_qte_prix = 0.0
@@ -779,7 +656,7 @@ class SaleOrder(models.Model):
     di_tournee = fields.Char(string='Tournée',help="Pour regroupement sur les bordereaux de transport")
     di_rangtournee = fields.Char(string='Rang dans la tournée',help="Pour ordre de tri sur les bordereaux de transport")
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=dp.get_precision('Product Unit of Measure'))
-    di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol', store=True)   
+    di_nbcol = fields.Float(compute='_compute_di_nbpal_nbcol', store=True, digits=(8,1))   
     di_nbex = fields.Integer("Nombre exemplaires",help="""Nombre d'exemplaires d'une impression.""",default=0)
     
     di_nb_lig = fields.Integer(string='Nb lignes saisies', compute="_compute_nb_lignes")
@@ -1197,7 +1074,7 @@ class SaleOrder(models.Model):
             wnbpal = sum(line.di_nb_palette for line in order.order_line)
             wnbcol = sum(line.di_nb_colis for line in order.order_line)
             order.di_nbpal = wnbpal
-            order.di_nbcol = ceil(wnbcol)
+            order.di_nbcol = wnbcol
 
     @api.multi
     def action_invoice_create(self, grouped=False, final=False):

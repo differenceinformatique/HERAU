@@ -116,14 +116,14 @@ class InventoryLine(models.Model):
     _inherit = "stock.inventory.line"         
                  
     di_nb_pieces = fields.Integer(string='Nb pièces', store=True)#, compute='_di_compute_qte_spe')
-    di_nb_colis = fields.Integer(string='Nb colis' , store=True)#, compute='_di_compute_qte_spe')
+    di_nb_colis = fields.Float(string='Nb colis' , store=True, digits=(8,1))#, compute='_di_compute_qte_spe')
     di_nb_palette = fields.Float(string='Nb palettes' , store=True)#, compute='_di_compute_qte_spe')
     di_poin = fields.Float(string='Poids net' , store=True)#, compute='_di_compute_qte_spe')
     di_tare_un = fields.Float(string='Tare unitaire' , store=True)
     di_poib = fields.Float(string='Poids brut' , store=True)        
     
     di_nb_pieces_theo = fields.Integer(string='Nb pièces théorique', store=True, compute='_compute_theoretical_qty')
-    di_nb_colis_theo = fields.Integer(string='Nb colis théorique' , store=True, compute='_compute_theoretical_qty')
+    di_nb_colis_theo = fields.Float(string='Nb colis théorique' , store=True, compute='_compute_theoretical_qty', digits=(8,1))
     di_nb_palette_theo = fields.Float(string='Nb palettes théorique' , store=True, compute='_compute_theoretical_qty')
     di_poin_theo = fields.Float(string='Poids net théorique' , store=True, compute='_compute_theoretical_qty')
     di_poib_theo = fields.Float(string='Poids brut théorique' , store=True, compute='_compute_theoretical_qty')   

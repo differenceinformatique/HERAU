@@ -1,55 +1,170 @@
+odoo.define('web_tree_dynamic_colored_field', function (require) {
+    'use strict';
 
-odoo.define('difodoo_ventes.di_couleur_col_backend', function (require) {
-// The goal of this file is to contain JS hacks related to allowing
-// section and note on sale order and invoice.
+    var ListRenderer = require('web.ListRenderer');
+    var pyUtils = require("web.py_utils");
 
-// [UPDATED] now also allows configuring products on sale order.
+    ListRenderer.include({
+        /**
+         * Look up for a `color_field` parameter in tree `colors` attribute
+         *
+         * @override
+         */
+        _renderBody: function () {
+            if (this.arch.attrs.colors) {
+                var colorAttr = this.arch.attrs.colors.split(';');
+                if (colorAttr.length > 0) {
+                    var colorField = colorAttr[0].split(':')[1].trim();
+                    // validate the presence of that field in tree view
+                    if (this.state.data.length && colorField in this.state.data[0].data) {
+                        this.colorField = colorField;
+                    } else {
+                        console.warn(
+                            "No field named '" + colorField + "' present in view."
+                        );
+                    }
+                }
+            }
+            return this._super();
+        },
+        /**
+         * Colorize a cell during it's render
+         *
+         * @override
+         */
+        _renderBodyCell: function (record, node, colIndex, options) {
+            var $td = this._super.apply(this, arguments);
+            var ctx = this.getEvalContext(record);
+            this.applyColorize($td, record, node, ctx);
+            return $td;
+        },
+        
+        
+        _renderHeaderCell: function (node) {
+            var $th = this._super.apply(this, arguments);            
+            this.applyColorizeHeader($th, node);
+            return $th;
+        },
+        
+         applyColorizeHeader: function ($th, node) {            
+            // apply <field>'s own `options`
+            if (!node.attrs.options) { return; }
+            if (node.tag !== 'field') { return; }
+            var nodeOptions = node.attrs.options;
+            if (!_.isObject(nodeOptions)) {
+                nodeOptions = pyUtils.py_eval(nodeOptions);
+            }
+            this.applyColorizeHelperHeader($th, nodeOptions, node, 'hfg_color', 'color' );
+            this.applyColorizeHelperHeader($th, nodeOptions, node, 'hbg_color', 'background-color');
+        },
 
-"use strict";
-var pyUtils = require('web.py_utils');
-var core = require('web.core');
-var _t = core._t;
-var FieldChar = require('web.basic_fields').FieldChar;
-var FieldOne2Many = require('web.relational_fields').FieldOne2Many;
-var fieldRegistry = require('web.field_registry');
-var FieldText = require('web.basic_fields').FieldText;
-var ListRenderer = require('web.ListRenderer');
+        /**
+         * Colorize the current cell depending on expressions provided.
+         *
+         * @param {Query Node} $td a <td> tag inside a table representing a list view
+         * @param {Object} node an XML node (must be a <field>)
+         */
+        applyColorize: function ($td, record, node, ctx) {
+            // safely resolve value of `color_field` given in <tree>
+            var treeColor = record.data[this.colorField];
+            if (treeColor) {
+                $td.css('color', treeColor);
+            }
+            // apply <field>'s own `options`
+            if (!node.attrs.options) { return; }
+            if (node.tag !== 'field') { return; }
+            var nodeOptions = node.attrs.options;
+            if (!_.isObject(nodeOptions)) {
+                nodeOptions = pyUtils.py_eval(nodeOptions);
+            }
+            this.applyColorizeHelper($td, nodeOptions, node, 'fg_color', 'color', ctx);
+            this.applyColorizeHelper($td, nodeOptions, node, 'bg_color', 'background-color', ctx);
+        },
+        /**
+         * @param {Object} nodeOptions a mapping of nodeOptions parameters to the color itself
+         * @param {Object} node an XML node (must be a <field>)
+         * @param {string} nodeAttribute an attribute of a node to apply a style onto
+         * @param {string} cssAttribute a real CSS-compatible attribute
+         */
+        applyColorizeHelper: function ($td, nodeOptions, node, nodeAttribute, cssAttribute, ctx) {
+            if (nodeOptions[nodeAttribute]) {
+                var colors = _(nodeOptions[nodeAttribute].split(';'))
+                    .chain()
+                    .map(this.pairColors)
+                    .value()
+                    .filter(function CheckUndefined(value, index, ar) {
+                        return value !== undefined;
+                    });
+                for (var i=0, len=colors.length; i<len; ++i) {
+                    var pair = colors[i],
+                        color = pair[0],
+                        expression = pair[1];
+                    if (py.evaluate(expression, ctx).toJSON()) {
+                        $td.css(cssAttribute, color);
+                    }
+                }
+            }
+        },
+        
+        applyColorizeHelperHeader: function ($th, nodeOptions, node, nodeAttribute, cssAttribute) {
+            if (nodeOptions[nodeAttribute]) {
+                var colors = _(nodeOptions[nodeAttribute].split(';'))
+                    .chain()
+                    .map(this.pairColors)
+                    .value()
+                    .filter(function CheckUndefined(value, index, ar) {
+                        return value !== undefined;
+                    });
+                for (var i=0, len=colors.length; i<len; ++i) {
+                    var pair = colors[i],
+                        color = pair[0],
+                        expression = pair[1];
+                    if (py.evaluate(expression).toJSON()) {
+                        $th.css(cssAttribute, color);
+                    }
+                }
+            }
+        },
 
-var DiCouleurColListRenderer = ListRenderer.extend({
-    /**
-     * We want section and note to take the whole line (except handle and trash)
-     * to look better and to hide the unnecessary fields.
-     *
-     * @override
-     */
-    _renderBodyCell: function (record, node, index, options) {
-        window.alert('test1');
-        var $cell = this._super.apply(this, arguments);
-        $cell.css('background-color', 'Blue');           
-        return $cell;
-    }
-      
-});
 
-// We create a custom widget because this is the cleanest way to do it:
-// to be sure this custom code will only impact selected fields having the widget
-// and not applied to any other existing ListRenderer.
-var DiCouleurCol = FieldOne2Many.extend({
-    /**
-     * We want to use our custom renderer for the list.
-     *
-     * @override
-     */
-    _getRenderer: function () {
-        window.alert('test2');
-        if (this.view.arch.tag === 'tree') {
-            return DiCouleurColListRenderer;
+        /**
+         * Parse `<color>: <field> <operator> <value>` forms to
+         * evaluable expressions
+         *
+         * @param {string} pairColor `color: expression` pair
+         */
+        pairColors: function (pairColor) {
+            if (pairColor !== "") {
+                var pairList = pairColor.split(':'),
+                    color = pairList[0],
+                    // if one passes a bare color instead of an expression,
+                    // then we consider that color is to be shown in any case
+                    expression = pairList[1]? pairList[1] : 'True';
+                return [color, py.parse(py.tokenize(expression)), expression];
+            }
+            return undefined;
+        },
+        /**
+         * Construct domain evaluation context, mostly by passing
+         * record's fields's values to local scope.
+         *
+         * @param {Object} record a record to build a context from
+         */
+        getEvalContext: function (record) {
+            var ctx = _.extend(
+                {},
+                record.data,
+                pyUtils.context()
+            );
+            for (var key in ctx) {
+                var value = ctx[key];
+                if (ctx[key] instanceof moment) {
+                    // date/datetime fields are represented w/ Moment objects
+                    // docs: https://momentjs.com/
+                    ctx[key] = value.format('YYYY-MM-DD hh:mm:ss');
+                }
+            }
+            return ctx;
         }
-        return this._super.apply(this, arguments);
-    },
-});
-
-
-fieldRegistry.add('di_couleur_col', DiCouleurCol);
-
+    });
 });

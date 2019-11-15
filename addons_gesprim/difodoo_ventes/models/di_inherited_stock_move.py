@@ -13,7 +13,7 @@ class StockMove(models.Model):
     di_un_saisie = fields.Selection([("PIECE", "Pièce"), ("COLIS", "Colis"), ("PALETTE", "Palette"), ("KG", "Kg")], string="Unité de saisie", store=True)
     di_type_palette_id = fields.Many2one('product.packaging', string='Palette', store=True) 
     di_nb_pieces = fields.Integer(string='Nb pièces', store=True, compute='_compute_quantites')
-    di_nb_colis = fields.Integer(string='Nb colis' , store=True, compute='_compute_quantites')
+    di_nb_colis = fields.Float(string='Nb colis' , store=True, compute='_compute_quantites', digits=(8,1))
     di_nb_palette = fields.Float(string='Nb palettes' , store=True, compute='_compute_quantites')
     di_poin = fields.Float(string='Poids net' , store=True, compute='_compute_quantites')
     di_poib = fields.Float(string='Poids brut', store=True, compute='_compute_quantites')
@@ -25,7 +25,7 @@ class StockMove(models.Model):
     di_un_saisie_init = fields.Selection(related="sale_line_id.di_un_saisie")
     di_type_palette_init_id = fields.Many2one(related="sale_line_id.di_type_palette_id") 
     di_nb_pieces_init = fields.Integer(related="sale_line_id.di_nb_pieces")
-    di_nb_colis_init = fields.Integer(related="sale_line_id.di_nb_colis")
+    di_nb_colis_init = fields.Float(related="sale_line_id.di_nb_colis", digits=(8,1))
     di_nb_palette_init = fields.Float(related="sale_line_id.di_nb_palette")
     di_poin_init = fields.Float(related="sale_line_id.di_poin")
     di_poib_init = fields.Float(related="sale_line_id.di_poib")
@@ -150,7 +150,7 @@ class StockMove(models.Model):
                         else:
                             ratio = 1
                         line.di_nb_pieces = ceil(move.sale_line_id.di_nb_pieces * ratio)
-                        line.di_nb_colis = ceil(move.sale_line_id.di_nb_colis * ratio)
+                        line.di_nb_colis = move.sale_line_id.di_nb_colis * ratio
                         line.di_poin = move.sale_line_id.di_poin * ratio
                         line.di_poib = move.sale_line_id.di_poib * ratio
                         line.di_nb_palette = ceil(move.sale_line_id.di_nb_palette * ratio)                
@@ -168,7 +168,7 @@ class StockMove(models.Model):
                             else:
                                 ratio = 1
                             line.di_nb_pieces = ceil(move.purchase_line_id.di_nb_pieces * ratio)
-                            line.di_nb_colis = ceil(move.purchase_line_id.di_nb_colis * ratio)
+                            line.di_nb_colis = move.purchase_line_id.di_nb_colis * ratio
                             line.di_poin = move.purchase_line_id.di_poin * ratio
                             line.di_poib = move.purchase_line_id.di_poib * ratio
                             line.di_nb_palette = ceil(move.purchase_line_id.di_nb_palette * ratio)                
@@ -180,98 +180,7 @@ class StockMove(models.Model):
                             if line.di_nb_colis != 0.0:
                                 line.di_tare_un = line.di_tare / line.di_nb_colis 
                         
-#                 if move.di_un_saisie =="PIECE":
-#                     
-#                     if move.product_id.di_get_type_piece().qty != 0.0:
-#                         line.di_qte_un_saisie = line.qty_done / move.product_id.di_get_type_piece().qty
-#                     else:
-#                         line.di_qte_un_saisie = line.qty_done  
-#                         
-#                     line.di_nb_pieces = ceil(line.di_qte_un_saisie)   
-#                     if move.di_product_packaging_id.qty != 0.0 :
-#                         line.di_nb_colis = ceil(line.qty_done / move.di_product_packaging_id.qty)
-#                     else:      
-#                         line.di_nb_colis = ceil(line.qty_done)             
-#                     if move.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                         line.di_nb_palette = line.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#                     else:
-#                         line.di_nb_palette = line.di_nb_colis
-#                     line.di_poin = line.qty_done * move.product_id.weight 
-#                     line.di_poib = line.di_poin + line.di_tare 
-#                       
-#                 elif move.di_un_saisie =="COLIS":
-#                     
-#                     
-#                     if move.di_product_packaging_id.qty!=0.0:
-#                         line.di_qte_un_saisie = line.qty_done / move.di_product_packaging_id.qty
-#                     else:
-#                         line.di_qte_un_saisie = line.qty_done 
-#                         
-#                     line.di_nb_colis = ceil(line.di_qte_un_saisie)
-#                         
-#                     line.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * line.di_nb_colis)
-#                     if move.di_type_palette_id.di_qte_cond_inf != 0.0:                
-#                         line.di_nb_palette = line.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#                     else:
-#                         line.di_nb_palette = line.di_nb_colis
-#                     line.di_poin = line.qty_done * move.product_id.weight 
-#                     line.di_poib = line.di_poin + line.di_tare
-#                                         
-#                 elif move.di_un_saisie =="PALETTE":
-#                     if move.di_type_palette_id.qty!=0.0:
-#                         line.di_qte_un_saisie = line.qty_done / move.di_type_palette_id.qty
-#                     else:
-#                         line.di_qte_un_saisie = line.qty_done 
-#                         
-#                     line.di_nb_palette = line.di_qte_un_saisie
-#                     
-#                     if move.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                         line.di_nb_colis = ceil(line.di_nb_palette / move.di_type_palette_id.di_qte_cond_inf)
-#                     else:
-#                         line.di_nb_colis = ceil(line.di_nb_palette)
-#                     line.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * line.di_nb_colis)
-#                     
-#                     line.di_poin = line.qty_done * move.product_id.weight 
-#                     line.di_poib = line.di_poin + line.di_tare
-#                     
-#                     
-#                 elif move.di_un_saisie =="KG":
-#                     if move.product_id.weight !=0.0:
-#                         line.di_qte_un_saisie = line.qty_done / move.product_id.weight 
-#                     else:
-#                         line.di_qte_un_saisie = line.qty_done
-#                         
-#                 
-#                     line.di_poin = line.di_qte_un_saisie
-#                     line.di_poib = line.di_poin + line.di_tare
-#                     if move.di_product_packaging_id.qty != 0.0:
-#                         line.di_nb_colis = ceil(line.qty_done / move.di_product_packaging_id.qty)
-#                     else:
-#                         line.di_nb_colis = ceil(line.qty_done)
-#                     if move.di_type_palette_id.di_qte_cond_inf != 0.0:    
-#                         line.di_nb_palette = line.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#                     else:  
-#                         line.di_nb_palette = line.di_nb_colis
-#                     line.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * line.di_nb_colis)
-#                     
-#                 else :
-#                     if move.product_id.weight !=0.0:
-#                         line.di_qte_un_saisie = line.qty_done / move.product_id.weight 
-#                     else:
-#                         line.di_qte_un_saisie = line.qty_done
-#                         
-#                 
-#                     line.di_poin = line.di_qte_un_saisie
-#                     line.di_poib = line.di_poin + line.di_tare
-#                     if move.di_product_packaging_id.qty != 0.0:
-#                         line.di_nb_colis = ceil(line.qty_done / move.di_product_packaging_id.qty)
-#                     else:
-#                         line.di_nb_colis = ceil(line.qty_done)
-#                     if move.di_type_palette_id.di_qte_cond_inf != 0.0:    
-#                         line.di_nb_palette = line.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#                     else:  
-#                         line.di_nb_palette = line.di_nb_colis
-#                     line.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * line.di_nb_colis)
+
                     
     @api.depends('move_line_ids.di_qte_un_saisie', 'move_line_ids.di_poin', 'move_line_ids.di_poib', 'move_line_ids.di_tare', 'move_line_ids.di_nb_colis', 'move_line_ids.di_nb_pieces', 'move_line_ids.di_nb_palette')
     def _compute_quantites(self):
@@ -836,7 +745,7 @@ class StockMoveLine(models.Model):
       
     di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True, compute="_compute_qte_un_saisie")          
     di_nb_pieces = fields.Integer(string='Nb pièces', store=True)
-    di_nb_colis = fields.Integer(string='Nb colis' , store=True)
+    di_nb_colis = fields.Float(string='Nb colis' , store=True, digits=(8,1))
     di_nb_palette = fields.Float(string='Nb palettes', store=True, digits=dp.get_precision('Product Unit of Measure'))
     di_poin = fields.Float(string='Poids net' , store=True)
     di_poib = fields.Float(string='Poids brut', store=True)
@@ -862,7 +771,7 @@ class StockMoveLine(models.Model):
     
     di_valo_sign = fields.Float(string='Valorisation', digits=dp.get_precision('Product Unit of Measure'),compute='_di_compute_valo_sign')
     di_nb_pieces_sign = fields.Integer(string='Nb pièces',compute='_di_compute_sign', store=True)
-    di_nb_colis_sign = fields.Integer(string='Nb colis' ,compute='_di_compute_sign', store=True)
+    di_nb_colis_sign = fields.Float(string='Nb colis' ,compute='_di_compute_sign', store=True, digits=(8,1))
     di_nb_palette_sign = fields.Float(string='Nb palettes',compute='_di_compute_sign', digits=dp.get_precision('Product Unit of Measure'), store=True)
     di_poin_sign = fields.Float(string='Poids net' ,compute='_di_compute_sign', store=True)
     di_poib_sign = fields.Float(string='Poids brut',compute='_di_compute_sign', store=True)
@@ -1094,7 +1003,7 @@ class StockMoveLine(models.Model):
                 else:
                     move = self.move_id                                       
                 if move.di_type_palette_id:
-                    self.di_nb_colis = ceil(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf)                    
+                    self.di_nb_colis = self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf                  
                     if move.product_uom.name.lower() == 'kg':       
                         self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
                         self.di_poin = self.qty_done 
@@ -1217,36 +1126,9 @@ class StockMoveLine(models.Model):
                     if move.product_uom.name == 'Unit(s)' or move.product_uom.name == 'Pièce' :
                         self.di_nb_pieces = ceil(self.qty_done)
                     if move.product_uom.name.lower() ==  'colis' :
-                        self.di_nb_colis = ceil(self.qty_done)
+                        self.di_nb_colis = self.qty_done
                     if move.product_uom.name.lower() ==  'palette' :
                         self.di_nb_palette = ceil(self.qty_done)
-#                     else:
-#                         # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
-#                         if self.product_id.di_get_type_piece().qty != 0.0:
-#                             self.di_nb_pieces = ceil(self.qty_done/self.product_id.di_get_type_piece().qty)
-#                         else:
-#                             self.di_nb_pieces = ceil(self.qty_done)                                
-#                         if move.di_product_packaging_id.qty != 0.0 :
-#                             self.di_nb_colis = ceil(self.qty_done / move.di_product_packaging_id.qty)
-#                         else:      
-#                             self.di_nb_colis = ceil(self.qty_done)             
-#                         if move.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                             self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#                         else:
-#                             self.di_nb_palette = self.di_nb_colis
-#                             
-#                     self.di_poin = self.qty_done * self.product_id.weight 
-#                     self.di_poib = self.di_poin + self.di_tare
-                                                        
-# temporaire herau
-#                     if move.di_un_saisie == "PIECE":
-#                         self.di_qte_un_saisie = self.di_nb_pieces
-#                     elif move.di_un_saisie == "COLIS":
-#                         self.di_qte_un_saisie = self.di_nb_colis
-#                     elif move.di_un_saisie == "PALETTE":
-#                         self.di_qte_un_saisie = self.di_nb_palette 
-#                     elif move.di_un_saisie == "KG":
-#                         self.di_qte_un_saisie = self.di_poib
                                                 
                     self.di_flg_modif_uom = True
             self.di_flg_modif_qty_spe=False
@@ -1461,7 +1343,7 @@ class StockPicking(models.Model):
        
     
     di_nbpal = fields.Float(compute='_compute_di_nbpal_nbcol', digits=dp.get_precision('Product Unit of Measure'))
-    di_nbcol = fields.Integer(compute='_compute_di_nbpal_nbcol')
+    di_nbcol = fields.Float(compute='_compute_di_nbpal_nbcol', digits=(8,1))
     di_poin = fields.Float(compute='_compute_di_nbpal_nbcol', digits=dp.get_precision('Product Unit of Measure'))
     di_poib = fields.Float(compute='_compute_di_nbpal_nbcol', digits=dp.get_precision('Product Unit of Measure'))
     di_tournee = fields.Char(string="Tournée", compute='_compute_tournee', store=True)
@@ -1476,7 +1358,7 @@ class StockPicking(models.Model):
         wpoin = sum([move.di_poin for move in self.move_lines if move.state != 'cancel'])
         wpoib = sum([move.di_poib for move in self.move_lines if move.state != 'cancel'])
         self.di_nbpal = wnbpal
-        self.di_nbcol = ceil(wnbcol)
+        self.di_nbcol = wnbcol
         self.di_poin = wpoin
         self.di_poib = wpoib
             
@@ -1520,13 +1402,13 @@ class StockQuant(models.Model):
     di_valstock = fields.Float(string='Valeur Stock', compute='_compute_valstock', group_operator='sum', store=True)
 #     di_nb_pieces = fields.Integer(string='Nb pièces' , compute="_compute_qte_spe", group_operator='sum', store=True)
 #     di_nb_palettes = fields.Integer(string='Nb palettes' , compute="_compute_qte_spe", group_operator='sum', store=True)
-#     di_nb_colis = fields.Integer(string='Nb colis', compute="_compute_qte_spe", group_operator='sum', store=True)
+
 #     di_poin = fields.Float(string='Poids net', compute="_compute_qte_spe", group_operator='sum', store=True)
 #     di_poib = fields.Float(string='Poids brut', compute="_compute_qte_spe", group_operator='sum', store=True)
 #     di_tare = fields.Float(string='Tare', compute="_compute_qte_spe", group_operator='sum', store=True)
     di_nb_pieces = fields.Integer(string='Nb pièces' , compute="_compute_qte_spe", group_operator='sum', store=False)
     di_nb_palettes = fields.Integer(string='Nb palettes' , compute="_compute_qte_spe", group_operator='sum', store=False)
-    di_nb_colis = fields.Integer(string='Nb colis', compute="_compute_qte_spe", group_operator='sum', store=False)
+    di_nb_colis = fields.Float(string='Nb colis', compute="_compute_qte_spe", group_operator='sum', store=False, digits=(8,1))
     di_poin = fields.Float(string='Poids net', compute="_compute_qte_spe", group_operator='sum', store=False)
     di_poib = fields.Float(string='Poids brut', compute="_compute_qte_spe", group_operator='sum', store=False)
     di_tare = fields.Float(string='Tare', compute="_compute_qte_spe", group_operator='sum', store=False)
@@ -1552,73 +1434,6 @@ class StockQuant(models.Model):
                quant.di_poib  = poib                
                 
            
-        
-#     @api.multi
-#     @api.depends('quantity')
-#     def _compute_qte_spe(self):
-#         for quant in self:     
-#             
-#             
-#             sqlstr = """
-#                 select
-#                     SUM (sml.di_nb_colis ) AS nbcol,                    
-#                     SUM (sml.di_nb_pieces ) AS nbpieces,
-#                     SUM (sml.di_nb_palette ) AS nbpal,
-#                     SUM (sml.di_poin ) AS poin,
-#                     SUM (sml.di_poib) AS poib,
-#                     SUM (sml.di_tare) AS tare                                                                                                      
-#                 from stock_move_line sml                                             
-#                 where sml.product_id = %s and sml.state ='done'  and sml.location_dest_id = %s and lot_id = %s
-#                 """
-#             
-#             self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
-#             result = self.env.cr.fetchall()[0]
-#             
-#             quant.di_nb_colis  = result[0] and result[0] or 0.0
-#             quant.di_nb_pieces  = result[1] and result[1] or 0.0
-#             quant.di_nb_palettes  = result[2] and result[2] or 0.0
-#             quant.di_poin  = result[3] and result[3] or 0.0
-#             quant.di_poib  = result[4] and result[4] or 0.0
-#             quant.di_tare  = result[5] and result[5] or 0.0
-#             
-#             
-#             sqlstr = """
-#                 select
-#                     SUM (sml.di_nb_colis ) AS nbcol,                    
-#                     SUM (sml.di_nb_pieces ) AS nbpieces,
-#                     SUM (sml.di_nb_palette ) AS nbpal,
-#                     SUM (sml.di_poin ) AS poin,
-#                     SUM (sml.di_poib) AS poib,
-#                     SUM (sml.di_tare) AS tare                                                                                                      
-#                 from stock_move_line sml                                             
-#                 where sml.product_id = %s and sml.state ='done'  and sml.location_id = %s and lot_id = %s
-#                 """
-#             
-#             self.env.cr.execute(sqlstr, (quant.product_id.id or 0, quant.location_id.id or 0, quant.lot_id.id or 0))
-#             result = self.env.cr.fetchall()[0]
-#             
-#             quant.di_nb_colis  -= result[0] and result[0] or 0.0
-#             quant.di_nb_pieces  -= result[1] and result[1] or 0.0
-#             quant.di_nb_palettes  -= result[2] and result[2] or 0.0
-#             quant.di_poin  -= result[3] and result[3] or 0.0
-#             quant.di_poib  -= result[4] and result[4] or 0.0
-#             quant.di_tare  -= result[5] and result[5] or 0.0
-            
-          
-#                    
-# #             quant.di_poin = quant.quantity * quant.product_id.weight                        
-# #             if quant.product_id.di_type_colis_id.qty != 0.0:
-# #                 quant.di_nb_colis = ceil(quant.quantity / quant.product_id.di_type_colis_id.qty)
-# #             else:
-# #                 quant.di_nb_colis = ceil(quant.quantity)
-# #             if quant.product_id.di_type_palette_id.di_qte_cond_inf != 0.0:    
-# #                 quant.di_nb_palette = quant.di_nb_colis / quant.product_id.di_type_palette_id.di_qte_cond_inf
-# #             else:  
-# #                 quant.di_nb_palette = quant.di_nb_colis
-# #             quant.di_nb_pieces = ceil(quant.product_id.di_type_colis_id.di_qte_cond_inf * quant.di_nb_colis)
-
-
-
 class StockReturnPicking(models.TransientModel):
     _inherit = "stock.return.picking"
     
@@ -1777,7 +1592,7 @@ class StockReturnPickingLine(models.TransientModel):
     
     di_qte_un_saisie = fields.Float(string='Quantité en unité de saisie', store=True, compute="_compute_qte_un_saisie")
     di_nb_pieces = fields.Integer(string='Nb pièces')
-    di_nb_colis = fields.Integer(string='Nb colis' )
+    di_nb_colis = fields.Float(string='Nb colis' , digits=(8,1))
     di_nb_palette = fields.Float(string='Nb palettes', digits=dp.get_precision('Product Unit of Measure'))
     di_poin = fields.Float(string='Poids net' )
     di_poib = fields.Float(string='Poids brut')
@@ -1815,7 +1630,7 @@ class StockReturnPickingLine(models.TransientModel):
                 self.di_flg_modif_qty_spe = True   
                 move = self.move_id                                      
                 if move.di_type_palette_id:
-                    self.di_nb_colis = ceil(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf)                    
+                    self.di_nb_colis = self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf                    
                     if move.product_uom.name.lower() == 'kg':       
                         self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
                         self.di_poin = self.quantity 
@@ -1919,27 +1734,10 @@ class StockReturnPickingLine(models.TransientModel):
                     if move.product_uom.name == 'Unit(s)' or move.product_uom.name == 'Pièce' :
                         self.di_nb_pieces = ceil(self.qty_done)
                     if move.product_uom.name.lower() ==  'colis' :
-                        self.di_nb_colis = ceil(self.qty_done)
+                        self.di_nb_colis = self.qty_done
                     if move.product_uom.name.lower() ==  'palette' :
                         self.di_nb_palette = ceil(self.qty_done) 
-#                     else:
-#                         # sinon on recalcule les autres unité à partir de la quantité en unité de mesure   
-#                         if self.product_id.di_get_type_piece().qty != 0.0:
-#                             self.di_nb_pieces = ceil(self.quantity/self.product_id.di_get_type_piece().qty)
-#                         else:
-#                             self.di_nb_pieces = ceil(self.quantity)                                
-#                         if move.di_product_packaging_id.qty != 0.0 :
-#                             self.di_nb_colis = ceil(self.quantity / move.di_product_packaging_id.qty)
-#                         else:      
-#                             self.di_nb_colis = ceil(self.quantity)             
-#                         if move.di_type_palette_id.di_qte_cond_inf != 0.0:
-#                             self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
-#                         else:
-#                             self.di_nb_palette = self.di_nb_colis
-#                             
-#                     self.di_poin = self.quantity * self.product_id.weight 
-#                     self.di_poib = self.di_poin + self.di_tare
-                                                        
+                                 
                     self.di_flg_modif_uom = True
             self.di_flg_modif_qty_spe=False
 

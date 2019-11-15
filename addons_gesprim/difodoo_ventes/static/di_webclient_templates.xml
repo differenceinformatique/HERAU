@@ -6,11 +6,12 @@
              <xpath expr="//script[last()]" position="after">
                 <script type="text/javascript" src="/difodoo_ventes/static/di_form_controller.js"></script>
                 <!-- <script type="text/javascript" src="/difodoo_ventes/static/src/js/di_relational_fields.js"></script> -->
-                <!-- <script type="text/javascript" src="/difodoo_ventes/static/src/js/di_tree_dynamic_colored_field.js"></script> -->
+                
                 <!--<script type="text/javascript" src="/difodoo_fichiers_base/script/di_impression_client.js"></script>      --> 
             </xpath> 
             <xpath expr="." position="inside">
               <link rel="stylesheet" href="/difodoo_ventes/static/src/css/web_sheet_full_width.less" />
+              <script type="text/javascript" src="/difodoo_ventes/static/src/js/di_tree_dynamic_colored_field.js"></script>
               
               <!-- <link rel="stylesheet" href="/difodoo_ventes/static/src/css/di_css_view.css" /> -->
             </xpath>

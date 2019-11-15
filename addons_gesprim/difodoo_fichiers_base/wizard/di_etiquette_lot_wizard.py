@@ -11,7 +11,7 @@ class DiEtiqLotWiz(models.TransientModel):
     di_lot_txt = fields.Char(string="Lot", required=True, help="""Lot qui appaîtra sur l'étiquette""")
     weigth = fields.Float(string="Poids", required=True, help="""Poids qui appaîtra sur l'étiquette""")
     di_poin = fields.Float(string="Poids total", compute='_compute_poidstotal', store=True, readonly=True)
-    di_nb_colis  = fields.Integer(string="Quantité", required=True, help="""Nombre d'étiquettes""",default=1.0)
+    di_nb_colis  = fields.Float(string="Quantité", required=True, help="""Nombre d'étiquettes""",default=1.0, digits=(8,1))
     company_id = fields.Many2one('res.company', string='Société', readonly=True,  default=lambda self: self.env.user.company_id)
     order_id = fields.Many2one('sale.order', string='Order Reference') # pour ne pas déclencher d'erreur à l'édition  
     

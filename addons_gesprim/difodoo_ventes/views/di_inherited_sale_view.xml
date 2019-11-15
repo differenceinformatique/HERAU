@@ -88,6 +88,9 @@
                     <field name="di_poin" attrs="{'readonly': [('di_spe_saisissable', '=', False)]}" force_save="1" />
                 </xpath>
                 
+                <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="replace">                
+                    <field name="price_unit" string="Prix unitaire"    options="{&quot;bg_color&quot;:&quot;aqua&quot;}" />
+                </xpath>
                 <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
                     <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
                 </xpath>
@@ -193,6 +196,10 @@
 				<xpath expr="//field[@name='order_line']/tree//field[@name='purchase_price']" position="attributes" >
 					<attribute name="readonly">1</attribute>
 				</xpath>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="attributes" >				
+				    <attribute name="options">{&quot;bg_color&quot;:&quot;LightGrey&quot;,&quot;hbg_color&quot;:&quot;LightGrey&quot;}</attribute>
+                    <attribute name="style">font-weight: bold;</attribute>
+                </xpath>				
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']"
 					position="after">
 					<field name="di_flg_modif_uom" invisible="1" />
@@ -237,8 +244,11 @@
                 <!-- <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="replace">                                        
                     <field name="price_unit" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}" widget="di_couleur_col"  />
                 </xpath> -->
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="replace">                
+                    <field name="price_unit" string="Prix unitaire" style="font-weight: bold;" options="{&quot;bg_color&quot;:&quot;aqua&quot;,&quot;hbg_color&quot;:&quot;aqua&quot;}"/>
+                </xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
-                    <field name="di_dern_prix" string="Dernier prix" readonly="1"/>
+                    <field name="di_dern_prix" string="Dernier prix" readonly="1"  />
                 </xpath>
 				<xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
 					<field name="di_un_prix" string="Unité de prix"
