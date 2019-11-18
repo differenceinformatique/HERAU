@@ -20,9 +20,13 @@ class DiSuppLigZeroWiz(models.TransientModel):
                 
         di_order_id = self.env['sale.order'].browse(self.env.context.get('active_id')) # la commande est sauvegardée quand on clique sur le bouton 
         
-      
-        if di_order_id.state=='draft':        
-            di_line_ids= self.env['sale.order.line'].search(['&', ('order_id', '=', di_order_id.id), ('product_uom_qty', '=', 0.0)])
+#       
+#         if di_order_id.state=='draft':        
+#             di_line_ids= self.env['sale.order.line'].search(['&', ('order_id', '=', di_order_id.id), ('product_uom_qty', '=', 0.0)])
+#         else:
+#             di_line_ids= self.env['sale.order.line']
+            
+        di_line_ids= self.env['sale.order.line'].search(['&', ('order_id', '=', di_order_id.id), ('product_uom_qty', '=', 0.0)])
             
         liste_line_ids=[]
         for line in di_line_ids:
