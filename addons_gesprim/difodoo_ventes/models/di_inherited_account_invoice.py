@@ -327,7 +327,7 @@ class AccountInvoiceLine(models.Model):
                     if sm.picking_id:
                         if sm.picking_id.name:
                             blno = sm.picking_id.name
-                            break
+                            break                            
         return blno
              
         

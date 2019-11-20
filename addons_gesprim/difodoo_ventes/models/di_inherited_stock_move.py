@@ -30,7 +30,11 @@ class StockMove(models.Model):
     di_poin_init = fields.Float(related="sale_line_id.di_poin")
     di_poib_init = fields.Float(related="sale_line_id.di_poib")
     di_tare_init = fields.Float(related="sale_line_id.di_tare")
-    di_product_packaging_init_id = fields.Many2one(related="sale_line_id.product_packaging")    
+    di_product_packaging_init_id = fields.Many2one(related="sale_line_id.product_packaging")
+    
+    di_prix_ac = fields.Float(related="purchase_line_id.price_unit")
+    
+        
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables', default=False, compute='_di_compute_spe_saisissable', store=True)
     

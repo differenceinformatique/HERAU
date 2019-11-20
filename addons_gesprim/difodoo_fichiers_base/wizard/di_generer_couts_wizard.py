@@ -15,11 +15,15 @@ class DiGenCoutsWiz(models.TransientModel):
     di_cde_ach = fields.Boolean(string="Prendre en compte les commandes d'achat dans le calcul.",default=False)
     di_date_gen = fields.Date('Date de génération', default=datetime.today().date() )
     di_product_id = fields.Many2one('product.product',string="Article", help="""Permet de faire la génération sur un article. Laisser vide pour faire tous les articles.""")
+    di_supp_cout_jour = fields.Boolean("Supprimer les coûts du jour", default=False)
 
     def di_generer_cmp(self,di_product_id,di_date):
 #         if di_date.strftime("%d/%m/%y") == '06/06/19':
 #             di_date
         cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
+        if cout_jour and self.di_supp_cout_jour:
+            cout_jour.unlink()
+            cout_jour = self.env['di.cout']
         
         if not cout_jour:
             premier_mouv_assigned = False
@@ -110,6 +114,8 @@ class DiGenCoutsWiz(models.TransientModel):
                   
                 di_cout = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', di_date)])
                 if not di_cout:
+#                     if not cout_jour:
+#                         cout_jour=self.env['di.cout']
                     cout_jour.create(data)
                     self.env.cr.commit()                        
                                     

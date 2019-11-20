@@ -12,6 +12,7 @@
                      </div>
                     <field name="di_date_gen" string="Générer les coûts au :"/>
                     <field name="di_product_id" string="Article"/>
+                    <field name="di_supp_cout_jour" />                    
                 </group>
                 <group>
                     <field name="di_generer_tous_tar" string="Générer tous les tarifs"/>                    
