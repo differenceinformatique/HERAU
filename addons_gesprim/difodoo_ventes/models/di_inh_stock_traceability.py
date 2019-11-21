@@ -40,7 +40,14 @@ class MrpStockReport(models.TransientModel):
                             data.get('location_source', False),
                             data.get('location_destination', False),
                             data.get('partner',False),
-                            data.get('product_qty_uom', 0)],
+#                             data.get('product_qty_uom', 0),
+                            data.get('di_qte_ent', 0),
+                            data.get('di_qte_sor', 0),
+                            data.get('di_nb_colis', 0),
+                            data.get('di_nb_pieces', 0),
+                            data.get('di_poib', 0),
+                            data.get('di_tare', 0),
+                            data.get('di_poin', 0)],
                 'level': level,
                 'unfoldable': data['unfoldable'],
             })
@@ -51,10 +58,16 @@ class MrpStockReport(models.TransientModel):
     def _make_dict_move(self, level, parent_id, move_line, unfoldable=False):
         res_model, res_id, ref = self._get_reference(move_line)
         dummy, is_used = self._get_linked_move_lines(move_line)
+        if move_line.di_entrees_sorties=='entree':
+            qte_entree =self._quantity_to_str(move_line.product_uom_id, move_line.product_id.uom_id, move_line.qty_done)
+            qte_sortie = 0.0
+        else:
+            qte_sortie =self._quantity_to_str(move_line.product_uom_id, move_line.product_id.uom_id, move_line.qty_done)
+            qte_entree = 0.0        
         data = [{
             'level': level,
             'unfoldable': unfoldable,
-            'date': move_line.move_id.date,
+            'date': move_line.move_id.date.strftime('%d/%m/%y'),
             'parent_id': parent_id,
             'is_used': bool(is_used),
             'usage': self._get_usage(move_line),
@@ -62,6 +75,13 @@ class MrpStockReport(models.TransientModel):
             'model': 'stock.move.line',
             'product_id': move_line.product_id.display_name,
             'product_qty_uom': "%s %s" % (self._quantity_to_str(move_line.product_uom_id, move_line.product_id.uom_id, move_line.qty_done), move_line.product_id.uom_id.name),
+            'di_qte_ent': "%s %s" % (qte_entree, move_line.product_id.uom_id.name),
+            'di_qte_sor': "%s %s" % (qte_sortie, move_line.product_id.uom_id.name),
+            'di_nb_colis': move_line.di_nb_colis,
+            'di_nb_pieces': move_line.di_nb_pieces,
+            'di_poib': round(move_line.di_poib,3),
+            'di_tare': round(move_line.di_tare,3),
+            'di_poin': round(move_line.di_poin,3),             
             'lot_name': move_line.lot_id.name,
             'lot_id': move_line.lot_id.id,
             'location_source': move_line.location_id.name,
@@ -71,6 +91,15 @@ class MrpStockReport(models.TransientModel):
             'res_id': res_id,
             'res_model': res_model}]
         return data
+    
+    
+    
+              
+    
+    
+    
+    
+    
     
      
 

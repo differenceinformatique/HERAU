@@ -326,6 +326,6 @@
             <field name="act_window_id" ref="di_action_factures_avoirs"/>
         </record>
 		   
-                   
+             
     </data>
 </odoo> 

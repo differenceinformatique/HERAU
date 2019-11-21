@@ -222,7 +222,7 @@
                         <t t-set="soustot_cde" t-value="0"/>
 
                         <t t-foreach="o.invoice_line_ids.sorted(key=lambda l: (l.origin and l.origin or '', l.sequence, l.id))" t-as="line">
-                            <t t-set="blno" t-value="line.di_get_blno()"/>
+                            <!-- <t t-set="blno" t-value="line.di_get_blno()"/> -->
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
                             <t t-if="not current_origine or current_origine != line.origin">
@@ -243,14 +243,24 @@
                                     <tr t-att-class="'o_line_section '">
                                         <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
                                             <t t-set="cde" t-value="env['sale.order'].search([('name', '=', line.origin)])"/>
-                                            <p>
-                                                Commande <span t-field="line.origin" /> du <span t-field="cde.date_order"  t-options='{"widget": "date"}'/>                                                        
-                                            </p>
+                                            <div>
+                                                <p>
+                                                    Commande <span t-field="line.origin" /> du <span t-field="cde.date_order"  t-options='{"widget": "date"}'/>                                                        
+                                                </p>
+                                            </div>
+                                            <t t-if="cde.client_order_ref">
+                                                <div>
+                                                    <p>
+                                                        Référence client : <span t-field="cde.client_order_ref" />
+                                                                                                                
+                                                    </p>
+                                                </div>
+                                            </t>
                                         </td>
                                     </tr>
                                 </t>
                             </t>
-                            <t t-if="not current_bl or current_bl != blno">
+                            <!-- <t t-if="not current_bl or current_bl != blno">
                                 <t t-if="blno">
                                     <tr t-att-class="'o_line_section '">
                                         <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
@@ -261,10 +271,10 @@
                                         </td>
                                     </tr>
                                 </t>                                
-                            </t>
+                            </t> -->
                             <t t-set="soustot_cde" t-value="soustot_cde + line.price_subtotal" />
                             <t t-set="current_origine" t-value="line.origin"/>
-                            <t t-set="current_bl" t-value="blno"/>
+                            <!-- <t t-set="current_bl" t-value="blno"/> -->
 
                             <tr t-att-class="'bg-200 font-weight-bold di_o_line_section' if line.display_type == 'line_section' else 'font-italic di_o_line_note' if line.display_type == 'line_note' else ''">
                                 <t t-if="not line.display_type" name="account_invoice_line_accountable">
@@ -678,7 +688,7 @@
                         <t t-set="soustot_cde" t-value="0"/>
 
                         <t t-foreach="o.invoice_line_ids.sorted(key=lambda l: (l.origin and l.origin or '', l.sequence, l.id))" t-as="line">
-                            <t t-set="blno" t-value="line.di_get_blno()"/>
+                            <!-- <t t-set="blno" t-value="line.di_get_blno()"/> -->
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
                             <t t-if="not current_origine or current_origine != line.origin">
@@ -699,14 +709,25 @@
                                     <tr t-att-class="'o_line_section '">
                                         <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
                                             <t t-set="cde" t-value="env['sale.order'].search([('name', '=', line.origin)])"/>
-                                            <p>
-                                                Commande <span t-field="line.origin" /> du <span t-field="cde.date_order"  t-options='{"widget": "date"}'/>                                                        
-                                            </p>
+                                            <div>
+                                                <p>
+                                                    Commande <span t-field="line.origin" /> du <span t-field="cde.date_order"  t-options='{"widget": "date"}'/>
+                                                                                                            
+                                                </p>
+                                            </div>
+                                            <t t-if="cde.client_order_ref">
+                                                <div>
+                                                    <p>
+                                                        Référence client : <span t-field="cde.client_order_ref" />
+                                                                                                                
+                                                    </p>
+                                                </div>
+                                            </t>
                                         </td>
-                                    </tr>
+                                    </tr>                                    
                                 </t>
                             </t>
-                            <t t-if="not current_bl or current_bl != blno">
+                            <!-- <t t-if="not current_bl or current_bl != blno">
                                 <t t-if="blno">
                                     <tr t-att-class="'o_line_section '">
                                         <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
@@ -717,11 +738,11 @@
                                         </td>
                                     </tr>
                                 </t>                                
-                            </t>
+                            </t> -->
                             
                             <t t-set="soustot_cde" t-value="soustot_cde + line.price_subtotal" />
                             <t t-set="current_origine" t-value="line.origin"/>
-                            <t t-set="current_bl" t-value="blno"/>
+                            <!-- <t t-set="current_bl" t-value="blno"/> -->
 
                             <tr t-att-class="'bg-200 font-weight-bold di_o_line_section' if line.display_type == 'line_section' else 'font-italic di_o_line_note' if line.display_type == 'line_note' else ''">
                                 <t t-if="not line.display_type" name="account_invoice_line_accountable">

@@ -333,9 +333,18 @@
                                         <tr t-att-class="'o_line_section '">
                                             <td t-att-colspan="colspan" t-att-class="'font-weight-bold font-italic '" >
                                                 <t t-set="cde" t-value="env['sale.order'].search([('name', '=', line.origin)])"/>
-                                                <p>
-                                                    Commande <span t-field="line.origin" /> du <span t-field="cde.date_order"  t-options='{"widget": "date"}'/>                                                        
-                                                </p>
+                                                <div>
+                                                    <p>
+                                                        Commande <span t-field="line.origin" /> du <span t-field="cde.date_order"  t-options='{"widget": "date"}'/>                                                        
+                                                    </p>
+                                                </div>
+                                                <t t-if="cde.client_order_ref">
+                                                    <div>
+                                                        <p>
+                                                            Référence client : <span t-field="cde.client_order_ref"/>                                                                                                                
+                                                        </p>
+                                                    </div>
+                                                </t>
                                             </td>
                                         </tr>
                                     </t>

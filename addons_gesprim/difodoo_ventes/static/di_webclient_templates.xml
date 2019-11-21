@@ -16,5 +16,6 @@
               <!-- <link rel="stylesheet" href="/difodoo_ventes/static/src/css/di_css_view.css" /> -->
             </xpath>
         </template>
+                
     </data>
 </odoo> 

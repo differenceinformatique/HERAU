@@ -5,9 +5,9 @@
      <template id="di_report_assets_common" inherit_id="web.report_assets_common">    
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/difodoo_gesprim/static/css/di_layout_fixe.scss"/>
-            <link rel="stylesheet" type="text/scss" href="/difodoo_gesprim/static/css/di_layout_background.scss"/>
+            <link rel="stylesheet" type="text/scss" href="/difodoo_gesprim/static/css/di_layout_background.scss"/>            
         </xpath>        
-    </template>
+    </template> 
         
     <template id="di_external_layout_background" inherit_id="web.external_layout_background">
         <xpath expr="//div[contains(@class,o_background_header)]/div/div/strong" position="attributes">
