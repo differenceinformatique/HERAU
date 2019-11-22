@@ -46,6 +46,8 @@
 	<menuitem id="menu_gesprim_compta" name="Comptabilité" sequence="50" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_stats" name="Statistiques" sequence="60" parent="menu_gesprim" />
 	<menuitem id="menu_gesprim_uti" name="Utilitaires" sequence="70" parent="menu_gesprim" />
+	
+	
 	<!-- ***Menu Fichiers -->	
 	<menuitem id="menu_gesprim_art" name="Articles" sequence="10" parent="menu_gesprim_fichiers" action="product.product_template_action_all" />		
 	<menuitem id="menu_gesprim_clients" name="Clients" sequence="20" parent="menu_gesprim_fichiers" action="base.action_partner_form" />	
@@ -146,10 +148,16 @@
     <menuitem id="menu_gesprim_stats_factures" name="Analyse CA" sequence="10" parent="menu_gesprim_stats" action="difodoo_ventes.di_action_invoice_report_all"/>
     <!-- ***Menu Utilitaires -->
     <menuitem id="menu_gesprim_imp" name="Impressions" sequence="10" parent="menu_gesprim_uti" />
-    <menuitem id="menu_gesprim_livb" name="Livre de bord" sequence="20" parent="menu_gesprim_uti" action="difodoo_fichiers_base.di_action_livrebord"/>
+    <menuitem id="menu_gesprim_livb" name="Livre de bord" sequence="20" parent="menu_gesprim_uti" action="difodoo_fichiers_base.di_action_livrebord"/>    
+    
+    
     <!-- ****Menu impressions -->	
 	<menuitem id="menu_gesprim_imprimantes" sequence="10" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_printer" />
 	<menuitem id="menu_gesprim_etiquettes" sequence="20" parent="menu_gesprim_imp" action="difodoo_fichiers_base.di_action_etiquette_labelmodel" />
+	
+	<menuitem id="menu_gesprim_uti_ctrl_mont_fac" name="Contrôle montants facture" sequence="30" parent="menu_gesprim_uti" action="difodoo_ventes.action_di_ctrl_mon_fac_menu_wiz" groups="base.group_no_one"/>
+	
+	
 </odoo>
 
     

@@ -1747,6 +1747,7 @@ class StockReturnPickingLine(models.TransientModel):
 
 class StockProductionLot(models.Model):    
     _inherit = "stock.production.lot"
+    _order= "create_date desc, name desc"
     
     di_fini = fields.Boolean("Lot clôturé", default=False, store=True, compute="_compute_cloture")
     

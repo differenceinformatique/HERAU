@@ -53,7 +53,8 @@
         "wizard/di_livr_directe_wiz.xml",
         "wizard/di_regul_art_lot_wiz.xml",
         "wizard/di_facturation_cron_wiz.xml",
-        "wizard/di_imp_manquants_wiz.xml",                                                
+        "wizard/di_imp_manquants_wiz.xml",
+        "wizard/di_ctrl_mont_fac.xml",                                                   
         "views/di_inherited_sale_view.xml",
         "views/di_inherited_account_view.xml",
         "views/di_stock_picking_views.xml",
@@ -71,6 +72,7 @@
         "report/di_report_invoice_preimp.xml",
         "report/di_report_releves.xml",
         "report/di_imp_manquants.xml",
+        "report/di_ctrl_mont_fac_report.xml",        
         "security/ir.model.access.csv"
               
     ],

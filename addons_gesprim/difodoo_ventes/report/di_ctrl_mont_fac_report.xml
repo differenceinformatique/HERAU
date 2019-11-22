@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="di_impression_ctrl_mont_fac">
+        
+            <t t-as="wiz" t-foreach="docs">
+                
+                <t t-set="company" t-value="wiz.di_company_id"/>
+                <t t-call="difodoo_gesprim.di_layout_interne">  
+                              
+                    <div class="page">
+                        <h2>Contrôle montants facture</h2>        
+                        <t t-if="wiz.di_aol_ids">               
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Unité de prix</th>
+                                    <th>Prix</th>
+                                    <th>Remise</th>
+                                    <th>Montant</th>
+                                    <th>Montant calculé</th>
+                                    <th>Ecart</th>
+                                    <th>Facture</th>
+                                </tr>
+                                <t t-as="aol" t-foreach="wiz.di_aol_ids">                                   
+                                    <tr>
+                                        <td>
+                                            <span t-field="aol.product_id.display_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="aol.di_un_prix"/>
+                                        </td>                                        
+                                        <td>
+                                            <span t-field="aol.price_unit"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="aol.discount"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="aol.price_subtotal"/>
+                                        </td>
+                                        <td>
+                                            <t t-if="aol.di_un_prix == 'KG'">
+                                                <t t-set="di_mt" t-value="(aol.price_unit*aol.di_poin)*(1-(aol.discount/100))"/>
+                                            </t>
+                                            <t t-if="aol.di_un_prix == 'PIECE'">
+                                                <t t-set="di_mt" t-value="(aol.price_unit*aol.di_nb_pieces)*(1-(aol.discount/100))"/>
+                                            </t>
+                                            <t t-if="aol.di_un_prix == 'COLIS'">
+                                                <t t-set="di_mt" t-value="(aol.price_unit*aol.di_nb_colis)*(1-(aol.discount/100))"/>
+                                            </t>                                                
+                                            <span t-esc="'%.5f'%  di_mt"/>
+                                        </td>
+                                        <td>                                            
+                                            <t t-set="di_ecart" t-value="di_mt-aol.price_subtotal"/>                                                                                        
+                                            <span t-esc="'%.5f'%  di_ecart"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="aol.invoice_id.number"/>
+                                        </td>
+                                       
+                                    </tr>                                    
+                                </t>
+                            </table>                        
+                        </t> 
+                        <t t-else="">
+                            <h3>Aucun écart de montant détecté.</h3>    
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+        <report 
+            id="di_action_report_ctrl_mont_fac"
+            string="Contrôle montants factures"
+            model="di.ctrl.mont.fac" 
+            report_type="qweb-pdf"
+            file="difodoo_ventes.di_impression_ctrl_mont_fac" 
+            name="difodoo_ventes.di_impression_ctrl_mont_fac"
+            print_report_name="'Contrôle montants factures'"            
+        />       
+    </data>    
+</odoo>

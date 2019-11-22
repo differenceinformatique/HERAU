@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_ctrl_mont_fac_view" model="ir.ui.view">
+        <field name="name">di.ctrl.mont.fac.view</field>
+        <field name="model">di.ctrl.mont.fac</field>
+        <field name="arch" type="xml">
+            <form string="Contrôle des montants de facture">                                
+                <footer>
+                    <button string="Contrôles les montants" type="object" name="controle_montants"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record> 
+    <act_window
+        id="action_di_ctrl_mon_fac_menu_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Contrôle montants facture"
+        res_model="di.ctrl.mont.fac"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_ctrl_mont_fac_view">    
+    </act_window>
+    
+
+</odoo>

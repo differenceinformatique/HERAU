@@ -17,3 +17,4 @@ from . import di_imp_manquants_wiz
 from . import di_inh_account_invoice_refund
 from . import di_account_invoice_send
 from . import di_account_payment
+from . import di_ctrl_mont_fac
