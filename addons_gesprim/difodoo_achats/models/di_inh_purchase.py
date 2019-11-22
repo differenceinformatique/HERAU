@@ -68,6 +68,49 @@ class PurchaseOrderLine(models.Model):
     
     order_date_order = fields.Datetime(related='order_id.date_order', store=True, string='Date commande', readonly=False)
     
+    
+    @api.model
+    def get_qte_un_saisie_enliv(self):
+        qte = 0.0
+        for move in self.move_ids:
+            qte+=move.di_qte_un_saisie
+        return qte
+    
+    @api.model
+    def get_nb_pieces_enliv(self):
+        nbpieces = 0.0
+        for move in self.move_ids:
+            nbpieces+=move.di_nb_pieces
+        return nbpieces
+    
+    @api.model
+    def get_nb_colis_enliv(self):
+        nbcolis = 0.0
+        for move in self.move_ids:
+            nbcolis+=move.di_nb_colis
+        return nbcolis
+    
+    @api.model
+    def get_poib_enliv(self):
+        poib = 0.0
+        for move in self.move_ids:
+            poib+=move.di_poib
+        return poib
+    
+    @api.model
+    def get_poin_enliv(self):
+        poin = 0.0
+        for move in self.move_ids:
+            poin+=move.di_poin
+        return poin
+    
+    @api.model
+    def get_nb_palette_enliv(self):
+        nbpal = 0.0
+        for move in self.move_ids:
+            nbpal+=move.di_nb_palette
+        return nbpal
+    
     @api.model
     def _get_date_planned(self, seller, po=False):
         date_dem = datetime.combine(po.di_demdt,datetime.min.time()) if po else  datetime.combine(self.order_id.di_demdt,datetime.min.time())    

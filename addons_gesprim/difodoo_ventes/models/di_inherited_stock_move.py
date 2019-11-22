@@ -253,12 +253,12 @@ class StockMove(models.Model):
                 vals["di_tare"] = purchaseline.di_tare   
                 vals["di_un_saisie"] = purchaseline.di_un_saisie
                 vals["di_type_palette_id"] = purchaseline.di_type_palette_id.id
-                vals["di_nb_pieces"] = purchaseline.di_nb_pieces
-                vals["di_nb_colis"] = purchaseline.di_nb_colis 
-                vals["di_poin"] = purchaseline.di_poin 
-                vals["di_poib"] = purchaseline.di_poib 
-                vals["di_nb_palette"] = purchaseline.di_nb_palette 
-                vals["di_qte_un_saisie"] = purchaseline.di_qte_un_saisie 
+                vals["di_nb_pieces"] = purchaseline.di_nb_pieces - purchaseline.get_nb_pieces_enliv()
+                vals["di_nb_colis"] = purchaseline.di_nb_colis - purchaseline.get_nb_colis_enliv()
+                vals["di_poin"] = purchaseline.di_poin - purchaseline.get_poin_enliv()
+                vals["di_poib"] = purchaseline.di_poib - purchaseline.get_poib_enliv()
+                vals["di_nb_palette"] = purchaseline.di_nb_palette - purchaseline.get_nb_palette_enliv()
+                vals["di_qte_un_saisie"] = purchaseline.di_qte_un_saisie - purchaseline.get_qte_un_saisie_enliv()
                 vals["di_product_packaging_id"] = purchaseline.product_packaging.id
         res = super(StockMove, self).create(vals)
         if res.picking_type_id.code == 'incoming':  # 1: # 1 correspond à une réception, 5 à un envoi. Il y en a d'autres mais qui n'ont pas l'air de servir pour le moment.  
@@ -1149,12 +1149,12 @@ class StockMoveLine(models.Model):
                         if vals.get('move_id') :  # si on a une commande liée
                             if vals['move_id'] != False:            
                                 move = self.env['stock.move'].browse(vals['move_id'])
-                                vals["di_nb_pieces"] =  move.purchase_line_id.di_nb_pieces
-                                vals["di_nb_colis"] =  move.purchase_line_id.di_nb_colis 
-                                vals["di_poin"] =  move.purchase_line_id.di_poin 
-                                vals["di_poib"] =  move.purchase_line_id.di_poib 
-                                vals["di_nb_palette"] =  move.purchase_line_id.di_nb_palette 
-                                vals["di_qte_un_saisie"] =  move.purchase_line_id.di_qte_un_saisie
+                                vals["di_nb_pieces"] =  move.purchase_line_id.di_nb_pieces - move.purchase_line_id.get_nb_pieces_enliv()
+                                vals["di_nb_colis"] =  move.purchase_line_id.di_nb_colis - move.purchase_line_id.get_nb_colis_enliv()
+                                vals["di_poin"] =  move.purchase_line_id.di_poin - move.purchase_line_id.get_poin_enliv()
+                                vals["di_poib"] =  move.purchase_line_id.di_poib - move.purchase_line_id.get_poib_enliv()
+                                vals["di_nb_palette"] =  move.purchase_line_id.di_nb_palette - move.purchase_line_id.get_nb_palette_enliv()
+                                vals["di_qte_un_saisie"] =  move.purchase_line_id.di_qte_un_saisie - move.purchase_line_id.get_qte_un_saisie_enliv()
                                 vals["di_tare"] =  move.purchase_line_id.di_tare
                                 vals["di_tare_un"] =  move.purchase_line_id.di_tare_un 
                                 if move.product_id.tracking != 'none':

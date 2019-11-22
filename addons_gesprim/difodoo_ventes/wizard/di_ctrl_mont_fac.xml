@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Contrôle des montants de facture">                                
                 <footer>
-                    <button string="Contrôles les montants" type="object" name="controle_montants"
+                    <button string="Contrôler les montants" type="object" name="controle_montants"
                         default_focus="1" />
                     <button string="Annuler" class="oe_link" special="cancel" />
                 </footer>
