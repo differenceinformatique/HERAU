@@ -38,7 +38,7 @@ class ResPartner(models.Model):
     di_gln= fields.Char("GLN")
     
     
-    di_mail_fac = fields.Boolean(string='Envoi mail facture', default=True, help="Cocher si le tiers désire recevoir sa facutre par mail.")
+    di_mail_fac = fields.Boolean(string='Envoi mail facture', default=False, help="Cocher si le tiers désire recevoir sa facutre par mail.")
 #     property_account_position_id = fields.Many2one('account.fiscal.position' , default=lambda self : self._di_get_posfisc_fr(), company_dependent=True,
 #         string="Fiscal Position",
 #         help="The fiscal position determines the taxes/accounts used for this contact.", oldname="property_account_position")

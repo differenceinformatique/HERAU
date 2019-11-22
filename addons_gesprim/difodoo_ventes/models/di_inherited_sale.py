@@ -74,7 +74,52 @@ class SaleOrderLine(models.Model):
     
     order_date_order = fields.Datetime(related='order_id.date_order', store=True, string='Date commande', readonly=False)
     
-           
+    @api.multi
+    def di_invoice_note_create(self, invoice_id):
+        """ Create an invoice line. The quantity to invoice can be positive (invoice) or negative (refund).
+
+            .. deprecated:: 12.0
+                Replaced by :func:`invoice_line_create_vals` which can be used for creating
+                `account.invoice.line` records in batch
+
+            :param invoice_id: integer            
+            :returns recordset of account.invoice.line created
+        """
+        return self.env['account.invoice.line'].create(
+            self.di_invoice_note_create_vals(invoice_id))
+
+    def di_invoice_note_create_vals(self, invoice_id,):
+        """ Create an invoice line. The quantity to invoice can be positive (invoice) or negative
+            (refund).
+
+            :param invoice_id: integer            
+            :returns list of dict containing creation values for account.invoice.line records
+        """
+        vals_list = []        
+        for line in self:            
+            vals = line._di_prepare_invoice_note()
+            vals.update({'invoice_id': invoice_id, 'sale_line_ids': [(6, 0, [line.id])]})
+            vals_list.append(vals)
+        return vals_list
+    
+    
+    @api.multi
+    def _di_prepare_invoice_note(self):
+        """
+        Prepare the dict of values to create the new invoice line for a sales order line.
+        
+        """
+        self.ensure_one()
+        res = {}
+
+        res = {
+            'name': self.name,
+            'sequence': self.sequence,
+            'origin': self.order_id.name,                                                    
+            'display_type': self.display_type,
+        }
+        return res
+    
     def _compte_mode_saisie(self):
         self.di_mode_saisie = 'bottom'        
    
@@ -1104,6 +1149,8 @@ class SaleOrder(models.Model):
             order.di_nbpal = wnbpal
             order.di_nbcol = wnbcol
 
+    
+    
     @api.multi
     def action_invoice_create(self, grouped=False, final=False):
         #copie standard
@@ -1127,11 +1174,12 @@ class SaleOrder(models.Model):
             # We only want to create sections that have at least one invoiceable line
             pending_section = None
 
-            for line in order.order_line:
+            for line in order.order_line:                                                                
+                
                 if line.display_type == 'line_section':
                     pending_section = line
                     continue
-                if float_is_zero(line.qty_to_invoice, precision_digits=precision):
+                if float_is_zero(line.qty_to_invoice, precision_digits=precision) and line.display_type != 'line_note':
                     continue
                 if group_key not in invoices:
                     inv_data = order._prepare_invoice()
@@ -1151,6 +1199,8 @@ class SaleOrder(models.Model):
                         pending_section.invoice_line_create(invoices[group_key].id, pending_section.qty_to_invoice)
                         pending_section = None
                     line.invoice_line_create(invoices[group_key].id, line.qty_to_invoice)
+                elif line.display_type == 'line_note':
+                    line.di_invoice_note_create(invoices[group_key].id)
 
             if references.get(invoices.get(group_key)):
                 if order not in references[invoices[group_key]]:
