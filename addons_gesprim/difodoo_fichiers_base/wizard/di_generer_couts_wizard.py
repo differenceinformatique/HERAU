@@ -70,13 +70,14 @@ class DiGenCoutsWiz(models.TransientModel):
                 else:
                     date_cr_cout_veille = datetime(1900,1,1).date()
                 dernier_id = 0    
-                (qte,mont,nbcol,nbpal,nbpiece,poids,dernier_id) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,date_cr_cout_veille,di_date,self.di_cde_ach,dernier_id_cout_veille)
+                (qte,mont,nbcol,nbpal,nbpiece,poids,dernier_id,nouveau_cmp) = self.env['stock.move'].di_somme_quantites_montants(di_product_id,date_cr_cout_veille,di_date,self.di_cde_ach,dernier_id_cout_veille)
                 qte=round(qte,3)
                 mont=round(mont,3)
                 nbcol=round(nbcol,3)
                 nbpal=round(nbpal,3)
                 nbpiece=round(nbpiece,3)
                 poids=round(poids,3)
+                nouveau_cmp=round(nouveau_cmp,3)
                 
                 
                 if dernier_id == 0:
@@ -90,13 +91,17 @@ class DiGenCoutsWiz(models.TransientModel):
                 if qte !=0.0 and qte != -0.0:                
                     cmp=round(mont/qte,2)
                 else:
+                    if nouveau_cmp!=0.0:
+                        cmp = nouveau_cmp
+                    else:
+                        
 #                     nbcol = 0
 #                     nbpal = 0
 #                     nbpiece = 0
 #                     poids = 0
 #                     mont = 0
 #                     cmp=mont
-                    cmp=0
+                        cmp=0
                 
                 if cmp<=0:
                     cmp=cout_veille.di_cmp   

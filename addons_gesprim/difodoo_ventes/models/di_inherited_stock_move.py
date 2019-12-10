@@ -547,7 +547,7 @@ class StockMove(models.Model):
                     poids = poids - mouv.di_poin  
                     mont = mont - (mouv.quantity_done * nouveau_cmp) 
         mont  = round(mont,2)
-        return (qte, mont, nbcol, nbpal, nbpiece, poids,dernier_id_lu)
+        return (qte, mont, nbcol, nbpal, nbpiece, poids,dernier_id_lu,nouveau_cmp)
     
     @api.model
     def _run_fifo(self, move, quantity=None):   
