@@ -66,10 +66,27 @@ class DiFactCronWiz(models.TransientModel):
     def di_create_invoices(self, ids, regr, date_fact, period_fact, date_debut, date_fin, ref_debut, ref_fin, di_avec_fact):       
         sale_orders = self.env['sale.order'].browse(ids)
         if sale_orders:
-            self._cr.execute('SAVEPOINT create_invoices')
-            try:
+            self._cr.execute('SAVEPOINT create_invoices')            
+            try:                
                 sale_orders.action_invoice_create(grouped=not regr,final=True) 
                 self._cr.commit()  
+                for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
+                    self._cr.execute('SAVEPOINT done_sale')
+                    try:
+                        s_o.action_done() 
+                        self._cr.commit()  
+                    except Exception as e:
+                        self._cr.execute('ROLLBACK TO SAVEPOINT done_sale') 
+                        self.env['ir.logging'].sudo().create({
+                                'name': 'creation_facture',
+                                'type': 'server',
+                                'level': 'ERROR',
+                                'dbname': self.env.cr.dbname,
+                                'message': 'Erreur done commande',
+                                'func': 'di_create_invoices',
+                                'path': '',
+                                'line': '0',
+                            })  
             except Exception as e:
                 self._cr.execute('ROLLBACK TO SAVEPOINT create_invoices') 
                 self.env['ir.logging'].sudo().create({
@@ -83,26 +100,7 @@ class DiFactCronWiz(models.TransientModel):
                         'line': '0',
                     })   
                              
-        
-        for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
-            self._cr.execute('SAVEPOINT done_sale')
-            try:
-                s_o.action_done() 
-                self._cr.commit()  
-            except Exception as e:
-                self._cr.execute('ROLLBACK TO SAVEPOINT done_sale') 
-                self.env['ir.logging'].sudo().create({
-                        'name': 'creation_facture',
-                        'type': 'server',
-                        'level': 'ERROR',
-                        'dbname': self.env.cr.dbname,
-                        'message': 'Erreur done commande',
-                        'func': 'di_create_invoices',
-                        'path': '',
-                        'line': '0',
-                    })  
-            
-             
+                                    
         invoices = sale_orders.mapped('invoice_ids')
         draft_invoices = invoices.filtered(lambda f: f.state == 'draft')
         draft_invoices.write({'date_invoice':date_fact})
