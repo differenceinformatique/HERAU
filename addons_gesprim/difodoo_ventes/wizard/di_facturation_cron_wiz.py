@@ -66,17 +66,69 @@ class DiFactCronWiz(models.TransientModel):
     def di_create_invoices(self, ids, regr, date_fact, period_fact, date_debut, date_fin, ref_debut, ref_fin, di_avec_fact):       
         sale_orders = self.env['sale.order'].browse(ids)
         if sale_orders:
-            sale_orders.action_invoice_create(grouped=not regr,final=True)       
+            self._cr.execute('SAVEPOINT create_invoices')
+            try:
+                sale_orders.action_invoice_create(grouped=not regr,final=True) 
+                self._cr.commit()  
+            except Exception as e:
+                self._cr.execute('ROLLBACK TO SAVEPOINT create_invoices') 
+                self.env['ir.logging'].sudo().create({
+                        'name': 'creation_facture',
+                        'type': 'server',
+                        'level': 'ERROR',
+                        'dbname': self.env.cr.dbname,
+                        'message': 'Erreur creation factures',
+                        'func': 'di_create_invoices',
+                        'path': '',
+                        'line': '0',
+                    })   
                              
+        
         for s_o in sale_orders: #pour passer en complètement facturé les commandes avec reliquat
-            s_o.action_done()
+            self._cr.execute('SAVEPOINT done_sale')
+            try:
+                s_o.action_done() 
+                self._cr.commit()  
+            except Exception as e:
+                self._cr.execute('ROLLBACK TO SAVEPOINT done_sale') 
+                self.env['ir.logging'].sudo().create({
+                        'name': 'creation_facture',
+                        'type': 'server',
+                        'level': 'ERROR',
+                        'dbname': self.env.cr.dbname,
+                        'message': 'Erreur done commande',
+                        'func': 'di_create_invoices',
+                        'path': '',
+                        'line': '0',
+                    })  
+            
              
         invoices = sale_orders.mapped('invoice_ids')
         draft_invoices = invoices.filtered(lambda f: f.state == 'draft')
         draft_invoices.write({'date_invoice':date_fact})
         param = self.env['di.param'].search([('di_company_id','=',self.env.user.company_id.id)])
         if param.di_autovalid_fact_ven:            
-            draft_invoices.action_invoice_open()        
+            #draft_invoices.action_invoice_open()
+            for draft_invoice in draft_invoices:
+                self._cr.execute('SAVEPOINT validate_invoice')
+                try:
+                    draft_invoice.action_invoice_open()                    
+                    self._cr.commit()
+                except Exception as e:
+                    self._cr.execute('ROLLBACK TO SAVEPOINT validate_invoice')
+                    # log error in ir.logging for a visibility on the error
+                    self.env['ir.logging'].sudo().create({
+                        'name': 'Validation_facture',
+                        'type': 'server',
+                        'level': 'ERROR',
+                        'dbname': self.env.cr.dbname,
+                        'message': 'Erreur validation facture',
+                        'func': 'di_create_invoices',
+                        'path': '',
+                        'line': '0',
+                    })
+                                    
+                        
         if not di_avec_fact:    
             if draft_invoices:
                 di_avec_fact = True  

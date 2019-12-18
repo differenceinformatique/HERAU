@@ -243,7 +243,7 @@ class AccountInvoice(models.Model):
             
         di_tare = di_poib - di_poin
         if di_nbcolis != 0.0:
-            di_tare_un = di_tare / di_nbcolis
+            di_tare_un = di_tare / ceil(di_nbcolis)
         else:
             di_tare_un = 0.0
         #ajout difodoo
@@ -514,7 +514,7 @@ class AccountInvoiceLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un','di_qte_un_saisie')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * self.di_nb_colis
+            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
             
     @api.multi            
     @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_product_packaging_id')
@@ -647,7 +647,7 @@ class AccountInvoiceLine(models.Model):
             vals["di_poin"] = poin      
             vals["di_tare"] = poib-poin
             if nbcolis != 0.0:
-                vals["di_tare_un"] = (poib-poin)  / nbcolis
+                vals["di_tare_un"] = (poib-poin)  / ceil(nbcolis)
             vals["di_nb_pieces"] = nbpieces
             vals["di_nb_colis"] = nbcolis
             vals["di_nb_palette"] = nbpal      
@@ -686,7 +686,7 @@ class AccountInvoiceLine(models.Model):
             vals["di_poin"] = poin
             vals["di_tare"] = poib-poin 
             if nbcolis != 0.0:
-                vals["di_tare_un"] = (poib-poin)  / nbcolis
+                vals["di_tare_un"] = (poib-poin)  / ceil(nbcolis)
             vals["di_nb_pieces"] = nbpieces
             vals["di_nb_colis"] = nbcolis
             vals["di_nb_palette"] = nbpal 

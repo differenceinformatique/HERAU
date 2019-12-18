@@ -417,7 +417,7 @@ class PurchaseOrderLine(models.Model):
                             self.di_nb_colis = self.product_qty / self.product_packaging.qty
                         else:      
                             self.di_nb_colis = self.product_qty                       
-                        self.di_tare = self.di_tare_un*self.di_nb_colis
+                        self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:
                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
                         else:
@@ -427,7 +427,7 @@ class PurchaseOrderLine(models.Model):
                               
                     elif self.di_un_saisie == "COLIS":
                         self.di_nb_colis = self.di_qte_un_saisie
-                        self.di_tare = self.di_tare_un*self.di_nb_colis                            
+                        self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)                            
                         self.product_qty = self.product_packaging.qty * self.di_nb_colis
                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
@@ -443,7 +443,7 @@ class PurchaseOrderLine(models.Model):
                             self.di_nb_colis = self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf
                         else:
                             self.di_nb_colis = self.di_nb_palette
-                        self.di_tare = self.di_tare_un*self.di_nb_colis
+                        self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)
                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
                         self.product_qty = self.product_packaging.qty * self.di_nb_colis
                         self.di_poin = self.product_qty * self.product_id.weight 
@@ -498,7 +498,7 @@ class PurchaseOrderLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * self.di_nb_colis   
+            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)   
   
     @api.multi 
     @api.onchange('di_poib')
@@ -533,7 +533,7 @@ class PurchaseOrderLine(models.Model):
     def _di_onchange_tare(self):
         if self.ensure_one():    
             if self.di_nb_colis != 0.0:
-                self.di_tare_un = self.di_tare / self.di_nb_colis
+                self.di_tare_un = self.di_tare / ceil(self.di_nb_colis)
             else:
                 self.di_tare_un = 0.0
               
@@ -749,37 +749,64 @@ class PurchaseOrder(models.Model):
         for line in self.order_line:
             # Do not add a contact as a supplier
             partner = self.partner_id if not self.partner_id.parent_id else self.partner_id.parent_id
-            if len(line.product_id.seller_ids) <= 10:
-                if partner not in line.product_id.seller_ids.mapped('name') :
-                    currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
-                    supplierinfo = {
-                        'name': partner.id,
-                        'sequence': max(line.product_id.seller_ids.mapped('sequence')) + 1 if line.product_id.seller_ids else 1,
-                        'product_uom': line.product_uom.id,
-                        'min_qty': 0.0,
-                        'price': self.currency_id._convert(line.price_unit, currency, line.company_id, line.date_order or fields.Date.today(), round=False),
-                        'currency_id': currency.id,
-                        'delay': 0,
-                    }
-                    # In case the order partner is a contact address, a new supplierinfo is created on
-                    # the parent company. In this case, we keep the product name and code.
-                    seller = line.product_id._select_seller(
-                        partner_id=line.partner_id,
-                        quantity=line.product_qty,
-                        date=line.order_id.date_order and line.order_id.date_order.date(),
-                        uom_id=line.product_uom)
-                    if seller:
-                        supplierinfo['product_name'] = seller.product_name
-                        supplierinfo['product_code'] = seller.product_code
-                    vals = {
-                        'seller_ids': [(0, 0, supplierinfo)],
-                    }
-                    try:
-                        line.product_id.write(vals)
-                    except AccessError:  # no write access rights -> just ignore
-                        break
-                else: # SC pour MAJ d'un prix existant
-                    currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
-                    pricelist = line.product_id.seller_ids.filtered(lambda si: si.name == partner)
-                    for price in pricelist:
-                        price.update({'price':self.currency_id._convert(line.price_unit, currency, line.company_id, line.date_order or fields.Date.today(), round=False)})
+            #if len(line.product_id.seller_ids) <= 10:
+            # j'enlève la limite de 10 car les articles génériques ne sont pas utilisés et on a besoin de pouvoir mettre plus de 10 fournisseurs            
+            di_price = 0.0                                        
+            if line.di_un_prix == "PIECE":
+                if line.product_qty:                         
+                    di_price = (line.di_nb_pieces * line.price_unit) / line.product_qty
+                else:
+                    di_price = (line.di_nb_pieces * line.price_unit)                                                    
+            elif line.di_un_prix == "COLIS":
+                if line.product_qty:                         
+                    di_price = (line.di_nb_colis * line.price_unit) / line.product_qty
+                else:
+                    di_price = (line.di_nb_colis * line.price_unit)
+            elif line.di_un_prix == "PALETTE":
+                if line.product_qty:                         
+                    di_price = (line.di_nb_palette * line.price_unit) / line.product_qty
+                else:
+                    di_price = (line.di_nb_palette * line.price_unit)
+            elif line.di_un_prix == "KG":
+                if line.product_qty:                         
+                    di_price = (line.di_poin * line.price_unit) / line.product_qty
+                else:
+                    di_price = (line.di_poin * line.price_unit)
+            elif line.di_un_prix == False or line.di_un_prix == '':                                                
+                di_price = line.price_unit    
+            if partner not in line.product_id.seller_ids.mapped('name') :
+                currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
+                                    
+                    
+                    
+                supplierinfo = {
+                    'name': partner.id,
+                    'sequence': max(line.product_id.seller_ids.mapped('sequence')) + 1 if line.product_id.seller_ids else 1,
+                    'product_uom': line.product_uom.id,
+                    'min_qty': 0.0,
+                    'price': self.currency_id._convert(di_price, currency, line.company_id, line.date_order or fields.Date.today(), round=False),
+                    'currency_id': currency.id,
+                    'delay': 0,
+                }
+                # In case the order partner is a contact address, a new supplierinfo is created on
+                # the parent company. In this case, we keep the product name and code.
+                seller = line.product_id._select_seller(
+                    partner_id=line.partner_id,
+                    quantity=line.product_qty,
+                    date=line.order_id.date_order and line.order_id.date_order.date(),
+                    uom_id=line.product_uom)
+                if seller:
+                    supplierinfo['product_name'] = seller.product_name
+                    supplierinfo['product_code'] = seller.product_code
+                vals = {
+                    'seller_ids': [(0, 0, supplierinfo)],
+                }
+                try:
+                    line.product_id.write(vals)
+                except AccessError:  # no write access rights -> just ignore
+                    break
+            else: # SC pour MAJ d'un prix existant
+                currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
+                pricelist = line.product_id.seller_ids.filtered(lambda si: si.name == partner)
+                for price in pricelist:
+                    price.update({'price':self.currency_id._convert(di_price, currency, line.company_id, line.date_order or fields.Date.today(), round=False)})

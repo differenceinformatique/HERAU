@@ -164,7 +164,7 @@ class StockMove(models.Model):
                             line.di_qte_un_saisie = ceil(move.sale_line_id.di_qte_un_saisie * ratio)
                         line.di_tare = line.di_poib - line.di_poin
                         if line.di_nb_colis != 0.0:
-                            line.di_tare_un = line.di_tare / line.di_nb_colis 
+                            line.di_tare_un = line.di_tare / ceil(line.di_nb_colis) 
                     else:
                         if move.purchase_line_id:
                             if  move.purchase_line_id.product_qty != 0.0:
@@ -182,7 +182,7 @@ class StockMove(models.Model):
                                 line.di_qte_un_saisie = ceil(move.purchase_line_id.di_qte_un_saisie * ratio)
                             line.di_tare = line.di_poib - line.di_poin
                             if line.di_nb_colis != 0.0:
-                                line.di_tare_un = line.di_tare / line.di_nb_colis 
+                                line.di_tare_un = line.di_tare / ceil(line.di_nb_colis) 
                         
 
                     
@@ -936,7 +936,7 @@ class StockMoveLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * self.di_nb_colis
+            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
                 
     @api.multi                     
     @api.onchange('di_nb_pieces')
@@ -1377,7 +1377,7 @@ class StockReturnPicking(models.TransientModel):
                 di_tare = di_poib - di_poin     
                 
                 if di_nb_colis!= 0.0:
-                    di_tare_un = di_tare / di_nb_colis
+                    di_tare_un = di_tare / ceil(di_nb_colis)
                 else: 
                     di_tare_un = di_tare 
     
@@ -1560,7 +1560,7 @@ class StockReturnPickingLine(models.TransientModel):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * self.di_nb_colis
+            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
                 
     @api.multi                     
     @api.onchange('di_nb_pieces')

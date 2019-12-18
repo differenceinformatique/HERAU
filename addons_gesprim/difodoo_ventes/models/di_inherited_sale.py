@@ -278,7 +278,7 @@ class SaleOrderLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one() and self.product_id:
-            self.di_tare = self.di_tare_un * self.di_nb_colis
+            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
             
     #OK calcul en dessous
     @api.multi
@@ -1248,3 +1248,28 @@ class SaleOrder(models.Model):
                 values={'self': invoice, 'origin': references[invoice]},
                 subtype_id=self.env.ref('mail.mt_note').id)
         return [inv.id for inv in invoices.values()]
+#     
+#     @api.depends('order_line.price_total')
+#     def _amount_all(self):
+#         #copie standard
+#         """
+#         Compute the total amounts of the SO.
+#         """
+# 
+#         for order in self:
+#             round_curr = order.currency_id.round
+#             
+# #             amount_tax = 0.0
+# #             for line in order.order_line:
+# #                 amount_untaxed += line.price_subtotal
+# #                 amount_tax += line.price_tax
+#             amount_untaxed = sum(line.price_subtotal for line in order.order_line)
+#             amount_tax = sum(round_curr(line.price_tax) for line in order.order_line)            
+# #             for amount_by_group in order.amount_by_group:                
+# #                 amount_tax += amount_by_group[1]
+#                 #sum(round_curr(line.amount_total) for line in order.tax_line_ids)
+#             order.update({
+#                 'amount_untaxed': amount_untaxed,
+#                 'amount_tax': amount_tax,
+#                 'amount_total': amount_untaxed + amount_tax,
+#             })

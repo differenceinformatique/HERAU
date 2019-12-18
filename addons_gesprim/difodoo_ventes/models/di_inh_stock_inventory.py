@@ -93,19 +93,29 @@ class Inventory(models.Model):
             poids=0.0   
             lot = self.env['stock.production.lot'].browse(product_data['prod_lot_id'])    
             article = self.env['product.product'].browse(product_data['product_id']) 
-            (nbcol,nbpal,nbpiece,poids,qte_std,poib) = self.env['stock.move.line'].di_qte_spe_en_stock(article,self.date.date(),lot)#        
-            product_data['di_nb_colis']=nbcol
-            product_data['di_nb_pieces']= nbpiece 
-            product_data['di_nb_palette']=  nbpal
-            product_data['di_poin']=  poids
-            product_data['di_poib']=  poib  
-            product_data['di_nb_colis_theo']=nbcol
-            product_data['di_nb_pieces_theo']= nbpiece 
-            product_data['di_nb_palette_theo']=  nbpal
-            product_data['di_poin_theo']=  poids
-            product_data['di_poib_theo']=  poib  
+            (nbcol,nbpal,nbpiece,poids,qte_std,poib) = self.env['stock.move.line'].di_qte_spe_en_stock(article,self.date.date(),lot)#                                
+            nbcol=round(nbcol,3)
+            nbpal=round(nbpal,3)
+            nbpiece=round(nbpiece,3)
+            poids=round(poids,3)
+            qte_std=round(qte_std,3)
+            poib=round(poib,3)
+            
+            if ((nbcol != 0.0 and nbcol != -0.0)  or (nbpiece != 0.0 and nbpiece != -0.0) or (nbpal != 0.0 and nbpal != -0.0) or (poids != 0.0 and poids != -0.0) or (poib != 0.0 and poib != -0.0) or (qte_std != 0.0 and qte_std != -0.0)) or self.exhausted:       
+                product_data['di_nb_colis']=nbcol
+                product_data['di_nb_pieces']= nbpiece 
+                product_data['di_nb_palette']=  nbpal
+                product_data['di_poin']=  poids
+                product_data['di_poib']=  poib  
+                product_data['di_nb_colis_theo']=nbcol
+                product_data['di_nb_pieces_theo']= nbpiece 
+                product_data['di_nb_palette_theo']=  nbpal
+                product_data['di_poin_theo']=  poids
+                product_data['di_poib_theo']=  poib  
+                
+            
+                vals.append(product_data)
             #fin surcharge
-            vals.append(product_data)
         if self.exhausted:
             exhausted_vals = self._get_exhausted_inventory_line(products_to_filter, quant_products)
             vals.extend(exhausted_vals)
@@ -134,7 +144,7 @@ class InventoryLine(models.Model):
     
     @api.onchange('di_poib','di_tare_un')
     def di_onchange_poib_tare(self):
-        self.di_poin = self.di_poib - (self.di_tare_un*self.di_nb_colis)
+        self.di_poin = self.di_poib - (self.di_tare_un*ceil(self.di_nb_colis))
    
     
     @api.multi
