@@ -130,11 +130,7 @@ class DiFactCronWiz(models.TransientModel):
         if not di_avec_fact:    
             if draft_invoices:
                 di_avec_fact = True  
-                
-                
-                
-                
-                
+                     
         query_args = {'periodicity_invoice': period_fact,'date_debut' : date_debut,'date_fin' : date_fin, 'ref_debut': ref_debut,'ref_fin':ref_fin}
         query = """ SELECT  so.id 
                         FROM sale_order so
