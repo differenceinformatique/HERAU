@@ -16,6 +16,7 @@ class DiGenCoutsWiz(models.TransientModel):
     di_date_gen = fields.Date('Date de génération', default=datetime.today().date() )
     di_product_id = fields.Many2one('product.product',string="Article", help="""Permet de faire la génération sur un article. Laisser vide pour faire tous les articles.""")
     di_supp_cout_jour = fields.Boolean("Supprimer les coûts du jour", default=False)
+    di_supp_tous_couts = fields.Boolean("Supprimer tous les coûts de l'article", default=False)
 
     def di_generer_cmp(self,di_product_id,di_date):
 #         if di_date.strftime("%d/%m/%y") == '06/06/19':
@@ -133,6 +134,7 @@ class DiGenCoutsWiz(models.TransientModel):
             articles = self.di_product_id
         else:    
             articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
+            self.di_supp_tous_couts = False
 
 #         articles = self.env['product.product'].browse(6817) #T300F              
 #         date_lancement = datetime.today().date()#+ timedelta(days=-7)
@@ -144,7 +146,11 @@ class DiGenCoutsWiz(models.TransientModel):
         
         
         for article in articles:  
-
+            if self.di_supp_tous_couts:                
+                couts_art = self.env['di.cout'].search([('di_product_id', '=', self.di_product_id.id)])       
+                couts_art.unlink()
+       
+                
             move = self.env['stock.move'].search([ ('product_id', '=', article.id)], limit=1)
             if move:            
                 self.di_generer_cmp(article.id, date_lancement)
