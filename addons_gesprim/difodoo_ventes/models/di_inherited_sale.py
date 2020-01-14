@@ -1179,7 +1179,8 @@ class SaleOrder(models.Model):
                 if line.display_type == 'line_section':
                     pending_section = line
                     continue
-                if float_is_zero(line.qty_to_invoice, precision_digits=precision) and line.display_type != 'line_note':
+                if float_is_zero(line.qty_to_invoice, precision_digits=precision) and (line.display_type != 'line_note' or line.order_id.invoice_status=='invoiced'):
+                #if float_is_zero(line.qty_to_invoice, precision_digits=precision) and line.display_type != 'line_note':
                     continue
                 if group_key not in invoices:
                     inv_data = order._prepare_invoice()
