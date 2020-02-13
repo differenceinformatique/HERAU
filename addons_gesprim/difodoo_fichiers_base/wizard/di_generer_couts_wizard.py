@@ -107,7 +107,8 @@ class DiGenCoutsWiz(models.TransientModel):
                 if cmp<=0:
                     cmp=cout_veille.di_cmp   
     #     
-                        
+                if qte==0.0:
+                    mont=0.0        
                 data ={
                             'di_date': di_date,  
                             'di_product_id' : di_product_id,

@@ -1,8 +1,15 @@
 
 # -*- coding: utf-8 -*-
-
+from odoo.tools.misc import ustr
 from odoo.exceptions import Warning
 from odoo import models, fields, api
+try:
+    import vatnumber
+except ImportError:
+    _logger.warning("VAT validation partially unavailable because the `vatnumber` Python library cannot be found. "
+                    "Install it to support more countries, for example with `easy_install vatnumber`.")
+    vatnumber = None
+
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -295,3 +302,23 @@ class ResPartner(models.Model):
             
         
         return super(ResPartner, self).copy(default)
+    
+    @api.model
+    def simple_vat_check(self, country_code, vat_number):
+        '''
+        Check the VAT number depending of the country.
+        http://sima-pc.com/nif.php
+        '''
+        if not ustr(country_code).encode('utf-8').isalpha():
+            return False
+        check_func_name = 'check_vat_' + country_code
+        check_func = getattr(self, check_func_name, None) or getattr(vatnumber, check_func_name, None)
+        if not check_func:
+            # No VAT validation available, default to check that the country code exists
+            if country_code.upper() == 'EU':
+                # Foreign companies that trade with non-enterprises in the EU
+                # may have a VATIN starting with "EU" instead of a country code.
+                return True
+            country_code = _eu_country_vat_inverse.get(country_code, country_code)
+            return bool(self.env['res.country'].search([('code', '=ilike', country_code)]))
+        return check_func(vat_number)
