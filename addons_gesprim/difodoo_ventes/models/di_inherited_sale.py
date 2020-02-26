@@ -734,6 +734,27 @@ class SaleOrder(models.Model):
     
     di_nb_lig = fields.Integer(string='Nb lignes saisies', compute="_compute_nb_lignes")
     
+    
+    @api.depends('order_line.price_total')
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+#                 amount_tax += line.price_tax
+            for (lib,mont,base,libmont,libbase,nb) in order.amount_by_group:                    
+                amount_tax += order.currency_id.round(mont)
+            amount_total = order.currency_id.round(amount_untaxed + amount_tax)
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_total': amount_total,
+            })
+            
+            
     @api.multi
     def _action_confirm(self):
         for order in self:
@@ -935,6 +956,7 @@ class SaleOrder(models.Model):
                 fmt(l[1]['amount']), fmt(l[1]['base']),
                 len(res),
             ) for l in res]
+            order.amount_by_group
 #             order.di_taxe_ids =[(6,0,self.prepare_taxe_lines(order))]           
     
     @api.multi
@@ -1179,8 +1201,9 @@ class SaleOrder(models.Model):
                 if line.display_type == 'line_section':
                     pending_section = line
                     continue
-                if float_is_zero(line.qty_to_invoice, precision_digits=precision) and (line.display_type != 'line_note' or line.order_id.invoice_status=='invoiced'):
-                #if float_is_zero(line.qty_to_invoice, precision_digits=precision) and line.display_type != 'line_note':
+#                 if float_is_zero(line.qty_to_invoice, precision_digits=precision) and (line.display_type != 'line_note' or line.order_id.invoice_status=='invoiced'): # ne fonctionne pas si la note est la dernière ligne de la commande
+                if float_is_zero(line.qty_to_invoice, precision_digits=precision) and (line.display_type != 'line_note' or line.invoice_lines):
+                #if float_is_zero(line.qty_to_invoice, precision_digits=precision) and line.display_type != 'line_note': # créé des factures brouillon avec seulement la note
                     continue
                 if group_key not in invoices:
                     inv_data = order._prepare_invoice()

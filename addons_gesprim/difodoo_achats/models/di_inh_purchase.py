@@ -220,6 +220,19 @@ class PurchaseOrderLine(models.Model):
         except:
             prix=0.0
         
+        if prix == 0.0:
+            sqlstr = """
+                    select  price_unit                                                                                                                       
+                    from purchase_order_line pol                                                                    
+                    where pol.product_id = %s 
+                    order by pol.order_date_order desc limit 1
+                    """                    
+            self.env.cr.execute(sqlstr, (self.product_id.id, ))                                                    
+            try: 
+                result = self.env.cr.fetchall()[0] 
+                prix = result[0] and result[0] or 0.0
+            except:
+                prix=0.0        
 #         l = self.search(['&', ('product_id', '=', self.product_id.id), ('order_partner_id', '=', self.order_partner_id.id),('order_date_order','<',self.order_date_order)], limit=1).sorted(key=lambda t: t.order_date_order,reverse=True)
 #         if l.price_unit:
 #             prix = l.price_unit            
