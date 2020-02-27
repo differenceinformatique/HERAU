@@ -48,21 +48,32 @@ class DiGenCoutsWiz(models.TransientModel):
                 if premier_mouv_assigned:                                   
                     if  not premier_mouv or  premier_mouv_assigned.picking_id.scheduled_date < premier_mouv.picking_id.date_done:
                         premier_mouv = premier_mouv_assigned
-            
-            if premier_mouv:
-#                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])                  
-                couts_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
-                if couts_veille:
-                    for cout_veille in couts_veille:
-                        break
-                      
+
+
+            if premier_mouv:                  
+                cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
+
                 if not cout_veille and ( (self.di_cde_ach and (premier_mouv.picking_id.scheduled_date and  date_veille >= premier_mouv.picking_id.scheduled_date.date()))or(not self.di_cde_ach and (premier_mouv.picking_id.date_done and  date_veille >= premier_mouv.picking_id.date_done.date()))) :
                     self.di_generer_cmp(di_product_id,date_veille)
-#                     cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
-                    couts_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
-                    if couts_veille:
-                        for cout_veille in couts_veille:
-                            break
+                    cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])                  
+            
+#    Morvan 27/02/202 - je rétablis le précédent programme, car plantage
+#             if premier_mouv:
+# #                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])                  
+#                 couts_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
+#                 if couts_veille:
+#                     for cout_veille in couts_veille:
+#                         break
+#                       
+#                 if not cout_veille and ( (self.di_cde_ach and (premier_mouv.picking_id.scheduled_date and  date_veille >= premier_mouv.picking_id.scheduled_date.date()))or(not self.di_cde_ach and (premier_mouv.picking_id.date_done and  date_veille >= premier_mouv.picking_id.date_done.date()))) :
+#                     self.di_generer_cmp(di_product_id,date_veille)
+# #                     cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
+#                     couts_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
+#                     if couts_veille:
+#                         for cout_veille in couts_veille:
+#                             break
+
+
                 
                 qte = 0.0
                 mont =0.0
