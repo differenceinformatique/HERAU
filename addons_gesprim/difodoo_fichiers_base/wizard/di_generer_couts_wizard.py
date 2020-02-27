@@ -50,6 +50,7 @@ class DiGenCoutsWiz(models.TransientModel):
                         premier_mouv = premier_mouv_assigned
             
             if premier_mouv:
+                cout_veille = False # morvan 27/02/2020
 #                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])                  
                 couts_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id), ('di_date', '=', date_veille)])
                 if couts_veille:
