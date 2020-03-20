@@ -317,18 +317,22 @@ class StockMove(models.Model):
         if cde_ach:
             if date:                                
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
+                #à optimiser  en sql
                 mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)]).filtered(lambda mv: mv.location_dest_id.usage == 'internal' and ( (mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or (mv.state =='done' and mv.picking_id.date_done.date() == date) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() < date and mv.id>dernier_id and mv.picking_id.scheduled_date.date() > date_cr_cout_veille) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() == date )))
             else:
+                #à optimiser  en sql
                 mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)])
         else:
             if date:
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
 #                 mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)]).filtered(lambda mv:  mv.location_dest_id.usage == 'internal' and ((mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date)))
+                #à optimiser  en sql
                 mouvs_1 = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)])
                 mouvs_2 = mouvs_1.filtered(lambda mv:  mv.location_dest_id.usage == 'internal')
                 mouvs = mouvs_2.filtered(lambda mv: (( mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or ( mv.picking_id.date_done.date() == date)))
 #                 .filtered(lambda mv:   ((mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date)))
             else:
+                #à optimiser  en sql
                 mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '!=', False)])
              
         for mouv in mouvs:
@@ -444,7 +448,7 @@ class StockMove(models.Model):
                     di_qte_prix = 0.0                    
                     di_qte_prix = mouv.quantity_done                                            
                     mont = mont + (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date)) 
-
+        #à optimiser  en sql                
         couts=self.env['di.cout'].search([('di_product_id', '=', product_id)]).filtered(lambda c: c.di_date<=date).sorted(key=lambda k: k.di_date,reverse=True)
         dernier_cout=self.env['di.cout']
         nouveau_cmp=0        
@@ -452,6 +456,7 @@ class StockMove(models.Model):
             dernier_cout = cout
             break
         if not dernier_cout:
+            #à optimiser  en sql
             achats=self.env['purchase.order.line'].search(['&',('product_id','=',product_id),('price_unit','>',0.0)]).filtered(lambda a: a.order_id.date_order.date()<=date).sorted(key=lambda k: k.order_id.date_order,reverse=True)
             for achat in achats:
                 if achat.product_uom_qty != 0.0:
@@ -468,17 +473,21 @@ class StockMove(models.Model):
         if cde_ach:
             if date:                                
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
+                #à optimiser  en sql
                 mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)]).filtered(lambda mv: mv.location_dest_id.usage != 'internal' and ( (mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or (mv.state =='done' and mv.picking_id.date_done.date() == date) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() < date and mv.id>dernier_id and mv.picking_id.scheduled_date.date() > date_cr_cout_veille) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() == date )))
             else:
+                #à optimiser  en sql
                 mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)])
         else:
             if date:
     #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
 #                 mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)]).filtered(lambda mv:  mv.location_dest_id.usage != 'internal' and ((mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date)))
+                #à optimiser  en sql
                 mouvs_1 = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)])
                 mouvs_2 = mouvs_1.filtered(lambda mv:  mv.location_dest_id.usage != 'internal')
                 mouvs = mouvs_2.filtered(lambda mv: (( mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or ( mv.picking_id.date_done.date() == date)))
             else:
+                #à optimiser  en sql
                 mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '!=', False)])
              
         for mouv in mouvs:
@@ -593,8 +602,10 @@ class StockMove(models.Model):
 
 
         if date:
+            #à optimiser  en sql
             mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: (mv.date.date() < date and mv.id>dernier_id and mv.date.date() > date_cr_cout_veille) or (mv.date.date() == date))
         else:
+            #à optimiser  en sql
             mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: mv.id>dernier_id and mv.date.date() > date_cr_cout_veille)    
         for mouv in mouvs:
             mouv_ids_lus.append(mouv.id)

@@ -34,7 +34,7 @@ class DiCout(models.Model):
         if not cout or cout == 0.0:
             # si pas de cmp à la date, on prend le dernier prix d'achat
             # date de commande inférieure ou égale à la date saisie
-            
+           #à optimiser  en sql
             mouvs_achat = self.env['purchase.order.line'].search([('product_id', '=', product_id), ('price_total', '!=', 0.0), ('state', '=', 'purchase')]) \
             .filtered(lambda m: m.order_id.date_order.date() <= date) \
             .sorted(key=lambda m: m.order_id.date_order, reverse=True)
