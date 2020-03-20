@@ -156,7 +156,7 @@ class StockMove(models.Model):
                             ratio = 1
                         line.di_nb_pieces = ceil(move.sale_line_id.di_nb_pieces * ratio)
                         line.di_nb_colis = round(move.sale_line_id.di_nb_colis * ratio,1)
-                        nbcol = round(self.di_nb_colis,1)
+                        nbcol = round(line.di_nb_colis,1)
                         line.di_poin = move.sale_line_id.di_poin * ratio
                         line.di_poib = move.sale_line_id.di_poib * ratio
                         line.di_nb_palette = ceil(move.sale_line_id.di_nb_palette * ratio)                
