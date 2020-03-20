@@ -11,6 +11,7 @@ from odoo.addons import decimal_precision as dp
 from ...difodoo_fichiers_base.models import di_param
 from functools import partial
 from odoo.tools.misc import formatLang
+from odoo.tools import float_utils
 
 
 class SaleOrderLine(models.Model):
@@ -180,7 +181,7 @@ class SaleOrderLine(models.Model):
                         if self.product_uom.name == 'Unit(s)' or self.product_uom.name == 'Pièce' :
                             self.di_nb_pieces = ceil(self.product_uom_qty)
                         if self.product_uom.name.lower() ==  'colis' :
-                            self.di_nb_colis = self.product_uom_qty
+                            self.di_nb_colis = round(self.product_uom_qty,1)
                         if self.product_uom.name.lower() ==  'palette' :
                             self.di_nb_palette = ceil(self.product_uom_qty)
                             
@@ -202,35 +203,48 @@ class SaleOrderLine(models.Model):
                         self.di_nb_pieces = ceil(self.di_qte_un_saisie)
                         self.product_uom_qty = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
                         if self.product_packaging.qty != 0.0 :
-                            self.di_nb_colis = self.product_uom_qty / self.product_packaging.qty
+                            self.di_nb_colis = round(self.product_uom_qty / self.product_packaging.qty,1)
                         else:      
-                            self.di_nb_colis = self.product_uom_qty             
+                            self.di_nb_colis = round(self.product_uom_qty,1)  
+                        nbcol = round(self.di_nb_colis,1)           
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                         self.di_poin = self.product_uom_qty * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                               
-                    elif self.di_un_saisie == "COLIS":
-                        self.di_nb_colis = self.di_qte_un_saisie
-                        self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
-                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                    elif self.di_un_saisie == "COLIS":                        
+                        self.di_nb_colis = round(self.di_qte_un_saisie,1)
+#                         self.di_nb_colis = '0.6'
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.di_nb_colis = round(self.di_nb_colis,1)
+#                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.product_uom_qty = self.product_packaging.qty * nbcol
+#                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * nbcol)
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                         self.di_poin = self.product_uom_qty * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                                              
                     elif self.di_un_saisie == "PALETTE":            
                         self.di_nb_palette = self.di_qte_un_saisie
                         if self.di_type_palette_id.di_qte_cond_inf!=0.0:
-                            self.di_nb_colis = self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_colis = round(self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf,1)
                         else:
-                            self.di_nb_colis = self.di_nb_palette
-                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
-                        self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
+                            self.di_nb_colis = round(self.di_nb_palette,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+#                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * nbcol)
+                        self.product_uom_qty = self.product_packaging.qty * nbcol
                         self.di_poin = self.product_uom_qty * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                         
@@ -243,14 +257,18 @@ class SaleOrderLine(models.Model):
                         else:
                             self.di_nb_pieces = ceil(self.di_poin)                                            
                         if self.product_packaging.qty !=0.0:
-                            self.di_nb_colis = self.di_nb_pieces / self.product_packaging.qty
+                            self.di_nb_colis = round(self.di_nb_pieces / self.product_packaging.qty,1)
                         else:
-                            self.di_nb_colis = self.di_nb_pieces                            
-                        self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis                            
+                            self.di_nb_colis = round(self.di_nb_pieces,1)   
+                        nbcol = round(self.di_nb_colis,1)                         
+#                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.product_uom_qty = self.product_packaging.qty * nbcol                            
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:  
-                            self.di_nb_palette = self.di_nb_colis                        
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol                                                
                         
                     else:
                         self.di_poib = self.di_qte_un_saisie
@@ -261,14 +279,18 @@ class SaleOrderLine(models.Model):
                         else:
                             self.di_nb_pieces = ceil(self.di_poin)                                            
                         if self.product_packaging.qty !=0.0:
-                            self.di_nb_colis = self.di_nb_pieces / self.product_packaging.qty
+                            self.di_nb_colis = round(self.di_nb_pieces / self.product_packaging.qty,1)
                         else:
-                            self.di_nb_colis = self.di_nb_pieces                           
-                        self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis                           
+                            self.di_nb_colis = round(self.di_nb_pieces,1)  
+                        nbcol = round(self.di_nb_colis,1)                         
+#                         self.product_uom_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.product_uom_qty = self.product_packaging.qty * nbcol                           
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:  
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                             
                 if product_uom_qty != self.product_uom_qty:
                     # la quantité en unité de mesure à changer, on met le flag pour ne pas recalculé les qtés spé
@@ -278,7 +300,9 @@ class SaleOrderLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one() and self.product_id:
-            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            nbcol = round(self.di_nb_colis,1)
+#             self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            self.di_tare = self.di_tare_un * ceil(nbcol)
             
     #OK calcul en dessous
     @api.multi
@@ -557,7 +581,9 @@ class SaleOrderLine(models.Model):
             if self.di_un_prix == "PIECE":
                 di_qte_prix = self.di_nb_pieces
             elif self.di_un_prix == "COLIS":
-                di_qte_prix = self.di_nb_colis
+                nbcol = round(self.di_nb_colis,1)
+#                 di_qte_prix = self.di_nb_colis
+                di_qte_prix = nbcol
             elif self.di_un_prix == "PALETTE":
                 di_qte_prix = self.di_nb_palette
             elif self.di_un_prix == "KG":

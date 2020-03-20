@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.tools.float_utils import float_compare
+from odoo.tools import float_utils
 import datetime
 from math import * 
 # from difodoo.addons_gesprim.difodoo_ventes.models.di_outils import di_recherche_prix_unitaire
@@ -386,7 +387,9 @@ class AccountInvoiceLine(models.Model):
         if self.di_un_prix == "PIECE":
             di_qte_prix = self.di_nb_pieces
         elif self.di_un_prix == "COLIS":
-            di_qte_prix = self.di_nb_colis
+            nbcol = round(self.di_nb_colis,1)
+#             di_qte_prix = self.di_nb_colis
+            di_qte_prix = nbcol
         elif self.di_un_prix == "PALETTE":
             di_qte_prix = self.di_nb_palette
         elif self.di_un_prix == "KG":
@@ -503,7 +506,7 @@ class AccountInvoiceLine(models.Model):
                         if self.uom_id.name == 'Unit(s)' or self.uom_id.name == 'Pièce' :
                             self.di_nb_pieces = ceil(self.quantity)
                         if self.uom_id.name.lower() ==  'colis' :
-                            self.di_nb_colis = self.quantity
+                            self.di_nb_colis = round(self.quantity,1)
                         if self.uom_id.name.lower() ==  'palette' :
                             self.di_nb_palette = ceil(self.quantity) 
                                                        
@@ -514,7 +517,9 @@ class AccountInvoiceLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un','di_qte_un_saisie')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            nbcol = round(self.di_nb_colis,1)
+#             self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            self.di_tare = self.di_tare_un * ceil(nbcol)
             
     @api.multi            
     @api.onchange('di_qte_un_saisie', 'di_un_saisie', 'di_type_palette_id', 'di_product_packaging_id')
@@ -530,35 +535,46 @@ class AccountInvoiceLine(models.Model):
                         self.di_nb_pieces = ceil(self.di_qte_un_saisie)
                         self.quantity = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
                         if self.di_product_packaging_id.qty != 0.0 :
-                            self.di_nb_colis = self.quantity / self.di_product_packaging_id.qty
+                            self.di_nb_colis = round(self.quantity / self.di_product_packaging_id.qty,1)
                         else:      
-                            self.di_nb_colis = self.quantity             
+                            self.di_nb_colis = round(self.quantity,1) 
+                        nbcol = round(self.di_nb_colis,1)            
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                         self.di_poin = self.quantity * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                                
                     elif self.di_un_saisie == "COLIS":
-                        self.di_nb_colis = self.di_qte_un_saisie
-                        self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
-                        self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+                        self.di_nb_colis = round(self.di_qte_un_saisie,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
+#                         self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+                        self.quantity = self.di_product_packaging_id.qty * nbcol
+                        self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * nbcol)
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:                
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                         self.di_poin = self.quantity * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                                               
                     elif self.di_un_saisie == "PALETTE":            
                         self.di_nb_palette = self.di_qte_un_saisie
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                            self.di_nb_colis = self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_colis = round(self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf,1)
                         else:
-                            self.di_nb_colis = self.di_nb_palette
-                        self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
-                        self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
+                            self.di_nb_colis = round(self.di_nb_palette,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+#                         self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
+                        self.di_nb_pieces = ceil(self.di_product_packaging_id.di_qte_cond_inf * nbcol)
+                        self.quantity = self.di_product_packaging_id.qty * nbcol
                         self.di_poin = self.quantity * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                          
@@ -570,14 +586,18 @@ class AccountInvoiceLine(models.Model):
                         else:
                             self.di_nb_pieces = ceil(self.di_poin)                                            
                         if self.di_product_packaging_id.qty !=0.0:
-                            self.di_nb_colis = self.di_nb_pieces / self.di_product_packaging_id.qty
+                            self.di_nb_colis = round(self.di_nb_pieces / self.di_product_packaging_id.qty,1)
                         else:
-                            self.di_nb_colis = self.di_nb_pieces                           
-                        self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis                           
+                            self.di_nb_colis = round(self.di_nb_pieces,1)   
+                        nbcol = round(self.di_nb_colis,1)                        
+#                         self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
+                        self.quantity = self.di_product_packaging_id.qty * nbcol                           
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:  
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                          
                     else:
                         self.di_poib = self.di_qte_un_saisie
@@ -587,14 +607,18 @@ class AccountInvoiceLine(models.Model):
                         else:
                             self.di_nb_pieces = ceil(self.di_poin) 
                         if self.di_product_packaging_id.qty !=0.0:
-                            self.di_nb_colis = self.di_nb_pieces / self.di_product_packaging_id.qty
+                            self.di_nb_colis = round(self.di_nb_pieces / self.di_product_packaging_id.qty,1)
                         else:
-                            self.di_nb_colis = self.di_nb_pieces
-                        self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
+                            self.di_nb_colis = round(self.di_nb_pieces,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.quantity = self.di_product_packaging_id.qty * self.di_nb_colis
+                        self.quantity = self.di_product_packaging_id.qty * nbcol
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:  
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                     if quantity != self.quantity:
                     # la quantité en unité de mesure à changer, on met le flag pour ne pas recalculé les qtés spé
                         AccountInvoiceLine.modifparprg = True  

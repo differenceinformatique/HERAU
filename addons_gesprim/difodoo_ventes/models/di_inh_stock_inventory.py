@@ -144,7 +144,9 @@ class InventoryLine(models.Model):
     
     @api.onchange('di_poib','di_tare_un')
     def di_onchange_poib_tare(self):
-        self.di_poin = self.di_poib - (self.di_tare_un*ceil(self.di_nb_colis))
+        nbcol = round(self.di_nb_colis,1)
+#         self.di_poin = self.di_poib - (self.di_tare_un*ceil(self.di_nb_colis))
+        self.di_poin = self.di_poib - (self.di_tare_un*ceil(nbcol))
    
     
     @api.multi

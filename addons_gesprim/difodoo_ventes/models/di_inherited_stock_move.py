@@ -4,6 +4,7 @@ from math import ceil
 from datetime import  datetime
 from odoo.addons import decimal_precision as dp
 from odoo.tools.float_utils import float_round
+from odoo.tools import float_utils
 
  
 class StockMove(models.Model):
@@ -154,7 +155,8 @@ class StockMove(models.Model):
                         else:
                             ratio = 1
                         line.di_nb_pieces = ceil(move.sale_line_id.di_nb_pieces * ratio)
-                        line.di_nb_colis = move.sale_line_id.di_nb_colis * ratio
+                        line.di_nb_colis = round(move.sale_line_id.di_nb_colis * ratio,1)
+                        nbcol = round(self.di_nb_colis,1)
                         line.di_poin = move.sale_line_id.di_poin * ratio
                         line.di_poib = move.sale_line_id.di_poib * ratio
                         line.di_nb_palette = ceil(move.sale_line_id.di_nb_palette * ratio)                
@@ -163,8 +165,10 @@ class StockMove(models.Model):
                         else:
                             line.di_qte_un_saisie = ceil(move.sale_line_id.di_qte_un_saisie * ratio)
                         line.di_tare = line.di_poib - line.di_poin
-                        if line.di_nb_colis != 0.0:
-                            line.di_tare_un = line.di_tare / ceil(line.di_nb_colis) 
+#                         if line.di_nb_colis != 0.0:
+#                             line.di_tare_un = line.di_tare / ceil(line.di_nb_colis) 
+                        if nbcol != 0.0:
+                            line.di_tare_un = line.di_tare / ceil(nbcol)
                     else:
                         if move.purchase_line_id:
                             if  move.purchase_line_id.product_qty != 0.0:
@@ -172,7 +176,8 @@ class StockMove(models.Model):
                             else:
                                 ratio = 1
                             line.di_nb_pieces = ceil(move.purchase_line_id.di_nb_pieces * ratio)
-                            line.di_nb_colis = move.purchase_line_id.di_nb_colis * ratio
+                            line.di_nb_colis = round(move.purchase_line_id.di_nb_colis * ratio,1)
+                            nbcol = round(self.di_nb_colis,1)
                             line.di_poin = move.purchase_line_id.di_poin * ratio
                             line.di_poib = move.purchase_line_id.di_poib * ratio
                             line.di_nb_palette = ceil(move.purchase_line_id.di_nb_palette * ratio)                
@@ -181,9 +186,10 @@ class StockMove(models.Model):
                             else:
                                 line.di_qte_un_saisie = ceil(move.purchase_line_id.di_qte_un_saisie * ratio)
                             line.di_tare = line.di_poib - line.di_poin
-                            if line.di_nb_colis != 0.0:
-                                line.di_tare_un = line.di_tare / ceil(line.di_nb_colis) 
-                        
+#                             if line.di_nb_colis != 0.0:
+#                                 line.di_tare_un = line.di_tare / ceil(line.di_nb_colis) 
+                            if nbcol != 0.0:
+                                line.di_tare_un = line.di_tare / ceil(nbcol)
 
                     
     @api.depends('move_line_ids.di_qte_un_saisie', 'move_line_ids.di_poin', 'move_line_ids.di_poib', 'move_line_ids.di_tare', 'move_line_ids.di_nb_colis', 'move_line_ids.di_nb_pieces', 'move_line_ids.di_nb_palette')
@@ -957,14 +963,18 @@ class StockMoveLine(models.Model):
                 else:
                     move = self.move_id                                       
                 if move.di_type_palette_id:
-                    self.di_nb_colis = self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf                  
+                    self.di_nb_colis = round(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf,1)  
+                    nbcol = round(self.di_nb_colis,1)                
                     if move.product_uom.name.lower() == 'kg':       
-                        self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+#                         self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                        self.qty_done = move.di_product_packaging_id.qty * nbcol * self.product_id.weight
                         self.di_poin = self.qty_done 
                     else:                                  
-                        self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
+#                         self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
+                        self.qty_done = move.di_product_packaging_id.qty * nbcol
                         self.di_poin = self.qty_done  * self.product_id.weight
-                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
+#                     self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * nbcol)            
                      
                     self.di_poib = self.di_poin + self.di_tare
       
@@ -981,18 +991,24 @@ class StockMoveLine(models.Model):
                 else:
                     move = self.move_id     
                 if move.di_product_packaging_id: 
+                    nbcol = round(self.di_nb_colis,1)
                     if move.product_uom.name.lower() == 'kg':       
-                        self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+#                         self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                        self.qty_done = move.di_product_packaging_id.qty * nbcol * self.product_id.weight
                         self.di_poin = self.qty_done  
                     else:                                  
-                        self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
+#                         self.qty_done = move.di_product_packaging_id.qty * self.di_nb_colis
+                        self.qty_done = move.di_product_packaging_id.qty * nbcol
                         self.di_poin = self.qty_done  * self.product_id.weight
                           
-                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+#                     self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * nbcol)
                     if move.di_type_palette_id.di_qte_cond_inf != 0.0:                
-                        self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+#                         self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+                        self.di_nb_palette = nbcol / move.di_type_palette_id.di_qte_cond_inf
                     else:
-                        self.di_nb_palette = self.di_nb_colis
+#                         self.di_nb_palette = self.di_nb_colis
+                        self.di_nb_palette =nbcol
                     
                     self.di_poib = self.di_poin + self.di_tare
                 
@@ -1000,7 +1016,9 @@ class StockMoveLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            nbcol = round(self.di_nb_colis,1)
+#             self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            self.di_tare = self.di_tare_un * ceil(nbcol)
                 
     @api.multi                     
     @api.onchange('di_nb_pieces')
@@ -1080,7 +1098,7 @@ class StockMoveLine(models.Model):
                     if move.product_uom.name == 'Unit(s)' or move.product_uom.name == 'Pièce' :
                         self.di_nb_pieces = ceil(self.qty_done)
                     if move.product_uom.name.lower() ==  'colis' :
-                        self.di_nb_colis = self.qty_done
+                        self.di_nb_colis = round(self.qty_done,1)
                     if move.product_uom.name.lower() ==  'palette' :
                         self.di_nb_palette = ceil(self.qty_done)
                                                 
@@ -1584,14 +1602,18 @@ class StockReturnPickingLine(models.TransientModel):
                 self.di_flg_modif_qty_spe = True   
                 move = self.move_id                                      
                 if move.di_type_palette_id:
-                    self.di_nb_colis = self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf                    
+                    self.di_nb_colis = round(self.di_nb_palette * move.di_type_palette_id.di_qte_cond_inf,1)  
+                    nbcol = round(self.di_nb_colis,1)                  
                     if move.product_uom.name.lower() == 'kg':       
-                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+#                         self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                        self.quantity = move.di_product_packaging_id.qty * nbcol * self.product_id.weight
                         self.di_poin = self.quantity 
                     else:                                  
-                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis
+#                         self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis
+                        self.quantity = move.di_product_packaging_id.qty * nbcol
                         self.di_poin = self.quantity  * self.product_id.weight
-                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
+#                     self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)            
+                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * nbcol)
                      
                     self.di_poib = self.di_poin + self.di_tare
       
@@ -1605,18 +1627,24 @@ class StockReturnPickingLine(models.TransientModel):
                 self.di_tare = 0.0
                 move = self.move_id    
                 if move.di_product_packaging_id: 
+                    nbcol = round(self.di_nb_colis,1)
                     if move.product_uom.name.lower() == 'kg':       
-                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+#                         self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis * self.product_id.weight
+                        self.quantity = move.di_product_packaging_id.qty * nbcol * self.product_id.weight
                         self.di_poin = self.quantity  
                     else:                                  
-                        self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis
+#                         self.quantity = move.di_product_packaging_id.qty * self.di_nb_colis
+                        self.quantity = move.di_product_packaging_id.qty * nbcol
                         self.di_poin = self.quantity  * self.product_id.weight
                           
-                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+#                     self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * self.di_nb_colis)
+                    self.di_nb_pieces = ceil(move.di_product_packaging_id.di_qte_cond_inf * nbcol)
                     if move.di_type_palette_id.di_qte_cond_inf != 0.0:                
-                        self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+#                         self.di_nb_palette = self.di_nb_colis / move.di_type_palette_id.di_qte_cond_inf
+                        self.di_nb_palette = nbcol / move.di_type_palette_id.di_qte_cond_inf
                     else:
-                        self.di_nb_palette = self.di_nb_colis
+#                         self.di_nb_palette = self.di_nb_colis
+                        self.di_nb_palette = nbcol
                     
                     self.di_poib = self.di_poin + self.di_tare
                 
@@ -1624,7 +1652,9 @@ class StockReturnPickingLine(models.TransientModel):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            nbcol = round(self.di_nb_colis,1)
+#             self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            self.di_tare = self.di_tare_un * ceil(nbcol)
                 
     @api.multi                     
     @api.onchange('di_nb_pieces')
@@ -1688,7 +1718,7 @@ class StockReturnPickingLine(models.TransientModel):
                     if move.product_uom.name == 'Unit(s)' or move.product_uom.name == 'Pièce' :
                         self.di_nb_pieces = ceil(self.qty_done)
                     if move.product_uom.name.lower() ==  'colis' :
-                        self.di_nb_colis = self.qty_done
+                        self.di_nb_colis = round(self.qty_done,1)
                     if move.product_uom.name.lower() ==  'palette' :
                         self.di_nb_palette = ceil(self.qty_done) 
                                  

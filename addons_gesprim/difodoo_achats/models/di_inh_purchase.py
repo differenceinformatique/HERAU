@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 from ...difodoo_fichiers_base.controllers import di_ctrl_print
 from odoo.addons import decimal_precision as dp
 from math import ceil
+from odoo.tools import float_utils
 
 # from difodoo.addons_gesprim.difodoo_ventes.models import di_inherited_stock_move 
 
@@ -181,7 +182,7 @@ class PurchaseOrderLine(models.Model):
                             if self.product_uom.name == 'Unit(s)' or self.product_uom.name == 'Pièce' :
                                 self.di_nb_pieces = ceil(self.product_qty)
                             if self.product_uom.name.lower() ==  'colis' :
-                                self.di_nb_colis = self.product_qty
+                                self.di_nb_colis = round(self.product_qty,1)                                
                             if self.product_uom.name.lower() ==  'palette' :
                                 self.di_nb_palette = ceil(self.product_qty)
                             self.di_flg_modif_uom = True
@@ -427,38 +428,52 @@ class PurchaseOrderLine(models.Model):
                         self.di_nb_pieces = ceil(self.di_qte_un_saisie)
                         self.product_qty = self.product_id.di_get_type_piece().qty * self.di_nb_pieces
                         if self.product_packaging.qty != 0.0 :
-                            self.di_nb_colis = self.product_qty / self.product_packaging.qty
+                            self.di_nb_colis = round(self.product_qty / self.product_packaging.qty,1)
                         else:      
-                            self.di_nb_colis = self.product_qty                       
-                        self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)
+                            self.di_nb_colis = round(self.product_qty,1)  
+                        nbcol = round(self.di_nb_colis,1)                     
+#                         self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)
+                        self.di_tare = self.di_tare_un*ceil(nbcol)
                         if self.di_type_palette_id.di_qte_cond_inf != 0.0:
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                         self.di_poin = self.product_qty * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                               
                     elif self.di_un_saisie == "COLIS":
-                        self.di_nb_colis = self.di_qte_un_saisie
-                        self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)                            
-                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
-                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                        self.di_nb_colis = round(self.di_qte_un_saisie,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)                            
+#                         self.product_qty = self.product_packaging.qty * self.di_nb_colis
+#                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+                        self.di_tare = self.di_tare_un*ceil(nbcol)                            
+                        self.product_qty = self.product_packaging.qty * nbcol
+                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * nbcol)
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:                
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:
-                            self.di_nb_palette = self.di_nb_colis
+#                             self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
                         self.di_poin = self.product_qty * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                                                                      
                     elif self.di_un_saisie == "PALETTE":            
                         self.di_nb_palette = self.di_qte_un_saisie
                         if self.di_type_palette_id.di_qte_cond_inf!=0.0:
-                            self.di_nb_colis = self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_colis = round(self.di_nb_palette * self.di_type_palette_id.di_qte_cond_inf,1)
                         else:
-                            self.di_nb_colis = self.di_nb_palette
-                        self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)
-                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
-                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                            self.di_nb_colis = round(self.di_nb_palette,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.di_tare = self.di_tare_un*ceil(self.di_nb_colis)
+#                         self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * self.di_nb_colis)
+#                         self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.di_tare = self.di_tare_un*ceil(nbcol)
+                        self.di_nb_pieces = ceil(self.product_packaging.di_qte_cond_inf * nbcol)
+                        self.product_qty = self.product_packaging.qty * nbcol
                         self.di_poin = self.product_qty * self.product_id.weight 
                         self.di_poib = self.di_poin + self.di_tare
                                                 
@@ -472,16 +487,19 @@ class PurchaseOrderLine(models.Model):
                             self.di_nb_pieces = ceil(self.di_poin)    
                                             
                         if self.product_packaging.qty !=0.0:
-                            self.di_nb_colis = self.di_nb_pieces / self.product_packaging.qty
+                            self.di_nb_colis = round(self.di_nb_pieces / self.product_packaging.qty,1)
                         else:
-                            self.di_nb_colis = self.di_nb_pieces
-                            
-                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                            self.di_nb_colis = round(self.di_nb_pieces,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.product_qty = self.product_packaging.qty * nbcol
                             
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:  
-                            self.di_nb_palette = self.di_nb_colis
+                            self.di_nb_palette = nbcol
+#                             self.di_nb_palette = self.di_nb_colis
                             
                     else:
                         self.di_poib = self.di_qte_un_saisie
@@ -493,16 +511,19 @@ class PurchaseOrderLine(models.Model):
                             self.di_nb_pieces = ceil(self.di_poin)    
                                             
                         if self.product_packaging.qty !=0.0:
-                            self.di_nb_colis = self.di_nb_pieces / self.product_packaging.qty
+                            self.di_nb_colis = round(self.di_nb_pieces / self.product_packaging.qty,1)
                         else:
-                            self.di_nb_colis = self.di_nb_pieces
-                            
-                        self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                            self.di_nb_colis = round(self.di_nb_pieces,1)
+                        nbcol = round(self.di_nb_colis,1)
+#                         self.product_qty = self.product_packaging.qty * self.di_nb_colis
+                        self.product_qty = self.product_packaging.qty * nbcol
                             
                         if self.di_type_palette_id.di_qte_cond_inf !=0.0:    
-                            self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+#                             self.di_nb_palette = self.di_nb_colis / self.di_type_palette_id.di_qte_cond_inf
+                            self.di_nb_palette = nbcol / self.di_type_palette_id.di_qte_cond_inf
                         else:  
-                            self.di_nb_palette = self.di_nb_colis    
+#                             self.di_nb_palette = self.di_nb_colis    
+                            self.di_nb_palette = nbcol
                 if product_qty != self.product_qty:
                     # la quantité en unité de mesure à changer, on met le flag pour ne pas recalculé les qtés spé
                     PurchaseOrderLine.modifparprg = True
@@ -511,7 +532,9 @@ class PurchaseOrderLine(models.Model):
     @api.onchange('di_nb_colis', 'di_tare_un')
     def _di_recalcule_tare(self):
         if self.ensure_one():
-            self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)   
+            nbcol = round(self.di_nb_colis,1)
+#             self.di_tare = self.di_tare_un * ceil(self.di_nb_colis)
+            self.di_tare = self.di_tare_un * ceil(nbcol)      
   
     @api.multi 
     @api.onchange('di_poib')
@@ -545,8 +568,11 @@ class PurchaseOrderLine(models.Model):
     @api.onchange('di_tare')
     def _di_onchange_tare(self):
         if self.ensure_one():    
-            if self.di_nb_colis != 0.0:
-                self.di_tare_un = self.di_tare / ceil(self.di_nb_colis)
+            nbcol = round(self.di_nb_colis,1)            
+#             if self.di_nb_colis != 0.0:                
+#                 self.di_tare_un = self.di_tare / ceil(self.di_nb_colis)
+            if nbcol != 0.0:                
+                self.di_tare_un = self.di_tare / ceil(nbcol)
             else:
                 self.di_tare_un = 0.0
               
