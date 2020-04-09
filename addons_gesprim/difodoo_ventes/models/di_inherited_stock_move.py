@@ -282,28 +282,7 @@ class StockMove(models.Model):
                 self.env['stock.move.line'].create(vals)
         return res
     
-    def di_somme_quantites_montants(self, product_id,date_cr_cout_veille, date=False, cde_ach=False, dernier_id=0): # calcul cmp
-        
-#         select sum(case when sl.usage ='internal' then sml.qty_done else sml.qty_done * -1 end)
-# from stock_move sm 
-# left join purchase_order_line pol on pol.id = sm.purchase_line_id
-# left join sale_order_line sol on sol.id = sm.sale_line_id
-# left join stock_location sl on sl.id = sm.location_dest_id
-# left join stock_move_line sml on sml.move_id = sm.id
-# left join stock_picking sp on sp.id = sm.picking_id
-# where sm.product_id = 5567  and ((sp.date_done < '2019-05-01' and  sp.id is not null) or (sp.id is null and sm.date < '2019-05-01')) and sm.state ='done'
-# di_nb_pieces_sign
-
-#  
-#         select sm.id,sml.qty_done,sl.usage -- sum(case when sl.usage ='internal' then sml.qty_done else sml.qty_done * -1 end)
-# from stock_move sm 
-# left join purchase_order_line pol on pol.id = sm.purchase_line_id
-# left join sale_order_line sol on sol.id = sm.sale_line_id
-# left join stock_location sl on sl.id = sm.location_dest_id
-# left join stock_move_line sml on sml.move_id = sm.id
-# left join stock_picking sp on sp.id = sm.picking_id
-# where sm.product_id = 5567  and ((sp.date_done between '2019-04-29 23:59:59' and '2019-05-01 00:00:00' and  sp.id is not null) or (sp.id is null and sm.date  between '2019-04-29 23:59:59' and '2019-05-01 00:00:00')) and sm.state ='done'
-
+    def di_somme_quantites_montants(self, product_id,date_cr_cout_veille, date=False, cde_ach=False, dernier_id=0): # calcul cmp        
         qte = 0.0
         mont = 0.0
         nbcol = 0.0
@@ -311,322 +290,400 @@ class StockMove(models.Model):
         nbpiece = 0.0
         poids = 0.0
         dernier_id_lu = 0
-        pol_ids_lus=[]
-        sol_ids_lus=[]
-        mouv_ids_lus=[]
         if cde_ach:
             if date:                                
-    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-                #à optimiser  en sql
-                mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)]).filtered(lambda mv: mv.location_dest_id.usage == 'internal' and ( (mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or (mv.state =='done' and mv.picking_id.date_done.date() == date) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() < date and mv.id>dernier_id and mv.picking_id.scheduled_date.date() > date_cr_cout_veille) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() == date )))
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit 
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done','assigned') and sm.picking_id is not null and sl.usage = 'internal' 
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.date_done as varchar),10) > cast(%(date_cr_cout_veille)s as varchar))
+                                or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )
+                                or (sm.state='assigned' and left(cast(sp.scheduled_date as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.scheduled_date as varchar),10) > cast(%(date_cr_cout_veille)s as varchar))
+                                or (sm.state='assigned' and left(cast(sp.scheduled_date as varchar),10)= cast(%(date)s as varchar) )
+                            )    
+                            order by  case when sm.state='done' then sp.date_done else sp.scheduled_date end ,sm.id                                                                                                           
+                        """
             else:
-                #à optimiser  en sql
-                mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)])
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit 
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done','assigned') and sm.picking_id is not null and sl.usage = 'internal'    
+                            and sm.product_id = %(product_id)s     
+                            order by case when sm.state='done' then sp.date_done else sp.scheduled_date end ,sm.id                                    
+                        """
         else:
             if date:
-    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-#                 mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)]).filtered(lambda mv:  mv.location_dest_id.usage == 'internal' and ((mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date)))
-                #à optimiser  en sql
-                mouvs_1 = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)])
-                mouvs_2 = mouvs_1.filtered(lambda mv:  mv.location_dest_id.usage == 'internal')
-                mouvs = mouvs_2.filtered(lambda mv: (( mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or ( mv.picking_id.date_done.date() == date)))
-#                 .filtered(lambda mv:   ((mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date)))
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit 
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done') and sm.picking_id is not null and sl.usage = 'internal' 
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.date_done as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )
+                                or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )                               
+                            )  
+                            order by sp.date_done,sm.id                                                                                                             
+                        """
             else:
-                #à optimiser  en sql
-                mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '!=', False)])
-             
-        for mouv in mouvs:
-            mouv_ids_lus.append(mouv.id)
-            if mouv.id > dernier_id_lu:
-                dernier_id_lu = mouv.id
-            
-            if mouv.location_dest_id.usage == 'internal':
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done') and sm.picking_id is not null and sl.usage = 'internal' 
+                            and sm.product_id = %(product_id)s
+                            order by sp.date_done,sm.id                                                                                                                                                                   
+                        """
+        
+        
+        query_args = {'product_id': product_id.id,'date' : date,'dernier_id' : dernier_id, 'date_cr_cout_veille': date_cr_cout_veille}        
+ 
+        self.env.cr.execute(query, query_args)
+        ids=[]
+        for r in self.env.cr.fetchall():
+            ids.append(r)
 
-                if mouv.purchase_line_id:
-                    if mouv.purchase_line_id.id not in pol_ids_lus :
-#                         pol_ids_lus.append(mouv.purchase_line_id.id)
-                        if mouv.state == 'done':
-#                             nbcol = nbcol + mouv.purchase_line_id.di_nb_colis_liv
-#                             nbpal = nbpal + mouv.purchase_line_id.di_nb_palette_liv
-#                             nbpiece = nbpiece + mouv.purchase_line_id.di_nb_pieces_liv
-#                             poids = poids + mouv.purchase_line_id.di_poin_liv                
-#                             qte = qte +  mouv.purchase_line_id.qty_received   
-                            nbcol = nbcol + mouv.di_nb_colis
-                            nbpal = nbpal + mouv.di_nb_palette
-                            nbpiece = nbpiece + mouv.di_nb_pieces
-                            poids = poids + mouv.di_poin                
-                            qte = qte +  mouv.quantity_done                       
-                        else:
-#                             nbcol = nbcol + mouv.purchase_line_id.di_nb_colis - mouv.purchase_line_id.di_nb_colis_liv
-#                             nbpal = nbpal + mouv.purchase_line_id.di_nb_palette - mouv.purchase_line_id.di_nb_palette_liv
-#                             nbpiece = nbpiece + mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
-#                             poids = poids + mouv.purchase_line_id.di_poin -mouv.purchase_line_id.di_poin_liv
-#                             qte = qte + mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
-                            nbcol = nbcol + mouv.di_nb_colis
-                            nbpal = nbpal + mouv.di_nb_palette
-                            nbpiece = nbpiece + mouv.di_nb_pieces
-                            poids = poids + mouv.di_poin                
-                            qte = qte +  mouv.product_uom_qty    
-                        di_qte_prix = 0.0
-                        if mouv.purchase_line_id.di_un_prix == "PIECE":
-                            if mouv.state == 'done':
-#                                 di_qte_prix = mouv.purchase_line_id.di_nb_pieces_liv
-                                di_qte_prix = mouv.di_nb_pieces
-                            else:
-#                                 di_qte_prix = mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
-                                di_qte_prix = mouv.di_nb_pieces
-                                
-                        elif mouv.purchase_line_id.di_un_prix == "COLIS":
-                            if mouv.state == 'done':
-#                                 di_qte_prix = mouv.purchase_line_id.di_nb_colis_liv
-                                di_qte_prix = mouv.di_nb_colis
-                            else:
-#                                 di_qte_prix = mouv.purchase_line_id.di_nb_colis - mouv.purchase_line_id.di_nb_colis_liv
-                                di_qte_prix = mouv.di_nb_colis
-                        elif mouv.purchase_line_id.di_un_prix == "PALETTE":
-                            if mouv.state == 'done':
-#                                 di_qte_prix = mouv.purchase_line_id.di_nb_palette_liv
-                                di_qte_prix = mouv.di_nb_palette
-                            else:
-#                                 di_qte_prix = mouv.purchase_line_id.di_nb_palette - mouv.purchase_line_id.di_nb_palette_liv
-                                di_qte_prix = mouv.di_nb_palette
-                        elif mouv.purchase_line_id.di_un_prix == "KG":
-                            if mouv.state == 'done':
-#                                 di_qte_prix = mouv.purchase_line_id.di_poin_liv
-                                di_qte_prix = mouv.di_poin
-                            else:
-#                                 di_qte_prix = mouv.purchase_line_id.di_poin -mouv.purchase_line_id.di_poin_liv
-                                di_qte_prix = mouv.di_poin
-                        elif mouv.purchase_line_id.di_un_prix == False or mouv.purchase_line_id.di_un_prix == '':
-                            if mouv.state == 'done':
-#                                 di_qte_prix = mouv.purchase_line_id.qty_received
-                                di_qte_prix = mouv.quantity_done
-                            else:
-#                                 di_qte_prix = mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
-                                di_qte_prix = mouv.product_uom_qty                            
+        for (mouv_id,mouv_purchase_line_id,mouv_state,mouv_di_nb_colis,mouv_di_nb_palette,mouv_di_nb_pieces,mouv_di_poin,mouv_quantity_done,mouv_product_uom_qty,mouv_sale_line_id,mouv_purchase_line_id_di_un_prix,mouv_purchase_line_id_price_unit) in ids: 
+
+            if mouv_id > dernier_id_lu:
+                dernier_id_lu = mouv_id
+
+            if mouv_purchase_line_id:
+
+                if mouv_state == 'done':
+                    nbcol = nbcol + mouv_di_nb_colis
+                    nbpal = nbpal + mouv_di_nb_palette
+                    nbpiece = nbpiece + mouv_di_nb_pieces
+                    poids = poids + mouv_di_poin                
+                    qte = qte +  mouv_quantity_done                     
+                else:
+                    nbcol = nbcol + mouv_di_nb_colis
+                    nbpal = nbpal + mouv_di_nb_palette
+                    nbpiece = nbpiece + mouv_di_nb_pieces
+                    poids = poids + mouv_di_poin                
+                    qte = qte +  mouv_product_uom_qty    
+                di_qte_prix = 0.0
+                if mouv_purchase_line_id_di_un_prix == "PIECE":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_pieces
+                    else:
+                        di_qte_prix = mouv_di_nb_pieces
                         
-                        mont = mont + (di_qte_prix * mouv.purchase_line_id.price_unit)
-                elif mouv.sale_line_id:
-                    if mouv.sale_line_id.id not in sol_ids_lus :
-#                         sol_ids_lus.append(mouv.sale_line_id.id)
-                        if mouv.state == 'done':
-#                             nbcol = nbcol + mouv.sale_line_id.di_nb_colis_liv
-#                             nbpal = nbpal + mouv.sale_line_id.di_nb_palette_liv
-#                             nbpiece = nbpiece + mouv.sale_line_id.di_nb_pieces_liv
-#                             poids = poids + mouv.sale_line_id.di_poin_liv                
-#                             qte = qte +  mouv.sale_line_id.qty_delivered  
-                            nbcol = nbcol + mouv.di_nb_colis
-                            nbpal = nbpal + mouv.di_nb_palette
-                            nbpiece = nbpiece + mouv.di_nb_pieces
-                            poids = poids + mouv.di_poin                
-                            qte = qte +  mouv.quantity_done                       
-                        else:
-#                             nbcol = nbcol + mouv.sale_line_id.di_nb_colis - mouv.sale_line_id.di_nb_colis_liv
-#                             nbpal = nbpal + mouv.sale_line_id.di_nb_palette - mouv.sale_line_id.di_nb_palette_liv
-#                             nbpiece = nbpiece + mouv.sale_line_id.di_nb_pieces - mouv.sale_line_id.di_nb_pieces_liv
-#                             poids = poids + mouv.sale_line_id.di_poin -mouv.sale_line_id.di_poin_liv
-#                             qte = qte + mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered 
-                            nbcol = nbcol + mouv.di_nb_colis
-                            nbpal = nbpal + mouv.di_nb_palette
-                            nbpiece = nbpiece + mouv.di_nb_pieces
-                            poids = poids + mouv.di_poin                
-                            qte = qte +  mouv.product_uom_qty
-                        di_qte_prix = 0.0
-                        if mouv.state == 'done':
-#                             di_qte_prix = mouv.sale_line_id.qty_delivered
-                            di_qte_prix = mouv.quantity_done
-                        else:
-#                             di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
-                            di_qte_prix = mouv.product_uom_qty                        
-                        mont = mont + (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date)) 
-                else:                    
-                    nbcol = nbcol + mouv.di_nb_colis
-                    nbpal = nbpal + mouv.di_nb_palette
-                    nbpiece = nbpiece + mouv.di_nb_pieces
-                    poids = poids + mouv.di_poin                
-                    qte = qte +  mouv.quantity_done                                             
-                    di_qte_prix = 0.0                    
-                    di_qte_prix = mouv.quantity_done                                            
-                    mont = mont + (di_qte_prix * mouv.product_id.di_get_dernier_cmp(date)) 
-        #à optimiser  en sql                
-        couts=self.env['di.cout'].search([('di_product_id', '=', product_id)]).filtered(lambda c: c.di_date<=date).sorted(key=lambda k: k.di_date,reverse=True)
-        dernier_cout=self.env['di.cout']
-        nouveau_cmp=0        
-        for cout in couts:
-            dernier_cout = cout
-            break
-        if not dernier_cout:
-            #à optimiser  en sql
-            achats=self.env['purchase.order.line'].search(['&',('product_id','=',product_id),('price_unit','>',0.0)]).filtered(lambda a: a.order_id.date_order.date()<=date).sorted(key=lambda k: k.order_id.date_order,reverse=True)
-            for achat in achats:
-                if achat.product_uom_qty != 0.0:
-                    nouveau_cmp = round((achat.price_subtotal / achat.product_uom_qty),2)
-                    break
-            if nouveau_cmp ==0.0:
-                product=self.env['product.product'].browse(product_id)
-                nouveau_cmp= product.standard_price
-        else:            
-            if dernier_cout.di_qte + qte != 0.0:
-                nouveau_cmp = (dernier_cout.di_mont + mont) / (dernier_cout.di_qte + qte)
+                elif mouv_purchase_line_id_di_un_prix == "COLIS":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_colis
+                    else:
+                        di_qte_prix = mouv_di_nb_colis
+                elif mouv_purchase_line_id_di_un_prix == "PALETTE":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_palette
+                    else:
+                        di_qte_prix = mouv_di_nb_palette
+                elif mouv_purchase_line_id_di_un_prix == "KG":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_poin
+                    else:
+                        di_qte_prix = mouv_di_poin
+                elif mouv_purchase_line_id_di_un_prix == False or mouv_purchase_line_id_di_un_prix == '':
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_quantity_done
+                    else:
+                        di_qte_prix = mouv_product_uom_qty                            
+                
+                mont = mont + (di_qte_prix * mouv_purchase_line_id_price_unit)
+            elif mouv_sale_line_id:
+                if mouv_state == 'done':
+                    nbcol = nbcol + mouv_di_nb_colis
+                    nbpal = nbpal + mouv_di_nb_palette
+                    nbpiece = nbpiece + mouv_di_nb_pieces
+                    poids = poids + mouv_di_poin                
+                    qte = qte +  mouv_quantity_done                       
+                else:
+                    nbcol = nbcol + mouv_di_nb_colis
+                    nbpal = nbpal + mouv_di_nb_palette
+                    nbpiece = nbpiece + mouv_di_nb_pieces
+                    poids = poids + mouv_di_poin                
+                    qte = qte +  mouv_product_uom_qty
+                di_qte_prix = 0.0
+                if mouv_state == 'done':
+                    di_qte_prix = mouv_quantity_done
+                else:
+                    di_qte_prix = mouv_product_uom_qty                        
+                mont = mont + (di_qte_prix * product_id.di_get_dernier_cmp(date)) 
+            else:                    
+                nbcol = nbcol + mouv_di_nb_colis
+                nbpal = nbpal + mouv_di_nb_palette
+                nbpiece = nbpiece + mouv_di_nb_pieces
+                poids = poids + mouv_di_poin                
+                qte = qte +  mouv_quantity_done                                             
+                di_qte_prix = 0.0                    
+                di_qte_prix = mouv_quantity_done                                            
+                mont = mont + (di_qte_prix * product_id.di_get_dernier_cmp(date)) 
+                
+                
+        nouveau_cmp=0  
+        query_args = {'di_product_id': product_id.id,'date':date}          
+        query = """ select c.di_mont,c.di_qte 
+                            from di_cout c                            
+                            where cast(c.di_date as varchar)  <= cast(%(date)s as varchar) and di_product_id = %(di_product_id)s
+                            order by di_date desc
+                            limit 1                                                                                                                  
+                        """    
+                        
+        self.env.cr.execute(query, query_args)
+                                               
+        try: 
+            result = self.env.cr.fetchall()[0] 
+            dernier_cout_di_mont = result[0] and result[0] or 0.0
+            dernier_cout_di_qte = result[1] and result[1] or 0.0   
+            if dernier_cout_di_qte + qte != 0.0:
+                nouveau_cmp = round((dernier_cout_di_mont + mont) / (dernier_cout_di_qte + qte),2)
             else:
-                nouveau_cmp=0
+                nouveau_cmp=0             
+        except:
+            dernier_cout_di_qte = 0.0
+            dernier_cout_di_mont = 0.0  
+            query_args = {'di_product_id': product_id.id,'date':date}          
+            query = """ select pol.price_subtotal,pol.product_uom_qty 
+                            from purchase_order_line pol        
+                            left join purchase_order po on po.id = pol.order_id                    
+                            where cast(po.date_order as varchar)  <= cast(%(date)s as varchar) and pol.product_id = %(di_product_id)s and pol.price_unit > 0.0 and pol.product_uom_qty > 0.0
+                            order by po.date_order desc
+                            limit 1                                                                                                                  
+                        """                                                
+            self.env.cr.execute(query, query_args)            
+            try: 
+                result = self.env.cr.fetchall()[0] 
+                achat_price_subtotal = result[0] and result[0] or 0.0
+                achat_product_uom_qty = result[1] and result[1] or 0.0
+                if achat_product_uom_qty != 0.0:
+                    nouveau_cmp = round((achat_price_subtotal / achat_product_uom_qty),2)
+                else :
+                    nouveau_cmp=0                                                     
+            except:
+                achat_price_subtotal = 0.0
+                achat_product_uom_qty = 0.0                                                      
+                
+        if nouveau_cmp ==0.0:
+            nouveau_cmp= product_id.standard_price
+                
+#         #à optimiser  en sql              
+#           
+#         couts=self.env['di.cout'].search([('di_product_id', '=', product_id.id)]).filtered(lambda c: c.di_date<=date).sorted(key=lambda k: k.di_date,reverse=True)
+#         dernier_cout=self.env['di.cout']
+#         nouveau_cmp=0        
+#         for cout in couts:
+#             dernier_cout = cout
+#             break
+#         if not dernier_cout:
+#             #à optimiser  en sql
+#             achats=self.env['purchase.order.line'].search(['&',('product_id','=',product_id.id),('price_unit','>',0.0)]).filtered(lambda a: a.order_id.date_order.date()<=date).sorted(key=lambda k: k.order_id.date_order,reverse=True)
+#             for achat in achats:
+#                 if achat.product_uom_qty != 0.0:
+#                     nouveau_cmp = round((achat.price_subtotal / achat.product_uom_qty),2)
+#                     break
+#             if nouveau_cmp ==0.0:
+# #                 product=self.env['product.product'].browse(product_id)
+#                 nouveau_cmp= product_id.standard_price
+#         else:            
+#             if dernier_cout.di_qte + qte != 0.0:
+#                 nouveau_cmp = (dernier_cout.di_mont + mont) / (dernier_cout.di_qte + qte)
+#             else:
+#                 nouveau_cmp=0
+                
         if cde_ach:
-            if date:                                
-    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-                #à optimiser  en sql
-                mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)]).filtered(lambda mv: mv.location_dest_id.usage != 'internal' and ( (mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or (mv.state =='done' and mv.picking_id.date_done.date() == date) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() < date and mv.id>dernier_id and mv.picking_id.scheduled_date.date() > date_cr_cout_veille) or (mv.state == 'assigned' and mv.picking_id.scheduled_date.date() == date )))
+            if date:
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit 
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done','assigned') and sm.picking_id is not null and sl.usage <> 'internal' 
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.date_done as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )
+                                or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )
+                                or (sm.state='assigned' and left(cast(sp.scheduled_date as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.scheduled_date as varchar),10) > cast(%(date_cr_cout_veille)s as varchar))
+                                or (sm.state='assigned' and left(cast(sp.scheduled_date as varchar),10)= cast(%(date)s as varchar) )
+                            )     
+                            order by case when sm.state='done' then sp.date_done else sp.scheduled_date end ,sm.id                                                                                                          
+                        """
             else:
-                #à optimiser  en sql
-                mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', 'in', ('done', 'assigned')), ('picking_id', '!=', False)])
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done','assigned') and sm.picking_id is not null and sl.usage = 'internal'    
+                            and sm.product_id = %(product_id)s     
+                            order by case when sm.state='done' then sp.date_done else sp.scheduled_date end ,sm.id                                    
+                        """
         else:
             if date:
-    #             mouvs=self.env['stock.move'].search(['&',('product_id','=',product_id),('state','=','done'),('picking_id','!=',False),('picking_id.date_done','=',date),('product_uom_qty','!=',0.0)])
-#                 mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)]).filtered(lambda mv:  mv.location_dest_id.usage != 'internal' and ((mv.state =='done' and mv.picking_id.date_done.date() < date and mv.id>dernier_id)or (mv.state =='done' and mv.picking_id.date_done.date() == date)))
-                #à optimiser  en sql
-                mouvs_1 = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id),('state', '=', 'done'), ('picking_id', '!=', False)])
-                mouvs_2 = mouvs_1.filtered(lambda mv:  mv.location_dest_id.usage != 'internal')
-                mouvs = mouvs_2.filtered(lambda mv: (( mv.picking_id.date_done.date() < date and mv.id>dernier_id and mv.picking_id.date_done.date() > date_cr_cout_veille)or ( mv.picking_id.date_done.date() == date)))
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done') and sm.picking_id is not null and sl.usage <> 'internal' 
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.date_done as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )
+                                or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )                               
+                            )    
+                            order by sp.date_done,sm.id                                                                                                           
+                        """
+
             else:
-                #à optimiser  en sql
-                mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '!=', False)])
-             
-        for mouv in mouvs:
-            mouv_ids_lus.append(mouv.id)
-            if mouv.id > dernier_id_lu:
-                dernier_id_lu = mouv.id
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done') and sm.picking_id is not null and sl.usage <> 'internal' 
+                            and sm.product_id = %(product_id)s  
+                            order by sp.date_done,sm.id                                                                                                                                                                 
+                        """                        
+        query_args = {'product_id': product_id.id,'date' : date,'dernier_id' : dernier_id, 'date_cr_cout_veille': date_cr_cout_veille}        
+ 
+        self.env.cr.execute(query, query_args)
+        ids=[]
+        for r in self.env.cr.fetchall():
+            ids.append(r)
+
+        for (mouv_id,mouv_purchase_line_id,mouv_state,mouv_di_nb_colis,mouv_di_nb_palette,mouv_di_nb_pieces,mouv_di_poin,mouv_quantity_done,mouv_product_uom_qty,mouv_sale_line_id,mouv_purchase_line_id_di_un_prix,mouv_purchase_line_id_price_unit) in ids: 
+
+            if mouv_id > dernier_id_lu:
+                dernier_id_lu = mouv_id
             
-            if mouv.purchase_line_id:
-                if mouv.purchase_line_id.id not in pol_ids_lus :
-#                     pol_ids_lus.append(mouv.purchase_line_id.id)
-                    if mouv.state == 'done':
-#                         nbcol = nbcol - mouv.purchase_line_id.di_nb_colis_liv
-#                         nbpal = nbpal - mouv.purchase_line_id.di_nb_palette_liv
-#                         nbpiece = nbpiece - mouv.purchase_line_id.di_nb_pieces_liv
-#                         poids = poids - mouv.purchase_line_id.di_poin_liv                
-#                         qte = qte -  mouv.purchase_line_id.qty_received
-                        nbcol = nbcol - mouv.di_nb_colis
-                        nbpal = nbpal - mouv.di_nb_palette
-                        nbpiece = nbpiece - mouv.di_nb_pieces
-                        poids = poids - mouv.di_poin                
-                        qte = qte -  mouv.quantity_done                                               
+            if mouv_purchase_line_id:
+                if mouv_state == 'done':
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_quantity_done                                               
+                else:
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_product_uom_qty 
+                di_qte_prix = 0.0
+                if mouv_purchase_line_id_di_un_prix == "PIECE":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_pieces
                     else:
-#                         nbcol = nbcol - mouv.purchase_line_id.di_nb_colis - mouv.purchase_line_id.di_nb_colis_liv
-#                         nbpal = nbpal - mouv.purchase_line_id.di_nb_palette - mouv.purchase_line_id.di_nb_palette_liv
-#                         nbpiece = nbpiece - mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
-#                         poids = poids - mouv.purchase_line_id.di_poin -mouv.purchase_line_id.di_poin_liv
-#                         qte = qte - mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
-                        nbcol = nbcol - mouv.di_nb_colis
-                        nbpal = nbpal - mouv.di_nb_palette
-                        nbpiece = nbpiece - mouv.di_nb_pieces
-                        poids = poids - mouv.di_poin                
-                        qte = qte -  mouv.product_uom_qty 
-                    di_qte_prix = 0.0
-                    if mouv.purchase_line_id.di_un_prix == "PIECE":
-                        if mouv.state == 'done':
-#                             di_qte_prix = mouv.purchase_line_id.di_nb_pieces_liv
-                            di_qte_prix = mouv.di_nb_pieces
-                        else:
-#                             di_qte_prix = mouv.purchase_line_id.di_nb_pieces - mouv.purchase_line_id.di_nb_pieces_liv
-                            di_qte_prix = mouv.di_nb_pieces                            
-                    elif mouv.purchase_line_id.di_un_prix == "COLIS":
-                        if mouv.state == 'done':
-#                             di_qte_prix = mouv.purchase_line_id.di_nb_colis_liv
-                            di_qte_prix = mouv.di_nb_colis
-                        else:
-#                             di_qte_prix = mouv.purchase_line_id.di_nb_colis - mouv.purchase_line_id.di_nb_colis_liv
-                            di_qte_prix = mouv.di_nb_colis
-                    elif mouv.purchase_line_id.di_un_prix == "PALETTE":
-                        if mouv.state == 'done':
-#                             di_qte_prix = mouv.purchase_line_id.di_nb_palette_liv
-                            di_qte_prix = mouv.di_nb_palette
-                        else:
-#                             di_qte_prix = mouv.purchase_line_id.di_nb_palette - mouv.purchase_line_id.di_nb_palette_liv
-                            di_qte_prix = mouv.di_nb_palette
-                    elif mouv.purchase_line_id.di_un_prix == "KG":
-                        if mouv.state == 'done':
-#                             di_qte_prix = mouv.purchase_line_id.di_poin_liv
-                            di_qte_prix = mouv.di_poin
-                        else:
-#                             di_qte_prix = mouv.purchase_line_id.di_poin -mouv.purchase_line_id.di_poin_liv
-                            di_qte_prix = mouv.di_poin
-                    elif mouv.purchase_line_id.di_un_prix == False or mouv.purchase_line_id.di_un_prix == '':
-                        if mouv.state == 'done':
-#                             di_qte_prix = mouv.purchase_line_id.qty_received
-                            di_qte_prix = mouv.quantity_done
-                        else:
-#                             di_qte_prix = mouv.purchase_line_id.product_uom_qty - mouv.purchase_line_id.qty_received
-                            di_qte_prix = mouv.product_uom_qty
-                    mont = mont - (di_qte_prix * mouv.purchase_line_id.price_unit)    
-            elif mouv.sale_line_id:
-                if mouv.sale_line_id.id not in sol_ids_lus :
-#                     sol_ids_lus.append(mouv.sale_line_id.id) 
-                    if mouv.state == 'done':
-#                         nbcol = nbcol - mouv.sale_line_id.di_nb_colis_liv
-#                         nbpal = nbpal - mouv.sale_line_id.di_nb_palette_liv
-#                         nbpiece = nbpiece - mouv.sale_line_id.di_nb_pieces_liv
-#                         poids = poids - mouv.sale_line_id.di_poin_liv                
-#                         qte = qte -  mouv.sale_line_id.qty_delivered
-                        nbcol = nbcol - mouv.di_nb_colis
-                        nbpal = nbpal - mouv.di_nb_palette
-                        nbpiece = nbpiece - mouv.di_nb_pieces
-                        poids = poids - mouv.di_poin                
-                        qte = qte -  mouv.quantity_done                        
+                        di_qte_prix = mouv_di_nb_pieces                            
+                elif mouv_purchase_line_id_di_un_prix == "COLIS":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_colis
                     else:
-#                         nbcol = nbcol - mouv.sale_line_id.di_nb_colis - mouv.sale_line_id.di_nb_colis_liv
-#                         nbpal = nbpal - mouv.sale_line_id.di_nb_palette - mouv.sale_line_id.di_nb_palette_liv
-#                         nbpiece = nbpiece - mouv.sale_line_id.di_nb_pieces - mouv.sale_line_id.di_nb_pieces_liv
-#                         poids = poids - mouv.sale_line_id.di_poin -mouv.sale_line_id.di_poin_liv
-#                         qte = qte - mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered 
-                        nbcol = nbcol - mouv.di_nb_colis
-                        nbpal = nbpal - mouv.di_nb_palette
-                        nbpiece = nbpiece - mouv.di_nb_pieces
-                        poids = poids - mouv.di_poin                
-                        qte = qte -  mouv.product_uom_qty
-                    di_qte_prix = 0.0
-                    if mouv.state == 'done':
-#                         di_qte_prix = mouv.sale_line_id.qty_delivered
-                        di_qte_prix = mouv.quantity_done
+                        di_qte_prix = mouv_di_nb_colis
+                elif mouv_purchase_line_id_di_un_prix == "PALETTE":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_palette
                     else:
-#                         di_qte_prix = mouv.sale_line_id.product_uom_qty - mouv.sale_line_id.qty_delivered
-                        di_qte_prix = mouv.product_uom_qty
-                    mont = mont - (di_qte_prix * nouveau_cmp)  
+                        di_qte_prix = mouv_di_nb_palette
+                elif mouv_purchase_line_id_di_un_prix == "KG":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_poin
+                    else:
+                        di_qte_prix = mouv_di_poin
+                elif mouv_purchase_line_id_di_un_prix == False or mouv_purchase_line_id_di_un_prix == '':
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_quantity_done
+                    else:
+                        di_qte_prix = mouv_product_uom_qty
+                mont = mont - (di_qte_prix * mouv_purchase_line_id_price_unit)    
+            elif mouv_sale_line_id:
+                if mouv_state == 'done':
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_quantity_done                        
+                else:
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_product_uom_qty
+                di_qte_prix = 0.0
+                if mouv_state == 'done':
+                    di_qte_prix = mouv_quantity_done
+                else:
+                    di_qte_prix = mouv_product_uom_qty
+                mont = mont - (di_qte_prix * nouveau_cmp)  
             else:                    
-                nbcol = nbcol - mouv.di_nb_colis
-                nbpal = nbpal - mouv.di_nb_palette
-                nbpiece = nbpiece - mouv.di_nb_pieces
-                poids = poids - mouv.di_poin                
-                qte = qte -  mouv.quantity_done                                             
+                nbcol = nbcol - mouv_di_nb_colis
+                nbpal = nbpal - mouv_di_nb_palette
+                nbpiece = nbpiece - mouv_di_nb_pieces
+                poids = poids - mouv_di_poin                
+                qte = qte -  mouv_quantity_done                                             
                 di_qte_prix = 0.0                    
-                di_qte_prix = mouv.quantity_done                                        
+                di_qte_prix = mouv_quantity_done                                        
                 mont = mont - (di_qte_prix * nouveau_cmp)   
 
 
         if date:
-            #à optimiser  en sql
-            mouvs = self.env['stock.move'].search(['&','&', ('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: (mv.date.date() < date and mv.id>dernier_id and mv.date.date() > date_cr_cout_veille) or (mv.date.date() == date))
+            query = """ select sm.id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sl.usage
+                            from stock_move sm              
+                            left join stock_location sl on sl.id = sm.location_dest_id                                      
+                            where sm.state in ('done') and sm.picking_id is null  
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                (left(cast(sm.date as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sm.date as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )
+                                or (left(cast(sm.date as varchar),10)= cast(%(date)s as varchar) )                               
+                            )  
+                            order by sm.date,sm.id                                                                                                             
+                        """
         else:
-            #à optimiser  en sql
-            mouvs = self.env['stock.move'].search(['&','&',('product_id', '=', product_id), ('state', '=', 'done'), ('picking_id', '=', False)]).filtered(lambda mv: mv.id>dernier_id and mv.date.date() > date_cr_cout_veille)    
-        for mouv in mouvs:
-            mouv_ids_lus.append(mouv.id)
-            if mouv.id > dernier_id_lu:
-                dernier_id_lu = mouv.id
-#             if mouv.remaining_qty:
-            if mouv.quantity_done !=0.0:
-                if mouv.location_dest_id.usage == 'internal':
-                    qte = qte + mouv.quantity_done
-                    nbcol = nbcol + mouv.di_nb_colis
-                    nbpal = nbpal + mouv.di_nb_palette
-                    nbpiece = nbpiece + mouv.di_nb_pieces
-                    poids = poids + mouv.di_poin
-                    mont = mont + (mouv.quantity_done * nouveau_cmp)
+            query = """ select sm.id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sl.usage
+                            from stock_move sm               
+                            left join stock_location sl on sl.id = sm.location_dest_id                                      
+                            where sm.state in ('done') and sm.picking_id is null  
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                ( sm.id > %(dernier_id)s and left(cast(sm.date as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )                                                            
+                            )    
+                            order by sm.date,sm.id                                                                                                           
+                        """
+            
+        query_args = {'product_id': product_id.id,'date' : date,'dernier_id' : dernier_id, 'date_cr_cout_veille': date_cr_cout_veille}        
+ 
+        self.env.cr.execute(query, query_args)
+        ids=[]
+        for r in self.env.cr.fetchall():
+            ids.append(r)
+
+        for (mouv_id,mouv_state,mouv_di_nb_colis,mouv_di_nb_palette,mouv_di_nb_pieces,mouv_di_poin,mouv_quantity_done,mouv_location_dest_id_usage) in ids: 
+
+            if mouv_id > dernier_id_lu:
+                dernier_id_lu = mouv_id
+            if mouv_quantity_done and mouv_quantity_done not in  (0.0,None,False):
+                if mouv_location_dest_id_usage == 'internal':
+                    qte = qte + mouv_quantity_done
+                    nbcol = nbcol + mouv_di_nb_colis
+                    nbpal = nbpal + mouv_di_nb_palette
+                    nbpiece = nbpiece + mouv_di_nb_pieces
+                    poids = poids + mouv_di_poin
+                    mont = mont + (mouv_quantity_done * nouveau_cmp)
                 else:
-                    qte = qte - mouv.quantity_done 
-                    nbcol = nbcol - mouv.di_nb_colis
-                    nbpal = nbpal - mouv.di_nb_palette
-                    nbpiece = nbpiece - mouv.di_nb_pieces
-                    poids = poids - mouv.di_poin  
-                    mont = mont - (mouv.quantity_done * nouveau_cmp) 
+                    qte = qte - mouv_quantity_done 
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin  
+                    mont = mont - (mouv_quantity_done * nouveau_cmp) 
         mont  = round(mont,2)
         return (qte, mont, nbcol, nbpal, nbpiece, poids,dernier_id_lu,nouveau_cmp)
     

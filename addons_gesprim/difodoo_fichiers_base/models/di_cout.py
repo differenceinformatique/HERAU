@@ -28,24 +28,52 @@ class DiCout(models.Model):
             cout.name = cout.di_product_id.display_name + ' ' + cout.di_date.strftime('%d/%m/%Y')
         
     def di_get_cout_uom(self, product_id, date):        
-        dernier_mouv_achat = self.env['purchase.order.line'].new()
+#         dernier_mouv_achat = self.env['purchase.order.line'].new()
         # recherche du cmp à la date
-        cout = self.search(['&', ('di_product_id', '=', product_id), ('di_date', '=', date)], limit=1).di_cmp
+#         cout = self.search(['&', ('di_product_id', '=', product_id), ('di_date', '=', date)], limit=1).di_cmp
+        
+        query_args = {'product_id': product_id,'di_date':date}                
+        query = """ select di_cmp from di_cout where di_product_id = %(product_id)s and di_date = %(di_date)s  limit 1 """            
+        self.env.cr.execute(query, query_args)                                                 
+        cout=0.0
+        try: 
+            result = self.env.cr.fetchall()[0] 
+            cout = result[0] and result[0] or 0.0
+        except:
+            cout=0.0                      
+
+        
         if not cout or cout == 0.0:
             # si pas de cmp à la date, on prend le dernier prix d'achat
             # date de commande inférieure ou égale à la date saisie
-           #à optimiser  en sql
-            mouvs_achat = self.env['purchase.order.line'].search([('product_id', '=', product_id), ('price_total', '!=', 0.0), ('state', '=', 'purchase')]) \
-            .filtered(lambda m: m.order_id.date_order.date() <= date) \
-            .sorted(key=lambda m: m.order_id.date_order, reverse=True)
+                      
+            query_args = {'product_id': product_id,'di_date':date}                
+            query = """ select case when pol.product_qty =0 then pol.price_total else pol.price_total/ pol.product_qty end 
+            from purchase_order_line pol 
+            left join purchase_order o on o.id = pol.order_id
+            where pol.product_id = %(product_id)s and pol.state = 'purchase' and pol.price_total <> 0.0 and o.date_order <= %(di_date)s
+            order by o.date_order desc
+            limit 1 """            
             
-             
-            for dernier_mouv_achat in mouvs_achat:
-                break            
-            if dernier_mouv_achat.product_qty != 0.0:         
-                cout = dernier_mouv_achat.price_total / dernier_mouv_achat.product_qty                
-            else:
-                cout = dernier_mouv_achat.price_total 
+            self.env.cr.execute(query, query_args)                                                 
+            cout=0.0
+            try: 
+                result = self.env.cr.fetchall()[0] 
+                cout = result[0] and result[0] or 0.0
+            except:
+                cout=0.0   
+           
+#             mouvs_achat = self.env['purchase.order.line'].search([('product_id', '=', product_id), ('price_total', '!=', 0.0), ('state', '=', 'purchase')]) \
+#             .filtered(lambda m: m.order_id.date_order.date() <= date) \
+#             .sorted(key=lambda m: m.order_id.date_order, reverse=True)
+#             
+#              
+#             for dernier_mouv_achat in mouvs_achat:
+#                 break            
+#             if dernier_mouv_achat.product_qty != 0.0:         
+#                 cout = dernier_mouv_achat.price_total / dernier_mouv_achat.product_qty                
+#             else:
+#                 cout = dernier_mouv_achat.price_total 
                 
         
         return cout

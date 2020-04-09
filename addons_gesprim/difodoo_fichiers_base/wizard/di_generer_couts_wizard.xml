@@ -39,5 +39,30 @@
         target="new"
         view_type="form"
         view_id="di_generer_couts_wiz">    
-    </act_window>    
+    </act_window> 
+    
+    <record id="di_regenerer_couts_wiz" model="ir.ui.view">
+        <field name="name">di.generer.couts.form</field>
+        <field name="model">di.gen.couts.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Régénération Coûts">                                  
+                <footer>
+                    <button string="Régénérer" type="object" name="di_regenerer_couts"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <act_window
+        id="action_di_regenerer_couts_menu_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Régénération coûts"
+        res_model="di.gen.couts.wiz"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_regenerer_couts_wiz">    
+    </act_window>   
 </odoo>

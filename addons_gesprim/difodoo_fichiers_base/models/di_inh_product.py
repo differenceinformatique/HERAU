@@ -6,6 +6,7 @@ from xlrd.formula import FMLA_TYPE_COND_FMT
 from suds import null
 from odoo.tools.float_utils import float_round
 import time
+import datetime
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
@@ -44,6 +45,8 @@ class ProductTemplate(models.Model):
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables',default=False,compute='_di_compute_spe_saisissable',store=True)
     di_param_seq_art = fields.Boolean(string='Codification auto.',compute='_di_compute_seq_art',store=False)
+    
+    
     
 #     def di_action_afficher_cond(self):
 #         product=self.env['product.product'].search([('product_tmpl_id','=',self.id)])
@@ -188,6 +191,46 @@ class ProductProduct(models.Model):
     di_poin_reg_sort = fields.Float(string='Poids net régul. sortie', compute='_di_compute_resserre_values')
     di_val_regul_sortie = fields.Float(string='Valeur régul. sortie', compute='_di_compute_resserre_values')
     di_val_marge_ap_regul_sortie = fields.Float(string='Valeur marge après régul. sortie', compute='_di_compute_resserre_values')
+    
+    di_cmp_regen = fields.Boolean(string='CMP régénéré',default=False)
+    
+    def di_regen_cmp_art(self,article_id):
+        
+        wizgencout = self.env['di.gen.couts.wiz'].create({
+            'di_date_gen':datetime.datetime.today().date(),
+            'di_product_id':article_id,
+            'di_supp_tous_couts':True                                                    
+        })
+        
+        wizgencout.di_generer_couts()
+            
+        self.env['product.product'].browse(article_id).update({'di_cmp_regen':True})
+        self.env.cr.commit()
+        article = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('di_cmp_regen','=', False)],limit=1)
+        if article:
+            article.create_cron_regen_cmp()        
+        
+    
+    def create_cron_regen_cmp(self):       
+        self.env.cr.execute("""SELECT id FROM ir_model 
+                                  WHERE model = %s""", (str(self._name),)) 
+        info = self.env.cr.dictfetchall()  
+        if info:
+            model_id = info[0]['id'] 
+        dateheure = datetime.datetime.today() 
+        dateheureexec = dateheure+datetime.timedelta(seconds=10)
+        self.env['ir.cron'].create({'name':'Regen CMP. '+self.name+' '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+                                                'active':True, 
+                                                'user_id':self.env.user.id, 
+                                                'interval_number':1, 
+                                                'interval_type':'days', 
+                                                'numbercall':1, 
+                                                'doall':1, 
+                                                'nextcall':dateheureexec, 
+                                                'model_id': model_id, 
+                                                'code': 'model.di_regen_cmp_art('+str(self.id)+')',
+                                                'state':'code',
+                                                'priority':0}) 
     
 #     di_avec_stock = fields.Boolean("Avec stock", default=False, compute='_di_compute_avec_stock', search="_di_search_avec_stock")
 #     

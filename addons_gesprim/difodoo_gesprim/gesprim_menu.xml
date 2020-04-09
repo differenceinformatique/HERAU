@@ -109,6 +109,7 @@
     <menuitem id="menu_gesprim_achats_liv" name="Réceptions" sequence="30" parent="menu_gesprim_achats" />
     <menuitem id="menu_gesprim_achats_fact" name="Facturation" sequence="40" parent="menu_gesprim_achats" />
     <menuitem id="menu_gesprim_couts_gen" name="Génération Prix d'achat" sequence="50" parent="menu_gesprim_achats" action="difodoo_fichiers_base.action_di_generer_couts_menu_wiz" />
+    <menuitem id="menu_gesprim_couts_regen" name="Régénération Prix d'achat" sequence="60" parent="menu_gesprim_achats" action="difodoo_fichiers_base.action_di_regenerer_couts_menu_wiz" groups="base.group_no_one" />
     <!-- ****Menu Réception -->    
     <menuitem id="menu_gesprim_achats_liv_liv" name="Réceptions" sequence="10" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_stock_picking_type_action_achats"/>
     <menuitem id="menu_gesprim_achats_liv_att" name="En Attente" sequence="20" parent="menu_gesprim_achats_liv" action="difodoo_ventes.di_action_picking_tree_achats_attente"/>    
