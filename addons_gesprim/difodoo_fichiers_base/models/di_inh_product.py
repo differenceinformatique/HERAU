@@ -219,8 +219,8 @@ class ProductProduct(models.Model):
             model_id = info[0]['id'] 
         dateheure = datetime.datetime.today() 
         dateheureexec = dateheure+datetime.timedelta(seconds=10)
-        hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15,42)
-        hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16,10)
+        hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15,42).timedelta(hours=2)
+        hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16,10).timedelta(hours=2)
         name=self.name
         if dateheureexec >hdebtrav and dateheureexec<hfintrav:
             dateheureexec=hfintrav+datetime.timedelta(seconds=10)
