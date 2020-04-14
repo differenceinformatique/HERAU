@@ -220,11 +220,13 @@ class ProductProduct(models.Model):
         dateheure = datetime.datetime.today() 
         dateheureexec = dateheure+datetime.timedelta(seconds=10)
         hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15,42)
-        hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16)
+        hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16,10)
+        name=self.name
         if dateheureexec >hdebtrav and dateheureexec<hfintrav:
             dateheureexec=hfintrav+datetime.timedelta(seconds=10)
+            name = self.name+' '+'décalé'
             
-        self.env['ir.cron'].create({'name':'Regen CMP. '+self.name+' '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+        self.env['ir.cron'].create({'name':'Regen CMP. '+name+' '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                                 'active':True, 
                                                 'user_id':self.env.user.id, 
                                                 'interval_number':1, 
