@@ -219,6 +219,11 @@ class ProductProduct(models.Model):
             model_id = info[0]['id'] 
         dateheure = datetime.datetime.today() 
         dateheureexec = dateheure+datetime.timedelta(seconds=10)
+        hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15,42)
+        hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16)
+        if dateheureexec >hdebtrav and dateheureexec<hfintrav:
+            dateheureexec=hfintrav+datetime.timedelta(seconds=10)
+            
         self.env['ir.cron'].create({'name':'Regen CMP. '+self.name+' '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                                 'active':True, 
                                                 'user_id':self.env.user.id, 
