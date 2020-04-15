@@ -219,13 +219,22 @@ class ProductProduct(models.Model):
             model_id = info[0]['id'] 
         dateheure = datetime.datetime.today() 
         dateheureexec = dateheure+datetime.timedelta(seconds=10)
-        hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15,42)+datetime.timedelta(hours=-2)        
-        hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16,30)+datetime.timedelta(hours=-2)        
+        if dateheureexec.weekday()==6:#dimanche
+            hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,0,11)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
+            hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,0,12)+datetime.timedelta(hours=-2)
+        elif dateheureexec.weekday()==5:#samedi
+            hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,5)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
+            hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,10,)+datetime.timedelta(hours=-2)
+        elif dateheureexec.weekday()==2:#mercredi pour test
+            hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,5)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
+            hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,10,)+datetime.timedelta(hours=-2)
+        else:#autres jours
+            hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
+            hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16,30)+datetime.timedelta(hours=-2)        
         
         name=self.name
         if dateheureexec >hdebtrav and dateheureexec<hfintrav:
-            dateheureexec=hfintrav+datetime.timedelta(seconds=10)
-            name = self.name+' '+'décalé'
+            dateheureexec=hfintrav+datetime.timedelta(seconds=10)            
             
         self.env['ir.cron'].create({'name':'Regen CMP. '+name+' '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                                 'active':True, 
