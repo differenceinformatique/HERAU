@@ -224,10 +224,7 @@ class ProductProduct(models.Model):
             hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,0,12)+datetime.timedelta(hours=-2)
         elif dateheureexec.weekday()==5:#samedi
             hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,5)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
-            hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,10,)+datetime.timedelta(hours=-2)
-        elif dateheureexec.weekday()==2:#mercredi pour test
-            hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,5)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
-            hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,10,)+datetime.timedelta(hours=-2)
+            hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,10,)+datetime.timedelta(hours=-2)        
         else:#autres jours
             hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
             hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16,30)+datetime.timedelta(hours=-2)        
