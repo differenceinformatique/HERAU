@@ -352,7 +352,21 @@ class StockMove(models.Model):
             ids.append(r)
 
         for (mouv_id,mouv_purchase_line_id,mouv_state,mouv_di_nb_colis,mouv_di_nb_palette,mouv_di_nb_pieces,mouv_di_poin,mouv_quantity_done,mouv_product_uom_qty,mouv_sale_line_id,mouv_purchase_line_id_di_un_prix,mouv_purchase_line_id_price_unit) in ids: 
-
+            if not mouv_di_nb_colis :
+                mouv_di_nb_colis =0.0
+            if not mouv_di_nb_palette :
+                mouv_di_nb_palette =0.0
+            if not mouv_di_nb_pieces :
+                mouv_di_nb_pieces =0.0
+            if not mouv_di_poin :
+                mouv_di_poin =0.0
+            if not mouv_quantity_done :
+                mouv_quantity_done =0.0
+            if not mouv_product_uom_qty :
+                mouv_product_uom_qty =0.0
+            if not mouv_purchase_line_id_price_unit :
+                mouv_purchase_line_id_price_unit =0.0
+                
             if mouv_id > dernier_id_lu:
                 dernier_id_lu = mouv_id
 
@@ -560,7 +574,21 @@ class StockMove(models.Model):
             ids.append(r)
 
         for (mouv_id,mouv_purchase_line_id,mouv_state,mouv_di_nb_colis,mouv_di_nb_palette,mouv_di_nb_pieces,mouv_di_poin,mouv_quantity_done,mouv_product_uom_qty,mouv_sale_line_id,mouv_purchase_line_id_di_un_prix,mouv_purchase_line_id_price_unit) in ids: 
-
+            if not mouv_di_nb_colis :
+                mouv_di_nb_colis =0.0
+            if not mouv_di_nb_palette :
+                mouv_di_nb_palette =0.0
+            if not mouv_di_nb_pieces :
+                mouv_di_nb_pieces =0.0
+            if not mouv_di_poin :
+                mouv_di_poin =0.0
+            if not mouv_quantity_done :
+                mouv_quantity_done =0.0
+            if not mouv_product_uom_qty :
+                mouv_product_uom_qty =0.0
+            if not mouv_purchase_line_id_price_unit :
+                mouv_purchase_line_id_price_unit =0.0
+                
             if mouv_id > dernier_id_lu:
                 dernier_id_lu = mouv_id
             
@@ -666,6 +694,17 @@ class StockMove(models.Model):
             ids.append(r)
 
         for (mouv_id,mouv_state,mouv_di_nb_colis,mouv_di_nb_palette,mouv_di_nb_pieces,mouv_di_poin,mouv_quantity_done,mouv_location_dest_id_usage) in ids: 
+            if not mouv_di_nb_colis :
+                mouv_di_nb_colis =0.0
+            if not mouv_di_nb_palette :
+                mouv_di_nb_palette =0.0
+            if not mouv_di_nb_pieces :
+                mouv_di_nb_pieces =0.0
+            if not mouv_di_poin :
+                mouv_di_poin =0.0
+            if not mouv_quantity_done :
+                mouv_quantity_done =0.0
+           
 
             if mouv_id > dernier_id_lu:
                 dernier_id_lu = mouv_id
