@@ -327,7 +327,7 @@ class StockMove(models.Model):
                             where sm.state in ('done') and sm.picking_id is not null and sl.usage = 'internal' 
                             and sm.product_id = %(product_id)s                            
                             and (
-                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.date_done as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s )
                                 or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )                               
                             )  
                             order by sp.date_done,sm.id                                                                                                             
@@ -550,7 +550,7 @@ class StockMove(models.Model):
                             where sm.state in ('done') and sm.picking_id is not null and sl.usage <> 'internal' 
                             and sm.product_id = %(product_id)s                            
                             and (
-                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sp.date_done as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s  )
                                 or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )                               
                             )    
                             order by sp.date_done,sm.id                                                                                                           
@@ -669,7 +669,7 @@ class StockMove(models.Model):
                             where sm.state in ('done') and sm.picking_id is null  
                             and sm.product_id = %(product_id)s                            
                             and (
-                                (left(cast(sm.date as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and left(cast(sm.date as varchar),10) > cast(%(date_cr_cout_veille)s as varchar) )
+                                (left(cast(sm.date as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s  )
                                 or (left(cast(sm.date as varchar),10)= cast(%(date)s as varchar) )                               
                             )  
                             order by sm.date,sm.id                                                                                                             
