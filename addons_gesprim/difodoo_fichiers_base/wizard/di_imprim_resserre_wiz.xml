@@ -31,5 +31,37 @@
         view_id="di_imprimer_resserre_wiz">    
     </act_window>
     
+    
+    <record id="di_imprimer_resserre_tb_wiz" model="ir.ui.view">
+        <field name="name">di.imprimer.resserre.tb.form</field>
+        <field name="model">di.imp.ress.tb.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Impression Resserre">     
+                <group col="4" string="Informations">                        
+                        <field name="di_liste_comptage" />
+                        <field name="di_masquer_ventes" />                          
+                </group>                                                                        
+                <footer>
+                    <button string="Imprimer la resserre" type="object" name="imprimer_resserre"
+                        default_focus="1" />
+                    <button string="Annuler" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+  
+  
+    <act_window
+        id="action_di_imprimer_resserre_tb_menu_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Impression Resserre après ventes nouveau"
+        res_model="di.imp.ress.tb.wiz"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_imprimer_resserre_tb_wiz">    
+    </act_window>
+    
 
 </odoo>

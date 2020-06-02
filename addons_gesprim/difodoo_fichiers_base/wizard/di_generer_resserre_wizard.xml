@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="di_generer_resserre_wiz" model="ir.ui.view">
+        <field name="name">di.generer.resserre.form</field>
+        <field name="model">di.gen.resserre.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Génération Resserre">           
+            <group>
+                <group>                     
+                    <div name="question">
+                        Voulez-vous lancer la génération de la resserre ?
+                     </div>
+                    <field name="di_date_gen" string="Générer la resserre au :"/>                    
+                </group>                
+            </group>
+                
+                <footer>
+                    <button string="Oui" type="object" name="di_generer_resserre"
+                        default_focus="1" />
+                    <button string="Non" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>   
+    <act_window
+        id="action_di_generer_resserre_menu_wiz"        
+        multi="False"
+        key2="client_action_multi"
+        name="Génération resserre"
+        res_model="di.gen.resserre.wiz"
+        view_mode="form"
+        target="new"
+        view_type="form"
+        view_id="di_generer_resserre_wiz">    
+    </act_window>      
+</odoo>

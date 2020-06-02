@@ -14,3 +14,4 @@
 "access_difodoo_fichier_base_dietiquettelabelmodel","access_difodoo_fichier_base_dietiquettelabelmodel","model_di_labelmodel","base.group_user",1,1,1,1
 "access_difodoo_fichier_base_direfarttiers","access_difodoo_fichier_base_direfarttiers","model_di_ref_art_tiers","base.group_user",1,1,1,1
 "access_difodoo_fichier_base_dilivrebord","access_difodoo_fichier_base_dilivrebord","model_di_livrebord","base.group_user",1,1,1,1
+"access_difodoo_fichier_base_diresserre","access_difodoo_fichier_base_diresserre","model_di_resserre","base.group_user",1,1,1,1

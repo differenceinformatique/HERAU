@@ -11,3 +11,4 @@ from . import di_maj_codedest
 from . import di_etiquette_lot_wizard
 from . import di_product_resserre
 from . import di_imprim_resserre_wiz
+from . import di_generer_resserre_wizard

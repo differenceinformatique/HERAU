@@ -556,4 +556,125 @@
             </p>
         </field>
     </record>
+    
+    
+    <!--Resserre -->
+    <record id="view_resserre_tree" model="ir.ui.view">
+        <field name="name">di.resserre.tree</field>
+        <field name="model">di.resserre</field>
+        <field name="arch" type="xml">
+            <tree default_order="name" string="Resserres">
+                <field name="di_date_date" readonly="1" string="Date"/>
+                <field name="product_id" readonly="1"/>
+                <field name="di_col_stock" readonly="1"/>
+                <field name="di_poib_stock" readonly="1"/>
+                <field name="di_poin_stock" readonly="1"/>
+                <field name="di_qte_stock" readonly="1"/>
+                <field name="uom_name" readonly="1"/>
+                <field name="di_prix_achat_moyen" readonly="1"/>
+                <field name="di_val_stock" readonly="1"/>                
+                <field name="di_col_ven" readonly="1"/>
+                <field name="di_poib_ven" readonly="1"/>
+                <field name="di_poin_ven" readonly="1"/>
+                <field name="di_qte_ven" readonly="1"/>                        
+                <field name="di_prix_vente_moyen" readonly="1"/>                
+                <field name="di_val_ven" readonly="1"/>                
+                <field name="di_val_marge" readonly="1"/>
+                <field name="di_marge_prc" readonly="1"/>
+                <field name="di_val_regul_sortie" readonly="1"/>
+                <field name="di_val_marge_ap_regul_sortie" readonly="1"/>
+                                                                                                
+                <!-- <field name="di_col_ach" readonly="1"/>
+                <field name="di_poib_ach" readonly="1"/>
+                <field name="di_poin_ach" readonly="1"/>
+                <field name="di_qte_ach" readonly="1"/>
+                
+                <field name="di_col_regul_entree" readonly="1"/>
+                <field name="di_poib_reg_ent" readonly="1"/>
+                <field name="di_poin_reg_ent" readonly="1"/>
+                <field name="di_qte_regul_entree" readonly="1"/> -->
+                
+                <field name="di_col_regul_sortie" readonly="1"/>
+                <field name="di_poib_reg_sort" readonly="1"/>
+                <field name="di_poin_reg_sort" readonly="1"/>
+                <field name="di_qte_regul_sortie" readonly="1"/>
+                                                                           
+            </tree>
+        </field>
+    </record>
+    <record id="view_resserre_form" model="ir.ui.view">
+        <field name="name">di.resserre.form</field>
+        <field name="model">di.resserre</field>
+        <field name="arch" type="xml">
+            <form string="Resserre">
+                <sheet modifiers="{}" string="Resserre">
+                    <group>                       
+                        <field name="di_date_date" readonly="1" string="Date"/>
+                        <field name="di_date_date_str" readonly="1" string="Date" invisible="1"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="di_col_stock" readonly="1"/>
+                        <field name="di_poib_stock" readonly="1"/>
+                        <field name="di_poin_stock" readonly="1"/>
+                        <field name="di_qte_stock" readonly="1"/>
+                        <field name="uom_name" readonly="1"/>
+                        <field name="di_prix_achat_moyen" readonly="1"/>
+                        <field name="di_val_stock" readonly="1"/>                
+                        <field name="di_col_ven" readonly="1"/>
+                        <field name="di_poib_ven" readonly="1"/>
+                        <field name="di_poin_ven" readonly="1"/>
+                        <field name="di_qte_ven" readonly="1"/>                        
+                        <field name="di_prix_vente_moyen" readonly="1"/>                
+                        <field name="di_val_ven" readonly="1"/>                
+                        <field name="di_val_marge" readonly="1"/>
+                        <field name="di_marge_prc" readonly="1"/>
+                        <field name="di_val_regul_sortie" readonly="1"/>
+                        <field name="di_val_marge_ap_regul_sortie" readonly="1"/>
+                                                                                                        
+                        <!-- <field name="di_col_ach" readonly="1"/>
+                        <field name="di_poib_ach" readonly="1"/>
+                        <field name="di_poin_ach" readonly="1"/>
+                        <field name="di_qte_ach" readonly="1"/>
+                        
+                        <field name="di_col_regul_entree" readonly="1"/>
+                        <field name="di_poib_reg_ent" readonly="1"/>
+                        <field name="di_poin_reg_ent" readonly="1"/>
+                        <field name="di_qte_regul_entree" readonly="1"/> -->
+                        
+                        <field name="di_col_regul_sortie" readonly="1"/>
+                        <field name="di_poib_reg_sort" readonly="1"/>
+                        <field name="di_poin_reg_sort" readonly="1"/>
+                        <field name="di_qte_regul_sortie" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="di_action_resserre" model="ir.actions.act_window">
+        <field name="name">Visualiser resserre</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">di.resserre</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>  
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Aide
+            </p>
+            <p>
+                Cliquer pour gérer les codes destinations pour les grilles transporteurs
+            </p>
+        </field>   
+    </record>
+    
+    <record id="di_search_resserre_filter" model="ir.ui.view">
+        <field name="name">Filtres resserre</field>
+        <field name="model">di.resserre</field>
+        <field name="arch" type="xml">
+            <search string="Filtres resserre">
+                <field name="di_date_date" string="Date"/>                
+                <field name="di_date_date_str" string="Date"/>               
+                <field name="product_id" string="Article"/>                                
+            </search>
+        </field>
+        
+    </record>        
 </odoo>

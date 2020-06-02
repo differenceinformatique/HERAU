@@ -20,3 +20,4 @@ from . import di_cout
 from . import di_param
 from . import di_inh_users
 from . import di_livrebord
+from . import di_resserre

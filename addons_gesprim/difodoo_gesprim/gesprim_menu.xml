@@ -132,6 +132,10 @@
     <menuitem id="menu_gesprim_stock_imp_ress_ap_ven_det" sequence="41" parent="menu_gesprim_stock" action="difodoo_fichiers_base.action_di_imprimer_resserre_menu_wiz" />
     <menuitem id="menu_gesprim_stock_quants_all" name="Nouvelle resserre par lot" sequence="42" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_view_quants_all" />
     <menuitem id="menu_gesprim_stock_ress_art" name="Nouvelle resserre par article" sequence="43" parent="menu_gesprim_stock" action="difodoo_fichiers_base.di_action_vue_simpl_art" />
+    
+    <menuitem id="menu_gesprim_stock_gen_ress" name="Génération resserre" sequence="44" parent="menu_gesprim_stock" action="difodoo_fichiers_base.action_di_generer_resserre_menu_wiz" />
+    <menuitem id="menu_gesprim_stock_visu_ress" name="Visualisation resserre" sequence="45" parent="menu_gesprim_stock" action="difodoo_fichiers_base.di_action_resserre" />
+    <menuitem id="menu_gesprim_stock_imp_ress_tb_ap_ven_det" sequence="46" parent="menu_gesprim_stock" action="difodoo_fichiers_base.action_di_imprimer_resserre_tb_menu_wiz" />
         
     
     <menuitem id="menu_gesprim_stock_pertes" name="Pertes" sequence="50" parent="menu_gesprim_stock" action="difodoo_ventes.di_action_stock_report_all"/>

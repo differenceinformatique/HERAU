@@ -61,6 +61,7 @@
         "wizard/di_saisie_code_wizard.xml",
         "wizard/di_generer_tarifs_wizard.xml",
         "wizard/di_generer_couts_wizard.xml",
+        "wizard/di_generer_resserre_wizard.xml",
         "wizard/di_popup_wizard.xml",
         "wizard/di_maj_codedest.xml",
         "wizard/di_etiquette_lot_wizard.xml",

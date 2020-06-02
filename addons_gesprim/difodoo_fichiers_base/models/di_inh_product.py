@@ -193,6 +193,83 @@ class ProductProduct(models.Model):
     di_val_marge_ap_regul_sortie = fields.Float(string='Valeur marge après régul. sortie', compute='_di_compute_resserre_values')
     
     di_cmp_regen = fields.Boolean(string='CMP régénéré',default=False)
+    di_ress_regen = fields.Boolean(string='Resserre régénérée',default=False)
+    
+    
+    def di_gen_resserre(self,ids,datestr):
+        date = datetime.datetime.strptime(datestr,"%Y-%m-%d %H:%M:%S")
+
+        wizgenress = self.env['di.gen.resserre.wiz']
+        
+        products = self.env['product.product'].browse(ids)
+        for product in products:
+            wizgenress.di_generer_resserre_art(product.id,date)
+            products.update({'di_ress_regen':True})
+            self.env.cr.commit()
+        
+        
+        query = """ SELECT  pp.id 
+                        FROM product_product pp  
+                        left join product_template pt on pt.id = pp.product_tmpl_id                      
+                        WHERE pt.type <> 'service' 
+                        and (
+                        di_flg_avec_ventes is true
+                        or (select sum(sq.quantity) from stock_quant sq left join stock_location sl on sl.id = sq.location_id where sq.product_id = pp.id and sl.usage='internal' ) not between -0.001 and 0.001
+                        ) and pp.di_ress_regen = false      
+                        limit 50                                                                                    
+                        """
+ 
+        self.env.cr.execute(query, )
+        ids = [r[0] for r in self.env.cr.fetchall()]
+                                                     
+        products = self.env['product.product'].browse(ids)
+        if products:
+            products.create_cron_regen_resserre(date) 
+        else:
+            #mail_fin = self.env['mail.mail'].create({"subject":"Resserre générée","email_to":self.env.user.email,"body_html":"La facturation est terminée.","body":"La facturation est terminée."})
+            mail_fin = self.env['mail.mail'].create({"subject":"Resserre générée","email_to":self.env.user.email,"body_html":"La resserre est générée.","body":"La resserre est générée."})
+            mail_fin.send() 
+        
+                      
+    def create_cron_regen_resserre(self,date_lancement):
+              
+        self.env.cr.execute("""SELECT id FROM ir_model 
+                                      WHERE model = %s""", (str(self._name),)) 
+            
+        info = self.env.cr.dictfetchall()  
+        if info:
+            model_id = info[0]['id'] 
+        dateheure = datetime.datetime.today() 
+        dateheureexec = dateheure+datetime.timedelta(seconds=10)
+#         if dateheureexec.weekday()==6:#dimanche
+#             hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,0,11)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
+#             hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,0,12)+datetime.timedelta(hours=-2)
+#         elif dateheureexec.weekday()==5:#samedi
+#             hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,5)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
+#             hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,10,)+datetime.timedelta(hours=-2)        
+#         else:#autres jours
+#             hdebtrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,15)+datetime.timedelta(hours=-2)        # décalage de 2h en plus par rapport à GMT (horaire serveur)
+#             hfintrav = datetime.datetime(dateheureexec.year,dateheureexec.month,dateheureexec.day,16,30)+datetime.timedelta(hours=-2)        
+#         
+#         
+#         if dateheureexec >hdebtrav and dateheureexec<hfintrav:
+#             dateheureexec=hfintrav+datetime.timedelta(seconds=10)  
+            
+                      
+            
+        self.env['ir.cron'].create({'name':'Génération resserre '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+                                                'active':True, 
+                                                'user_id':self.env.user.id, 
+                                                'interval_number':1, 
+                                                'interval_type':'days', 
+                                                'numbercall':1, 
+                                                'doall':1, 
+                                                'nextcall':dateheureexec, 
+                                                'model_id': model_id, 
+                                                'code': 'model.di_gen_resserre(('+str(self.ids).strip('[]')+'),"'+date_lancement.strftime("%Y-%m-%d %H:%M:%S")+'")',
+                                                'state':'code',
+                                                'priority':0}) 
+    
     
     def di_regen_cmp_art(self,article_id):
         
@@ -357,9 +434,11 @@ class ProductProduct(models.Model):
                                 LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
                                 (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                
                                 LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id                              
-                                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
+                                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id                                            
                                 where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
-                                """             
+                                
+                                """
+                                #and  (select sq.id from  stock_quant sq where sq.product_id = sml.product_id and sq.lot_id = lot.id and sq.quantity not between -0.001 and 0.001 and (select usage from stock_location where stock_location.id = sq.location_id)= 'internal' ) is not null             
                         self.env.cr.execute(sqlstr, (art.id, di_date_to))
                         result = self.env.cr.fetchall()[0]
                         art.di_col_stock = result[0] and result[0] or 0.0
@@ -397,7 +476,9 @@ class ProductProduct(models.Model):
                             LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id                          
                             LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
                             where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
+                            
                             """
+                            #and  (select sq.id from  stock_quant sq where sq.product_id = sml.product_id and sq.lot_id = lot.id and sq.quantity not between -0.001 and 0.001 and (select usage from stock_location where stock_location.id = sq.location_id)= 'internal' ) is not null
         
                         self.env.cr.execute(sqlstr, (art.id, di_date_to))
                         result = self.env.cr.fetchall()[0]
@@ -439,9 +520,12 @@ class ProductProduct(models.Model):
                             (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                
                             LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
                             LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
-                            LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
+                            LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id  
+                                      
                             where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
+                            
                             """
+                            #and  (select sq.id from  stock_quant sq where sq.product_id = sml.product_id and sq.lot_id = lot.id and sq.quantity not between -0.001 and 0.001 and (select usage from stock_location where stock_location.id = sq.location_id)= 'internal' ) is not null
           
                        
                         self.env.cr.execute(sqlstr, (art.id, di_date_to))
@@ -490,7 +574,9 @@ class ProductProduct(models.Model):
                             LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
                             LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
                             where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false
+                            
                             """
+                            #and  (select sq.id from  stock_quant sq where sq.product_id = sml.product_id and sq.lot_id = lot.id and sq.quantity not between -0.001 and 0.001 and (select usage from stock_location where stock_location.id = sq.location_id)= 'internal' ) is not null
                             
             #                 SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.di_nb_colis else 0 end) AS di_col_ach,
             #                     SUM ( Case when sml.di_usage_loc = 'supplier' and  sml.di_usage_loc_dest = 'internal' then sml.qty_done when sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest = 'supplier' then -1*sml.qty_done  else 0 end) AS di_qte_ach,
