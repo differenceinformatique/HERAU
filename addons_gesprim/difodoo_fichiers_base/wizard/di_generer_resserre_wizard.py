@@ -14,6 +14,7 @@ class DiGenResserreWiz(models.TransientModel):
     di_date_gen = fields.Datetime('Date de génération', default=datetime.today() )
     
     def di_generer_resserre_art(self,id,date):
+        product = self.env['product.product'].browse(id)
         
         query_args = {'product_id': id,'date':date}    
                        
@@ -37,19 +38,31 @@ class DiGenResserreWiz(models.TransientModel):
             
         if date_deb.date() != date.date():
                     
+#             sqlstr = """
+#                                 select
+#                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
+#                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
+#                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
+#                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,                                
+#                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock                                                                                        
+#                                 from stock_move_line sml                                
+#                                 LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
+#                                 (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                                                                               
+#                                 where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.di_lot_fini is false and sml.date > %s
+#                                 
+#                                 """
+
+
             sqlstr = """
                                 select
                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_nb_colis else -1*sml.di_nb_colis end) AS di_col_stock,
                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.qty_done else -1*sml.qty_done end) AS di_qte_stock,
                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poib else -1*sml.di_poib end) AS di_poib_stock,
-                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock,                                
-                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then cmp.di_cmp*sml.qty_done else -1*cmp.di_cmp*sml.qty_done end) AS di_val_stock                                                                                        
-                                from stock_move_line sml                                
-                                LEFT JOIN (select di_cout.di_cmp,di_cout.id,di_cout.di_product_id from di_cout ) cmp on cmp.id = 
-                                (select id from di_cout where di_product_id = sml.product_id order by di_date desc limit 1)                                         
-                                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
-                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false and sml.date > %s
-                                
+                                    SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock                                
+                                                                                                                            
+                                from stock_move_line sml                                                                                                                                            
+                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.di_lot_fini is false and sml.date > %s
+                                 
                                 """
                  
             self.env.cr.execute(sqlstr, (id, date, date_deb))
@@ -58,7 +71,7 @@ class DiGenResserreWiz(models.TransientModel):
             di_qte_stock = result[1] and result[1] or 0.0
             di_poib_stock = result[2] and result[2] or 0.0
             di_poin_stock = result[3] and result[3] or 0.0
-            di_val_stock = result[4] and result[4] or 0.0
+#             di_val_stock = result[4] and result[4] or 0.0
               
             
             if  dern_ress:
@@ -66,7 +79,9 @@ class DiGenResserreWiz(models.TransientModel):
                 di_qte_stock = dern_ress.di_qte_stock+di_qte_stock
                 di_poib_stock = dern_ress.di_poib_stock+di_poib_stock
                 di_poin_stock = dern_ress.di_poin_stock+di_poin_stock
-                di_val_stock = dern_ress.di_val_stock+di_val_stock
+#                 di_val_stock = dern_ress.di_val_stock+di_val_stock
+
+            di_val_stock = di_qte_stock * product.di_get_dernier_cmp(date.date())
                 
                 
                 
@@ -82,9 +97,8 @@ class DiGenResserreWiz(models.TransientModel):
                                     
                                 from stock_move_line sml                                                                          
                                 LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
-                                LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
-                                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
-                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false  and sml.di_flg_cloture is not true and (sml.di_usage_loc = 'customer' or sml.di_usage_loc_dest = 'customer' ) 
+                                LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                                             
+                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.di_lot_fini is false  and sml.di_flg_cloture is not true and (sml.di_usage_loc = 'customer' or sml.di_usage_loc_dest = 'customer' ) 
                                 
                                 """             
             self.env.cr.execute(sqlstr, (id, date))
@@ -108,8 +122,8 @@ class DiGenResserreWiz(models.TransientModel):
                                 from stock_move_line sml                                                                          
                                 LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
                                 LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
-                                LEFT JOIN stock_production_lot lot on lot.id = sml.lot_id            
-                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and lot.di_fini is false  and sml.di_flg_cloture is not true and sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_perte is true 
+                                        
+                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.di_lot_fini is false  and sml.di_flg_cloture is not true and sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_perte is true 
                                 
                                 """             
             self.env.cr.execute(sqlstr, (id, date))
@@ -120,7 +134,7 @@ class DiGenResserreWiz(models.TransientModel):
             di_poib_reg_sort = result[2] and result[2] or 0.0
             di_poin_reg_sort = result[3] and result[3] or 0.0
                       
-            product = self.env['product.product'].browse(id)                    
+                                
             if di_qte_stock != 0.0:
                 di_prix_achat_moyen = di_val_stock / di_qte_stock
             else:

@@ -822,6 +822,7 @@ class StockMoveLine(models.Model):
     di_flg_cloture = fields.Boolean(default=False)
     di_usage_loc = fields.Selection(related='location_id.usage', store=True)    
     di_usage_loc_dest = fields.Selection(related='location_dest_id.usage', store=True)
+    di_lot_fini = fields.Boolean(related='lot_id.di_fini', store=True)
     
     di_spe_saisissable = fields.Boolean(string='Champs spé saisissables', default=False, compute='_di_compute_spe_saisissable', store=True)
 #     di_partner_id = fields.Many2one(related="move_id.picking_id.partner_id" , string="Tiers",store=True)
