@@ -290,6 +290,193 @@ class StockMove(models.Model):
         nbpiece = 0.0
         poids = 0.0
         dernier_id_lu = 0
+        dernier_cmp = 0
+        
+        query_args = {'di_product_id': product_id.id,'date':date}          
+        query = """ select c.di_cmp 
+                            from di_cout c                            
+                            where cast(c.di_date as varchar)  <= cast(%(date)s as varchar) and di_product_id = %(di_product_id)s
+                            order by di_date desc
+                            limit 1                                                                                                                  
+                        """    
+                        
+        self.env.cr.execute(query, query_args)
+                                               
+        try: 
+            result = self.env.cr.fetchall()[0] 
+            dernier_cmp = result[0] and result[0] or 0.0                         
+        except:
+            dernier_cout_di_qte = 0.0
+            dernier_cout_di_mont = 0.0  
+            query_args = {'di_product_id': product_id.id,'date':date}          
+            query = """ select pol.price_subtotal,pol.product_uom_qty 
+                            from purchase_order_line pol        
+                            left join purchase_order po on po.id = pol.order_id                    
+                            where cast(po.date_order as varchar)  <= cast(%(date)s as varchar) and pol.product_id = %(di_product_id)s and pol.price_unit > 0.0 and pol.product_uom_qty > 0.0
+                            order by po.date_order desc
+                            limit 1                                                                                                                  
+                        """                                                
+            self.env.cr.execute(query, query_args)            
+            try: 
+                result = self.env.cr.fetchall()[0] 
+                achat_price_subtotal = result[0] and result[0] or 0.0
+                achat_product_uom_qty = result[1] and result[1] or 0.0
+                if achat_product_uom_qty != 0.0:
+                    dernier_cmp = round((achat_price_subtotal / achat_product_uom_qty),2)
+                else :
+                    dernier_cmp=0                                                     
+            except:
+                achat_price_subtotal = 0.0
+                achat_product_uom_qty = 0.0                                                      
+                
+        if dernier_cmp ==0.0:
+            dernier_cmp= product_id.standard_price
+        
+        if cde_ach:
+            if date:
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit 
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done','assigned') and sm.picking_id is not null and sl.usage <> 'internal' 
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and cast(sp.date_done as varchar) > cast(%(date_cr_cout_veille)s as varchar) )
+                                or (sm.state='assigned' and left(cast(sp.scheduled_date as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and cast(sp.scheduled_date as varchar) > cast(%(date_cr_cout_veille)s as varchar))                                
+                            )     
+                            order by case when sm.state='done' then sp.date_done else sp.scheduled_date end ,sm.id                                                                                                          
+                        """
+            else:
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done','assigned') and sm.picking_id is not null and sl.usage = 'internal'    
+                            and sm.product_id = %(product_id)s     
+                            order by case when sm.state='done' then sp.date_done else sp.scheduled_date end ,sm.id                                    
+                        """
+        else:
+            if date:
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done') and sm.picking_id is not null and sl.usage <> 'internal' 
+                            and sm.product_id = %(product_id)s                            
+                            and (
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and cast(sp.date_done as varchar) > cast(%(date_cr_cout_veille)s as varchar) )                               
+                            )    
+                            order by sp.date_done,sm.id                                                                                                           
+                        """
+
+            else:
+                query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit
+                            from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
+                            left join stock_picking sp on sp.id = sm.picking_id
+                            left join purchase_order_line pol on pol.id = sm.purchase_line_id
+                            where sm.state in ('done') and sm.picking_id is not null and sl.usage <> 'internal' 
+                            and sm.product_id = %(product_id)s  
+                            order by sp.date_done,sm.id                                                                                                                                                                 
+                        """                        
+        query_args = {'product_id': product_id.id,'date' : date,'dernier_id' : dernier_id, 'date_cr_cout_veille': date_cr_cout_veille}        
+ 
+        self.env.cr.execute(query, query_args)
+        ids=[]
+        for r in self.env.cr.fetchall():
+            ids.append(r)
+
+        for (mouv_id,mouv_purchase_line_id,mouv_state,mouv_di_nb_colis,mouv_di_nb_palette,mouv_di_nb_pieces,mouv_di_poin,mouv_quantity_done,mouv_product_uom_qty,mouv_sale_line_id,mouv_purchase_line_id_di_un_prix,mouv_purchase_line_id_price_unit) in ids: 
+            if not mouv_di_nb_colis :
+                mouv_di_nb_colis =0.0
+            if not mouv_di_nb_palette :
+                mouv_di_nb_palette =0.0
+            if not mouv_di_nb_pieces :
+                mouv_di_nb_pieces =0.0
+            if not mouv_di_poin :
+                mouv_di_poin =0.0
+            if not mouv_quantity_done :
+                mouv_quantity_done =0.0
+            if not mouv_product_uom_qty :
+                mouv_product_uom_qty =0.0
+            if not mouv_purchase_line_id_price_unit :
+                mouv_purchase_line_id_price_unit =0.0
+                
+            if mouv_id > dernier_id_lu:
+                dernier_id_lu = mouv_id
+            
+            if mouv_purchase_line_id:
+                if mouv_state == 'done':
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_quantity_done                                               
+                else:
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_product_uom_qty 
+                di_qte_prix = 0.0
+                if mouv_purchase_line_id_di_un_prix == "PIECE":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_pieces
+                    else:
+                        di_qte_prix = mouv_di_nb_pieces                            
+                elif mouv_purchase_line_id_di_un_prix == "COLIS":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_colis
+                    else:
+                        di_qte_prix = mouv_di_nb_colis
+                elif mouv_purchase_line_id_di_un_prix == "PALETTE":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_nb_palette
+                    else:
+                        di_qte_prix = mouv_di_nb_palette
+                elif mouv_purchase_line_id_di_un_prix == "KG":
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_di_poin
+                    else:
+                        di_qte_prix = mouv_di_poin
+                elif mouv_purchase_line_id_di_un_prix == False or mouv_purchase_line_id_di_un_prix == '':
+                    if mouv_state == 'done':
+                        di_qte_prix = mouv_quantity_done
+                    else:
+                        di_qte_prix = mouv_product_uom_qty
+                mont = mont - (di_qte_prix * mouv_purchase_line_id_price_unit)    
+            elif mouv_sale_line_id:
+                if mouv_state == 'done':
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_quantity_done                        
+                else:
+                    nbcol = nbcol - mouv_di_nb_colis
+                    nbpal = nbpal - mouv_di_nb_palette
+                    nbpiece = nbpiece - mouv_di_nb_pieces
+                    poids = poids - mouv_di_poin                
+                    qte = qte -  mouv_product_uom_qty
+                di_qte_prix = 0.0
+                if mouv_state == 'done':
+                    di_qte_prix = mouv_quantity_done
+                else:
+                    di_qte_prix = mouv_product_uom_qty
+                mont = mont - (di_qte_prix * dernier_cmp)  
+            else:                    
+                nbcol = nbcol - mouv_di_nb_colis
+                nbpal = nbpal - mouv_di_nb_palette
+                nbpiece = nbpiece - mouv_di_nb_pieces
+                poids = poids - mouv_di_poin                
+                qte = qte -  mouv_quantity_done                                             
+                di_qte_prix = 0.0                    
+                di_qte_prix = mouv_quantity_done                                        
+                mont = mont - (di_qte_prix * dernier_cmp)
+        
         if cde_ach:
             if date:                                
                 query = """ select sm.id,sm.purchase_line_id,sm.state,sm.di_nb_colis,sm.di_nb_palette,sm.di_nb_pieces,sm.di_poin,(select sum(sml.qty_done) from stock_move_line sml where sml.move_id = sm.id)as quantity_done,sm.product_uom_qty,sm.sale_line_id,pol.di_un_prix,pol.price_unit 
@@ -523,9 +710,7 @@ class StockMove(models.Model):
                             where sm.state in ('done','assigned') and sm.picking_id is not null and sl.usage <> 'internal' 
                             and sm.product_id = %(product_id)s                            
                             and (
-                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and cast(sp.date_done as varchar) > cast(%(date_cr_cout_veille)s as varchar) )
-                                or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )
-                                or (sm.state='assigned' and left(cast(sp.scheduled_date as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and cast(sp.scheduled_date as varchar) > cast(%(date_cr_cout_veille)s as varchar))
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )
                                 or (sm.state='assigned' and left(cast(sp.scheduled_date as varchar),10)= cast(%(date)s as varchar) )
                             )     
                             order by case when sm.state='done' then sp.date_done else sp.scheduled_date end ,sm.id                                                                                                          
@@ -550,8 +735,7 @@ class StockMove(models.Model):
                             where sm.state in ('done') and sm.picking_id is not null and sl.usage <> 'internal' 
                             and sm.product_id = %(product_id)s                            
                             and (
-                                (sm.state='done' and left(cast(sp.date_done as varchar),10)< cast(%(date)s as varchar) and sm.id > %(dernier_id)s and cast(sp.date_done as varchar) > cast(%(date_cr_cout_veille)s as varchar) )
-                                or (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )                               
+                                (sm.state='done' and left(cast(sp.date_done as varchar),10)= cast(%(date)s as varchar) )                               
                             )    
                             order by sp.date_done,sm.id                                                                                                           
                         """
@@ -1406,14 +1590,14 @@ class StockMoveLine(models.Model):
 #                 nbpiece = nbpiece + mouv.di_nb_pieces
 #                 poids = poids + mouv.di_poin
 #                 poib = poib + mouv.di_poib
-#                 qte_std = qte_std + mouv.qty_done	                
+#                 qte_std = qte_std + mouv.qty_done                    
 #             else:                
 #                 nbcol = nbcol - mouv.di_nb_colis
 #                 nbpal = nbpal - mouv.di_nb_palette
 #                 nbpiece = nbpiece - mouv.di_nb_pieces
 #                 poids = poids - mouv.di_poin
 #                 poib = poib - mouv.di_poib
-#                 qte_std = qte_std - mouv.qty_done                       				
+#                 qte_std = qte_std - mouv.qty_done                                       
                 
         return (nbcol, nbpal, nbpiece, poids, qte_std,poib)
     
