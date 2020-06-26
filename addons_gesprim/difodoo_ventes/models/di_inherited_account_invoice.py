@@ -670,7 +670,7 @@ class AccountInvoiceLine(models.Model):
             vals["di_poib"] = poib
             vals["di_poin"] = poin      
             vals["di_tare"] = poib-poin
-            if nbcolis != 0.0:
+            if ceil(nbcolis) != 0.0:
                 vals["di_tare_un"] = (poib-poin)  / ceil(nbcolis)
             vals["di_nb_pieces"] = nbpieces
             vals["di_nb_colis"] = nbcolis
@@ -709,7 +709,7 @@ class AccountInvoiceLine(models.Model):
             vals["di_poib"] = poib
             vals["di_poin"] = poin
             vals["di_tare"] = poib-poin 
-            if nbcolis != 0.0:
+            if ceil(nbcolis) != 0.0:
                 vals["di_tare_un"] = (poib-poin)  / ceil(nbcolis)
             vals["di_nb_pieces"] = nbpieces
             vals["di_nb_colis"] = nbcolis
