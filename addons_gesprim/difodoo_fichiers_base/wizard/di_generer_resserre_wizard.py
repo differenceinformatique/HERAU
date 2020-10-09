@@ -14,7 +14,9 @@ class DiGenResserreWiz(models.TransientModel):
     di_date_gen = fields.Datetime('Date de génération', default=datetime.today() )
     
     def di_generer_resserre_art(self,id,date):
+        
         product = self.env['product.product'].browse(id)
+        
         
         query_args = {'product_id': id,'date':date}    
                        
@@ -206,6 +208,7 @@ class DiGenResserreWiz(models.TransientModel):
         self.env.cr.execute(query, )
         ids = [r[0] for r in self.env.cr.fetchall()]
                                      
+        #date_lancement = datetime(self.di_date_gen.year,self.di_date_gen.month,self.di_date_gen.day,23,59,59) 
         date_lancement = self.di_date_gen+timedelta(hours=+2)
         
         products = self.env['product.product'].browse(ids)

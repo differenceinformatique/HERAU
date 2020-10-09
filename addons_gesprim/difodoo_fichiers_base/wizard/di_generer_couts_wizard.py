@@ -17,6 +17,7 @@ class DiGenCoutsWiz(models.TransientModel):
     di_product_id = fields.Many2one('product.product',string="Article", help="""Permet de faire la génération sur un article. Laisser vide pour faire tous les articles.""")
     di_supp_cout_jour = fields.Boolean("Supprimer les coûts du jour", default=False)
     di_supp_tous_couts = fields.Boolean("Supprimer tous les coûts de l'article", default=False)
+    di_product_ids = fields.Many2many('product.product')
 
     def di_generer_cmp(self,di_product_id,di_date, premier_mouv_date=False):
         cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', di_product_id.id), ('di_date', '=', di_date)])
@@ -147,8 +148,11 @@ class DiGenCoutsWiz(models.TransientModel):
                     self.env.cr.commit()                        
                                     
     
-    def di_generer_couts(self):      
-        if self.di_product_id:
+    def di_generer_couts(self):    
+        if self.di_product_ids:
+            articles = self.di_product_ids   
+            self.di_supp_tous_couts = False     
+        elif self.di_product_id:
             articles = self.di_product_id
         else:    
             articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
@@ -338,6 +342,19 @@ class DiGenCoutsWiz(models.TransientModel):
     
     
     
+    def di_generer_couts_cron(self):      
+        
+        articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
+        self.di_supp_tous_couts = False
+                             
+        if articles:
+            query = """ UPDATE  product_product set di_cmp_cron_gen  = true""" 
+            self.env.cr.execute(query, )
+            self._cr.commit()
+                                    
+            date_lancement = self.di_date_gen   
+            articles.create_cron_gen_cmp(date_lancement,self.di_supp_cout_jour,self.di_generer_tous_tar,self.di_cde_ach)                
+            
     def di_regenerer_couts(self):      
         #self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)]).update({'di_cmp_regen':False})        
         query = """ UPDATE  product_product set di_cmp_regen  = false"""

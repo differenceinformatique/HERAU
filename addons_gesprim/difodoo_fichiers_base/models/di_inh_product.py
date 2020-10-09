@@ -193,6 +193,7 @@ class ProductProduct(models.Model):
     di_val_marge_ap_regul_sortie = fields.Float(string='Valeur marge après régul. sortie', compute='_di_compute_resserre_values')
     
     di_cmp_regen = fields.Boolean(string='CMP régénéré',default=False)
+    di_cmp_cron_gen = fields.Boolean(string='Générer les CMP en cron',default=False)
     di_ress_regen = fields.Boolean(string='Resserre régénérée',default=False)
     
     
@@ -285,9 +286,61 @@ class ProductProduct(models.Model):
         self.env.cr.commit()
         article = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('di_cmp_regen','=', False)],limit=1)
         if article:
-            article.create_cron_regen_cmp()        
+            article.create_cron_regen_cmp()   
+            
+    def di_gen_cmp_arts(self,article_ids,supp_cout_jour,date_gen,di_generer_tous_tar,di_cde_ach):
+        cpt = 0
+        article_gen_ids=[]
+        for article_id in article_ids:
+            if cpt < 200: 
+                article_gen_ids.append(article_id)
+                cpt = cpt + 1
+            else:
+                break
+        articles=self.env['product.product'].browse(article_gen_ids)    
+        wizgencout = self.env['di.gen.couts.wiz'].create({
+            'di_date_gen':date_gen,            
+            'di_supp_tous_couts':False,
+            'di_generer_tous_tar':di_generer_tous_tar,
+            'di_cde_ach':di_cde_ach,
+            'di_supp_cout_jour':supp_cout_jour                                                    
+        })
+        wizgencout.di_product_ids = articles
+        wizgencout.di_generer_couts()
+            
+        articles.update({'di_cmp_cron_gen':False})
+        self.env.cr.commit()
+        articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('di_cmp_cron_gen','=', True)])
+        if articles:
+            articles.create_cron_gen_cmp()        
         
-    
+   
+   
+    def create_cron_gen_cmp(self,date_lancement,supp_cout_jour,di_generer_tous_tar,di_cde_ach):       
+        self.env.cr.execute("""SELECT id FROM ir_model 
+                                  WHERE model = %s""", (str(self._name),)) 
+        info = self.env.cr.dictfetchall()  
+        if info:
+            model_id = info[0]['id'] 
+        dateheure = datetime.datetime.today() 
+        dateheureexec = dateheure+datetime.timedelta(seconds=10)                
+        
+            
+        self.env['ir.cron'].create({'name':'Gen CMP.'+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+                                                'active':True, 
+                                                'user_id':self.env.user.id, 
+                                                'interval_number':1, 
+                                                'interval_type':'days', 
+                                                'numbercall':1, 
+                                                'doall':1, 
+                                                'nextcall':dateheureexec, 
+                                                'model_id': model_id,                  
+                                                'code': 'model.di_gen_cmp_arts(('+str(self.ids).strip('[]')+'),%s,"%s",%s,%s)' % (supp_cout_jour,date_lancement,di_generer_tous_tar,di_cde_ach),                                                                                                                   
+                                                'state':'code',
+                                                'priority':0})
+        
+        
+             
     def create_cron_regen_cmp(self):       
         self.env.cr.execute("""SELECT id FROM ir_model 
                                   WHERE model = %s""", (str(self._name),)) 
