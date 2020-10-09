@@ -11,6 +11,7 @@ class DiInvoiceReport(models.Model):
     _rec_name = 'date'
 
     date = fields.Date(readonly=True)
+#     mois = fields.Integer(readonly=True, string = "Mois")
     product_id = fields.Many2one('product.product', string='Article', readonly=True)
     di_qte_achat = fields.Float(string='Quantité achat', readonly=True)
     di_qte_vente = fields.Float(string='Quantité vente', readonly=True)
@@ -69,7 +70,7 @@ class DiInvoiceReport(models.Model):
 
     def _select(self):
         select_str = """
-            SELECT sub.id, sub.date, sub.product_id, sub.partner_id,
+            SELECT sub.id, sub.date,sub.product_id, sub.partner_id,
                 sub.company_id,  sub.type, sub.state,
                 sub.categ_id,
                 sub.di_qte_achat as di_qte_achat,
@@ -95,7 +96,7 @@ class DiInvoiceReport(models.Model):
     def _sub_select(self):
         select_str = """
                 SELECT ail.id AS id,
-                    ai.date_invoice AS date,
+                    ai.date_invoice AS date,                    
                     ail.product_id, ai.partner_id,
                     ai.company_id,
                     ai.type, ai.state, pt.categ_id,
@@ -146,7 +147,7 @@ class DiInvoiceReport(models.Model):
         group_by_str = """
                 GROUP BY ail.id, ail.product_id,  ai.date_invoice, ai.id,
                     ai.partner_id,
-                    ai.company_id, ai.type, invoice_type.sign, ai.state, pt.categ_id                    
+                    ai.company_id, ai.type, invoice_type.sign, ai.state, pt.categ_id, extract(month from ai.date_invoice)                   
         """
         return group_by_str
 

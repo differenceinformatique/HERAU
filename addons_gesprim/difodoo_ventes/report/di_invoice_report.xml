@@ -7,6 +7,7 @@
          <field name="arch" type="xml">
              <pivot string="Analyse des factures" disable_linking="True">
                  <field name="categ_id" type="row"/>
+                 <!-- <field name="mois" type="row"/> -->
                  <field name="date" type="col"/>
                  <field name="di_qte_achat" type="measure"/>
                  <field name="di_qte_vente" type="measure"/>
@@ -38,6 +39,7 @@
          <field name="arch" type="xml">
              <graph string="Analyse des factures">
                  <field name="categ_id"/>
+                 <!-- <field name="mois"/> -->
                  <field name="di_qte_achat" type="measure"/>
                  <field name="di_qte_vente" type="measure"/>
                  <field name="di_nbcol_achat" type="measure"/>

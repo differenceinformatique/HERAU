@@ -292,7 +292,7 @@ class ProductProduct(models.Model):
         cpt = 0
         article_gen_ids=[]
         for article_id in article_ids:
-            if cpt < 200: 
+            if cpt < 250: 
                 article_gen_ids.append(article_id)
                 cpt = cpt + 1
             else:
@@ -312,7 +312,10 @@ class ProductProduct(models.Model):
         self.env.cr.commit()
         articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('di_cmp_cron_gen','=', True)])
         if articles:
-            articles.create_cron_gen_cmp(date_gen,supp_cout_jour,di_generer_tous_tar,di_cde_ach)        
+            articles.create_cron_gen_cmp(date_gen,supp_cout_jour,di_generer_tous_tar,di_cde_ach)  
+        else:
+            mail_fin = self.env['mail.mail'].create({"subject":"Génération CMP terminée","email_to":self.env.user.email,"body_html":"La génération des CMP est terminée.","body":"La génération des CMP est terminée."})
+            mail_fin.send()       
         
    
    

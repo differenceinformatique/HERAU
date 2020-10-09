@@ -32,6 +32,12 @@ class AccountInvoice(models.Model):
 
     di_date_piece_orig = fields.Date(string="Date pièece origine",compute="_compute_date_piece_orig" )#,store=True)
     
+#     di_mois = fields.Integer("Mois",compute='_compute_mois')
+         
+    @api.depends("date_invoice")
+    def _compute_mois(self):
+        for invoice in self:
+           invoice.di_mois = invoice.date_invoice.month
     
     
     @api.model
