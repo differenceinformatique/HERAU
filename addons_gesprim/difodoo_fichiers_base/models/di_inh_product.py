@@ -312,7 +312,7 @@ class ProductProduct(models.Model):
         self.env.cr.commit()
         articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('di_cmp_cron_gen','=', True)])
         if articles:
-            articles.create_cron_gen_cmp(date_lancement,supp_cout_jour,di_generer_tous_tar,di_cde_ach)        
+            articles.create_cron_gen_cmp(date_gen,supp_cout_jour,di_generer_tous_tar,di_cde_ach)        
         
    
    
