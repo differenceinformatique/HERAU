@@ -10,7 +10,8 @@
                     <div name="question">
                         Voulez-vous lancer la génération de la resserre ?
                      </div>
-                    <field name="di_date_gen" string="Générer la resserre au :"/>                    
+                    <field name="di_date_gen" string="Générer la resserre au :"/>
+                    <field name="reinit" string="Réinitialiser" />                         
                 </group>                
             </group>
                 

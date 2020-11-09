@@ -197,14 +197,18 @@ class ProductProduct(models.Model):
     di_ress_regen = fields.Boolean(string='Resserre régénérée',default=False)
     
     
-    def di_gen_resserre(self,ids,datestr):
+    def di_gen_resserre(self,ids,datestr,reinitstr):
+        if reinitstr == "0":
+            reinit = False
+        else:
+            reinit=True
         date = datetime.datetime.strptime(datestr,"%Y-%m-%d %H:%M:%S")
 
         wizgenress = self.env['di.gen.resserre.wiz']
         
         products = self.env['product.product'].browse(ids)
         for product in products:
-            wizgenress.di_generer_resserre_art(product.id,date)
+            wizgenress.di_generer_resserre_art(product.id,date,reinit)
             products.update({'di_ress_regen':True})
             self.env.cr.commit()
         
@@ -216,7 +220,7 @@ class ProductProduct(models.Model):
                         and (
                         di_flg_avec_ventes is true
                         or (select sum(sq.quantity) from stock_quant sq left join stock_location sl on sl.id = sq.location_id where sq.product_id = pp.id and sl.usage='internal' ) not between -0.001 and 0.001
-                        ) and pp.di_ress_regen = false      
+                        ) and pp.di_ress_regen = false  and pp.active=true    
                         limit 50                                                                                    
                         """
  
@@ -225,14 +229,14 @@ class ProductProduct(models.Model):
                                                      
         products = self.env['product.product'].browse(ids)
         if products:
-            products.create_cron_regen_resserre(date) 
+            products.create_cron_regen_resserre(date,reinit) 
         else:
             #mail_fin = self.env['mail.mail'].create({"subject":"Resserre générée","email_to":self.env.user.email,"body_html":"La facturation est terminée.","body":"La facturation est terminée."})
             mail_fin = self.env['mail.mail'].create({"subject":"Resserre générée","email_to":self.env.user.email,"body_html":"La resserre est générée.","body":"La resserre est générée."})
             mail_fin.send() 
         
                       
-    def create_cron_regen_resserre(self,date_lancement):
+    def create_cron_regen_resserre(self,date_lancement,reinit):
               
         self.env.cr.execute("""SELECT id FROM ir_model 
                                       WHERE model = %s""", (str(self._name),)) 
@@ -255,8 +259,10 @@ class ProductProduct(models.Model):
 #         
 #         if dateheureexec >hdebtrav and dateheureexec<hfintrav:
 #             dateheureexec=hfintrav+datetime.timedelta(seconds=10)  
-            
-                      
+        if reinit:
+            reinitstr = "1"
+        else:
+            reinitstr = "0"                          
             
         self.env['ir.cron'].create({'name':'Génération resserre '+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
                                                 'active':True, 
@@ -267,7 +273,7 @@ class ProductProduct(models.Model):
                                                 'doall':1, 
                                                 'nextcall':dateheureexec, 
                                                 'model_id': model_id, 
-                                                'code': 'model.di_gen_resserre(('+str(self.ids).strip('[]')+'),"'+date_lancement.strftime("%Y-%m-%d %H:%M:%S")+'")',
+                                                'code': 'model.di_gen_resserre(('+str(self.ids).strip('[]')+'),"'+date_lancement.strftime("%Y-%m-%d %H:%M:%S")+'",'+reinitstr+')',
                                                 'state':'code',
                                                 'priority':0}) 
     

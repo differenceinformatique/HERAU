@@ -12,31 +12,36 @@ class DiGenResserreWiz(models.TransientModel):
     _description = "Wizard de génération de resserre"
         
     di_date_gen = fields.Datetime('Date de génération', default=datetime.today() )
+    reinit = fields.Boolean("Réinitialiser", default=False)
     
-    def di_generer_resserre_art(self,id,date):
+    def di_generer_resserre_art(self,id,date,reinit=False):
         
         product = self.env['product.product'].browse(id)
         
+        if not reinit:
+            query_args = {'product_id': id,'date':date}    
+                           
+            query = """ select id  from di_resserre where product_id = %(product_id)s and date < %(date)s order by date desc  limit 1 """            
+            self.env.cr.execute(query, query_args)                                                 
         
-        query_args = {'product_id': id,'date':date}    
-                       
-        query = """ select id  from di_resserre where product_id = %(product_id)s and date < %(date)s order by date desc  limit 1 """            
-        self.env.cr.execute(query, query_args)                                                 
-    
-        try: 
-            result = self.env.cr.fetchall()[0] 
-            id_dern_ress = result[0] and result[0] or False
-        except:
-            id_dern_ress=False   
-        if id_dern_ress :    
-            dern_ress = self.env['di.resserre'].browse(id_dern_ress)
+            try: 
+                result = self.env.cr.fetchall()[0] 
+                id_dern_ress = result[0] and result[0] or False
+            except:
+                id_dern_ress=False   
+            if id_dern_ress :    
+                dern_ress = self.env['di.resserre'].browse(id_dern_ress)
+            else:
+                dern_ress=False
+                            
         else:
             dern_ress=False
-            
+        
         if dern_ress:
             date_deb= dern_ress.date
         else:
             date_deb= datetime(2000, 1, 1)
+            
             
         if date_deb.date() != date.date():
                     
@@ -63,10 +68,10 @@ class DiGenResserreWiz(models.TransientModel):
                                     SUM ( Case when sml.di_usage_loc_dest = 'internal' then sml.di_poin else -1*sml.di_poin end) AS di_poin_stock                                
                                                                                                                             
                                 from stock_move_line sml                                                                                                                                            
-                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.di_lot_fini is false and sml.date > %s
+                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s  and sml.date > %s
                                  
                                 """
-                 
+#                  and sml.di_lot_fini is false
             self.env.cr.execute(sqlstr, (id, date, date_deb))
             result = self.env.cr.fetchall()[0]
             di_col_stock = result[0] and result[0] or 0.0
@@ -100,9 +105,10 @@ class DiGenResserreWiz(models.TransientModel):
                                 from stock_move_line sml                                                                          
                                 LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
                                 LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id                                             
-                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.di_lot_fini is false  and sml.di_flg_cloture is not true and (sml.di_usage_loc = 'customer' or sml.di_usage_loc_dest = 'customer' ) 
+                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s  and sml.di_flg_cloture is not true and (sml.di_usage_loc = 'customer' or sml.di_usage_loc_dest = 'customer' ) 
                                 
                                 """             
+#                                 and sml.di_lot_fini is false 
             self.env.cr.execute(sqlstr, (id, date))
             result = self.env.cr.fetchall()[0]
             di_col_ven = result[0] and result[0] or 0.0
@@ -125,9 +131,10 @@ class DiGenResserreWiz(models.TransientModel):
                                 LEFT JOIN (select sm.sale_line_id, sm.id  from stock_move sm) sm on sm.id = sml.move_id  
                                 LEFT JOIN (select sol.price_unit, sol.id from sale_order_line sol) sol on sol.id = sm.sale_line_id     
                                         
-                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s and sml.di_lot_fini is false  and sml.di_flg_cloture is not true and sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_perte is true 
+                                where sml.product_id = %s and sml.state ='done'  and sml.date <=%s   and sml.di_flg_cloture is not true and sml.di_usage_loc = 'internal' and  sml.di_usage_loc_dest <> 'customer' and sml.di_perte is true 
                                 
-                                """             
+                                """
+#                                 and sml.di_lot_fini is false             
             self.env.cr.execute(sqlstr, (id, date))
             result = self.env.cr.fetchall()[0]
             
@@ -201,7 +208,7 @@ class DiGenResserreWiz(models.TransientModel):
                         and (
                         di_flg_avec_ventes is true
                         or (select sum(sq.quantity) from stock_quant sq left join stock_location sl on sl.id = sq.location_id where sq.product_id = pp.id and sl.usage='internal' ) not between -0.001 and 0.001
-                        ) and pp.di_ress_regen = false      
+                        ) and pp.di_ress_regen = false  and  pp.active  = true 
                         limit 50                                                                                    
                         """
  
@@ -213,7 +220,7 @@ class DiGenResserreWiz(models.TransientModel):
         
         products = self.env['product.product'].browse(ids)
         if products:
-            products.create_cron_regen_resserre(date_lancement) 
+            products.create_cron_regen_resserre(date_lancement,self.reinit) 
         
 #         for id in ids:                                                          
 #             self.di_generer_resserre_art(id, date_lancement)
