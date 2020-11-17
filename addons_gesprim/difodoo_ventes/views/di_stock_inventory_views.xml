@@ -7,6 +7,10 @@
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field eval="80" name="priority"/>
             <field name="arch" type="xml">
+                <xpath expr="//page/field[@name='line_ids']/tree/field[@name='prod_lot_id']" position="replace">
+                    <field name="di_lot_oblig" invisible="1"/>                
+                    <field name="prod_lot_id" domain="[('product_id', '=', product_id)]" attrs="{'readonly': [('product_tracking', '=', 'none')],'required':[('di_lot_oblig','=',True)]}" context="{'default_product_id': product_id}" groups="stock.group_production_lot"/>
+                </xpath> 
             	<!-- Ajout critère filtres pour générer des inventaires réduits -->
             	<xpath expr="//field[@name='category_id']" position="after">
             		<field name="di_code_deb" attrs="{'invisible': [('filter', 'not in','category')]}"/>

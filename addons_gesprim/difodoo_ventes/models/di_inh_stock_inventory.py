@@ -141,6 +141,15 @@ class InventoryLine(models.Model):
     di_ecart_qte= fields.Float(string='Ecart quantité' , store=True, compute='_compute_ecart')   
     
     di_perte = fields.Boolean("Perte", default=False)
+    di_lot_oblig = fields.Boolean("Lot obligatoire", default=False, compute='_compute_lot_oblig')
+    
+    @api.depends('product_id')    
+    def _compute_lot_oblig(self):        
+        for sml in self:
+            sml.di_lot_oblig=False
+            if sml.company_id.di_param_id:
+                if  sml.company_id.di_param_id.di_lot_oblig_inv and sml.product_tracking != 'none' :
+                    sml.di_lot_oblig=True
     
     @api.onchange('di_poib','di_tare_un')
     def di_onchange_poib_tare(self):

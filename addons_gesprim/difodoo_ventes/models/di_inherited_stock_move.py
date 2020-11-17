@@ -1452,6 +1452,19 @@ class StockMoveLine(models.Model):
                                 vals['lot_name'] = lotexist.name
         
         ml = super(StockMoveLine, self).create(vals)
+        if ml.di_poib - ml.di_poin != ml.di_tare:
+            if not ml.di_poin:
+                tare = ml.di_poib
+            else:
+                if not ml.di_poib:
+                    tare = 0 - ml.di_poin
+                else:
+                    tare = ml.di_poib - ml.di_poin
+            if not tare:
+                tare = 0.0
+            ml.di_tare = tare    
+#         ml.update({'di_tare':tare})
+            
         if ml.location_dest_id.usage=='customer':
             articles = ml.mapped('product_id')
             articles.update({
@@ -1459,13 +1472,22 @@ class StockMoveLine(models.Model):
                 })
         return ml
     
-#     def write(self, vals):
-#         ml = super(StockMoveLine, self).write(vals)
-#         articles = ml.mapped('product_id')
-#         articles.update({
-#                 'di_flg_avec_ventes': False,
-#             })
-#         return ml 
+    def write(self, vals):
+        ml = super(StockMoveLine, self).write(vals)
+        for sml in self:
+            if sml.di_poib - sml.di_poin != sml.di_tare:
+                if not sml.di_poin:
+                    tare = sml.di_poib
+                else:
+                    if not sml.di_poib:
+                        tare = 0 - sml.di_poin
+                    else:
+                        tare = sml.di_poib - sml.di_poin
+                if not tare:
+                    tare = 0.0
+                sml.di_tare = tare    
+       
+        return ml 
     
     def di_qte_spe_en_stock(self, product_id, date, lot,usage='internal'):            
         nbcol = 0.0

@@ -464,6 +464,10 @@
                                 <field name="di_horizon_ach" attrs="{'invisible': [('di_mode_grille_ach', '!=', 'HORIZON')]}"/>
                                 <field name="di_nbcde_ach" attrs="{'invisible': [('di_mode_grille_ach', '!=', 'NBCDE')]}"/>
                             </group>
+                            <group string="Inventaires">                            
+                                <field name="di_lot_oblig_inv"/>                                
+                            </group>
+                            
                         </group>
                         <group string="Impressions">
                             <field name="di_printer_id"/>
