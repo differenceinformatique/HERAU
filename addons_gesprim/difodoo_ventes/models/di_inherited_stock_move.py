@@ -1452,7 +1452,7 @@ class StockMoveLine(models.Model):
                                 vals['lot_name'] = lotexist.name
         
         ml = super(StockMoveLine, self).create(vals)
-        if ml.di_poib - ml.di_poin != ml.di_tare:
+        if ml.di_poib - (ml.di_poin + ml.di_tare) < -0.001 or  ml.di_poib - (ml.di_poin + ml.di_tare) > 0.001:
             if not ml.di_poin:
                 tare = ml.di_poib
             else:
@@ -1475,7 +1475,7 @@ class StockMoveLine(models.Model):
     def write(self, vals):
         ml = super(StockMoveLine, self).write(vals)
         for sml in self:
-            if sml.di_poib - sml.di_poin != sml.di_tare:
+            if sml.di_poib - (sml.di_poin + sml.di_tare) < -0.001 or  sml.di_poib - (sml.di_poin + sml.di_tare) > 0.001:
                 if not sml.di_poin:
                     tare = sml.di_poib
                 else:
