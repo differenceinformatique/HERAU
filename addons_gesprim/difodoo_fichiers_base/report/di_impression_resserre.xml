@@ -537,7 +537,7 @@
     <report 
             id="di_action_report_resserre_tb_portrait"
             string="Impression ressere après vente détaillée portrait"
-            model="di.imp.ress.wiz" 
+            model="di.imp.ress.tb.wiz" 
             report_type="qweb-pdf"
             file="difodoo_fichiers_base.di_impression_resserre_tb_portrait" 
             name="difodoo_fichiers_base.di_impression_resserre_tb_portrait"
