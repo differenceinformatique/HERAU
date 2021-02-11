@@ -632,7 +632,7 @@ class StockMove(models.Model):
                 
         nouveau_cmp=0  
         query_args = {'di_product_id': product_id.id,'date':date}          
-        query = """ select c.di_mont,c.di_qte 
+        query = """ select c.di_mont,c.di_qte,c.di_cmp 
                             from di_cout c                            
                             where cast(c.di_date as varchar)  <= cast(%(date)s as varchar) and di_product_id = %(di_product_id)s
                             order by di_date desc
@@ -640,16 +640,23 @@ class StockMove(models.Model):
                         """    
                         
         self.env.cr.execute(query, query_args)
-                                               
+        dernier_cout_di_cmp = 0.0                                        
         try: 
             result = self.env.cr.fetchall()[0] 
             dernier_cout_di_mont = result[0] and result[0] or 0.0
-            dernier_cout_di_qte = result[1] and result[1] or 0.0   
+            dernier_cout_di_qte = result[1] and result[1] or 0.0  
+            dernier_cout_di_cmp = result[2] and result[2] or 0.0
             if dernier_cout_di_qte + qte != 0.0:
                 nouveau_cmp = round((dernier_cout_di_mont + mont) / (dernier_cout_di_qte + qte),2)
             else:
                 nouveau_cmp=0             
         except:
+            nouveau_cmp=0
+            
+        if nouveau_cmp ==0.0:            
+            nouveau_cmp= dernier_cout_di_cmp                                                         
+                                                                 
+        if nouveau_cmp == 0.0 :
             dernier_cout_di_qte = 0.0
             dernier_cout_di_mont = 0.0  
             query_args = {'di_product_id': product_id.id,'date':date}          
@@ -671,9 +678,10 @@ class StockMove(models.Model):
                     nouveau_cmp=0                                                     
             except:
                 achat_price_subtotal = 0.0
-                achat_product_uom_qty = 0.0                                                      
-                
-        if nouveau_cmp ==0.0:
+                achat_product_uom_qty = 0.0 
+                nouveau_cmp=0
+                                        
+        if nouveau_cmp == 0.0:
             nouveau_cmp= product_id.standard_price
                 
 #         #à optimiser  en sql              
