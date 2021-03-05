@@ -144,6 +144,7 @@ class StockMove(models.Model):
         equal to its `product_qty`. If it is less, the stock move is considered
         partially available.
         """
+        self = self.with_context({'di_assign':True})
         super(StockMove, self)._action_assign()
         for move in self:
             for line in move.move_line_ids:

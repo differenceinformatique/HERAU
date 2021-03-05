@@ -780,6 +780,12 @@ class PurchaseOrder(models.Model):
 #                                 
                         di_ctrl_print.printlabelonwindows(printer,data)
                         
+    @api.multi
+    def button_confirm(self):        
+        self = self.with_context({'di_assign':True})
+        ret = super(PurchaseOrder, self).button_confirm()
+        return ret
+                        
     def _add_supplier_to_product(self):
         #copie standard
         # Add the partner in the supplier list of the product if the supplier is not registered for

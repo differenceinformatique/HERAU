@@ -788,21 +788,22 @@ class ProductProduct(models.Model):
                          
         # à l'écriture de l'article on va recalculer les quantités entre conditionnements
         # on commence par parcourir les emballages de type pièces, puis colis, puis palette
-        for ProductPack in self.packaging_ids:
-            if ProductPack.di_type_cond == 'PIECE':
-                ProductPack.di_type_cond_inf_id = ''
-                ProductPack.di_qte_cond_inf = 1
-        for ProductPack in self.packaging_ids:
-            if ProductPack.di_type_cond == 'COLIS':
-                PP_Piece = self.env['product.packaging'].search(['&', ('product_id', '=', self.id), ('di_type_cond', '=', 'PIECE')], limit=1)
-                if PP_Piece:
-                    ProductPack.di_type_cond_inf_id = PP_Piece.id
-                    ProductPack.qty = PP_Piece.qty*ProductPack.di_qte_cond_inf 
-        for ProductPack in self.packaging_ids:
-            if ProductPack.di_type_cond == 'PALETTE':
-                PP_Colis = self.env['product.packaging'].browse(ProductPack.di_type_cond_inf_id).id
-                if PP_Colis:
-                    ProductPack.qty = PP_Colis.qty*ProductPack.di_qte_cond_inf 
+        if not self.env.context.get('di_assign') :
+            for ProductPack in self.packaging_ids:
+                if ProductPack.di_type_cond == 'PIECE':
+                    ProductPack.di_type_cond_inf_id = ''
+                    ProductPack.di_qte_cond_inf = 1
+            for ProductPack in self.packaging_ids:
+                if ProductPack.di_type_cond == 'COLIS':
+                    PP_Piece = self.env['product.packaging'].search(['&', ('product_id', '=', self.id), ('di_type_cond', '=', 'PIECE')], limit=1)
+                    if PP_Piece:
+                        ProductPack.di_type_cond_inf_id = PP_Piece.id
+                        ProductPack.qty = PP_Piece.qty*ProductPack.di_qte_cond_inf 
+            for ProductPack in self.packaging_ids:
+                if ProductPack.di_type_cond == 'PALETTE':
+                    PP_Colis = self.env['product.packaging'].browse(ProductPack.di_type_cond_inf_id).id
+                    if PP_Colis:
+                        ProductPack.qty = PP_Colis.qty*ProductPack.di_qte_cond_inf 
         res = super(ProductProduct, self).write(vals)
         return res
     
