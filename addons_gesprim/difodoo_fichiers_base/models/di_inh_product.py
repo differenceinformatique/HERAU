@@ -336,7 +336,7 @@ class ProductProduct(models.Model):
                             order by sm.id desc    
                             limit = 1                                                                                                                                                             
                         """                        
-            query_args = {'product_id': product_id.id,'date' : date_gen}        
+            query_args = {'product_id': article.id,'date' : date_gen}        
      
             self.env.cr.execute(query, query_args)
             dernier_id=0
