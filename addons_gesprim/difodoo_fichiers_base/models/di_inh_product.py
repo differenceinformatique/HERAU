@@ -321,10 +321,76 @@ class ProductProduct(models.Model):
             articles.create_cron_gen_cmp(date_gen,supp_cout_jour,di_generer_tous_tar,di_cde_ach)  
         else:
             mail_fin = self.env['mail.mail'].create({"subject":"Génération CMP terminée","email_to":self.env.user.email,"body_html":"La génération des CMP est terminée.","body":"La génération des CMP est terminée."})
-            mail_fin.send()       
+            mail_fin.send()      
+            
+    def di_gen_cmp_zero(self,article_ids,supp_cout_jour,date_gen,di_generer_tous_tar,di_cde_ach):
+        articles=self.env['product.product'].browse(article_ids)        
+        for article in articles:                        
+            dernier_id = 0
+            cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_lancement)])
+            if not cout_jour or cout_jour.di_qte == 0:   
+                if cout_jour:   
+                    dernier_id  = cout_jour.dernier_id 
+                    cout_jour.unlink()
+                
+                cout_jour = self.env['di.cout']
+                            
+                cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '<', date_lancement)], limit=1)
+                if not dernier_id : 
+                    dernier_id = cout_veille.dernier_id
+                
+                data ={
+                                    'di_date': date_lancement,  
+                                    'di_product_id' : article.id,
+                                    'di_qte' : 0,
+                                    'di_nbcol' : 0,
+                                    'di_nbpal' : 0,
+                                    'di_nbpiece' : 0,
+                                    'di_poin' : 0,
+                                    'di_mont' : 0,
+                                    'di_cmp' : cout_veille.di_cmp,
+                                    'dernier_id':dernier_id  and dernier_id or 0      
+                                    }
+                                      
+                cout_jour.create(data)
+                self.env.cr.commit()  
+            else:                
+                article.update({'di_cmp_cron_gen':True}) 
         
+        articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('qty_available', '>', 0.0)])
+        self.di_supp_tous_couts = False
+                              
+        if articles:
+            articles.update({'di_cmp_cron_gen':True})
+            #query = """ UPDATE  product_product set di_cmp_cron_gen  = true""" 
+            #self.env.cr.execute(query, )
+            self._cr.commit()                                            
+            articles.create_cron_gen_cmp(date_lancement,self.di_supp_cout_jour,self.di_generer_tous_tar,self.di_cde_ach)
    
    
+    def create_cron_gen_cmp_zero(self,date_lancement,supp_cout_jour,di_generer_tous_tar,di_cde_ach):       
+        self.env.cr.execute("""SELECT id FROM ir_model 
+                                  WHERE model = %s""", (str(self._name),)) 
+        info = self.env.cr.dictfetchall()  
+        if info:
+            model_id = info[0]['id'] 
+        dateheure = datetime.datetime.today() 
+        dateheureexec = dateheure+datetime.timedelta(seconds=10)                
+        
+            
+        self.env['ir.cron'].create({'name':'Gen CMP. zero'+dateheure.strftime("%m/%d/%Y %H:%M:%S"), 
+                                                'active':True, 
+                                                'user_id':self.env.user.id, 
+                                                'interval_number':1, 
+                                                'interval_type':'days', 
+                                                'numbercall':1, 
+                                                'doall':1, 
+                                                'nextcall':dateheureexec, 
+                                                'model_id': model_id,                  
+                                                'code': 'model.di_gen_cmp_zero(('+str(self.ids).strip('[]')+'),%s,"%s",%s,%s)' % (supp_cout_jour,date_lancement,di_generer_tous_tar,di_cde_ach),                                                                                                                   
+                                                'state':'code',
+                                                'priority':0})
+           
     def create_cron_gen_cmp(self,date_lancement,supp_cout_jour,di_generer_tous_tar,di_cde_ach):       
         self.env.cr.execute("""SELECT id FROM ir_model 
                                   WHERE model = %s""", (str(self._name),)) 

@@ -347,49 +347,50 @@ class DiGenCoutsWiz(models.TransientModel):
 #         articles = self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)])
         date_lancement = self.di_date_gen
         articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('qty_available', '<=', 0.0),('seller_ids', '!=', False)])
-        for article in articles:
-            dernier_id = 0
-            cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_lancement)])
-            if not cout_jour or cout_jour.di_qte == 0:   
-                if cout_jour:   
-                    dernier_id  = cout_jour.dernier_id 
-                    cout_jour.unlink()
-                
-                cout_jour = self.env['di.cout']
-                            
-                cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '<', date_lancement)], limit=1)
-                if not dernier_id : 
-                    dernier_id = cout_veille.dernier_id
-                
-                data ={
-                                    'di_date': date_lancement,  
-                                    'di_product_id' : article.id,
-                                    'di_qte' : 0,
-                                    'di_nbcol' : 0,
-                                    'di_nbpal' : 0,
-                                    'di_nbpiece' : 0,
-                                    'di_poin' : 0,
-                                    'di_mont' : 0,
-                                    'di_cmp' : cout_veille.di_cmp,
-                                    'dernier_id':dernier_id  and dernier_id or 0      
-                                    }
-                                      
-                cout_jour.create(data)
-                self.env.cr.commit()  
-            else:
-                
-                article.update({'di_cmp_cron_gen':True})
-        
-        
-        articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('qty_available', '>', 0.0)])
-        self.di_supp_tous_couts = False
-                             
-        if articles:
-            articles.update({'di_cmp_cron_gen':True})
-            #query = """ UPDATE  product_product set di_cmp_cron_gen  = true""" 
-            #self.env.cr.execute(query, )
-            self._cr.commit()                                            
-            articles.create_cron_gen_cmp(date_lancement,self.di_supp_cout_jour,self.di_generer_tous_tar,self.di_cde_ach)                
+        articles.create_cron_gen_cmp_zero(date_lancement,self.di_supp_cout_jour,self.di_generer_tous_tar,self.di_cde_ach)
+#         for article in articles:                        
+#             dernier_id = 0
+#             cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_lancement)])
+#             if not cout_jour or cout_jour.di_qte == 0:   
+#                 if cout_jour:   
+#                     dernier_id  = cout_jour.dernier_id 
+#                     cout_jour.unlink()
+#                 
+#                 cout_jour = self.env['di.cout']
+#                             
+#                 cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '<', date_lancement)], limit=1)
+#                 if not dernier_id : 
+#                     dernier_id = cout_veille.dernier_id
+#                 
+#                 data ={
+#                                     'di_date': date_lancement,  
+#                                     'di_product_id' : article.id,
+#                                     'di_qte' : 0,
+#                                     'di_nbcol' : 0,
+#                                     'di_nbpal' : 0,
+#                                     'di_nbpiece' : 0,
+#                                     'di_poin' : 0,
+#                                     'di_mont' : 0,
+#                                     'di_cmp' : cout_veille.di_cmp,
+#                                     'dernier_id':dernier_id  and dernier_id or 0      
+#                                     }
+#                                       
+#                 cout_jour.create(data)
+#                 self.env.cr.commit()  
+#             else:
+#                 
+#                 article.update({'di_cmp_cron_gen':True})
+#         
+#         
+#         articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('qty_available', '>', 0.0)])
+#         self.di_supp_tous_couts = False
+#                              
+#         if articles:
+#             articles.update({'di_cmp_cron_gen':True})
+#             #query = """ UPDATE  product_product set di_cmp_cron_gen  = true""" 
+#             #self.env.cr.execute(query, )
+#             self._cr.commit()                                            
+#             articles.create_cron_gen_cmp(date_lancement,self.di_supp_cout_jour,self.di_generer_tous_tar,self.di_cde_ach)                
             
     def di_regenerer_couts(self):      
         #self.env['product.product'].search([('company_id','=', self.env.user.company_id.id)]).update({'di_cmp_regen':False})        
