@@ -348,6 +348,7 @@ class DiGenCoutsWiz(models.TransientModel):
         date_lancement = self.di_date_gen
         articles = self.env['product.product'].search(['&',('company_id','=', self.env.user.company_id.id),('qty_available', '<=', 0.0)])
         for article in articles:
+            dernier_id = 0
             cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_lancement)])
             if not cout_jour or cout_jour.di_qte == 0:   
                 if cout_jour:   
