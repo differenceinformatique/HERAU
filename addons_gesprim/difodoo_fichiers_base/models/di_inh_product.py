@@ -326,21 +326,40 @@ class ProductProduct(models.Model):
     def di_gen_cmp_zero(self,article_ids,supp_cout_jour,date_gen,di_generer_tous_tar,di_cde_ach):
         articles=self.env['product.product'].browse(article_ids)        
         for article in articles:                        
-            dernier_id = 0
-            cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_lancement)])
+            
+            query = """ select sm.id
+                            from stock_move sm
+                            where sm.state in ('done')  and sl.usage = 'internal' 
+                            and sm.product_id = %(product_id)s                            
+                            and sm.state='done' 
+                            and left(cast(sp.date_done as varchar),10)<= cast(%(date)s as varchar)                                                                                         
+                            order by sm.id desc    
+                            limit = 1                                                                                                                                                             
+                        """                        
+            query_args = {'product_id': product_id.id,'date' : date_gen}        
+     
+            self.env.cr.execute(query, query_args)
+            dernier_id=0
+            for r in self.env.cr.fetchall():
+                dernier_id=r[0]
+                break
+                
+                
+            cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_gen)])
             if not cout_jour or cout_jour.di_qte == 0:   
                 if cout_jour:   
-                    dernier_id  = cout_jour.dernier_id 
+                    if not dernier_id :
+                        dernier_id  = cout_jour.dernier_id 
                     cout_jour.unlink()
                 
                 cout_jour = self.env['di.cout']
                             
-                cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '<', date_lancement)], limit=1)
+                cout_veille = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '<', date_gen)], limit=1)
                 if not dernier_id : 
                     dernier_id = cout_veille.dernier_id
                 
                 data ={
-                                    'di_date': date_lancement,  
+                                    'di_date': date_gen,  
                                     'di_product_id' : article.id,
                                     'di_qte' : 0,
                                     'di_nbcol' : 0,
@@ -365,7 +384,7 @@ class ProductProduct(models.Model):
             #query = """ UPDATE  product_product set di_cmp_cron_gen  = true""" 
             #self.env.cr.execute(query, )
             self._cr.commit()                                            
-            articles.create_cron_gen_cmp(date_lancement,self.di_supp_cout_jour,self.di_generer_tous_tar,self.di_cde_ach)
+            articles.create_cron_gen_cmp(date_gen,di_supp_cout_jour,di_generer_tous_tar,di_cde_ach)
    
    
     def create_cron_gen_cmp_zero(self,date_lancement,supp_cout_jour,di_generer_tous_tar,di_cde_ach):       
