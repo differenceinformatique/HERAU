@@ -385,7 +385,7 @@ class ProductProduct(models.Model):
             #query = """ UPDATE  product_product set di_cmp_cron_gen  = true""" 
             #self.env.cr.execute(query, )
             self._cr.commit()                                            
-            articles.create_cron_gen_cmp(date_gen,di_supp_cout_jour,di_generer_tous_tar,di_cde_ach)
+            articles.create_cron_gen_cmp(date_gen,supp_cout_jour,di_generer_tous_tar,di_cde_ach)
    
    
     def create_cron_gen_cmp_zero(self,date_lancement,supp_cout_jour,di_generer_tous_tar,di_cde_ach):       
