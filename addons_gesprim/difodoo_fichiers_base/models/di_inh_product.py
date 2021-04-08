@@ -333,7 +333,7 @@ class ProductProduct(models.Model):
                             where sm.state in ('done')  and sl.usage = 'internal' 
                             and sm.product_id = %(product_id)s                            
                             and sm.state='done' 
-                            and left(cast(sp.date_done as varchar),10)<= cast(%(date)s as varchar)                                                                                         
+                            and left(cast(sm.date as varchar),10)<= cast(%(date)s as varchar)                                                                                         
                             order by sm.id desc    
                             limit  1                                                                                                                                                             
                         """                        
