@@ -344,7 +344,7 @@ class ProductProduct(models.Model):
                 dernier_id=r[0]
                 break
                 
-                
+            #    
             cout_jour = self.env['di.cout'].search(['&', ('di_product_id', '=', article.id), ('di_date', '=', date_gen)])
             if not cout_jour or cout_jour.di_qte == 0:   
                 if cout_jour:   
