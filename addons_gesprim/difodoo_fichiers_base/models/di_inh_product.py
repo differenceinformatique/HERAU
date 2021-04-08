@@ -329,12 +329,13 @@ class ProductProduct(models.Model):
             
             query = """ select sm.id
                             from stock_move sm
+                            left join stock_location sl on sl.id = sm.location_dest_id
                             where sm.state in ('done')  and sl.usage = 'internal' 
                             and sm.product_id = %(product_id)s                            
                             and sm.state='done' 
                             and left(cast(sp.date_done as varchar),10)<= cast(%(date)s as varchar)                                                                                         
                             order by sm.id desc    
-                            limit = 1                                                                                                                                                             
+                            limit  1                                                                                                                                                             
                         """                        
             query_args = {'product_id': article.id,'date' : date_gen}        
      
