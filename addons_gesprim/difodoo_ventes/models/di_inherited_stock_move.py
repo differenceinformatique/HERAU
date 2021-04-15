@@ -117,26 +117,26 @@ class StockMove(models.Model):
             ),
         }
 
-    def _action_done(self):
-        # standard de validadtion de livraison        
-        result = super(StockMove, self)._action_done()
-#         #ajout des calculs sur les champs spé
-#         for line in self.mapped('sale_line_id'):
-#             line.qty_delivered = line._get_delivered_qty()
-#             line.di_qte_un_saisie_liv = line._get_qte_un_saisie_liv()
-#             line.di_nb_pieces_liv     = line._get_nb_pieces_liv()
-#             line.di_nb_colis_liv      = line._get_nb_colis_liv()
-#             line.di_nb_palette_liv    = line._get_nb_palettes_liv()
-#             line.di_poin_liv          = line._get_poin_liv()
-#             line.di_poib_liv          = line._get_poib_liv()
-#             dimoves = self.env['stock.move'].search([('sale_line_id', '=', line.id)])
-#             for dimove in dimoves:                                                    
-#                 line.di_type_palette_liv_id  = dimove.di_type_palette_id
-#                 line.di_un_saisie_liv     = dimove.di_un_saisie
-#                 line.di_product_packaging_liv_id = dimove.di_product_packaging_id
-#                 line.di_tare_liv          = dimove.di_tare
-     
-        return result
+#     def _action_done(self):
+#         # standard de validadtion de livraison        
+#         result = super(StockMove, self)._action_done()
+# #         #ajout des calculs sur les champs spé
+# #         for line in self.mapped('sale_line_id'):
+# #             line.qty_delivered = line._get_delivered_qty()
+# #             line.di_qte_un_saisie_liv = line._get_qte_un_saisie_liv()
+# #             line.di_nb_pieces_liv     = line._get_nb_pieces_liv()
+# #             line.di_nb_colis_liv      = line._get_nb_colis_liv()
+# #             line.di_nb_palette_liv    = line._get_nb_palettes_liv()
+# #             line.di_poin_liv          = line._get_poin_liv()
+# #             line.di_poib_liv          = line._get_poib_liv()
+# #             dimoves = self.env['stock.move'].search([('sale_line_id', '=', line.id)])
+# #             for dimove in dimoves:                                                    
+# #                 line.di_type_palette_liv_id  = dimove.di_type_palette_id
+# #                 line.di_un_saisie_liv     = dimove.di_un_saisie
+# #                 line.di_product_packaging_liv_id = dimove.di_product_packaging_id
+# #                 line.di_tare_liv          = dimove.di_tare
+#      
+#         return result
     
     def _action_assign(self):
         """ Reserve stock moves by creating their stock move lines. A stock move is
