@@ -60,20 +60,26 @@ class Wizard_transfert_compta(models.TransientModel):
         libelle = self.replace_accent(libelle)
         
         # temporaire herau, pas le n° de pièce pour les caisses
-        if journal[0]=='T':
-            move_name=''
+        if journal[0] == 'T':
+            move_name = ''
                          
         if move_name:
             n_piece = move_name.rjust(20)   # ajout d'espaces devant pour compléter à 20 caractères.
-                
-        if debit == 0:
-            # crédit
-            montant = credit
-            sens = "2"
-        else:
-            # débit         
-            montant = debit
+        if debit > credit:
             sens = "1"
+            montant = debit - credit
+        else:
+            sens = "2"
+            montant = credit-debit
+                
+        # if debit == 0:
+        #     # crédit
+        #     montant = credit
+        #     sens = "2"
+        # else:
+        #     # débit         
+        #     montant = debit
+        #     sens = "1"
         
         ce1 = "8"
         
