@@ -298,7 +298,7 @@ class ProductProduct(models.Model):
         cpt = 0
         article_gen_ids=[]
         for article_id in article_ids:
-            if cpt < 250: 
+            if cpt < 100: 
                 article_gen_ids.append(article_id)
                 cpt = cpt + 1
             else:
