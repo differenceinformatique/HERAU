@@ -3,6 +3,9 @@
 from odoo.tools.misc import ustr
 from odoo.exceptions import Warning
 from odoo import models, fields, api
+import logging
+
+_logger = logging.getLogger(__name__)
 try:
     import vatnumber
 except ImportError:
